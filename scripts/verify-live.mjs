@@ -2,8 +2,11 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
 	appearsIn,
+	extractCheckinTitles,
+	extractSearchResults,
 	loadPublishedCheckins,
 	loadPublishedPosts,
+	runSearchFilters,
 	root,
 } from './verify-helpers.mjs';
 
@@ -39,6 +42,8 @@ const pages = {
 	rss: await fetchText('/rss.xml'),
 	auth: await fetchText('/api/auth?provider=github&scope=repo'),
 };
+const searchResults = extractSearchResults(pages.search);
+const checkinTitles = extractCheckinTitles(pages.checkins);
 
 const liveArticleLinks = [
 	...new Set(
@@ -105,6 +110,28 @@ const viewsResponse = await fetch(`${baseUrl}/api/views?id=health-check`);
 const viewsText = await viewsResponse.text();
 if (!viewsResponse.ok) {
 	errors.push(`Live page views API failed: ${viewsResponse.status} ${viewsText.slice(0, 160)}`);
+}
+
+const renderedSearchOrder = searchResults.map((entry) => entry.title);
+const expectedSearchOrder = posts.map((post) => post.title);
+if (renderedSearchOrder.join('\n') !== expectedSearchOrder.join('\n')) {
+	errors.push('Live search page result order does not match the computed post order.');
+}
+
+if (checkinTitles.join('\n') !== checkins.map((checkin) => checkin.title).join('\n')) {
+	errors.push('Live check-ins page order does not match the computed check-in order.');
+}
+
+const impossibleSearch = runSearchFilters(searchResults, { keyword: '__not_existing_keyword__' });
+if (impossibleSearch.length !== 0) {
+	errors.push('Live search filtering returns results for a guaranteed-missing keyword.');
+}
+
+for (const post of posts) {
+	const titleSearch = runSearchFilters(searchResults, { keyword: post.title });
+	if (!titleSearch.some((entry) => entry.title === post.title)) {
+		errors.push(`Live search filtering cannot find post by its own title: ${post.title}`);
+	}
 }
 
 if (errors.length > 0) {

@@ -64,6 +64,10 @@ export function readList(frontmatter, field) {
 	return items;
 }
 
+export function normalizeText(value = '') {
+	return String(value).normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/g, ' ').trim();
+}
+
 export function appearsIn(html, text) {
 	const escaped = text
 		.replaceAll('&', '&amp;')
@@ -82,6 +86,9 @@ export async function fileExists(path) {
 		return false;
 	}
 }
+
+const compareManualOrder = (a, b) => (b.sortOrder ?? 0) - (a.sortOrder ?? 0);
+const compareIdsDescending = (a, b) => b.slug.localeCompare(a.slug, 'zh-CN');
 
 export async function loadPublishedPosts() {
 	const postFiles = await listFiles(join(root, 'src', 'content', 'posts'), '.md');
@@ -102,10 +109,19 @@ export async function loadPublishedPosts() {
 			section,
 			tags: readList(frontmatter, 'tags'),
 			slug: basename(file, '.md'),
+			excerpt: readScalar(frontmatter, 'excerpt'),
+			body: source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, ''),
+			sortOrder: Number.parseInt(readScalar(frontmatter, 'sortOrder') || '0', 10) || 0,
+			publishDate: new Date(readScalar(frontmatter, 'publishDate')),
 		});
 	}
 
-	return posts;
+	return posts.sort(
+		(a, b) =>
+			compareManualOrder(a, b) ||
+			b.publishDate.getTime() - a.publishDate.getTime() ||
+			compareIdsDescending(a, b),
+	);
 }
 
 export async function loadPublishedCheckins() {
@@ -124,13 +140,60 @@ export async function loadPublishedCheckins() {
 			file,
 			title,
 			tags: readList(frontmatter, 'tags'),
+			body: source.replace(/^---\r?\n[\s\S]*?\r?\n---\r?\n?/, ''),
+			sortOrder: Number.parseInt(readScalar(frontmatter, 'sortOrder') || '0', 10) || 0,
+			date: new Date(readScalar(frontmatter, 'date')),
+			slug: basename(file, '.md'),
 		});
 	}
 
-	return checkins;
+	return checkins.sort(
+		(a, b) =>
+			compareManualOrder(a, b) ||
+			b.date.getTime() - a.date.getTime() ||
+			compareIdsDescending(a, b),
+	);
 }
 
 export async function loadTagIds() {
 	const tagFiles = await listFiles(join(root, 'src', 'content', 'tags'), '.json');
 	return tagFiles.map((file) => basename(file, '.json').toLocaleLowerCase('en-US'));
+}
+
+export function extractSearchResults(html) {
+	const results = [];
+	for (const match of html.matchAll(/<div\s+data-result\b([^>]*)>/g)) {
+		const attrs = match[1];
+		const readAttr = (name) => attrs.match(new RegExp(`${name}="([^"]*)"`, 'i'))?.[1] ?? '';
+		results.push({
+			title: readAttr('data-title'),
+			excerpt: readAttr('data-excerpt'),
+			body: readAttr('data-body'),
+			section: readAttr('data-section'),
+			year: readAttr('data-year'),
+			tags: readAttr('data-tags'),
+		});
+	}
+	return results;
+}
+
+export function extractCheckinTitles(html) {
+	return [...html.matchAll(/<article class="checkin-entry"[\s\S]*?<h3[^>]*>([^<]+)<\/h3>/g)].map(
+		(match) => match[1],
+	);
+}
+
+export function runSearchFilters(entries, { keyword = '', section = '', year = '', tag = '' } = {}) {
+	const keywordValues = normalizeText(keyword).split(' ').filter(Boolean);
+	const tagValue = normalizeText(tag);
+
+	return entries.filter((entry) => {
+		const haystack = normalizeText([entry.title, entry.excerpt, entry.body].join(' '));
+		const cardTags = normalizeText(entry.tags).split('|').filter(Boolean);
+		const matchesKeyword = keywordValues.every((value) => haystack.includes(value));
+		const matchesSection = !section || entry.section === section;
+		const matchesYear = !year || entry.year === year;
+		const matchesTag = !tagValue || cardTags.includes(tagValue);
+		return matchesKeyword && matchesSection && matchesYear && matchesTag;
+	});
 }

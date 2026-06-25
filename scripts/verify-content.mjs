@@ -2,11 +2,14 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import {
 	appearsIn,
+	extractCheckinTitles,
+	extractSearchResults,
 	fileExists,
 	listFiles,
 	loadPublishedCheckins,
 	loadPublishedPosts,
 	loadTagIds,
+	runSearchFilters,
 	root,
 } from './verify-helpers.mjs';
 
@@ -23,6 +26,8 @@ const about = await readFile(join(root, 'dist', 'about', 'index.html'), 'utf8');
 const rss = await readFile(join(root, 'dist', 'rss.xml'), 'utf8');
 const postPages = await listFiles(join(root, 'dist', 'posts'), 'index.html');
 const renderedPosts = await Promise.all(postPages.map((file) => readFile(file, 'utf8')));
+const searchResults = extractSearchResults(search);
+const checkinTitles = extractCheckinTitles(checkinsPage);
 const errors = [];
 
 for (const post of posts) {
@@ -78,6 +83,38 @@ for (const text of aboutChecks) {
 
 if (postPages.length !== posts.length) {
 	errors.push(`Expected ${posts.length} article pages, generated ${postPages.length}`);
+}
+
+const renderedSearchOrder = searchResults.map((entry) => entry.title);
+const expectedSearchOrder = posts.map((post) => post.title);
+if (renderedSearchOrder.join('\n') !== expectedSearchOrder.join('\n')) {
+	errors.push('Search page result order does not match the computed post order.');
+}
+
+if (checkinTitles.join('\n') !== checkins.map((checkin) => checkin.title).join('\n')) {
+	errors.push('Check-ins page order does not match the computed check-in order.');
+}
+
+const impossibleSearch = runSearchFilters(searchResults, { keyword: '__not_existing_keyword__' });
+if (impossibleSearch.length !== 0) {
+	errors.push('Search filtering returns results for a guaranteed-missing keyword.');
+}
+
+for (const post of posts) {
+	const titleSearch = runSearchFilters(searchResults, { keyword: post.title });
+	if (!titleSearch.some((entry) => entry.title === post.title)) {
+		errors.push(`Search filtering cannot find post by its own title: ${post.title}`);
+	}
+}
+
+for (const tag of tagIds) {
+	const expectedCount = posts.filter((post) =>
+		post.tags.some((item) => item.toLocaleLowerCase('en-US') === tag),
+	).length;
+	const actualCount = runSearchFilters(searchResults, { tag }).length;
+	if (actualCount !== expectedCount) {
+		errors.push(`Search tag filter count mismatch for ${tag}: expected ${expectedCount}, got ${actualCount}`);
+	}
 }
 
 if (errors.length > 0) {
