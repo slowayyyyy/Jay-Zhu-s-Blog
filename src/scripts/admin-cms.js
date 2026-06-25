@@ -10,6 +10,7 @@ export function setupAdminCms() {
 
 	let syncTimer;
 	let statusTimer;
+	let reloadTimer;
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
@@ -81,36 +82,28 @@ export function setupAdminCms() {
 		}
 	};
 
-	const broadcastUpdate = (collection) => {
+	const syncLocalContent = async () => {
+		const response = await fetch('/__content-sync', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+		});
+		if (!response.ok) {
+			throw new Error(`content sync failed: ${response.status}`);
+		}
+	};
+
+	const broadcastLocalPreviewUpdate = (collection) => {
 		const payload = { collection, updatedAt: Date.now() };
 		localStorage.setItem('jay-content-updated', JSON.stringify(payload));
 		syncChannel?.postMessage(payload);
 	};
 
-	const syncContent = async (collection) => {
-		const needsContentRefresh = ['posts', 'checkins', 'tag_settings', 'site_settings'].includes(
-			collection,
-		);
-		if (!needsContentRefresh) {
-			return { mode: 'save-only' };
-		}
-
-		if (!isLocalPreview) {
-			return { mode: 'deploy' };
-		}
-
-		const response = await fetch('/__content-sync', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ collection }),
-		});
-		if (!response.ok) {
-			throw new Error(`content sync failed: ${response.status}`);
-		}
-
-		broadcastUpdate(collection);
-		return { mode: 'local' };
+	const scheduleAdminReload = (delay = 900) => {
+		window.clearTimeout(reloadTimer);
+		reloadTimer = window.setTimeout(() => window.location.reload(), delay);
 	};
+
+	const shouldReloadAdminOptions = (collection) => collection === 'tag_settings';
 
 	const collectionLabel = (collection) =>
 		(
@@ -125,35 +118,46 @@ export function setupAdminCms() {
 	const handleContentUpdate = ({ entry }) => {
 		const collection = entry?.get?.('collection') || 'unknown';
 		const label = collectionLabel(collection);
-		clearTimeout(syncTimer);
-		showStatus(`正在保存${label}…`, 'pending', 1600);
-		syncTimer = setTimeout(async () => {
+		const reloadAdminOptions = shouldReloadAdminOptions(collection);
+
+		window.clearTimeout(syncTimer);
+		showStatus(`正在保存${label}...`, 'pending', 1600);
+
+		syncTimer = window.setTimeout(async () => {
 			try {
-				const result = await syncContent(collection);
-				if (result.mode === 'local') {
-					showStatus(`${label}已保存，本地预览已同步。`, 'success', 3400);
-					if (collection === 'tag_settings') {
-						window.location.reload();
-					}
-					return;
+				if (isLocalPreview) {
+					await syncLocalContent();
+					broadcastLocalPreviewUpdate(collection);
 				}
 
-				if (result.mode === 'deploy') {
+				if (reloadAdminOptions) {
 					showStatus(
-						`${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
-						'info',
-						7200,
+						isLocalPreview
+							? `${label}已保存，正在刷新后台标签选项...`
+							: `${label}已提交到 GitHub，正在刷新后台标签选项...`,
+						'success',
+						3600,
 					);
+					scheduleAdminReload(isLocalPreview ? 700 : 1200);
 					return;
 				}
 
-				showStatus(`${label}已保存。`, 'success', 2600);
+				if (isLocalPreview) {
+					showStatus(`${label}已保存，本地预览已同步。`, 'success', 3400);
+					return;
+				}
+
+				showStatus(
+					`${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
+					'info',
+					7200,
+				);
 			} catch (error) {
-				console.error('[Jay CMS] content sync failed, frontend reload skipped.', error);
+				console.error('[Jay CMS] content sync failed.', error);
 				showStatus(
 					isLocalPreview
 						? `${label}已保存，但本地预览刷新失败，请手动刷新前台检查。`
-						: `${label}已保存到仓库，但无法确认发布状态，请到 Cloudflare Pages 查看最新部署。`,
+						: `${label}已保存到仓库，但后台刷新失败，请手动刷新当前页面后再继续编辑。`,
 					'error',
 					7800,
 				);
