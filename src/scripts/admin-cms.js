@@ -49,7 +49,7 @@ export function setupAdminCms() {
 		}, 420);
 	};
 
-	['postSave', 'postPublish', 'postUnpublish', 'postDelete'].forEach((name) => {
+	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
 	});
 }
