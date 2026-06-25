@@ -11,6 +11,7 @@ export function setupAdminCms() {
 	let syncTimer;
 	let statusTimer;
 	let reloadTimer;
+	let idleTimer;
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
@@ -29,7 +30,11 @@ export function setupAdminCms() {
 					bottom: 16px;
 					z-index: 9999;
 					max-width: min(420px, calc(100vw - 32px));
-					padding: 12px 14px;
+					display: grid;
+					grid-template-columns: minmax(0, 1fr) auto;
+					align-items: flex-start;
+					gap: 10px;
+					padding: 12px 12px 12px 14px;
 					border: 1px solid rgba(24, 33, 43, 0.08);
 					border-radius: 16px;
 					background: rgba(255, 255, 255, 0.92);
@@ -37,6 +42,40 @@ export function setupAdminCms() {
 					color: #18212b;
 					font: 13px/1.6 "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
 					backdrop-filter: blur(14px);
+				}
+
+				[data-jay-cms-status][hidden] {
+					display: none;
+				}
+
+				[data-jay-cms-status-message] {
+					min-width: 0;
+				}
+
+				[data-jay-cms-status-close] {
+					width: 28px;
+					height: 28px;
+					padding: 0;
+					border: 0;
+					border-radius: 999px;
+					background: transparent;
+					color: rgba(24, 33, 43, 0.56);
+					font: inherit;
+					font-size: 18px;
+					line-height: 1;
+					display: inline-flex;
+					align-items: center;
+					justify-content: center;
+					transition:
+						background 180ms ease,
+						color 180ms ease,
+						transform 180ms ease;
+				}
+
+				[data-jay-cms-status-close]:hover {
+					background: rgba(24, 33, 43, 0.08);
+					color: rgba(24, 33, 43, 0.84);
+					transform: scale(1.02);
 				}
 
 				[data-jay-cms-status][data-tone='info'] {
@@ -63,6 +102,24 @@ export function setupAdminCms() {
 
 		notice = document.createElement('div');
 		notice.dataset.jayCmsStatus = 'true';
+		notice.hidden = true;
+
+		const message = document.createElement('div');
+		message.dataset.jayCmsStatusMessage = 'true';
+		notice.append(message);
+
+		const closeButton = document.createElement('button');
+		closeButton.type = 'button';
+		closeButton.dataset.jayCmsStatusClose = 'true';
+		closeButton.setAttribute('aria-label', '关闭提示');
+		closeButton.textContent = '×';
+		closeButton.addEventListener('click', () => {
+			window.clearTimeout(statusTimer);
+			window.clearTimeout(idleTimer);
+			notice.hidden = true;
+		});
+		notice.append(closeButton);
+
 		document.body.append(notice);
 		return notice;
 	};
@@ -72,14 +129,30 @@ export function setupAdminCms() {
 			? '本地模式：保存后会自动刷新预览内容。'
 			: '线上模式：保存后先提交到 GitHub，再由 Cloudflare Pages 发布，前台通常 1 到 3 分钟更新。';
 
+	const hideStatus = () => {
+		const notice = document.querySelector('[data-jay-cms-status]');
+		if (!notice) return;
+		window.clearTimeout(statusTimer);
+		window.clearTimeout(idleTimer);
+		notice.hidden = true;
+	};
+
 	const showStatus = (message, tone = 'info', duration = 0) => {
 		const notice = ensureStatusNotice();
-		notice.textContent = message;
+		const messageElement = notice.querySelector('[data-jay-cms-status-message]');
+		if (!messageElement) return;
+		notice.hidden = false;
+		messageElement.textContent = message;
 		notice.dataset.tone = tone;
 		window.clearTimeout(statusTimer);
+		window.clearTimeout(idleTimer);
 		if (duration > 0) {
-			statusTimer = window.setTimeout(() => showStatus(idleMessage(), 'info'), duration);
+			statusTimer = window.setTimeout(hideStatus, duration);
 		}
+	};
+
+	const showIdleStatus = (duration = 9600) => {
+		showStatus(idleMessage(), 'info', duration);
 	};
 
 	const syncLocalContent = async () => {
@@ -136,21 +209,21 @@ export function setupAdminCms() {
 							? `${label}已保存，正在刷新后台标签选项...`
 							: `${label}已提交到 GitHub，正在刷新后台标签选项...`,
 						'success',
-						3600,
+						2600,
 					);
 					scheduleAdminReload(isLocalPreview ? 700 : 1200);
 					return;
 				}
 
 				if (isLocalPreview) {
-					showStatus(`${label}已保存，本地预览已同步。`, 'success', 3400);
+					showStatus(`${label}已保存，本地预览已同步。`, 'success', 3200);
 					return;
 				}
 
 				showStatus(
 					`${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
 					'info',
-					7200,
+					6400,
 				);
 			} catch (error) {
 				console.error('[Jay CMS] content sync failed.', error);
@@ -159,13 +232,13 @@ export function setupAdminCms() {
 						? `${label}已保存，但本地预览刷新失败，请手动刷新前台检查。`
 						: `${label}已保存到仓库，但后台刷新失败，请手动刷新当前页面后再继续编辑。`,
 					'error',
-					7800,
+					7600,
 				);
 			}
 		}, 420);
 	};
 
-	showStatus(idleMessage(), 'info');
+	idleTimer = window.setTimeout(() => showIdleStatus(), 280);
 
 	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
