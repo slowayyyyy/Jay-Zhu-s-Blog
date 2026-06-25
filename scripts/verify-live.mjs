@@ -92,9 +92,22 @@ const aboutChecks = [
 	...settings.author.contact.map((item) => item.display),
 ];
 
+const homeChecks = [
+	settings.opening.title,
+	settings.opening.caption,
+	settings.homeIntro.zh,
+	settings.motto.zh,
+];
+
 for (const text of aboutChecks) {
 	if (!appearsIn(pages.about, text)) {
 		errors.push(`Live about page is missing: ${text}`);
+	}
+}
+
+for (const text of homeChecks) {
+	if (!appearsIn(pages.home, text)) {
+		errors.push(`Live home page is missing: ${text}`);
 	}
 }
 
@@ -106,10 +119,37 @@ if (!appearsIn(pages.auth, 'Jay CMS Auth')) {
 	errors.push('Live auth endpoint did not render the CMS auth bridge page.');
 }
 
-const viewsResponse = await fetch(`${baseUrl}/api/views?id=health-check`);
-const viewsText = await viewsResponse.text();
-if (!viewsResponse.ok) {
-	errors.push(`Live page views API failed: ${viewsResponse.status} ${viewsText.slice(0, 160)}`);
+const viewProbeId = `verify-live-${Date.now()}`;
+const viewsPost = await fetch(`${baseUrl}/api/views?id=${encodeURIComponent(viewProbeId)}`, {
+	method: 'POST',
+});
+const viewsPostText = await viewsPost.text();
+if (!viewsPost.ok) {
+	errors.push(`Live page views POST failed: ${viewsPost.status} ${viewsPostText.slice(0, 160)}`);
+} else {
+	try {
+		const payload = JSON.parse(viewsPostText);
+		if (payload.id !== viewProbeId || typeof payload.views !== 'number' || payload.views < 1) {
+			errors.push(`Live page views POST returned an invalid payload for ${viewProbeId}.`);
+		}
+	} catch {
+		errors.push(`Live page views POST returned non-JSON content: ${viewsPostText.slice(0, 160)}`);
+	}
+}
+
+const viewsGet = await fetch(`${baseUrl}/api/views?id=${encodeURIComponent(viewProbeId)}`);
+const viewsGetText = await viewsGet.text();
+if (!viewsGet.ok) {
+	errors.push(`Live page views GET failed: ${viewsGet.status} ${viewsGetText.slice(0, 160)}`);
+} else {
+	try {
+		const payload = JSON.parse(viewsGetText);
+		if (payload.id !== viewProbeId || typeof payload.views !== 'number' || payload.views < 1) {
+			errors.push(`Live page views GET returned an invalid payload for ${viewProbeId}.`);
+		}
+	} catch {
+		errors.push(`Live page views GET returned non-JSON content: ${viewsGetText.slice(0, 160)}`);
+	}
 }
 
 const renderedSearchOrder = searchResults.map((entry) => entry.title);

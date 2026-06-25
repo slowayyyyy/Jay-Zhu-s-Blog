@@ -75,9 +75,22 @@ const aboutChecks = [
 	...settings.author.contact.map((item) => item.display),
 ];
 
+const homeChecks = [
+	settings.opening.title,
+	settings.opening.caption,
+	settings.homeIntro.zh,
+	settings.motto.zh,
+];
+
 for (const text of aboutChecks) {
 	if (!appearsIn(about, text)) {
 		errors.push(`About page is missing: ${text}`);
+	}
+}
+
+for (const text of homeChecks) {
+	if (!appearsIn(home, text)) {
+		errors.push(`Home page is missing: ${text}`);
 	}
 }
 
