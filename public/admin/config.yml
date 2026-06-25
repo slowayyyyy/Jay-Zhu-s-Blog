@@ -84,7 +84,10 @@ collections:
         hint: 先在“标签管理”中新建标签并发布，后台会自动刷新，然后即可在这里搜索选择。
       - { label: 首页置顶, name: featured, widget: boolean, default: false, required: false }
       - { label: 保存为草稿, name: draft, widget: boolean, default: false, required: false, hint: 草稿不会显示在博客前台。 }
-      - { label: 正文, name: body, widget: richtext }
+      - label: 正文
+        name: body
+        widget: richtext
+        hint: 插图后可在替代文本中追加控制指令，例如“晚霞 | sm | right”或“实验截图 | width=60 | center”。支持 xs / sm / md / lg / full 和 left / center / right。
 
   - name: checkins
     label: 每日打卡
@@ -120,7 +123,7 @@ collections:
         name: body
         widget: richtext
         required: false
-        hint: 推荐直接在这里自由记录，支持分段、列表、加粗、斜体和链接，不再被“项目名称 / 内容”的固定格式限制。
+        hint: 推荐直接在这里自由记录，支持分段、列表、加粗、斜体、链接和插图。图片可在替代文本中写“跑步截图 | sm | center”或“书页照片 | width=55 | right”来控制大小和位置。
       - label: 可选结构化条目
         name: items
         widget: list

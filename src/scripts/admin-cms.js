@@ -1,3 +1,4 @@
+import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
@@ -7,6 +8,7 @@ export function setupAdminCms() {
 	window.__jayCmsSetup = true;
 
 	window.CMS.registerRemarkPlugin(remarkTightInlineFormatting);
+	window.CMS.registerRemarkPlugin(remarkImagePresentation);
 
 	let syncTimer;
 	let statusTimer;
@@ -95,6 +97,63 @@ export function setupAdminCms() {
 				[data-jay-cms-status][data-tone='error'] {
 					border-color: rgba(176, 84, 84, 0.24);
 					background: rgba(252, 245, 245, 0.95);
+				}
+
+				figure.prose-media {
+					margin: 1.4rem 0;
+				}
+
+				figure.prose-media > img.prose-image,
+				img.prose-image {
+					display: block;
+					width: min(100%, var(--prose-media-width, 42rem));
+					max-width: 100%;
+					height: auto;
+					margin-inline: auto;
+					border-radius: 16px;
+					box-shadow: 0 16px 38px rgba(45, 67, 87, 0.14);
+				}
+
+				figure.prose-media--xs > img.prose-image,
+				img.prose-image--xs {
+					--prose-media-width: 15rem;
+				}
+
+				figure.prose-media--sm > img.prose-image,
+				img.prose-image--sm {
+					--prose-media-width: 22rem;
+				}
+
+				figure.prose-media--md > img.prose-image,
+				img.prose-image--md {
+					--prose-media-width: 32rem;
+				}
+
+				figure.prose-media--lg > img.prose-image,
+				img.prose-image--lg {
+					--prose-media-width: 42rem;
+				}
+
+				figure.prose-media--full > img.prose-image,
+				img.prose-image--full {
+					--prose-media-width: 100%;
+				}
+
+				figure.prose-media--left > img.prose-image,
+				img.prose-image--left {
+					margin-left: 0;
+					margin-right: auto;
+				}
+
+				figure.prose-media--center > img.prose-image,
+				img.prose-image--center {
+					margin-inline: auto;
+				}
+
+				figure.prose-media--right > img.prose-image,
+				img.prose-image--right {
+					margin-left: auto;
+					margin-right: 0;
 				}
 			`;
 			document.head.append(style);

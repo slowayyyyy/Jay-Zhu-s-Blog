@@ -1,4 +1,5 @@
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import { remarkImagePresentation } from './remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from './remark-tight-inline-formatting.mjs';
 
 let markdownProcessorPromise: ReturnType<typeof createMarkdownProcessor> | undefined;
@@ -6,7 +7,7 @@ let markdownProcessorPromise: ReturnType<typeof createMarkdownProcessor> | undef
 function getMarkdownProcessor() {
 	if (!markdownProcessorPromise) {
 		markdownProcessorPromise = createMarkdownProcessor({
-			remarkPlugins: [remarkTightInlineFormatting],
+			remarkPlugins: [remarkTightInlineFormatting, remarkImagePresentation],
 			shikiConfig: {
 				theme: 'github-dark-default',
 				wrap: true,

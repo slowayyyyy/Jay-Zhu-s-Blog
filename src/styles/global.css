@@ -262,9 +262,77 @@ html[data-intro-seen='seen'] .opening-overlay {
 	overflow-x: auto;
 }
 
+.prose :where(figure.prose-media) {
+	margin: 1.6rem 0;
+}
+
+.prose :where(figure.prose-media > img.prose-image),
+.prose :where(img.prose-image) {
+	display: block;
+	width: min(100%, var(--prose-media-width, 42rem));
+	max-width: 100%;
+	height: auto;
+	border-radius: clamp(14px, 2vw, 22px);
+	border: 1px solid var(--line);
+	background: color-mix(in srgb, var(--bg-panel) 92%, white);
+	box-shadow: 0 20px 42px rgba(45, 67, 87, 0.14);
+}
+
+.prose :where(figure.prose-media > img.prose-image) {
+	margin-inline: auto;
+}
+
+.prose :where(figure.prose-media--xs > img.prose-image),
+.prose :where(img.prose-image--xs) {
+	--prose-media-width: 15rem;
+}
+
+.prose :where(figure.prose-media--sm > img.prose-image),
+.prose :where(img.prose-image--sm) {
+	--prose-media-width: 22rem;
+}
+
+.prose :where(figure.prose-media--md > img.prose-image),
+.prose :where(img.prose-image--md) {
+	--prose-media-width: 32rem;
+}
+
+.prose :where(figure.prose-media--lg > img.prose-image),
+.prose :where(img.prose-image--lg) {
+	--prose-media-width: 42rem;
+}
+
+.prose :where(figure.prose-media--full > img.prose-image),
+.prose :where(img.prose-image--full) {
+	--prose-media-width: 100%;
+}
+
+.prose :where(figure.prose-media--left > img.prose-image),
+.prose :where(img.prose-image--left) {
+	margin-left: 0;
+	margin-right: auto;
+}
+
+.prose :where(figure.prose-media--center > img.prose-image),
+.prose :where(img.prose-image--center) {
+	margin-inline: auto;
+}
+
+.prose :where(figure.prose-media--right > img.prose-image),
+.prose :where(img.prose-image--right) {
+	margin-left: auto;
+	margin-right: 0;
+}
+
 @media (max-width: 720px) {
 	.container {
 		width: min(100vw - 1.1rem, 100%);
+	}
+
+	.prose :where(figure.prose-media > img.prose-image),
+	.prose :where(img.prose-image) {
+		width: min(100%, var(--prose-media-width-mobile, 100%));
+		margin-inline: auto;
 	}
 }
 
