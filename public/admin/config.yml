@@ -1,7 +1,9 @@
 backend:
   name: github
-  repo: slowayyyyy/jay-zhus-blog
+  repo: slowayyyyy/Jay-Zhu-s-Blog
   branch: main
+  base_url: https://jay-zhu-s-blog.pages.dev
+  auth_endpoint: api/auth
 
 local_backend: true
 locale: zh_Hans
@@ -9,8 +11,8 @@ locale: zh_Hans
 media_folder: public/uploads
 public_folder: /uploads
 
-site_url: http://localhost:4321
-display_url: http://localhost:4321
+site_url: https://jay-zhu-s-blog.pages.dev
+display_url: https://jay-zhu-s-blog.pages.dev
 logo_url: /favicon.svg
 
 slug:
