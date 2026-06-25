@@ -201,6 +201,34 @@ git push -u origin main
 
 - `PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN`
 
+## 同步延迟说明
+
+这个博客当前是 `GitHub + Cloudflare Pages` 的静态发布链路。
+
+线上后台保存后的流程是：
+
+1. 内容提交到 GitHub
+2. Cloudflare Pages 检测到提交
+3. 重新构建并发布前台
+
+因此前台通常会在 `1 到 3 分钟` 后更新，而不是保存后立刻变化。
+
+## 核验命令
+
+本地检查构建内容是否完整：
+
+```bash
+npm run verify:content
+```
+
+直接核验线上站点是否已经和当前仓库一致：
+
+```bash
+npm run verify:live
+```
+
+如果 `verify:live` 失败，就说明线上仍有功能没配好，或者最新内容还没有真正部署上去。
+
 ## 开启页面阅读量统计
 
 这个博客已经带了 `functions/api/views.js`，但要生效，你还需要给 Pages 项目绑定一个 KV。

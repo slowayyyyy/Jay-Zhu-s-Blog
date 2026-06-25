@@ -14,6 +14,7 @@
     "admin": "astro dev stop && astro dev --background --force && decap-server",
     "build": "astro sync --force && astro build && node scripts/verify-content.mjs",
     "verify:content": "node scripts/verify-content.mjs",
+    "verify:live": "node scripts/verify-live.mjs",
     "preview": "astro preview",
     "check": "astro check",
     "astro": "astro"

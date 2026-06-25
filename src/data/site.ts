@@ -199,5 +199,5 @@ export const translations = {
 
 export const siteConfig = {
 	...siteSettings,
-	siteUrl: import.meta.env.PUBLIC_SITE_URL ?? 'https://jay-zhus-blog.pages.dev',
+	siteUrl: import.meta.env.PUBLIC_SITE_URL ?? 'https://jay-zhu-s-blog.pages.dev',
 };

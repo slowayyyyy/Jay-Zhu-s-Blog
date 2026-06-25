@@ -87,10 +87,25 @@ npm run build
 
 ## 四、网站上线后的后台登录
 
-当前后台预设的 GitHub 仓库是：`slowayyyyy/jay-zhus-blog`。
+当前后台预设的 GitHub 仓库是：`slowayyyyy/Jay-Zhu-s-Blog`。
 
 网站上传到这个仓库后，可在正式域名的 `/admin/` 打开后台。线上 GitHub 登录需要在部署阶段配置 OAuth；在完成这一步之前，先使用本地中文版后台发布内容。
 
 在线后台发布时会直接向 GitHub 提交内容。Cloudflare Pages 检测到提交后会自动重新构建并更新网站。
+
+线上后台保存后，前台不是立刻同步，通常会有 1 到 3 分钟延迟。这是因为当前架构是：
+
+1. 后台保存
+2. 提交到 GitHub
+3. Cloudflare Pages 重新构建
+4. 新版本上线
+
+如果你想确认线上是否已经同步到最新仓库内容，可以在项目目录运行：
+
+```powershell
+npm run verify:live
+```
+
+这个命令会直接检查线上首页、文章页、生活手账、每日打卡、关于页、RSS、后台入口和阅读量接口。
 
 如果最终 GitHub 仓库名称不同，需要同步修改 `public/admin/config.yml` 中的 `repo`。
