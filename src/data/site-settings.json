@@ -1,0 +1,132 @@
+{
+  "heroImage": "",
+  "descriptionEn": "A long-form personal blog for study notes, research logs, and quiet traces of daily life.",
+  "author": {
+    "contact": [
+      {
+        "label": "GitHub",
+        "value": "https://github.com/slowayyyyy",
+        "display": "slowayyyyy"
+      },
+      {
+        "label": "Email",
+        "value": "mailto:zhuyongtao777@gmail.com",
+        "display": "zhuyongtao777@gmail.com"
+      }
+    ],
+    "sectionTitles": {
+      "research": {
+        "zh": "研究兴趣",
+        "en": "Research Interests"
+      },
+      "hobbies": {
+        "zh": "阅读 / 运动 / 爱好",
+        "en": "Reading / Exercise / Hobbies"
+      },
+      "current": {
+        "zh": "当前在做什么",
+        "en": "What I Am Doing Now"
+      },
+      "contact": {
+        "zh": "联系入口",
+        "en": "Contact"
+      }
+    },
+    "handle": "@jayzhu",
+    "intro": {
+      "zh": "把简单的日子写成诗，那算不算最动人的章节？",
+      "en": "If we turn simple days into poems, bind them into a collection, and one day look back on the past—wouldn’t that be the most moving chapter of all?\n"
+    },
+    "displayName": "Jay Zhu",
+    "hobbies": [
+      {
+        "zh": "阅读纸质书籍",
+        "en": "Non-fiction and essays"
+      },
+      {
+        "zh": "跑步、力量训练与规律作息",
+        "en": "Running, strength training, and steady routines"
+      },
+      {
+        "zh": "收集句子、傍晚与安静时刻",
+        "en": "Collecting sentences, sunsets, and quiet moments"
+      }
+    ],
+    "avatar": "/uploads/v2-069c9a2e9fe32643ef60f5fd44b23aaf_1440w.jpg",
+    "current": [
+      {
+        "zh": "搭建个人知识系统",
+        "en": "Building a personal knowledge system"
+      },
+      {
+        "zh": "练习更稳定的科研节奏",
+        "en": "Practising steadier research rhythm"
+      },
+      {
+        "zh": "持续维护这座博客",
+        "en": "Keeping this blog alive"
+      }
+    ],
+    "research": [
+      {
+        "zh": "论文阅读与科研方法",
+        "en": "Paper reading and research method"
+      },
+      {
+        "zh": "深度学习与视频分析",
+        "en": "Deep learning and Deep video"
+      },
+      {
+        "zh": "AI / 信息检索方向的持续学习",
+        "en": "Continuous learning in AI / information retrieval"
+      }
+    ]
+  },
+  "name": "Jay Zhu's Blog",
+  "lifePage": {
+    "title": {
+      "zh": "生活手账",
+      "en": "Life Ledger"
+    },
+    "intro": {
+      "zh": "这里不急着证明什么，只认真记录阅读、运动与日常起伏。",
+      "en": "A place for reading, training, and the ordinary shifts of a week."
+    },
+    "highlightTitle": {
+      "zh": "最近的生活片段",
+      "en": "Recent Life Notes"
+    },
+    "sidebar": {
+      "zh": "这里收纳阅读、运动和日常感受，让生活本身拥有独立于学习与科研之外的位置。",
+      "en": "A separate place for reading, movement, and everyday reflections beyond study and research."
+    }
+  },
+  "homeIntro": {
+    "zh": "一座以 Markdown 书写、以时间排序的个人博客。它不追求喧闹，而追求清晰、质感和可以长期维护。",
+    "en": "A Markdown-first personal blog arranged in time, built for clarity, visual calm, and long-term maintenance."
+  },
+  "motto": {
+    "zh": "把复杂的事写清楚，把普通的日子认真留下。",
+    "en": "Write complex things clearly, and keep ordinary days with care."
+  },
+  "playlist": [
+    {
+      "title": "太聪明",
+      "artist": "陈绮贞",
+      "src": "/audio/陈绮贞-太聪明.mp3"
+    },
+    {
+      "title": "Doll",
+      "artist": "菲菲公主",
+      "src": "/audio/菲菲公主（陆绮菲）-doll.mp3"
+    }
+  ],
+  "opening": {
+    "title": "点亮每一盏灯",
+    "kicker": "JAY ZHU'S BLOG · EST. 2026",
+    "caption": "LIGHT EVERY LAMP ALONG THE WAY",
+    "coordinate": "31.2304° N · 121.4737° E"
+  },
+  "description": "一个面向长期记录的个人博客，用来安放学习内容、科研过程与生活片段。",
+  "brandSubtitle": "Even ordinary days deserve to dance"
+}

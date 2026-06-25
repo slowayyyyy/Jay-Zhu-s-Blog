@@ -1,0 +1,317 @@
+backend:
+  name: github
+  repo: slowayyyyy/jay-zhus-blog
+  branch: main
+
+local_backend: true
+locale: zh_Hans
+
+media_folder: public/uploads
+public_folder: /uploads
+
+site_url: http://localhost:4321
+display_url: http://localhost:4321
+logo_url: /favicon.svg
+
+slug:
+  encoding: unicode
+  clean_accents: false
+  sanitize_replacement: "-"
+
+collections:
+  - name: posts
+    label: 文章
+    label_singular: 文章
+    description: 在学习笔记、科研记录或生活手账中发布文章。
+    folder: src/content/posts
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    summary: "{{publishDate}} · {{title}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [sortOrder, publishDate, title, section, draft]
+    view_filters:
+      - { label: 草稿, field: draft, pattern: true }
+      - { label: 学习笔记, field: section, pattern: study }
+      - { label: 科研记录, field: section, pattern: research }
+      - { label: 生活手账, field: section, pattern: life }
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 页面描述, name: description, widget: text, hint: 用于搜索引擎和文章页面介绍，建议 30 至 100 字。 }
+      - { label: 首页摘要, name: excerpt, widget: text, hint: 显示在首页文章卡片中。 }
+      - label: 发布时间
+        name: publishDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: 更新时间
+        name: updatedDate
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: false
+      - label: 排序值
+        name: sortOrder
+        widget: number
+        value_type: int
+        default: 0
+        min: 0
+        required: false
+        hint: 数值越大，前台排序越靠前。需要手动调整文章上下位置时，直接修改这个值。
+      - label: 发布分区
+        name: section
+        widget: select
+        options:
+          - { label: 学习笔记, value: study }
+          - { label: 科研记录, value: research }
+          - { label: 生活手账, value: life }
+      - label: 标签
+        name: tags
+        widget: relation
+        collection: tag_settings
+        search_fields: [name, description]
+        display_fields: [name]
+        value_field: "{{slug}}"
+        multiple: true
+        options_length: 200
+        required: false
+        hint: 先在“标签管理”中新建标签并发布，后台会自动刷新，然后即可在这里搜索选择。
+      - { label: 首页置顶, name: featured, widget: boolean, default: false, required: false }
+      - { label: 保存为草稿, name: draft, widget: boolean, default: false, required: false, hint: 草稿不会显示在博客前台。 }
+      - { label: 正文, name: body, widget: richtext }
+
+  - name: checkins
+    label: 每日打卡
+    label_singular: 打卡记录
+    description: 发布阅读、运动、学习或生活打卡。
+    folder: src/content/checkins
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    summary: "{{date}} · {{title}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [sortOrder, date, title, draft]
+    fields:
+      - label: 日期
+        name: date
+        widget: datetime
+        format: YYYY-MM-DD HH:mm
+        date_format: YYYY-MM-DD
+        time_format: HH:mm
+      - { label: 标题, name: title, widget: string, default: 今日打卡 }
+      - label: 排序值
+        name: sortOrder
+        widget: number
+        value_type: int
+        default: 0
+        min: 0
+        required: false
+        hint: 数值越大，前台排序越靠前。同一天的打卡会先按这个值，再按具体时间排序。
+      - { label: 简短总结, name: summary, widget: text, required: false, hint: 可以留空，只在前台作为一行摘要显示。 }
+      - label: 正文记录
+        name: body
+        widget: richtext
+        required: false
+        hint: 推荐直接在这里自由记录，支持分段、列表、加粗、斜体和链接，不再被“项目名称 / 内容”的固定格式限制。
+      - label: 可选结构化条目
+        name: items
+        widget: list
+        required: false
+        collapsed: true
+        hint: 只有在你想单独列出“时长”“链接”“书名”等信息时再使用；平时可以完全不填。
+        summary: "{{fields.label}}：{{fields.value}}"
+        fields:
+          - { label: 项目名称, name: label, widget: string, hint: 例如“阅读内容”或“用时”。 }
+          - { label: 内容, name: value, widget: string }
+          - { label: 相关链接, name: href, widget: string, required: false }
+      - label: 标签
+        name: tags
+        widget: relation
+        collection: tag_settings
+        search_fields: [name, description]
+        display_fields: [name]
+        value_field: "{{slug}}"
+        multiple: true
+        options_length: 200
+        required: false
+      - { label: 保存为草稿, name: draft, widget: boolean, default: false, required: false }
+
+  - name: tag_settings
+    label: 标签管理
+    label_singular: 标签
+    description: 每个标签都是独立条目；修改名称会同步更新前台显示，不会破坏文章关联。
+    folder: src/content/tags
+    create: true
+    delete: true
+    extension: json
+    format: json
+    identifier_field: name
+    summary: "{{name}}"
+    slug: "{{slug}}"
+    fields:
+      - { label: 标签名称, name: name, widget: string }
+      - { label: 标签说明, name: description, widget: text, required: false }
+
+  - name: site_settings
+    label: 网站与个人资料
+    description: 修改头像、座右铭、开场文案、关于页面、联系方式和音乐。
+    files:
+      - label: 全部网站设置
+        name: site
+        file: src/data/site-settings.json
+        format: json
+        fields:
+          - { label: 博客名称, name: name, widget: string }
+          - { label: 页头英文副标题, name: brandSubtitle, widget: string }
+          - { label: 网站中文简介, name: description, widget: text }
+          - { label: 网站英文简介, name: descriptionEn, widget: text }
+          - { label: 分享预览图, name: heroImage, widget: image, required: false }
+          - label: 开场页面
+            name: opening
+            widget: object
+            collapsed: false
+            fields:
+              - { label: 开场大字, name: title, widget: string }
+              - { label: 上方小字, name: kicker, widget: string }
+              - { label: 下方英文, name: caption, widget: string }
+              - { label: 右下角坐标, name: coordinate, widget: string, required: false }
+          - label: 首页介绍
+            name: homeIntro
+            widget: object
+            fields:
+              - { label: 中文, name: zh, widget: text }
+              - { label: 英文, name: en, widget: text }
+          - label: 首页座右铭
+            name: motto
+            widget: object
+            fields:
+              - { label: 中文, name: zh, widget: string }
+              - { label: 英文, name: en, widget: string }
+          - label: 生活手账页面
+            name: lifePage
+            widget: object
+            collapsed: false
+            fields:
+              - label: 页面标题
+                name: title
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 页面介绍
+                name: intro
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: text }
+                  - { label: 英文, name: en, widget: text }
+              - label: 最近文章区域标题
+                name: highlightTitle
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 生活手账侧栏文案
+                name: sidebar
+                widget: object
+                hint: 这段文字只显示在生活手账，不再与“关于我”的一句话介绍共用。
+                fields:
+                  - { label: 中文, name: zh, widget: text }
+                  - { label: 英文, name: en, widget: text }
+          - label: 关于我
+            name: author
+            widget: object
+            collapsed: false
+            fields:
+              - { label: 显示名称, name: displayName, widget: string }
+              - { label: 网名 / ID, name: handle, widget: string, required: false }
+              - { label: 头像, name: avatar, widget: image }
+              - label: 一句话介绍
+                name: intro
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: text }
+                  - { label: 英文, name: en, widget: text }
+              - label: “关于”栏目标题
+                name: sectionTitles
+                widget: object
+                collapsed: false
+                hint: 可修改“研究兴趣”等四个大类的中英文标题。
+                fields:
+                  - label: 研究兴趣栏目
+                    name: research
+                    widget: object
+                    fields:
+                      - { label: 中文标题, name: zh, widget: string }
+                      - { label: 英文标题, name: en, widget: string }
+                  - label: 阅读 / 运动 / 爱好栏目
+                    name: hobbies
+                    widget: object
+                    fields:
+                      - { label: 中文标题, name: zh, widget: string }
+                      - { label: 英文标题, name: en, widget: string }
+                  - label: 当前在做什么栏目
+                    name: current
+                    widget: object
+                    fields:
+                      - { label: 中文标题, name: zh, widget: string }
+                      - { label: 英文标题, name: en, widget: string }
+                  - label: 联系入口栏目
+                    name: contact
+                    widget: object
+                    fields:
+                      - { label: 中文标题, name: zh, widget: string }
+                      - { label: 英文标题, name: en, widget: string }
+              - label: 研究兴趣
+                name: research
+                widget: list
+                collapsed: true
+                summary: "{{fields.zh}}"
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 阅读 / 运动 / 爱好
+                name: hobbies
+                widget: list
+                collapsed: true
+                summary: "{{fields.zh}}"
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 当前在做什么
+                name: current
+                widget: list
+                collapsed: true
+                summary: "{{fields.zh}}"
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 联系方式
+                name: contact
+                widget: list
+                collapsed: true
+                summary: "{{fields.label}} · {{fields.display}}"
+                fields:
+                  - { label: 类型, name: label, widget: string, hint: 例如 GitHub、Email、Bilibili。 }
+                  - { label: 链接, name: value, widget: string, hint: 邮箱请填写 mailto:你的邮箱。 }
+                  - { label: 显示文字, name: display, widget: string }
+          - label: 音乐播放器歌单
+            name: playlist
+            widget: list
+            collapsed: true
+            summary: "{{fields.title}} · {{fields.artist}}"
+            fields:
+              - { label: 歌曲名, name: title, widget: string }
+              - { label: 歌手 / 来源, name: artist, widget: string }
+              - label: 音乐文件
+                name: src
+                widget: file
+                media_folder: /public/audio
+                public_folder: /audio
+                allow_multiple: false
+                choose_url: false

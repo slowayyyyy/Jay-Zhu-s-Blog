@@ -1,0 +1,172 @@
+---
+import PageViewCounter from '../../components/PageViewCounter.astro';
+import PostCard from '../../components/PostCard.astro';
+import TableOfContents from '../../components/TableOfContents.astro';
+import { renderPostMarkdown } from '../../lib/markdown';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import {
+	estimateReadingMinutes,
+	formatDate,
+	getAllPosts,
+	getPostSlug,
+	getSectionInfo,
+	getTagLabel,
+	getTagMap,
+} from '../../lib/content';
+
+export async function getStaticPaths() {
+	const posts = await getAllPosts();
+	return posts.map((post) => ({
+		params: { slug: getPostSlug(post) },
+		props: { post },
+	}));
+}
+
+const { post } = Astro.props;
+const renderedPost = await renderPostMarkdown(post.body ?? '', post.data);
+const articleHtml = renderedPost.code;
+const headings = renderedPost.metadata.headings;
+const slug = getPostSlug(post);
+const relatedPosts = (await getAllPosts())
+	.filter(
+		(item) =>
+			item.id !== post.id &&
+			item.data.tags.some((tag) => post.data.tags.includes(tag)),
+	)
+	.slice(0, 3);
+const section = getSectionInfo(post.data.section);
+const readingMinutes = estimateReadingMinutes(post);
+const tagMap = await getTagMap();
+---
+
+<SiteLayout pathname={`/posts/${slug}/`} title={`${post.data.title} | Jay Zhu's Blog`} description={post.data.description}>
+	<section class="container article-shell">
+		<div class="article-head glass-card">
+			<a class="section-chip article-section" href={`/search/?section=${post.data.section}`} style={`--chip-accent:${section.accent};`}>
+				<span class="chip-dot" />
+				<span data-copy={`section.${post.data.section}`}>{section.zh}</span>
+			</a>
+			<h1>{post.data.title}</h1>
+			<p>{post.data.description}</p>
+			<div class="article-meta">
+				<div>
+					<span data-copy="article.published" />
+					<strong>{formatDate(post.data.publishDate)}</strong>
+				</div>
+				{
+					post.data.updatedDate && (
+						<div>
+							<span data-copy="article.updated" />
+							<strong>{formatDate(post.data.updatedDate)}</strong>
+						</div>
+					)
+				}
+				<div>
+					<span>Reading</span>
+					<strong>{readingMinutes} min</strong>
+				</div>
+				<PageViewCounter pageId={`/posts/${slug}/`} />
+			</div>
+			<div class="article-tags">
+				{post.data.tags.map((tag) => <a class="tag-chip" href={`/search/?tag=${encodeURIComponent(tag)}`}>#{getTagLabel(tag, tagMap)}</a>)}
+			</div>
+		</div>
+
+		<div class="article-layout">
+			<article class="article-body prose glass-card" set:html={articleHtml} />
+			<div class="article-aside">
+				<TableOfContents headings={headings} />
+			</div>
+		</div>
+
+		{
+			relatedPosts.length > 0 && (
+				<section class="related-posts">
+					<div class="eyebrow" data-copy="article.related" />
+					<div class="related-grid">
+						{relatedPosts.map((related) => <PostCard post={related} />)}
+					</div>
+				</section>
+			)
+		}
+	</section>
+</SiteLayout>
+
+<style>
+	.article-shell {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.article-head {
+		padding: 1.65rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.article-head h1 {
+		margin: 1rem 0 0.85rem;
+		font-family: var(--font-serif);
+		font-size: clamp(2.5rem, 5vw, 4.7rem);
+		line-height: 0.98;
+		letter-spacing: -0.05em;
+	}
+
+	.article-head p {
+		max-width: 48rem;
+		margin: 0;
+		color: var(--text-soft);
+		font-size: 1.08rem;
+	}
+
+	.article-meta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem 1.4rem;
+		margin-top: 1.3rem;
+		color: var(--text-soft);
+	}
+
+	.article-meta div {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.55rem;
+	}
+
+	.article-meta strong {
+		color: var(--text);
+	}
+
+	.article-tags {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.6rem;
+		margin-top: 1.2rem;
+	}
+
+	.article-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.7fr);
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.article-body {
+		padding: clamp(1.2rem, 3vw, 2rem);
+		border-radius: var(--radius-xl);
+	}
+
+	.related-posts {
+		margin-top: 2rem;
+	}
+
+	.related-grid {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	@media (max-width: 1080px) {
+		.article-layout {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,94 @@
+---
+import type { PostEntry } from '../lib/content';
+import { getSectionSummary, getTagSummary, getYearSummary } from '../lib/content';
+
+interface Props {
+	posts: PostEntry[];
+}
+
+const { posts } = Astro.props;
+const sections = getSectionSummary(posts);
+const tags = (await getTagSummary(posts)).slice(0, 10);
+const years = getYearSummary(posts);
+---
+
+<aside class="taxonomy-panel">
+	<section class="taxonomy-card glass-card">
+		<h3 data-copy="common.sections" />
+		<div class="taxonomy-links">
+			{
+				sections.map((section) => (
+					<a href={`/search/?section=${section.section}`}>
+						<span data-copy={`section.${section.section}`}>{section.zh}</span>
+						<strong>{section.count}</strong>
+					</a>
+				))
+			}
+		</div>
+	</section>
+	<section class="taxonomy-card glass-card">
+		<h3 data-copy="common.tags" />
+		<div class="tag-list">
+			{
+				tags.map(({ tag, label, count }) => (
+					<a class="tag-chip" href={`/search/?tag=${encodeURIComponent(tag)}`}>
+						#{label} <span>{count}</span>
+					</a>
+				))
+			}
+		</div>
+	</section>
+	<section class="taxonomy-card glass-card">
+		<h3 data-copy="common.archive" />
+		<div class="taxonomy-links">
+			{
+				years.map(({ year, count }) => (
+					<a href={`/archive/${year}/`}>
+						<span>{year}</span>
+						<strong>{count}</strong>
+					</a>
+				))
+			}
+		</div>
+	</section>
+</aside>
+
+<style>
+	.taxonomy-panel {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.taxonomy-card {
+		padding: 1.2rem 1.2rem 1.25rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.taxonomy-card h3 {
+		margin: 0 0 1rem;
+		font-family: var(--font-serif);
+		font-size: 1.2rem;
+	}
+
+	.taxonomy-links {
+		display: grid;
+		gap: 0.65rem;
+	}
+
+	.taxonomy-links a {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.72rem 0.9rem;
+		border-radius: var(--radius-md);
+		background: rgba(255, 255, 255, 0.06);
+		border: 1px solid var(--line);
+	}
+
+	.tag-list {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.55rem;
+	}
+</style>

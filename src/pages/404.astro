@@ -1,0 +1,25 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+---
+
+<SiteLayout pathname="/404" title="404 | Jay Zhu's Blog" description="页面不存在。">
+	<section class="container missing-page">
+		<div class="glass-card missing-card">
+			<div class="eyebrow">404</div>
+			<h1 class="section-title">页面走散了</h1>
+			<p class="muted">可能链接失效了，或者这篇文章还没有被写出来。</p>
+			<a class="button-primary" href="/" data-copy="article.back" />
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.missing-page {
+		padding: 7rem 0 5rem;
+	}
+
+	.missing-card {
+		padding: 2rem;
+		border-radius: var(--radius-xl);
+	}
+</style>

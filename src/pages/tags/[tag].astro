@@ -1,0 +1,44 @@
+---
+import PostCard from '../../components/PostCard.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getAllPosts, getTagLabel, getTagMap } from '../../lib/content';
+
+export async function getStaticPaths() {
+	const posts = await getAllPosts();
+	const tags = [...new Set(posts.flatMap((post) => post.data.tags))];
+	return tags.map((tag) => ({
+		params: { tag },
+		props: {
+			tag,
+			posts: posts.filter((post) => post.data.tags.includes(tag)),
+		},
+	}));
+}
+
+const { tag, posts } = Astro.props;
+const tagMap = await getTagMap();
+const tagLabel = getTagLabel(tag, tagMap);
+---
+
+<SiteLayout pathname={`/tags/${tag}/`} title={`${tagLabel} | 标签归档`} description={`查看与 ${tagLabel} 相关的全部文章。`}>
+	<section class="container archive-page">
+		<div class="eyebrow">Tag</div>
+		<h1 class="section-title">#{tagLabel}</h1>
+		<p class="muted">共 {posts.length} 篇相关文章。</p>
+		<div class="archive-list">
+			{posts.map((post) => <PostCard post={post} />)}
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.archive-page {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.archive-list {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1.3rem;
+	}
+</style>

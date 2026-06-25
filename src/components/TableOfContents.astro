@@ -1,0 +1,69 @@
+---
+interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: Heading[];
+}
+
+const { headings } = Astro.props;
+const filtered = headings.filter((heading) => heading.depth >= 2 && heading.depth <= 3);
+---
+
+{
+	filtered.length > 0 && (
+		<aside class="toc glass-card">
+			<h2 data-copy="article.toc" />
+			<nav aria-label="Table of contents">
+				<ul>
+					{filtered.map((heading) => (
+						<li class:list={[heading.depth === 3 ? 'nested' : '']}>
+							<a href={`#${heading.slug}`}>{heading.text}</a>
+						</li>
+					))}
+				</ul>
+			</nav>
+		</aside>
+	)
+}
+
+<style>
+	.toc {
+		position: sticky;
+		top: 6.6rem;
+		padding: 1.2rem 1.25rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.toc h2 {
+		margin: 0 0 0.9rem;
+		font-family: var(--font-serif);
+		font-size: 1.12rem;
+	}
+
+	.toc ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.66rem;
+	}
+
+	.toc li.nested {
+		padding-left: 0.9rem;
+		color: var(--text-soft);
+	}
+
+	.toc a:hover {
+		color: var(--accent);
+	}
+
+	@media (max-width: 1080px) {
+		.toc {
+			position: static;
+		}
+	}
+</style>

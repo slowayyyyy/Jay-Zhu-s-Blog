@@ -1,0 +1,185 @@
+---
+import { ClientRouter } from 'astro:transitions';
+import Footer from '../components/Footer.astro';
+import Header from '../components/Header.astro';
+import MusicPlayer from '../components/MusicPlayer.astro';
+import { siteConfig, translations } from '../data/site';
+import '../styles/global.css';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: string;
+	pathname?: string;
+	showOpening?: boolean;
+}
+
+const {
+	title = siteConfig.name,
+	description = siteConfig.description,
+	image = siteConfig.heroImage,
+	pathname = '/',
+	showOpening = false,
+} = Astro.props;
+
+const canonical = new URL(pathname, siteConfig.siteUrl).toString();
+const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
+---
+
+<!doctype html>
+<html lang="zh-CN" data-theme="light" data-language="zh">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="generator" content={Astro.generator} />
+		<meta name="description" content={description} />
+		<link rel="canonical" href={canonical} />
+		<link rel="alternate" type="application/rss+xml" title={`${siteConfig.name} RSS`} href="/rss.xml" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<meta property="og:type" content="website" />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:url" content={canonical} />
+		<meta property="og:image" content={new URL(image, siteConfig.siteUrl).toString()} />
+		<meta name="twitter:card" content="summary_large_image" />
+		<meta name="twitter:title" content={title} />
+		<meta name="twitter:description" content={description} />
+		<meta name="twitter:image" content={new URL(image, siteConfig.siteUrl).toString()} />
+		<title>{title}</title>
+		<ClientRouter />
+		<script is:inline>
+			(() => {
+				const theme = localStorage.getItem('jay-theme-v2') ?? 'light';
+				const language = localStorage.getItem('jay-language') ?? 'zh';
+				const introState = sessionStorage.getItem('jay-intro-seen-lantern') ? 'seen' : 'fresh';
+				document.documentElement.dataset.theme = theme;
+				document.documentElement.dataset.language = language;
+				document.documentElement.dataset.introSeen = introState;
+				document.documentElement.dataset.introLoad = introState;
+			})();
+		</script>
+		{
+			analyticsToken && (
+				<script
+					is:inline
+					defer
+					src="https://static.cloudflareinsights.com/beacon.min.js"
+					data-cf-beacon={`{"token":"${analyticsToken}"}`}
+				/>
+			)
+		}
+	</head>
+	<body class:list={{ 'intro-active': showOpening }}>
+		<Header pathname={pathname} />
+		<main>
+			<slot />
+		</main>
+		<Footer />
+		<MusicPlayer playlist={siteConfig.playlist} />
+		<script
+			is:inline
+			define:vars={{
+				translations,
+			}}
+		>
+			(() => {
+				if (window.__jayBlogSetup) return;
+				window.__jayBlogSetup = true;
+
+				const getNestedValue = (source, path) =>
+					path.split('.').reduce((current, part) => current?.[part], source);
+
+				const formatString = (template, vars = {}) =>
+					String(template).replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? '');
+
+				const applyTheme = (theme) => {
+					document.documentElement.dataset.theme = theme;
+					localStorage.setItem('jay-theme-v2', theme);
+					document.dispatchEvent(new CustomEvent('jay:theme-change', { detail: { theme } }));
+				};
+
+				const applyLanguage = (language) => {
+					document.documentElement.dataset.language = language;
+					localStorage.setItem('jay-language', language);
+
+					document.querySelectorAll('[data-copy]').forEach((element) => {
+						const key = element.dataset.copy;
+						const attr = element.dataset.copyAttr;
+						const value = getNestedValue(translations[language], key);
+						if (typeof value !== 'string') return;
+						if (attr) {
+							element.setAttribute(attr, value);
+						} else {
+							element.textContent = value;
+						}
+					});
+
+					document.querySelectorAll('[data-bilingual]').forEach((element) => {
+						const content = language === 'en' ? element.dataset.en : element.dataset.zh;
+						if (!content) return;
+						if (element.dataset.bilingual === 'html') {
+							element.innerHTML = content;
+						} else {
+							element.textContent = content;
+						}
+					});
+
+					document.dispatchEvent(
+						new CustomEvent('jay:language-change', { detail: { language } }),
+					);
+				};
+
+				window.JayBlog = {
+					applyTheme,
+					applyLanguage,
+					getTheme: () => document.documentElement.dataset.theme || 'dark',
+					getLanguage: () => document.documentElement.dataset.language || 'zh',
+					getText: (key, vars = {}) => {
+						const language = document.documentElement.dataset.language || 'zh';
+						return formatString(getNestedValue(translations[language], key) ?? key, vars);
+					},
+				};
+
+				let contentReloadTimer;
+				const scheduleContentReload = () => {
+					window.clearTimeout(contentReloadTimer);
+					contentReloadTimer = window.setTimeout(() => window.location.reload(), 520);
+				};
+
+				window.addEventListener('storage', (event) => {
+					if (event.key !== 'jay-content-updated' || !event.newValue) return;
+					scheduleContentReload();
+				});
+
+				if ('BroadcastChannel' in window) {
+					const syncChannel = new BroadcastChannel('jay-content-sync');
+					syncChannel.addEventListener('message', scheduleContentReload);
+				}
+
+				const initializePage = () => {
+					applyLanguage(document.documentElement.dataset.language || 'zh');
+					applyTheme(document.documentElement.dataset.theme || 'light');
+
+					document.querySelectorAll('[data-theme-toggle]:not([data-control-ready])').forEach((button) => {
+						button.dataset.controlReady = 'true';
+						button.addEventListener('click', () => {
+							const nextTheme = window.JayBlog.getTheme() === 'dark' ? 'light' : 'dark';
+							applyTheme(nextTheme);
+						});
+					});
+
+					document.querySelectorAll('[data-language-toggle]:not([data-control-ready])').forEach((button) => {
+						button.dataset.controlReady = 'true';
+						button.addEventListener('click', () => {
+							const nextLanguage = window.JayBlog.getLanguage() === 'zh' ? 'en' : 'zh';
+							applyLanguage(nextLanguage);
+						});
+					});
+				};
+
+				initializePage();
+				document.addEventListener('astro:page-load', initializePage);
+			})();
+		</script>
+	</body>
+</html>

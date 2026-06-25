@@ -1,0 +1,495 @@
+---
+interface Track {
+	title: string;
+	artist: string;
+	src: string;
+}
+
+interface Props {
+	playlist: Track[];
+}
+
+const { playlist } = Astro.props;
+---
+
+<aside
+	class="music-player glass-card"
+	data-music-player
+	data-playlist={JSON.stringify(playlist)}
+	transition:persist="jay-music-player"
+>
+	<button type="button" class="player-collapse" data-player-collapse aria-label="折叠音乐播放器">
+		<span aria-hidden="true">›</span>
+	</button>
+	<div class="player-main">
+		<button type="button" class="disc-wrap" data-player-disc aria-label="展开音乐播放器">
+			<div class="player-disc">
+				<div class="disc-label">J</div>
+			</div>
+		</button>
+		<div class="track-copy">
+			<div class="player-label" data-copy="controls.player">音乐播放器</div>
+			<div class="track-title" data-player-title>{playlist[0]?.title ?? 'No Track'}</div>
+			<div class="track-artist" data-player-artist>{playlist[0]?.artist ?? ''}</div>
+		</div>
+	</div>
+
+	<div class="progress-wrap">
+		<input
+			type="range"
+			class="player-progress"
+			min="0"
+			max="100"
+			step="0.1"
+			value="0"
+			aria-label="调整音乐播放进度"
+			data-player-progress
+		/>
+	</div>
+
+	<div class="player-bottom">
+		<span class="player-time" data-player-current>0:00</span>
+		<div class="player-controls">
+			<button type="button" data-player-prev aria-label="上一首">‹</button>
+			<button type="button" class="player-play" data-player-toggle aria-label="播放或暂停">
+				<span data-player-state>▶</span>
+			</button>
+			<button type="button" data-player-next aria-label="下一首">›</button>
+		</div>
+		<span class="player-time player-duration" data-player-duration>0:00</span>
+	</div>
+	<audio preload="metadata" data-player-audio />
+</aside>
+
+<script is:inline>
+	const player = document.querySelector('[data-music-player]');
+
+	if (player && player.dataset.playerInitialized !== 'true') {
+		player.dataset.playerInitialized = 'true';
+		const playlist = JSON.parse(player.dataset.playlist || '[]');
+		const audio = player.querySelector('[data-player-audio]');
+		const title = player.querySelector('[data-player-title]');
+		const artist = player.querySelector('[data-player-artist]');
+		const state = player.querySelector('[data-player-state]');
+		const progress = player.querySelector('[data-player-progress]');
+		const currentTime = player.querySelector('[data-player-current]');
+		const durationTime = player.querySelector('[data-player-duration]');
+		const collapseButton = player.querySelector('[data-player-collapse]');
+		const discButton = player.querySelector('[data-player-disc]');
+		const storageKey = 'jay-player-state';
+		const collapseStorageKey = 'jay-player-collapsed';
+		let currentIndex = 0;
+		let pendingRestoreTime = 0;
+
+		const savedState = (() => {
+			try {
+				return JSON.parse(sessionStorage.getItem(storageKey) || '{}');
+			} catch {
+				return {};
+			}
+		})();
+
+		const formatTime = (seconds) => {
+			if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+			const minutes = Math.floor(seconds / 60);
+			return `${minutes}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
+		};
+
+		const updateProgress = () => {
+			const duration = audio.duration;
+			const position = Number.isFinite(duration) && duration > 0
+				? (audio.currentTime / duration) * 100
+				: 0;
+			progress.value = String(position);
+			progress.style.setProperty('--position', `${position}%`);
+			currentTime.textContent = formatTime(audio.currentTime);
+			durationTime.textContent = formatTime(duration);
+		};
+
+		const setPlayingState = (isPlaying) => {
+			player.classList.toggle('is-playing', isPlaying);
+			state.textContent = isPlaying ? '❚❚' : '▶';
+		};
+
+		const setCollapsed = (collapsed) => {
+			player.classList.toggle('is-collapsed', collapsed);
+			player.dataset.collapsed = String(collapsed);
+			discButton.setAttribute('aria-label', collapsed ? '展开音乐播放器' : '唱片封面');
+			localStorage.setItem(collapseStorageKey, collapsed ? '1' : '0');
+		};
+
+		const persist = (shouldPlay = false) => {
+			sessionStorage.setItem(
+				storageKey,
+				JSON.stringify({
+					index: currentIndex,
+					time: audio.currentTime,
+					shouldPlay,
+				}),
+			);
+		};
+
+		const updateTrack = (index, restoreTime = false) => {
+			if (!playlist.length) {
+				player.hidden = true;
+				return;
+			}
+
+			currentIndex = (index + playlist.length) % playlist.length;
+			const track = playlist[currentIndex];
+			pendingRestoreTime = restoreTime && typeof savedState.time === 'number' ? savedState.time : 0;
+			audio.src = track.src;
+			title.textContent = track.title;
+			artist.textContent = track.artist;
+			setPlayingState(false);
+			updateProgress();
+		};
+
+		const playCurrent = async () => {
+			try {
+				await audio.play();
+				setPlayingState(true);
+				persist(true);
+			} catch {
+				setPlayingState(false);
+				persist(false);
+			}
+		};
+
+		const pauseCurrent = () => {
+			audio.pause();
+			setPlayingState(false);
+			persist(false);
+		};
+
+		updateTrack(savedState.index ?? 0, true);
+		setCollapsed(localStorage.getItem(collapseStorageKey) !== '0');
+
+		if (savedState.shouldPlay && !document.body.classList.contains('intro-active')) {
+			playCurrent();
+		}
+
+		player.querySelector('[data-player-toggle]')?.addEventListener('click', () => {
+			if (audio.paused) {
+				playCurrent();
+			} else {
+				pauseCurrent();
+			}
+		});
+
+		player.querySelector('[data-player-next]')?.addEventListener('click', () => {
+			updateTrack(currentIndex + 1);
+			playCurrent();
+		});
+
+		player.querySelector('[data-player-prev]')?.addEventListener('click', () => {
+			updateTrack(currentIndex - 1);
+			playCurrent();
+		});
+
+		collapseButton?.addEventListener('click', () => setCollapsed(true));
+		discButton?.addEventListener('click', () => {
+			if (player.classList.contains('is-collapsed')) setCollapsed(false);
+		});
+
+		progress.addEventListener('input', () => {
+			if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
+			audio.currentTime = (Number(progress.value) / 100) * audio.duration;
+			updateProgress();
+		});
+
+		audio.addEventListener('loadedmetadata', () => {
+			if (pendingRestoreTime > 0 && pendingRestoreTime < audio.duration) {
+				audio.currentTime = pendingRestoreTime;
+				pendingRestoreTime = 0;
+			}
+			updateProgress();
+		});
+
+		audio.addEventListener('timeupdate', () => {
+			updateProgress();
+			persist(!audio.paused);
+		});
+
+		audio.addEventListener('play', () => setPlayingState(true));
+		audio.addEventListener('pause', () => setPlayingState(false));
+		audio.addEventListener('ended', () => {
+			updateTrack(currentIndex + 1);
+			playCurrent();
+		});
+
+		document.addEventListener('jay:intro-enter', () => {
+			if (playlist.length) playCurrent();
+		});
+	}
+</script>
+
+<style>
+	.music-player {
+		position: fixed;
+		right: 1.15rem;
+		bottom: 1.2rem;
+		z-index: 45;
+		width: min(22rem, calc(100vw - 1.3rem));
+		box-sizing: border-box;
+		padding: 1rem 1.1rem 0.9rem;
+		border-radius: 1.5rem;
+		transition:
+			width 300ms cubic-bezier(0.2, 0.75, 0.25, 1),
+			padding 300ms ease,
+			border-radius 300ms ease,
+			right 300ms ease;
+	}
+
+	.player-collapse {
+		position: absolute;
+		top: 0.65rem;
+		right: 0.7rem;
+		display: grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--bg-panel) 85%, transparent);
+		color: var(--text-soft);
+		font-size: 1.2rem;
+		line-height: 1;
+		transition: transform 180ms ease, background 180ms ease;
+	}
+
+	.player-collapse:hover {
+		transform: translateX(2px);
+		background: color-mix(in srgb, var(--accent) 10%, var(--bg-panel));
+	}
+
+	.player-main {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr);
+		align-items: center;
+		gap: 0.9rem;
+	}
+
+	.disc-wrap {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 4.3rem;
+		height: 4.3rem;
+		padding: 0;
+		border: 0;
+		border-radius: 50%;
+		background: rgba(24, 33, 43, 0.05);
+		color: inherit;
+		box-shadow: inset 0 0 0 1px var(--line);
+		cursor: default;
+		transition: width 300ms ease, height 300ms ease, transform 180ms ease;
+	}
+
+	.player-disc {
+		position: relative;
+		display: grid;
+		place-items: center;
+		width: 3.75rem;
+		height: 3.75rem;
+		border-radius: 50%;
+		background:
+			repeating-radial-gradient(circle, transparent 0 3px, rgba(255, 255, 255, 0.08) 3.5px 4px),
+			conic-gradient(from 35deg, #11151a, #44505a, #0b0d10, #2a333b, #11151a);
+		box-shadow: 0 8px 20px rgba(15, 27, 38, 0.2);
+		animation: disc-spin 7s linear infinite;
+		animation-play-state: paused;
+	}
+
+	.music-player.is-playing .player-disc {
+		animation-play-state: running;
+	}
+
+	.disc-label {
+		display: grid;
+		place-items: center;
+		width: 1.45rem;
+		height: 1.45rem;
+		border: 2px solid rgba(255, 255, 255, 0.72);
+		border-radius: 50%;
+		background: linear-gradient(135deg, #d79a68, #527f88);
+		color: white;
+		font-family: var(--font-serif);
+		font-size: 0.75rem;
+		box-shadow: 0 0 0 3px rgba(0, 0, 0, 0.16);
+	}
+
+	.player-label {
+		font-size: 0.68rem;
+		letter-spacing: 0.16em;
+		text-transform: uppercase;
+		color: var(--text-soft);
+	}
+
+	.track-copy {
+		min-width: 0;
+		padding-right: 1.7rem;
+	}
+
+	.track-title {
+		overflow: hidden;
+		margin-top: 0.25rem;
+		font-family: var(--font-serif);
+		font-size: 1rem;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.track-artist {
+		overflow: hidden;
+		font-size: 0.78rem;
+		color: var(--text-soft);
+		white-space: nowrap;
+		text-overflow: ellipsis;
+	}
+
+	.progress-wrap {
+		display: flex;
+		margin-top: 0.85rem;
+	}
+
+	.player-progress {
+		--position: 0%;
+		width: 100%;
+		height: 4px;
+		margin: 0;
+		border: 0;
+		border-radius: 999px;
+		appearance: none;
+		background: linear-gradient(
+			to right,
+			var(--accent) 0 var(--position),
+			color-mix(in srgb, var(--text) 12%, transparent) var(--position) 100%
+		);
+		cursor: pointer;
+	}
+
+	.player-progress::-webkit-slider-thumb {
+		width: 0.82rem;
+		height: 0.82rem;
+		border: 2px solid white;
+		border-radius: 50%;
+		appearance: none;
+		background: var(--accent);
+		box-shadow: 0 2px 8px rgba(27, 48, 61, 0.22);
+	}
+
+	.player-progress::-moz-range-thumb {
+		width: 0.66rem;
+		height: 0.66rem;
+		border: 2px solid white;
+		border-radius: 50%;
+		background: var(--accent);
+	}
+
+	.player-bottom {
+		display: grid;
+		grid-template-columns: 3.2rem 1fr 3.2rem;
+		align-items: center;
+		margin-top: 0.5rem;
+	}
+
+	.player-time {
+		font-size: 0.68rem;
+		font-variant-numeric: tabular-nums;
+		color: var(--text-soft);
+	}
+
+	.player-duration {
+		text-align: right;
+	}
+
+	.player-controls {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.55rem;
+	}
+
+	.player-controls button {
+		display: grid;
+		place-items: center;
+		width: 2rem;
+		height: 2rem;
+		padding: 0;
+		border: 1px solid transparent;
+		border-radius: 50%;
+		background: transparent;
+		color: inherit;
+		transition: transform 180ms ease, background 180ms ease;
+	}
+
+	.player-controls button:hover {
+		transform: scale(1.08);
+		background: color-mix(in srgb, var(--accent) 9%, transparent);
+	}
+
+	.player-controls .player-play {
+		width: 2.45rem;
+		height: 2.45rem;
+		background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 68%, white));
+		color: white;
+		box-shadow: 0 8px 20px color-mix(in srgb, var(--accent) 25%, transparent);
+	}
+
+	.player-play span {
+		font-size: 0.72rem;
+		line-height: 1;
+	}
+
+	@keyframes disc-spin {
+		to { transform: rotate(360deg); }
+	}
+
+	.music-player.is-collapsed {
+		right: 0.35rem;
+		width: 3.55rem;
+		padding: 0.35rem;
+		border-radius: 50%;
+		box-shadow: 0 12px 30px rgba(45, 67, 87, 0.14);
+	}
+
+	.music-player.is-collapsed .player-main {
+		display: block;
+	}
+
+	.music-player.is-collapsed .disc-wrap {
+		width: 2.85rem;
+		height: 2.85rem;
+		cursor: pointer;
+	}
+
+	.music-player.is-collapsed .disc-wrap:hover {
+		transform: scale(1.05);
+	}
+
+	.music-player.is-collapsed .player-disc {
+		width: 2.55rem;
+		height: 2.55rem;
+	}
+
+	.music-player.is-collapsed .disc-label {
+		width: 1rem;
+		height: 1rem;
+		font-size: 0.58rem;
+		border-width: 1px;
+	}
+
+	.music-player.is-collapsed :is(.track-copy, .progress-wrap, .player-bottom, .player-collapse) {
+		display: none;
+	}
+
+	@media (max-width: 640px) {
+		.music-player {
+			bottom: 0.7rem;
+			right: 0.55rem;
+			width: calc(100vw - 1.1rem);
+		}
+	}
+</style>

@@ -1,0 +1,356 @@
+---
+import OpeningOverlay from '../components/OpeningOverlay.astro';
+import PostCard from '../components/PostCard.astro';
+import TaxonomyPanel from '../components/TaxonomyPanel.astro';
+import { siteConfig } from '../data/site';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getAllPosts, getFeaturedPosts, getSectionSummary } from '../lib/content';
+
+const posts = await getAllPosts();
+const featuredPosts = await getFeaturedPosts();
+const sectionSummary = getSectionSummary(posts);
+---
+
+<SiteLayout pathname="/" showOpening>
+	<OpeningOverlay />
+	<section class="home-hero container">
+		<div class="hero-grid">
+			<div class="hero-copy">
+				<div class="hero-edition"><span>FIELD NOTES</span><span>VOL. 01</span></div>
+				<div class="eyebrow" data-copy="home.kicker" />
+				<h1 class="section-title">{siteConfig.name}</h1>
+				<p
+					class="hero-text"
+					data-bilingual="text"
+					data-zh={siteConfig.homeIntro.zh}
+					data-en={siteConfig.homeIntro.en}
+				/>
+				<div class="hero-actions">
+					<a class="button-primary hero-action" href="/search/" data-copy="nav.search" />
+					<a class="button-secondary hero-action" href="/about/" data-copy="nav.about" />
+				</div>
+				<div class="hero-note">
+					<p
+						data-bilingual="text"
+						data-zh={`“${siteConfig.motto.zh}”`}
+						data-en={`“${siteConfig.motto.en}”`}
+					/>
+				</div>
+			</div>
+			<div class="hero-stats glass-card">
+				<div class="stats-heading">
+					<span>INDEX · 2026</span>
+					<span class="live-mark"><i /><span data-copy="home.updating">持续更新</span></span>
+				</div>
+				<div class="stats-row">
+					<span data-copy="home.statsPosts" />
+					<strong>{posts.length}</strong>
+				</div>
+				{
+					sectionSummary.map((entry) => (
+						<div class="stats-row">
+							<span data-copy={`section.${entry.section}`}>{entry.zh}</span>
+							<strong>{entry.count}</strong>
+						</div>
+					))
+				}
+				<a class="stats-link" href="/checkins/">
+					<span data-copy="nav.checkins">每日打卡</span>
+					<span><span data-copy="home.viewCheckins">查看记录</span> →</span>
+				</a>
+			</div>
+		</div>
+	</section>
+	{
+		featuredPosts.length > 0 && (
+			<section class="container featured-section">
+				<div class="eyebrow" data-copy="home.featured" />
+				<div class="featured-grid">
+					{featuredPosts.map((post) => <PostCard post={post} />)}
+				</div>
+			</section>
+		)
+	}
+	<section class="container home-stream">
+		<div class="stream-copy">
+			<div class="eyebrow" data-copy="home.latestTitle" />
+			<h2 class="section-title" data-copy="home.latestTitle" />
+			<p class="muted" data-copy="home.latestIntro" />
+		</div>
+		<div class="stream-layout">
+			<div class="post-stream">
+				{posts.map((post) => <PostCard post={post} />)}
+			</div>
+			<div class="stream-sidebar">
+				<div class="intro-card glass-card">
+					<h3 data-copy="home.sidebarTitle" />
+					<p data-copy="home.sidebarBody" />
+				</div>
+				<TaxonomyPanel posts={posts} />
+			</div>
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.home-hero {
+		padding: 4.2rem 0 1.5rem;
+	}
+
+	.hero-grid {
+		position: relative;
+		display: grid;
+		grid-template-columns: 1.4fr 0.9fr;
+		gap: 2rem;
+		align-items: stretch;
+		overflow: hidden;
+		padding: 2rem;
+		border: 1px solid var(--line);
+		border-radius: 2.25rem;
+		background:
+			linear-gradient(125deg, rgba(255, 255, 255, 0.84), rgba(255, 255, 255, 0.44)),
+			radial-gradient(circle at 82% 12%, rgba(87, 127, 136, 0.14), transparent 35%);
+		box-shadow: 0 22px 65px rgba(45, 67, 87, 0.07);
+	}
+
+	.hero-grid::after {
+		content: '';
+		position: absolute;
+		right: -6rem;
+		bottom: -8rem;
+		width: 18rem;
+		height: 18rem;
+		border: 1px solid rgba(55, 109, 123, 0.1);
+		border-radius: 50%;
+		box-shadow: 0 0 0 3rem rgba(55, 109, 123, 0.025);
+	}
+
+	:root[data-theme='dark'] .hero-grid {
+		border-color: rgba(255, 243, 232, 0.08);
+		background:
+			linear-gradient(128deg, rgba(29, 31, 34, 0.94), rgba(41, 43, 46, 0.88) 54%, rgba(58, 58, 57, 0.76)),
+			radial-gradient(circle at 82% 12%, rgba(240, 167, 122, 0.09), transparent 34%);
+		box-shadow:
+			0 28px 80px rgba(0, 0, 0, 0.34),
+			inset 0 1px 0 rgba(255, 255, 255, 0.02);
+	}
+
+	:root[data-theme='dark'] .hero-grid::after {
+		border-color: rgba(240, 167, 122, 0.08);
+		box-shadow: 0 0 0 3rem rgba(240, 167, 122, 0.03);
+	}
+
+	.hero-copy {
+		position: relative;
+		z-index: 1;
+		padding: 0.25rem 0;
+	}
+
+	.hero-edition {
+		display: flex;
+		justify-content: space-between;
+		margin-bottom: 1.8rem;
+		font-size: 0.68rem;
+		letter-spacing: 0.18em;
+		color: var(--text-soft);
+	}
+
+	.hero-text {
+		max-width: 42rem;
+		margin: 1rem 0 0;
+		font-size: 1.06rem;
+		color: var(--text-soft);
+	}
+
+	.hero-actions {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 0.8rem;
+		margin-top: 1.5rem;
+	}
+
+	.hero-action {
+		min-width: 5.75rem;
+		border-color: var(--line) !important;
+		background: rgba(255, 255, 255, 0.76) !important;
+		color: var(--text) !important;
+		box-shadow: 0 10px 28px rgba(45, 67, 87, 0.08) !important;
+	}
+
+	.hero-action:hover,
+	.hero-action:focus-visible {
+		border-color: color-mix(in srgb, var(--accent) 58%, white) !important;
+		background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 72%, white)) !important;
+		color: #fff !important;
+		box-shadow: 0 16px 30px rgba(55, 109, 123, 0.18) !important;
+		transform: translateY(-2px);
+	}
+
+	:root[data-theme='dark'] .hero-action {
+		border-color: rgba(255, 243, 232, 0.1) !important;
+		background: linear-gradient(180deg, rgba(38, 40, 43, 0.94), rgba(31, 33, 36, 0.9)) !important;
+		color: rgba(245, 239, 232, 0.92) !important;
+		box-shadow:
+			0 14px 26px rgba(0, 0, 0, 0.22),
+			inset 0 1px 0 rgba(255, 255, 255, 0.02) !important;
+	}
+
+	.hero-note {
+		max-width: 34rem;
+		margin-top: 1.45rem;
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.hero-note p {
+		margin: 0;
+		color: var(--text-soft);
+		font-family: var(--font-serif);
+		font-size: 1.02rem;
+	}
+
+	.hero-stats {
+		position: relative;
+		z-index: 1;
+		padding: 1.25rem 1.45rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.stats-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-bottom: 0.75rem;
+		border-bottom: 1px solid var(--line);
+		font-size: 0.68rem;
+		letter-spacing: 0.14em;
+		color: var(--text-soft);
+	}
+
+	.live-mark {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		letter-spacing: 0;
+	}
+
+	.live-mark i {
+		width: 0.45rem;
+		height: 0.45rem;
+		border-radius: 50%;
+		background: #6f9a7b;
+		box-shadow: 0 0 0 4px rgba(111, 154, 123, 0.12);
+	}
+
+	.stats-row {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding: 0.78rem 0;
+		border-bottom: 1px solid var(--line);
+	}
+
+	.stats-link {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+		padding-top: 0.9rem;
+		color: var(--accent);
+		font-size: 0.88rem;
+	}
+
+	.stats-link span:last-child {
+		font-size: 0.76rem;
+		color: var(--text-soft);
+	}
+
+	.featured-section {
+		padding: 1rem 0 2rem;
+	}
+
+	.featured-grid,
+	.post-stream {
+		display: grid;
+		gap: 1rem;
+	}
+
+	.home-stream {
+		padding: 2rem 0 4rem;
+	}
+
+	html[data-intro-load='seen'] .home-hero {
+		animation: home-rise 720ms 180ms both;
+	}
+
+	html[data-intro-load='seen'] .featured-section {
+		animation: home-rise 720ms 280ms both;
+	}
+
+	html[data-intro-load='seen'] .home-stream {
+		animation: home-rise 720ms 380ms both;
+	}
+
+	.stream-layout {
+		display: grid;
+		grid-template-columns: minmax(0, 1.45fr) minmax(18rem, 0.8fr);
+		gap: 1.2rem;
+		margin-top: 1.2rem;
+	}
+
+	.stream-sidebar {
+		display: grid;
+		gap: 1rem;
+		align-content: start;
+	}
+
+	.intro-card {
+		padding: 1.25rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.intro-card h3 {
+		margin: 0 0 0.65rem;
+		font-family: var(--font-serif);
+		font-size: 1.22rem;
+	}
+
+	.intro-card p {
+		margin: 0;
+		color: var(--text-soft);
+	}
+
+	@media (max-width: 1040px) {
+		.hero-grid,
+		.stream-layout {
+			grid-template-columns: 1fr;
+		}
+
+		.hero-grid {
+			padding: 1.4rem;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.home-hero {
+			padding-top: 2.5rem;
+		}
+
+		.hero-edition {
+			margin-bottom: 1.35rem;
+		}
+	}
+
+	@keyframes home-rise {
+		from {
+			opacity: 0;
+			transform: translateY(22px);
+		}
+		to {
+			opacity: 1;
+			transform: translateY(0);
+		}
+	}
+</style>

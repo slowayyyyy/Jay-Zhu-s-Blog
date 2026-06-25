@@ -1,0 +1,252 @@
+---
+import PostCard from '../components/PostCard.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getAllPosts, getSectionSummary, getTagSummary, getYearSummary } from '../lib/content';
+
+const posts = await getAllPosts();
+const sections = getSectionSummary(posts);
+const tags = await getTagSummary(posts);
+const years = getYearSummary(posts);
+---
+
+<SiteLayout pathname="/search/" title={`搜索 | Jay Zhu's Blog`} description="按关键词、标签与时间快速检索博客内容。">
+	<section class="container search-page">
+		<div class="page-head">
+			<div class="eyebrow" data-copy="nav.search" />
+			<h1 class="section-title" data-copy="search.title" />
+			<p class="muted" data-copy="search.intro" />
+		</div>
+
+		<div class="search-panel glass-card">
+			<div class="filter-grid">
+				<label>
+					<span data-copy="search.keyword" />
+					<input type="search" data-filter="keyword" data-copy="search.keywordPlaceholder" data-copy-attr="placeholder" />
+				</label>
+				<label>
+					<span data-copy="search.section" />
+					<select data-filter="section">
+						<option value="" data-copy="search.all">全部</option>
+						{
+							sections.map((section) => (
+								<option value={section.section} data-copy={`section.${section.section}`}>
+									{section.zh}
+								</option>
+							))
+						}
+					</select>
+				</label>
+				<label>
+					<span data-copy="search.year" />
+					<select data-filter="year">
+						<option value="" data-copy="search.all">全部</option>
+						{years.map((year) => <option value={year.year}>{year.year}</option>)}
+					</select>
+				</label>
+				<label>
+					<span data-copy="search.tag" />
+					<select data-filter="tag">
+						<option value="" data-copy="search.all">全部</option>
+						{tags.map((tag) => <option value={tag.tag}>{tag.label}</option>)}
+					</select>
+				</label>
+			</div>
+			<div class="filter-actions">
+				<strong class="result-count" data-result-count>{posts.length} 篇结果</strong>
+				<button type="button" class="button-secondary" data-reset-filters data-copy="search.reset" />
+			</div>
+		</div>
+
+		<div class="results-grid" data-search-results>
+			{
+				posts.map((post) => (
+					<div
+						data-result
+						data-title={post.data.title.toLowerCase()}
+						data-excerpt={post.data.excerpt.toLowerCase()}
+						data-body={(post.body ?? '').toLowerCase()}
+						data-section={post.data.section}
+						data-year={String(post.data.publishDate.getFullYear())}
+						data-tags={post.data.tags.join('|').toLowerCase()}
+					>
+						<PostCard post={post} />
+					</div>
+				))
+			}
+		</div>
+
+		<p class="empty-state glass-card" data-empty-state hidden data-copy="search.empty" />
+	</section>
+</SiteLayout>
+
+<script>
+	const initializeSearch = () => {
+		const container = document.querySelector<HTMLElement>('[data-search-results]');
+		if (!container || container.dataset.searchReady === 'true') return;
+
+		const cards = [...container.querySelectorAll<HTMLElement>('[data-result]')];
+		const keyword = document.querySelector<HTMLInputElement>('[data-filter="keyword"]');
+		const section = document.querySelector<HTMLSelectElement>('[data-filter="section"]');
+		const year = document.querySelector<HTMLSelectElement>('[data-filter="year"]');
+		const tag = document.querySelector<HTMLSelectElement>('[data-filter="tag"]');
+		const count = document.querySelector<HTMLElement>('[data-result-count]');
+		const emptyState = document.querySelector<HTMLElement>('[data-empty-state]');
+		const resetButton = document.querySelector<HTMLButtonElement>('[data-reset-filters]');
+		if (!keyword || !section || !year || !tag || !count || !emptyState) return;
+
+		container.dataset.searchReady = 'true';
+
+		const normalizeText = (value = '') =>
+			value.normalize('NFKC').toLocaleLowerCase('zh-CN').replace(/\s+/g, ' ').trim();
+
+		const applyParams = () => {
+			const params = new URLSearchParams(window.location.search);
+			keyword.value = params.get('keyword') || '';
+			section.value = params.get('section') || '';
+			year.value = params.get('year') || '';
+			tag.value = params.get('tag') || '';
+		};
+
+		const updateQueryString = () => {
+			const params = new URLSearchParams();
+			if (keyword.value.trim()) params.set('keyword', keyword.value.trim());
+			if (section.value) params.set('section', section.value);
+			if (year.value) params.set('year', year.value);
+			if (tag.value) params.set('tag', tag.value);
+			const query = params.toString();
+			history.replaceState({}, '', query ? `?${query}` : window.location.pathname);
+		};
+
+		const renderCount = (visible: number) => {
+			const jayBlog = (window as typeof window & {
+				JayBlog?: { getText: (key: string, vars: { count: number }) => string };
+			}).JayBlog;
+			count.textContent = jayBlog?.getText('search.resultCount', { count: visible }) ?? `找到 ${visible} 篇结果`;
+		};
+
+		const runFilters = () => {
+			const keywordValues = normalizeText(keyword.value).split(' ').filter(Boolean);
+			const sectionValue = section.value;
+			const yearValue = year.value;
+			const tagValue = normalizeText(tag.value);
+			let visible = 0;
+
+			cards.forEach((card) => {
+				const haystack = normalizeText(
+					[card.dataset.title, card.dataset.excerpt, card.dataset.body].join(' '),
+				);
+				const cardTags = normalizeText(card.dataset.tags).split('|').filter(Boolean);
+				const matchesKeyword = keywordValues.every((value) => haystack.includes(value));
+				const matchesSection = !sectionValue || card.dataset.section === sectionValue;
+				const matchesYear = !yearValue || card.dataset.year === yearValue;
+				const matchesTag = !tagValue || cardTags.includes(tagValue);
+				const isVisible = matchesKeyword && matchesSection && matchesYear && matchesTag;
+				card.hidden = !isVisible;
+				if (isVisible) visible += 1;
+			});
+
+			emptyState.hidden = visible !== 0;
+			renderCount(visible);
+			updateQueryString();
+		};
+
+		[keyword, section, year, tag].forEach((input) => {
+			input?.addEventListener('input', runFilters);
+			input?.addEventListener('change', runFilters);
+		});
+
+		resetButton?.addEventListener('click', () => {
+			keyword.value = '';
+			section.value = '';
+			year.value = '';
+			tag.value = '';
+			runFilters();
+		});
+
+		document.addEventListener('jay:language-change', () => {
+			renderCount(cards.filter((card) => !card.hidden).length);
+		});
+
+		applyParams();
+		runFilters();
+	};
+
+	initializeSearch();
+	document.addEventListener('astro:page-load', initializeSearch);
+</script>
+
+<style>
+	.search-page {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.page-head {
+		max-width: 46rem;
+	}
+
+	.search-panel {
+		margin-top: 1.5rem;
+		padding: 1.3rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.filter-grid {
+		display: grid;
+		grid-template-columns: repeat(4, minmax(0, 1fr));
+		gap: 0.9rem;
+	}
+
+	.filter-grid label {
+		display: grid;
+		gap: 0.45rem;
+	}
+
+	.filter-grid span {
+		font-size: 0.9rem;
+		color: var(--text-soft);
+	}
+
+	.filter-grid input,
+	.filter-grid select {
+		height: 3rem;
+		padding: 0 0.95rem;
+		border-radius: 0.95rem;
+		border: 1px solid var(--line);
+		background: rgba(255, 255, 255, 0.05);
+		color: inherit;
+	}
+
+	.filter-actions {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: center;
+		justify-content: space-between;
+		gap: 0.8rem;
+		margin-top: 1rem;
+	}
+
+	.results-grid {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1.4rem;
+	}
+
+	.empty-state {
+		padding: 1.2rem;
+		border-radius: var(--radius-xl);
+		margin-top: 1rem;
+		color: var(--text-soft);
+	}
+
+	@media (max-width: 920px) {
+		.filter-grid {
+			grid-template-columns: 1fr 1fr;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.filter-grid {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

@@ -1,0 +1,60 @@
+---
+import { siteConfig } from '../data/site';
+---
+
+<footer class="site-footer">
+	<div class="container footer-card glass-card">
+		<div>
+			<div class="footer-title">{siteConfig.name}</div>
+			<p class="footer-text" data-bilingual="text" data-zh={siteConfig.description} data-en={siteConfig.descriptionEn} />
+		</div>
+		<div class="footer-links">
+			<a href="/search/" data-copy="nav.search" />
+			<a href="/life/" data-copy="nav.life" />
+			<a href="/checkins/" data-copy="nav.checkins" />
+			<a href="/about/" data-copy="nav.about" />
+			<a href="/rss.xml">RSS</a>
+		</div>
+	</div>
+</footer>
+
+<style>
+	.site-footer {
+		padding: 2rem 0 4rem;
+	}
+
+	.footer-card {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
+		gap: 1.4rem;
+		padding: 1.3rem 1.6rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.footer-title {
+		font-family: var(--font-serif);
+		font-size: 1.08rem;
+		margin-bottom: 0.4rem;
+	}
+
+	.footer-text {
+		max-width: 38rem;
+		margin: 0;
+		color: var(--text-soft);
+	}
+
+	.footer-links {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 1rem;
+		color: var(--text-soft);
+	}
+
+	@media (max-width: 780px) {
+		.footer-card {
+			flex-direction: column;
+			align-items: flex-start;
+		}
+	}
+</style>

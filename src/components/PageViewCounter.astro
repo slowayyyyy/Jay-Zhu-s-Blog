@@ -1,0 +1,59 @@
+---
+interface Props {
+	pageId: string;
+}
+
+const { pageId } = Astro.props;
+---
+
+<div class="page-views" data-page-view data-page-id={pageId}>
+	<span data-copy="article.views" />
+	<strong data-page-view-number>--</strong>
+</div>
+
+<script is:inline>
+	document.querySelectorAll('[data-page-view]').forEach((counter) => {
+		const pageId = counter.dataset.pageId;
+		const output = counter.querySelector('[data-page-view-number]');
+		const sessionKey = `jay-viewed:${pageId}`;
+
+		const hydrate = async () => {
+			try {
+				const method = sessionStorage.getItem(sessionKey) ? 'GET' : 'POST';
+				const response = await fetch(`/api/views?id=${encodeURIComponent(pageId)}`, { method });
+				if (!response.ok) {
+					throw new Error('stats unavailable');
+				}
+
+				const data = await response.json();
+				output.textContent = String(data.views);
+				if (method === 'POST') {
+					sessionStorage.setItem(sessionKey, '1');
+				}
+			} catch {
+				output.textContent = '--';
+				counter.classList.add('is-unavailable');
+			}
+		};
+
+		hydrate();
+	});
+</script>
+
+<style>
+	.page-views {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.5rem;
+		color: var(--text-soft);
+	}
+
+	.page-views strong {
+		color: var(--text);
+		font-weight: 600;
+	}
+
+	.page-views.is-unavailable strong {
+		color: var(--text-soft);
+	}
+</style>

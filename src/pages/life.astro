@@ -1,0 +1,115 @@
+---
+import PostCard from '../components/PostCard.astro';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { siteConfig } from '../data/site';
+import { getLifePosts, getPostSlug } from '../lib/content';
+
+const posts = await getLifePosts();
+const latest = posts[0];
+const latestSlug = latest ? getPostSlug(latest) : null;
+---
+
+<SiteLayout pathname="/life/" title={`生活手账 | ${siteConfig.name}`} description="记录阅读、锻炼与日常片段的生活栏目。">
+	<section class="container life-page">
+		<div class="life-head">
+			<div class="eyebrow" data-copy="nav.life" />
+			<h1
+				class="section-title"
+				data-bilingual="text"
+				data-zh={siteConfig.lifePage.title.zh}
+				data-en={siteConfig.lifePage.title.en}
+			>
+				{siteConfig.lifePage.title.zh}
+			</h1>
+			<p
+				class="muted"
+				data-bilingual="text"
+				data-zh={siteConfig.lifePage.intro.zh}
+				data-en={siteConfig.lifePage.intro.en}
+			>
+				{siteConfig.lifePage.intro.zh}
+			</p>
+		</div>
+
+		{
+			latest && (
+				<section class="life-highlight glass-card">
+					<div class="highlight-copy">
+						<div
+							class="eyebrow"
+							data-bilingual="text"
+							data-zh={siteConfig.lifePage.highlightTitle.zh}
+							data-en={siteConfig.lifePage.highlightTitle.en}
+						>
+							{siteConfig.lifePage.highlightTitle.zh}
+						</div>
+						<h2>{latest.data.title}</h2>
+						<p>{latest.data.excerpt}</p>
+						<a class="button-primary" href={`/posts/${latestSlug}/`} data-copy="common.readMore" />
+					</div>
+					<div class="highlight-side">
+						<p
+							data-bilingual="text"
+							data-zh={siteConfig.lifePage.sidebar.zh}
+							data-en={siteConfig.lifePage.sidebar.en}
+						>
+							{siteConfig.lifePage.sidebar.zh}
+						</p>
+					</div>
+				</section>
+			)
+		}
+
+		<div class="life-list">
+			{posts.map((post) => <PostCard post={post} />)}
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.life-page {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.life-highlight {
+		display: grid;
+		grid-template-columns: 1.2fr 0.8fr;
+		gap: 1rem;
+		padding: 1.4rem;
+		border-radius: var(--radius-xl);
+		margin-top: 1.5rem;
+	}
+
+	.highlight-copy h2 {
+		margin: 0.85rem 0 0.7rem;
+		font-family: var(--font-serif);
+		font-size: clamp(2rem, 4vw, 3rem);
+		line-height: 1.03;
+	}
+
+	.highlight-copy p,
+	.highlight-side p {
+		margin: 0;
+		color: var(--text-soft);
+	}
+
+	.highlight-side {
+		padding: 1.2rem;
+		border-radius: var(--radius-lg);
+		background:
+			linear-gradient(135deg, rgba(200, 124, 88, 0.14), transparent),
+			rgba(255, 255, 255, 0.04);
+	}
+
+	.life-list {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1.4rem;
+	}
+
+	@media (max-width: 900px) {
+		.life-highlight {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

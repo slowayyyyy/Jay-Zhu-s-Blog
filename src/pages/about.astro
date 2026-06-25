@@ -1,0 +1,160 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { siteConfig } from '../data/site';
+---
+
+<SiteLayout pathname="/about/" title={`关于 | ${siteConfig.name}`} description="关于 Jay Zhu 的个人介绍、兴趣和联系方式。">
+	<section class="container about-page">
+		<div class="about-grid">
+			<div class="profile-card glass-card">
+				<img src={siteConfig.author.avatar} alt={`${siteConfig.author.displayName} 的头像`} />
+				<div class="profile-copy">
+					<div class="eyebrow" data-copy="about.title" />
+					<h1 class="section-title">{siteConfig.author.displayName}</h1>
+					<p class="muted" data-bilingual="text" data-zh={siteConfig.author.intro.zh} data-en={siteConfig.author.intro.en} />
+				</div>
+			</div>
+
+			<div class="about-panels">
+				<section class="about-card glass-card">
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.author.sectionTitles.research.zh}
+						data-en={siteConfig.author.sectionTitles.research.en}
+					>
+						{siteConfig.author.sectionTitles.research.zh}
+					</h2>
+					<ul>
+						{siteConfig.author.research.map((item) => (
+							<li data-bilingual="text" data-zh={item.zh} data-en={item.en}>
+								{item.zh}
+							</li>
+						))}
+					</ul>
+				</section>
+				<section class="about-card glass-card">
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.author.sectionTitles.hobbies.zh}
+						data-en={siteConfig.author.sectionTitles.hobbies.en}
+					>
+						{siteConfig.author.sectionTitles.hobbies.zh}
+					</h2>
+					<ul>
+						{siteConfig.author.hobbies.map((item) => (
+							<li data-bilingual="text" data-zh={item.zh} data-en={item.en}>
+								{item.zh}
+							</li>
+						))}
+					</ul>
+				</section>
+				<section class="about-card glass-card">
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.author.sectionTitles.current.zh}
+						data-en={siteConfig.author.sectionTitles.current.en}
+					>
+						{siteConfig.author.sectionTitles.current.zh}
+					</h2>
+					<ul>
+						{siteConfig.author.current.map((item) => (
+							<li data-bilingual="text" data-zh={item.zh} data-en={item.en}>
+								{item.zh}
+							</li>
+						))}
+					</ul>
+				</section>
+				<section class="about-card glass-card">
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.author.sectionTitles.contact.zh}
+						data-en={siteConfig.author.sectionTitles.contact.en}
+					>
+						{siteConfig.author.sectionTitles.contact.zh}
+					</h2>
+					<ul>
+						{siteConfig.author.contact.map((item) => (
+							<li>
+								<strong>{item.label}</strong>
+								<a href={item.value} target={item.value.startsWith('http') ? '_blank' : undefined} rel="noreferrer">
+									{item.display}
+								</a>
+							</li>
+						))}
+					</ul>
+				</section>
+			</div>
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.about-page {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.about-grid {
+		display: grid;
+		grid-template-columns: 0.92fr 1.2fr;
+		gap: 1.2rem;
+	}
+
+	.profile-card {
+		padding: 1.5rem;
+		border-radius: var(--radius-xl);
+		align-self: start;
+	}
+
+	.profile-card img {
+		width: 5.5rem;
+		height: 5.5rem;
+		border-radius: 50%;
+	}
+
+	.profile-copy {
+		margin-top: 1.2rem;
+	}
+
+	.about-panels {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+	}
+
+	.about-card {
+		padding: 1.3rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.about-card h2 {
+		margin: 0 0 0.9rem;
+		font-family: var(--font-serif);
+		font-size: 1.2rem;
+	}
+
+	.about-card ul {
+		list-style: none;
+		margin: 0;
+		padding: 0;
+		display: grid;
+		gap: 0.72rem;
+		color: var(--text-soft);
+	}
+
+	.about-card li strong {
+		display: block;
+		color: var(--text);
+		margin-bottom: 0.15rem;
+	}
+
+	.about-card a {
+		color: var(--accent);
+	}
+
+	@media (max-width: 980px) {
+		.about-grid,
+		.about-panels {
+			grid-template-columns: 1fr;
+		}
+	}
+</style>

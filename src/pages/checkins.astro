@@ -1,0 +1,30 @@
+---
+import DailyCheckins from '../components/DailyCheckins.astro';
+import { siteConfig } from '../data/site';
+import SiteLayout from '../layouts/SiteLayout.astro';
+import { getAllCheckins } from '../lib/content';
+
+const checkins = await getAllCheckins();
+---
+
+<SiteLayout
+	title={`每日打卡 | ${siteConfig.name}`}
+	description="按日期记录每天完成的学习、科研、阅读与运动。"
+	pathname="/checkins/"
+>
+	<div class="checkins-page">
+		<DailyCheckins checkins={checkins} />
+	</div>
+</SiteLayout>
+
+<style>
+	.checkins-page {
+		padding: 4.2rem 0 2rem;
+	}
+
+	@media (max-width: 680px) {
+		.checkins-page {
+			padding-top: 2.5rem;
+		}
+	}
+</style>

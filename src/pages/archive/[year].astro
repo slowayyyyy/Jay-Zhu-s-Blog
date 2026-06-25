@@ -1,0 +1,42 @@
+---
+import PostCard from '../../components/PostCard.astro';
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import { getAllPosts } from '../../lib/content';
+
+export async function getStaticPaths() {
+	const posts = await getAllPosts();
+	const years = [...new Set(posts.map((post) => post.data.publishDate.getFullYear()))];
+	return years.map((year) => ({
+		params: { year: String(year) },
+		props: {
+			year,
+			posts: posts.filter((post) => post.data.publishDate.getFullYear() === year),
+		},
+	}));
+}
+
+const { year, posts } = Astro.props;
+---
+
+<SiteLayout pathname={`/archive/${year}/`} title={`${year} 年归档`} description={`查看 ${year} 年发布的全部文章。`}>
+	<section class="container archive-page">
+		<div class="eyebrow" data-copy="common.archive" />
+		<h1 class="section-title">{year}</h1>
+		<p class="muted">共 {posts.length} 篇文章。</p>
+		<div class="archive-list">
+			{posts.map((post) => <PostCard post={post} />)}
+		</div>
+	</section>
+</SiteLayout>
+
+<style>
+	.archive-page {
+		padding: 6.8rem 0 4rem;
+	}
+
+	.archive-list {
+		display: grid;
+		gap: 1rem;
+		margin-top: 1.3rem;
+	}
+</style>

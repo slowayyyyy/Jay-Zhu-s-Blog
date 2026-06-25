@@ -1,0 +1,174 @@
+---
+import { siteConfig } from '../data/site';
+
+interface Props {
+	pathname: string;
+}
+
+const { pathname } = Astro.props;
+
+const items = [
+	{ href: '/', key: 'nav.home' },
+	{ href: '/search/', key: 'nav.search' },
+	{ href: '/life/', key: 'nav.life' },
+	{ href: '/checkins/', key: 'nav.checkins' },
+	{ href: '/about/', key: 'nav.about' },
+];
+---
+
+<header class="site-header">
+	<div class="container header-inner glass-card">
+		<a class="brand" href="/">
+			<div class="brand-mark">J</div>
+			<div>
+				<div class="brand-name">{siteConfig.name}</div>
+				<div class="brand-sub">{siteConfig.brandSubtitle}</div>
+			</div>
+		</a>
+		<nav aria-label="Primary">
+			<ul class="nav-list">
+				{
+					items.map((item) => (
+						<li>
+							<a
+								href={item.href}
+								class:list={[
+									'nav-link',
+									pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+										? 'is-active'
+										: '',
+								]}
+								data-copy={item.key}
+							/>
+						</li>
+					))
+				}
+				<li>
+					<a class="nav-link" href="/rss.xml" data-copy="nav.rss" />
+				</li>
+			</ul>
+		</nav>
+		<div class="header-controls">
+			<button type="button" class="control-button" data-theme-toggle aria-label="Toggle theme">
+				<span aria-hidden="true">◐</span>
+				<span data-copy="controls.theme" />
+			</button>
+			<button type="button" class="control-button" data-language-toggle aria-label="Toggle language">
+				<span aria-hidden="true">中 / EN</span>
+			</button>
+		</div>
+	</div>
+</header>
+
+<style>
+	.site-header {
+		position: sticky;
+		top: 0;
+		z-index: 40;
+		padding: 1rem 0 0;
+	}
+
+	.header-inner {
+		display: grid;
+		grid-template-columns: auto 1fr auto;
+		align-items: center;
+		gap: 1rem;
+		padding: 1rem 1.2rem;
+		border-radius: 999px;
+	}
+
+	.brand {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.9rem;
+		min-width: 0;
+	}
+
+	.brand-mark {
+		width: 3rem;
+		height: 3rem;
+		border-radius: 50%;
+		display: grid;
+		place-items: center;
+		background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent-2) 45%, white));
+		color: white;
+		font-family: var(--font-serif);
+		font-size: 1.55rem;
+		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+	}
+
+	.brand-name {
+		font-family: var(--font-serif);
+		font-size: 1.1rem;
+		line-height: 1;
+	}
+
+	.brand-sub {
+		font-size: 0.78rem;
+		color: var(--text-soft);
+		margin-top: 0.28rem;
+	}
+
+	.nav-list {
+		list-style: none;
+		display: flex;
+		justify-content: center;
+		gap: 0.4rem;
+		padding: 0;
+		margin: 0;
+	}
+
+	.nav-link,
+	.control-button {
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.4rem;
+		padding: 0.75rem 0.95rem;
+		border-radius: 999px;
+		border: 1px solid transparent;
+		transition:
+			background var(--transition),
+			border-color var(--transition),
+			transform var(--transition);
+	}
+
+	.nav-link.is-active,
+	.nav-link:hover,
+	.control-button:hover {
+		transform: translateY(-1px);
+		background: rgba(255, 255, 255, 0.06);
+		border-color: var(--line);
+	}
+
+	.header-controls {
+		display: flex;
+		gap: 0.5rem;
+	}
+
+	.control-button {
+		background: transparent;
+		color: inherit;
+	}
+
+	@media (max-width: 940px) {
+		.header-inner {
+			grid-template-columns: 1fr;
+			border-radius: var(--radius-xl);
+		}
+
+		.nav-list {
+			flex-wrap: wrap;
+		}
+
+		.header-controls {
+			justify-content: flex-end;
+		}
+	}
+
+	@media (max-width: 640px) {
+		.brand-sub {
+			display: none;
+		}
+	}
+</style>

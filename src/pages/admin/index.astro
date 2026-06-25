@@ -1,0 +1,47 @@
+---
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="referrer" content="same-origin" />
+		<link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+		<title>博客内容管理 | Jay Zhu's Blog</title>
+	</head>
+	<body>
+		<div class="cms-loading">正在打开博客内容管理后台...</div>
+		<script is:inline src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+		<script>
+			import { setupAdminCms } from '../../scripts/admin-cms.js';
+
+			setupAdminCms();
+		</script>
+	</body>
+</html>
+
+<style is:global>
+	html,
+	body {
+		margin: 0;
+		min-height: 100%;
+		background: #f4f7f8;
+	}
+
+	.cms-loading {
+		position: fixed;
+		inset: 0;
+		z-index: 0;
+		display: grid;
+		place-items: center;
+		color: #376d7b;
+		font: 15px/1.6 sans-serif;
+		pointer-events: none;
+	}
+
+	body:has(#nc-root > *) .cms-loading {
+		display: none;
+	}
+</style>
