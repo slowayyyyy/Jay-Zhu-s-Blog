@@ -49,11 +49,12 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 		<ClientRouter />
 		<script is:inline>
 			(() => {
-				const theme = localStorage.getItem('jay-theme-v2') ?? 'light';
-				const language = localStorage.getItem('jay-language') ?? 'zh';
+				const theme = localStorage.getItem('jay-theme-v2') === 'dark' ? 'dark' : 'light';
+				const language = localStorage.getItem('jay-language') === 'en' ? 'en' : 'zh';
 				const introState = sessionStorage.getItem('jay-intro-seen-lantern') ? 'seen' : 'fresh';
 				document.documentElement.dataset.theme = theme;
 				document.documentElement.dataset.language = language;
+				document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN';
 				document.documentElement.dataset.introSeen = introState;
 				document.documentElement.dataset.introLoad = introState;
 			})();
@@ -92,6 +93,12 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 				const formatString = (template, vars = {}) =>
 					String(template).replace(/\{(\w+)\}/g, (_, key) => vars[key] ?? '');
 
+				const getStoredTheme = () =>
+					localStorage.getItem('jay-theme-v2') === 'dark' ? 'dark' : 'light';
+
+				const getStoredLanguage = () =>
+					localStorage.getItem('jay-language') === 'en' ? 'en' : 'zh';
+
 				const applyTheme = (theme) => {
 					document.documentElement.dataset.theme = theme;
 					localStorage.setItem('jay-theme-v2', theme);
@@ -100,6 +107,7 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 
 				const applyLanguage = (language) => {
 					document.documentElement.dataset.language = language;
+					document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN';
 					localStorage.setItem('jay-language', language);
 
 					document.querySelectorAll('[data-copy]').forEach((element) => {
@@ -129,10 +137,19 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 					);
 				};
 
+				const syncPersistedPreferences = () => {
+					const theme = getStoredTheme();
+					const language = getStoredLanguage();
+					document.documentElement.dataset.theme = theme;
+					document.documentElement.dataset.language = language;
+					document.documentElement.lang = language === 'en' ? 'en' : 'zh-CN';
+					return { theme, language };
+				};
+
 				window.JayBlog = {
 					applyTheme,
 					applyLanguage,
-					getTheme: () => document.documentElement.dataset.theme || 'dark',
+					getTheme: () => document.documentElement.dataset.theme || 'light',
 					getLanguage: () => document.documentElement.dataset.language || 'zh',
 					getText: (key, vars = {}) => {
 						const language = document.documentElement.dataset.language || 'zh';
@@ -156,9 +173,14 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 					syncChannel.addEventListener('message', scheduleContentReload);
 				}
 
+				const applyPersistedPreferences = () => {
+					const { theme, language } = syncPersistedPreferences();
+					applyLanguage(language);
+					applyTheme(theme);
+				};
+
 				const initializePage = () => {
-					applyLanguage(document.documentElement.dataset.language || 'zh');
-					applyTheme(document.documentElement.dataset.theme || 'light');
+					applyPersistedPreferences();
 
 					document.querySelectorAll('[data-theme-toggle]:not([data-control-ready])').forEach((button) => {
 						button.dataset.controlReady = 'true';
@@ -178,6 +200,7 @@ const analyticsToken = import.meta.env.PUBLIC_CLOUDFLARE_ANALYTICS_TOKEN;
 				};
 
 				initializePage();
+				document.addEventListener('astro:after-swap', applyPersistedPreferences);
 				document.addEventListener('astro:page-load', initializePage);
 			})();
 		</script>
