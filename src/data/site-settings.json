@@ -119,6 +119,11 @@
       "title": "Doll",
       "artist": "菲菲公主",
       "src": "/audio/菲菲公主（陆绮菲）-doll.mp3"
+    },
+    {
+      "src": "/audio/entoy、suru-blue-mood.mp3",
+      "title": "Blue mood",
+      "artist": "entoy,suru"
     }
   ],
   "opening": {
