@@ -17,13 +17,11 @@ const HOP_BY_HOP_HEADERS = new Set([
 	'x-real-ip',
 ]);
 
-const buildTargetUrl = (requestUrl, paramsPath) => {
-	const pathSegments = Array.isArray(paramsPath)
-		? paramsPath
-		: paramsPath
-			? [paramsPath]
-			: [];
-	const pathname = pathSegments.map((segment) => encodeURIComponent(segment)).join('/');
+const buildTargetUrl = (requestUrl) => {
+	const proxyPrefix = '/api/github/';
+	const pathname = requestUrl.pathname.startsWith(proxyPrefix)
+		? requestUrl.pathname.slice(proxyPrefix.length)
+		: requestUrl.pathname.replace(/^\/api\/github\/?/u, '');
 	const targetUrl = new URL(`${GITHUB_API_ROOT}/${pathname}`);
 	targetUrl.search = requestUrl.search;
 	targetUrl.searchParams.delete('raw');
@@ -75,7 +73,7 @@ export async function onRequest(context) {
 	const request = context.request;
 	const requestUrl = new URL(request.url);
 	const rawDownload = requestUrl.searchParams.get('raw') === '1';
-	const targetUrl = buildTargetUrl(requestUrl, context.params.path);
+	const targetUrl = buildTargetUrl(requestUrl);
 	const proxyRoot = `${requestUrl.origin}/api/github`;
 	const method = request.method.toUpperCase();
 	const init = {
