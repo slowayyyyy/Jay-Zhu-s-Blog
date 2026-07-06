@@ -4,6 +4,7 @@ backend:
   branch: main
   base_url: https://jay-zhu-s-blog.pages.dev
   auth_endpoint: api/auth
+  api_root: https://jay-zhu-s-blog.pages.dev/api/github
 
 local_backend: true
 locale: zh_Hans

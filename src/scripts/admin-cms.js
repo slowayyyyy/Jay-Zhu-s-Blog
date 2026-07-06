@@ -2,6 +2,23 @@ import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
+const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
+const DEFAULT_GITHUB_BRANCH = 'main';
+const GITHUB_TOKEN_PATTERN =
+	/(gho_[A-Za-z0-9_]+|ghu_[A-Za-z0-9_]+|ghs_[A-Za-z0-9_]+|ghr_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)/;
+
+const readConfigValue = (source, key) => {
+	if (!source) return undefined;
+	if (typeof source.get === 'function') return source.get(key);
+	return source[key];
+};
+
+const encodePathPreservingSlashes = (value) =>
+	value
+		.split('/')
+		.filter(Boolean)
+		.map((segment) => encodeURIComponent(segment))
+		.join('/');
 
 export function setupAdminCms() {
 	if (!window.CMS || window.__jayCmsSetup) return;
@@ -17,6 +34,198 @@ export function setupAdminCms() {
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
+	const previewObserver = new MutationObserver((mutations) => {
+		for (const mutation of mutations) {
+			if (mutation.type === 'attributes' && mutation.target instanceof HTMLImageElement) {
+				rewritePreviewImage(mutation.target);
+				continue;
+			}
+
+			for (const node of mutation.addedNodes) {
+				if (!(node instanceof HTMLElement)) continue;
+				hydratePreviewImages(node);
+			}
+		}
+	});
+
+	const getGithubRepoInfo = () => {
+		const config = window.CMS?.getConfig?.();
+		const backend = readConfigValue(config, 'backend');
+		return {
+			repo: readConfigValue(backend, 'repo') || DEFAULT_GITHUB_REPO,
+			branch: readConfigValue(backend, 'branch') || DEFAULT_GITHUB_BRANCH,
+		};
+	};
+
+	const findGithubToken = (value, depth = 0) => {
+		if (!value || depth > 6) return null;
+
+		if (typeof value === 'string') {
+			const match = value.match(GITHUB_TOKEN_PATTERN);
+			return match?.[0] ?? null;
+		}
+
+		if (Array.isArray(value)) {
+			for (const item of value) {
+				const token = findGithubToken(item, depth + 1);
+				if (token) return token;
+			}
+			return null;
+		}
+
+		if (typeof value === 'object') {
+			const preferredKeys = ['token', 'access_token', 'accessToken', 'githubToken'];
+			for (const key of preferredKeys) {
+				if (!(key in value)) continue;
+				const token = findGithubToken(value[key], depth + 1);
+				if (token) return token;
+			}
+
+			for (const nestedValue of Object.values(value)) {
+				const token = findGithubToken(nestedValue, depth + 1);
+				if (token) return token;
+			}
+		}
+
+		return null;
+	};
+
+	const getGithubAccessToken = () => {
+		for (let index = 0; index < window.localStorage.length; index += 1) {
+			const storageKey = window.localStorage.key(index);
+			if (!storageKey) continue;
+
+			const rawValue = window.localStorage.getItem(storageKey);
+			if (!rawValue) continue;
+
+			const directToken = findGithubToken(rawValue);
+			if (directToken) return directToken;
+
+			try {
+				const parsedValue = JSON.parse(rawValue);
+				const parsedToken = findGithubToken(parsedValue);
+				if (parsedToken) return parsedToken;
+			} catch {
+				continue;
+			}
+		}
+
+		return null;
+	};
+
+	const buildUploadPreviewSources = (value) => {
+		if (typeof value !== 'string' || !value.trim()) return null;
+
+		let pathname;
+		try {
+			pathname = new URL(value, window.location.origin).pathname;
+		} catch {
+			return null;
+		}
+
+		let decodedPathname;
+		try {
+			decodedPathname = decodeURIComponent(pathname);
+		} catch {
+			decodedPathname = pathname;
+		}
+
+		if (!decodedPathname.startsWith('/uploads/')) return null;
+
+		const { repo, branch } = getGithubRepoInfo();
+		const encodedRepo = encodePathPreservingSlashes(repo);
+		const encodedFilePath = encodePathPreservingSlashes(`public${decodedPathname}`);
+		const apiUrl = new URL(
+			`/api/github/repos/${encodedRepo}/contents/${encodedFilePath}`,
+			window.location.origin,
+		);
+		apiUrl.searchParams.set('ref', branch);
+		apiUrl.searchParams.set('raw', '1');
+
+		const rawUrl = `https://raw.githubusercontent.com/${encodedRepo}/${encodeURIComponent(branch)}/${encodedFilePath}`;
+		return {
+			sourceKey: decodedPathname,
+			apiUrl: apiUrl.toString(),
+			rawUrl,
+		};
+	};
+
+	const loadPreviewImage = async (image, { sourceKey, apiUrl, rawUrl }) => {
+		const currentKey = sourceKey;
+		image.dataset.jayCmsPreviewKey = currentKey;
+
+		const githubToken = getGithubAccessToken();
+		if (!githubToken) {
+			image.src = rawUrl;
+			return;
+		}
+
+		try {
+			const response = await fetch(apiUrl, {
+				headers: {
+					Authorization: `token ${githubToken}`,
+					Accept: 'application/vnd.github.raw',
+				},
+				cache: 'no-store',
+			});
+
+			if (!response.ok) {
+				throw new Error(`preview fetch failed: ${response.status}`);
+			}
+
+			const blob = await response.blob();
+			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
+
+			const lastObjectUrl = image.dataset.jayCmsObjectUrl;
+			if (lastObjectUrl) {
+				URL.revokeObjectURL(lastObjectUrl);
+			}
+
+			const objectUrl = URL.createObjectURL(blob);
+			image.dataset.jayCmsObjectUrl = objectUrl;
+			image.src = objectUrl;
+		} catch (error) {
+			console.warn('[Jay CMS] image preview fallback to raw GitHub URL.', error);
+			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
+			image.src = rawUrl;
+		}
+	};
+
+	const rewritePreviewImage = (image) => {
+		const source = image.getAttribute('src');
+		const previewSources = buildUploadPreviewSources(source);
+		if (!previewSources || image.dataset.jayCmsPreviewSource === previewSources.sourceKey) return;
+		image.dataset.jayCmsPreviewSource = previewSources.sourceKey;
+		void loadPreviewImage(image, previewSources);
+	};
+
+	const hydratePreviewImages = (root = document) => {
+		if (root instanceof HTMLImageElement) {
+			rewritePreviewImage(root);
+			return;
+		}
+
+		if (typeof root.querySelectorAll !== 'function') return;
+		root.querySelectorAll('img[src]').forEach((image) => rewritePreviewImage(image));
+	};
+
+	const handleNetworkFailure = (reason) => {
+		const message =
+			typeof reason === 'string'
+				? reason
+				: reason instanceof Error
+					? reason.message
+					: '';
+
+		if (!/failed to fetch/i.test(message)) return;
+
+		console.error('[Jay CMS] network request failed.', reason);
+		showStatus(
+			'后台请求失败。通常是 GitHub 登录状态失效，或当前网络没能完成提交。请刷新后台后重新登录，再重试上传或发布。',
+			'error',
+			9000,
+		);
+	};
 
 	const ensureStatusNotice = () => {
 		let notice = document.querySelector('[data-jay-cms-status]');
@@ -298,6 +507,17 @@ export function setupAdminCms() {
 	};
 
 	idleTimer = window.setTimeout(() => showIdleStatus(), 280);
+	hydratePreviewImages();
+	previewObserver.observe(document.body, {
+		childList: true,
+		subtree: true,
+		attributes: true,
+		attributeFilter: ['src'],
+	});
+
+	window.addEventListener('unhandledrejection', (event) => {
+		handleNetworkFailure(event.reason);
+	});
 
 	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
