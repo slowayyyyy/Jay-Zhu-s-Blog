@@ -62,12 +62,12 @@ const years = getYearSummary(posts);
 				posts.map((post) => (
 					<div
 						data-result
-						data-title={post.data.title.toLowerCase()}
-						data-excerpt={post.data.excerpt.toLowerCase()}
-						data-body={(post.body ?? '').toLowerCase()}
+						data-title={post.data.title}
+						data-excerpt={post.data.excerpt}
+						data-body={post.body ?? ''}
 						data-section={post.data.section}
 						data-year={String(post.data.publishDate.getFullYear())}
-						data-tags={post.data.tags.join('|').toLowerCase()}
+						data-tags={post.data.tags.join('|')}
 					>
 						<PostCard post={post} />
 					</div>
