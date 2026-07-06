@@ -6,7 +6,7 @@ excerpt: "《QVHIGHLIGHTS: Detecting Moments and Highlights in Videos via Natura
   Language Queries》这篇论文在2021年发表于NeurIPS,为TSGV方向构建了数据集，提供了baseline，对后续的研究有重大影响。"
 publishDate: 2026-07-06
 sortOrder: 0
-section: study
+section: research
 tags:
   - 科研
   - 论文阅读
