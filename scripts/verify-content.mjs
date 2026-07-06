@@ -29,6 +29,13 @@ const renderedPosts = await Promise.all(postPages.map((file) => readFile(file, '
 const searchResults = extractSearchResults(search);
 const checkinTitles = extractCheckinTitles(checkinsPage);
 const errors = [];
+const invalidImagePattern = /!\[[^\]]*\]\(\s*(?:\)|file:|[a-z]:\\)/giu;
+
+const findInvalidImageReferences = (body) =>
+	[...body.matchAll(invalidImagePattern)].map((match) => ({
+		line: body.slice(0, match.index).split(/\r?\n/u).length,
+		value: match[0],
+	}));
 
 for (const post of posts) {
 	if (!appearsIn(home, post.title)) errors.push(`Home page is missing: ${post.title}`);
@@ -39,6 +46,10 @@ for (const post of posts) {
 	}
 	if (!renderedPosts.some((html) => appearsIn(html, post.title))) {
 		errors.push(`Article page is missing: ${post.title}`);
+	}
+
+	for (const image of findInvalidImageReferences(post.body)) {
+		errors.push(`Post has an invalid local or empty image reference: ${post.title}, body line ${image.line}`);
 	}
 
 	for (const tag of post.tags) {
@@ -56,6 +67,10 @@ for (const post of posts) {
 for (const checkin of checkins) {
 	if (!appearsIn(checkinsPage, checkin.title)) {
 		errors.push(`Check-ins page is missing: ${checkin.title}`);
+	}
+
+	for (const image of findInvalidImageReferences(checkin.body)) {
+		errors.push(`Check-in has an invalid local or empty image reference: ${checkin.title}, body line ${image.line}`);
 	}
 
 	for (const tag of checkin.tags) {
