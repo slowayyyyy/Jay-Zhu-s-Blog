@@ -11,19 +11,26 @@ const IMAGE_EXTENSION_BY_TYPE = new Map([
 	['image/jpg', 'jpg'],
 	['image/pjpeg', 'jpg'],
 	['image/png', 'png'],
+	['image/x-png', 'png'],
 	['image/gif', 'gif'],
 	['image/webp', 'webp'],
 	['image/svg+xml', 'svg'],
 	['image/bmp', 'bmp'],
+	['image/x-ms-bmp', 'bmp'],
 	['image/avif', 'avif'],
 	['image/tiff', 'tiff'],
 	['image/x-icon', 'ico'],
 ]);
+const IMAGE_FILE_EXTENSION_PATTERN = /\.(avif|bmp|gif|ico|jpe?g|png|svg|tiff?|webp)$/iu;
 const DATA_IMAGE_SOURCE_PATTERN = /^data:image\//iu;
 const LOCAL_IMAGE_REFERENCE_PATTERN = /^(file:|[a-z]:\\)/iu;
 const FETCHABLE_IMAGE_SOURCE_PATTERN = /^(https?:\/\/|blob:|\/)/iu;
 const MARKDOWN_DATA_IMAGE_PATTERN =
 	/!\[([^\]]*)\]\(\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\r\n]+)\s*(?:"[^"]*")?\)/giu;
+const MARKDOWN_TRANSIENT_IMAGE_PATTERN =
+	/!\[[^\]]*\]\(\s*(?:blob:|file:|[a-z]:\\)[^)]+\)/iu;
+const LARGE_CLIPBOARD_IMAGE_BYTES = 900 * 1024;
+const MAX_CLIPBOARD_IMAGE_EDGE = 2560;
 
 const readConfigValue = (source, key) => {
 	if (!source) return undefined;
@@ -68,6 +75,7 @@ export function setupAdminCms() {
 	let statusTimer;
 	let reloadTimer;
 	let idleTimer;
+	const replayedPasteEvents = new WeakSet();
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
@@ -172,6 +180,72 @@ export function setupAdminCms() {
 		return `${stamp}-${basename}-${suffix}.${extension}`;
 	};
 
+	const canvasToBlob = (canvas, type, quality) =>
+		new Promise((resolve, reject) => {
+			canvas.toBlob(
+				(blob) => (blob ? resolve(blob) : reject(new Error('image_encode_failed'))),
+				type,
+				quality,
+			);
+		});
+
+	const prepareClipboardImage = async (file, index = 0) => {
+		if (!file || file.size === 0) throw new Error('empty_clipboard_image');
+
+		const type = file.type.toLowerCase();
+		const shouldKeepOriginal =
+			file.size <= LARGE_CLIPBOARD_IMAGE_BYTES ||
+			type === 'image/gif' ||
+			type === 'image/svg+xml';
+		if (shouldKeepOriginal) return file;
+
+		let bitmap;
+		try {
+			bitmap = await createImageBitmap(file);
+			const scale = Math.min(
+				1,
+				MAX_CLIPBOARD_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height),
+			);
+			const canvas = document.createElement('canvas');
+			canvas.width = Math.max(1, Math.round(bitmap.width * scale));
+			canvas.height = Math.max(1, Math.round(bitmap.height * scale));
+			const context = canvas.getContext('2d');
+			if (!context) throw new Error('image_canvas_unavailable');
+			context.drawImage(bitmap, 0, 0, canvas.width, canvas.height);
+
+			const compressed = await canvasToBlob(canvas, 'image/webp', 0.93);
+			if (compressed.size >= file.size) return file;
+			return new File([compressed], `pasted-image-${index + 1}.webp`, {
+				type: 'image/webp',
+			});
+		} catch (error) {
+			console.warn('[Jay CMS] keeping original clipboard image.', error);
+			return file;
+		} finally {
+			bitmap?.close?.();
+		}
+	};
+
+	const githubUploadRequest = async (url, githubToken, payload) => {
+		const response = await fetch(url, {
+			method: 'PUT',
+			headers: {
+				Authorization: `token ${githubToken}`,
+				Accept: 'application/vnd.github+json',
+				'Content-Type': 'application/json',
+				'X-GitHub-Api-Version': '2022-11-28',
+			},
+			body: payload,
+		});
+
+		if (!response.ok) {
+			const body = await response.json().catch(() => ({}));
+			const error = new Error(body.message || `image upload failed: ${response.status}`);
+			error.status = response.status;
+			throw error;
+		}
+	};
+
 	const uploadImageToGithub = async (file, index = 0) => {
 		if (isLocalPreview) {
 			throw new Error('local_preview_upload_unavailable');
@@ -186,23 +260,18 @@ export function setupAdminCms() {
 		const filename = createUploadFilename(file, index);
 		const repoFilePath = `public/uploads/${filename}`;
 		const apiPath = encodePathPreservingSlashes(`repos/${repo}/contents/${repoFilePath}`);
-		const response = await fetch(`/api/github/${apiPath}`, {
-			method: 'PUT',
-			headers: {
-				Authorization: `token ${githubToken}`,
-				Accept: 'application/vnd.github+json',
-				'Content-Type': 'application/json',
-			},
-			body: JSON.stringify({
-				message: `Upload pasted image ${filename}`,
-				content: await blobToBase64(file),
-				branch,
-			}),
+		const payload = JSON.stringify({
+			message: `Upload pasted image ${filename}`,
+			content: await blobToBase64(file),
+			branch,
 		});
 
-		if (!response.ok) {
-			const payload = await response.json().catch(() => ({}));
-			throw new Error(payload.message || `image upload failed: ${response.status}`);
+		try {
+			await githubUploadRequest(`https://api.github.com/${apiPath}`, githubToken, payload);
+		} catch (error) {
+			if (typeof error?.status === 'number') throw error;
+			console.warn('[Jay CMS] direct GitHub upload failed; retrying through site proxy.', error);
+			await githubUploadRequest(`/api/github/${apiPath}`, githubToken, payload);
 		}
 
 		return `/uploads/${filename}`;
@@ -230,11 +299,29 @@ export function setupAdminCms() {
 			.filter(Boolean);
 	};
 
-	const extractClipboardTextSources = (clipboardData) => {
+	const snapshotClipboardData = (clipboardData) => {
+		const files = [];
+		for (const file of [...(clipboardData?.files || [])]) {
+			files.push(file);
+		}
+
+		for (const item of [...(clipboardData?.items || [])]) {
+			if (item.kind !== 'file') continue;
+			const file = item.getAsFile();
+			if (file) files.push(file);
+		}
+
+		return {
+			files,
+			html: clipboardData?.getData('text/html') || '',
+			uriList: clipboardData?.getData('text/uri-list') || '',
+			text: clipboardData?.getData('text/plain') || '',
+		};
+	};
+
+	const extractClipboardTextSources = (snapshot) => {
 		const sources = [];
-		const textTypes = ['text/uri-list', 'text/plain'];
-		for (const type of textTypes) {
-			const value = clipboardData?.getData(type);
+		for (const value of [snapshot?.uriList, snapshot?.text]) {
 			if (!value) continue;
 
 			for (const line of value.split(/\r?\n/u)) {
@@ -246,10 +333,10 @@ export function setupAdminCms() {
 		return sources;
 	};
 
-	const extractClipboardImageSources = (clipboardData) => {
+	const extractClipboardImageSources = (snapshot) => {
 		const sources = [
-			...extractImageSourcesFromHtml(clipboardData?.getData('text/html')),
-			...extractClipboardTextSources(clipboardData),
+			...extractImageSourcesFromHtml(snapshot?.html),
+			...extractClipboardTextSources(snapshot),
 		];
 		return [...new Set(sources.filter(Boolean))];
 	};
@@ -259,8 +346,53 @@ export function setupAdminCms() {
 	const isFetchableImageSource = (source) =>
 		DATA_IMAGE_SOURCE_PATTERN.test(source) || FETCHABLE_IMAGE_SOURCE_PATTERN.test(source);
 
+	const isLikelyImageSource = (source) => {
+		if (DATA_IMAGE_SOURCE_PATTERN.test(source) || /^blob:/iu.test(source)) return true;
+		try {
+			const pathname = new URL(source, window.location.origin).pathname;
+			return IMAGE_FILE_EXTENSION_PATTERN.test(pathname);
+		} catch {
+			return IMAGE_FILE_EXTENSION_PATTERN.test(source);
+		}
+	};
+
+	const isProbableImageFile = (file) =>
+		Boolean(
+			file &&
+				(file.type?.toLowerCase?.().startsWith('image/') ||
+					IMAGE_FILE_EXTENSION_PATTERN.test(file.name || '')),
+		);
+
+	const sniffImageType = async (file) => {
+		const bytes = new Uint8Array(await file.slice(0, 16).arrayBuffer());
+		const ascii = String.fromCharCode(...bytes);
+		if (bytes[0] === 0x89 && ascii.slice(1, 4) === 'PNG') return 'image/png';
+		if (bytes[0] === 0xff && bytes[1] === 0xd8 && bytes[2] === 0xff) return 'image/jpeg';
+		if (ascii.startsWith('GIF87a') || ascii.startsWith('GIF89a')) return 'image/gif';
+		if (ascii.startsWith('RIFF') && ascii.slice(8, 12) === 'WEBP') return 'image/webp';
+		if (ascii.startsWith('BM')) return 'image/bmp';
+		if (
+			(bytes[0] === 0x49 && bytes[1] === 0x49 && bytes[2] === 0x2a && bytes[3] === 0) ||
+			(bytes[0] === 0x4d && bytes[1] === 0x4d && bytes[2] === 0 && bytes[3] === 0x2a)
+		) {
+			return 'image/tiff';
+		}
+		if (ascii.slice(4, 8) === 'ftyp' && /avi[fx]/u.test(ascii.slice(8))) return 'image/avif';
+		return null;
+	};
+
+	const normalizeClipboardFileMetadata = async (file, index = 0) => {
+		if (isProbableImageFile(file)) return file;
+		const detectedType = await sniffImageType(file);
+		if (!detectedType) return null;
+		const extension = IMAGE_EXTENSION_BY_TYPE.get(detectedType) || 'png';
+		return new File([file], `clipboard-image-${index + 1}.${extension}`, {
+			type: detectedType,
+		});
+	};
+
 	const addUniqueImageFile = (files, seen, file) => {
-		if (!file?.type?.startsWith?.('image/')) return;
+		if (!isProbableImageFile(file) || file.size === 0) return;
 		const key = `${file.name || 'clipboard-image'}:${file.size}:${file.type}`;
 		if (seen.has(key)) return;
 		seen.add(key);
@@ -292,39 +424,43 @@ export function setupAdminCms() {
 		}
 	};
 
-	const extractClipboardImageFiles = async (clipboardData) => {
+	const extractClipboardImageFiles = async (snapshot) => {
 		const files = [];
 		const seen = new Set();
 
-		for (const file of [...(clipboardData?.files || [])]) {
-			addUniqueImageFile(files, seen, file);
+		for (const [index, file] of (snapshot?.files || []).entries()) {
+			addUniqueImageFile(files, seen, await normalizeClipboardFileMetadata(file, index));
 		}
 
-		for (const item of [...(clipboardData?.items || [])]) {
-			if (item.kind !== 'file' || !item.type.startsWith('image/')) continue;
-			addUniqueImageFile(files, seen, item.getAsFile());
-		}
-
-		const imageSources = extractClipboardImageSources(clipboardData);
-		for (const [index, source] of imageSources.entries()) {
-			if (DATA_IMAGE_SOURCE_PATTERN.test(source)) {
-				addUniqueImageFile(
-					files,
-					seen,
-					await fileFromDataUrl(source, `pasted-html-image-${index + 1}`),
-				);
-				continue;
-			}
-
-			if (isFetchableImageSource(source) && !isLocalImageReference(source)) {
-				try {
+		// Binary clipboard data is authoritative. HTML/text fallbacks often point to the same
+		// image and would otherwise upload a duplicate or a short-lived blob URL.
+		if (files.length === 0) {
+			const htmlSources = new Set(extractImageSourcesFromHtml(snapshot?.html));
+			const imageSources = extractClipboardImageSources(snapshot);
+			for (const [index, source] of imageSources.entries()) {
+				if (DATA_IMAGE_SOURCE_PATTERN.test(source)) {
 					addUniqueImageFile(
 						files,
 						seen,
-						await fileFromImageUrl(source, `pasted-remote-image-${index + 1}`),
+						await fileFromDataUrl(source, `pasted-html-image-${index + 1}`),
 					);
-				} catch (error) {
-					console.warn('[Jay CMS] cannot fetch pasted image source.', error);
+					continue;
+				}
+
+				if (
+					isFetchableImageSource(source) &&
+					!isLocalImageReference(source) &&
+					(htmlSources.has(source) || isLikelyImageSource(source))
+				) {
+					try {
+						addUniqueImageFile(
+							files,
+							seen,
+							await fileFromImageUrl(source, `pasted-remote-image-${index + 1}`),
+						);
+					} catch (error) {
+						console.warn('[Jay CMS] cannot fetch pasted image source.', error);
+					}
 				}
 			}
 		}
@@ -339,7 +475,7 @@ export function setupAdminCms() {
 	};
 
 	const normalizeMarkdownDataImages = async (body) => {
-		if (typeof body !== 'string' || !DATA_IMAGE_SOURCE_PATTERN.test(body)) return body;
+		if (typeof body !== 'string' || !body.includes('data:image/')) return body;
 
 		MARKDOWN_DATA_IMAGE_PATTERN.lastIndex = 0;
 		const matches = [...body.matchAll(MARKDOWN_DATA_IMAGE_PATTERN)];
@@ -393,7 +529,12 @@ export function setupAdminCms() {
 	const normalizeEmbeddedImagesBeforeSave = async ({ entry }) => {
 		const data = getEntryData(entry);
 		const body = readEntryDataField(data, 'body');
-		if (typeof body !== 'string' || !DATA_IMAGE_SOURCE_PATTERN.test(body)) return data;
+		if (typeof body !== 'string') return data;
+		if (MARKDOWN_TRANSIENT_IMAGE_PATTERN.test(body)) {
+			showStatus('正文里仍有临时坏图，请删除该图片后重新粘贴。', 'error', 9000);
+			throw new Error('transient_image_reference');
+		}
+		if (!body.includes('data:image/')) return data;
 
 		showStatus('检测到正文里有内嵌图片，正在转成站内图片...', 'pending');
 		const normalizedBody = await normalizeMarkdownDataImages(body);
@@ -417,15 +558,6 @@ export function setupAdminCms() {
 		}
 	};
 
-	const findActiveMarkdownTextarea = (target) => {
-		if (target instanceof HTMLTextAreaElement) return target;
-		const textareas = [...document.querySelectorAll('textarea')];
-		return textareas.find((textarea) => {
-			const rect = textarea.getBoundingClientRect();
-			return rect.height > 240 && textarea.offsetParent !== null;
-		});
-	};
-
 	const insertTextIntoTextarea = (textarea, value) => {
 		textarea.focus();
 		const start = textarea.selectionStart ?? textarea.value.length;
@@ -442,18 +574,81 @@ export function setupAdminCms() {
 		target instanceof HTMLInputElement ||
 		(target instanceof HTMLElement && Boolean(target.closest('[contenteditable="true"]')));
 
+	const escapeHtmlAttribute = (value) =>
+		String(value)
+			.replaceAll('&', '&amp;')
+			.replaceAll('"', '&quot;')
+			.replaceAll('<', '&lt;')
+			.replaceAll('>', '&gt;');
+
+	const captureRichEditorSelection = (target) => {
+		if (!(target instanceof HTMLElement)) return null;
+		const editor = target.closest('[contenteditable="true"][data-slate-editor="true"]');
+		if (!(editor instanceof HTMLElement)) return null;
+
+		const selection = window.getSelection();
+		const range = selection?.rangeCount ? selection.getRangeAt(0).cloneRange() : null;
+		return { editor, range };
+	};
+
+	const restoreRichEditorSelection = ({ editor, range }) => {
+		editor.focus();
+		if (!range || !editor.contains(range.commonAncestorContainer)) return;
+		const selection = window.getSelection();
+		selection?.removeAllRanges();
+		selection?.addRange(range);
+	};
+
+	const insertImagesIntoRichEditor = async (selectionSnapshot, urls) => {
+		if (!selectionSnapshot?.editor?.isConnected) return false;
+		restoreRichEditorSelection(selectionSnapshot);
+
+		const html = urls
+			.map(
+				(url, index) =>
+					`<p><img src="${escapeHtmlAttribute(url)}" alt="粘贴图片 ${index + 1} | lg | center"></p>`,
+			)
+			.join('');
+		const markdown = urls
+			.map((url, index) => `![粘贴图片 ${index + 1} | lg | center](${url})`)
+			.join('\n\n');
+		const clipboard = new DataTransfer();
+		clipboard.setData('text/html', html);
+		clipboard.setData('text/plain', markdown);
+		const pasteEvent = new ClipboardEvent('paste', {
+			bubbles: true,
+			cancelable: true,
+			clipboardData: clipboard,
+		});
+		replayedPasteEvents.add(pasteEvent);
+		selectionSnapshot.editor.dispatchEvent(pasteEvent);
+
+		for (let attempt = 0; attempt < 20; attempt += 1) {
+			await new Promise((resolve) => window.setTimeout(resolve, 50));
+			const insertedSources = [...selectionSnapshot.editor.querySelectorAll('img[src]')].flatMap(
+				(image) => [image.getAttribute('src'), image.dataset.jayCmsPreviewSource],
+			);
+			if (urls.every((url) => insertedSources.includes(url))) return true;
+		}
+		return false;
+	};
+
 	const handleImagePaste = async (event) => {
+		if (replayedPasteEvents.has(event)) return;
 		if (!isTextEditingTarget(event.target)) return;
 
-		const clipboardData = event.clipboardData;
-		const hasImageFile = [...(clipboardData?.items || []), ...(clipboardData?.files || [])].some(
-			(item) => item.type?.startsWith?.('image/'),
-		);
-		const imageSources = extractClipboardImageSources(clipboardData);
+		const clipboardSnapshot = snapshotClipboardData(event.clipboardData);
+		const richEditorSelection = captureRichEditorSelection(event.target);
+		const hasImageFile = clipboardSnapshot.files.length > 0;
+		const htmlImageSources = extractImageSourcesFromHtml(clipboardSnapshot.html);
+		const imageSources = extractClipboardImageSources(clipboardSnapshot);
 		const hasSupportedImageSource = imageSources.some(
-			(source) => isFetchableImageSource(source) && !isLocalImageReference(source),
+			(source) =>
+				isFetchableImageSource(source) &&
+				!isLocalImageReference(source) &&
+				(htmlImageSources.includes(source) || isLikelyImageSource(source)),
 		);
-		const hasLocalImageReference = clipboardContainsOnlyLocalImageReferences(clipboardData);
+		const hasLocalImageReference = clipboardContainsOnlyLocalImageReferences(clipboardSnapshot);
 
 		if (!hasImageFile && !hasSupportedImageSource && !hasLocalImageReference) return;
 		event.preventDefault();
@@ -462,7 +657,7 @@ export function setupAdminCms() {
 		showStatus('正在上传粘贴的图片...', 'pending');
 
 		try {
-			const files = await extractClipboardImageFiles(clipboardData);
+			const files = await extractClipboardImageFiles(clipboardSnapshot);
 			if (files.length === 0) {
 				throw new Error(
 					hasLocalImageReference ? 'local_clipboard_path_only' : 'clipboard_image_unavailable',
@@ -471,16 +666,22 @@ export function setupAdminCms() {
 
 			const urls = [];
 			for (const [index, file] of files.entries()) {
-				urls.push(await uploadImageToGithub(file, index));
+				const preparedFile = await prepareClipboardImage(file, index);
+				urls.push(await uploadImageToGithub(preparedFile, index));
 			}
 
 			const markdown = urls
 				.map((url, index) => `![粘贴图片 ${index + 1} | lg | center](${url})`)
 				.join('\n\n');
-			const textarea = findActiveMarkdownTextarea(event.target);
+			const textarea = event.target instanceof HTMLTextAreaElement ? event.target : null;
 
 			if (textarea) {
 				insertTextIntoTextarea(textarea, `\n\n${markdown}\n\n`);
+				showStatus(`已上传并插入 ${urls.length} 张图片。`, 'success', 5200);
+				return;
+			}
+
+			if (richEditorSelection && (await insertImagesIntoRichEditor(richEditorSelection, urls))) {
 				showStatus(`已上传并插入 ${urls.length} 张图片。`, 'success', 5200);
 				return;
 			}
@@ -502,7 +703,9 @@ export function setupAdminCms() {
 						? '没有找到 GitHub 登录令牌，请刷新后台并重新登录后再粘贴图片。'
 						: error?.message === 'local_clipboard_path_only'
 							? '这次粘贴只包含本地临时图片路径，浏览器无法读取。请先截图复制，或用后台“选择图片”上传原图。'
-							: '粘贴图片上传失败，请改用后台“选择图片”上传。';
+							: error?.message === 'empty_clipboard_image'
+								? '剪贴板里的图片数据为空，请重新截图或重新复制后再粘贴。'
+								: `粘贴图片上传失败：${error?.message || '未知错误'}。请重新登录后台后再试。`;
 			showStatus(message, 'error', 9000);
 		}
 	};
