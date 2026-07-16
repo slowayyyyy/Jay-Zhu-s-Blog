@@ -29,7 +29,7 @@ const renderedPosts = await Promise.all(postPages.map((file) => readFile(file, '
 const searchResults = extractSearchResults(search);
 const checkinTitles = extractCheckinTitles(checkinsPage);
 const errors = [];
-const invalidImagePattern = /!\[[^\]]*\]\(\s*(?:\)|file:|[a-z]:\\)/giu;
+const invalidImagePattern = /!\[[^\]]*\]\(\s*(?:\)|file:|[a-z]:\\|data:image\/)/giu;
 
 const findInvalidImageReferences = (body) =>
 	[...body.matchAll(invalidImagePattern)].map((match) => ({
@@ -49,7 +49,7 @@ for (const post of posts) {
 	}
 
 	for (const image of findInvalidImageReferences(post.body)) {
-		errors.push(`Post has an invalid local or empty image reference: ${post.title}, body line ${image.line}`);
+		errors.push(`Post has an invalid local, empty, or embedded image reference: ${post.title}, body line ${image.line}`);
 	}
 
 	for (const tag of post.tags) {
@@ -70,7 +70,7 @@ for (const checkin of checkins) {
 	}
 
 	for (const image of findInvalidImageReferences(checkin.body)) {
-		errors.push(`Check-in has an invalid local or empty image reference: ${checkin.title}, body line ${image.line}`);
+		errors.push(`Check-in has an invalid local, empty, or embedded image reference: ${checkin.title}, body line ${image.line}`);
 	}
 
 	for (const tag of checkin.tags) {

@@ -22,6 +22,8 @@ const IMAGE_EXTENSION_BY_TYPE = new Map([
 const DATA_IMAGE_SOURCE_PATTERN = /^data:image\//iu;
 const LOCAL_IMAGE_REFERENCE_PATTERN = /^(file:|[a-z]:\\)/iu;
 const FETCHABLE_IMAGE_SOURCE_PATTERN = /^(https?:\/\/|blob:|\/)/iu;
+const MARKDOWN_DATA_IMAGE_PATTERN =
+	/!\[([^\]]*)\]\(\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\r\n]+)\s*(?:"[^"]*")?\)/giu;
 
 const readConfigValue = (source, key) => {
 	if (!source) return undefined;
@@ -336,6 +338,71 @@ export function setupAdminCms() {
 		return files;
 	};
 
+	const normalizeMarkdownDataImages = async (body) => {
+		if (typeof body !== 'string' || !DATA_IMAGE_SOURCE_PATTERN.test(body)) return body;
+
+		MARKDOWN_DATA_IMAGE_PATTERN.lastIndex = 0;
+		const matches = [...body.matchAll(MARKDOWN_DATA_IMAGE_PATTERN)];
+		if (matches.length === 0) return body;
+
+		const uploadedByDataUrl = new Map();
+		let normalizedBody = '';
+		let cursor = 0;
+
+		for (const [index, match] of matches.entries()) {
+			const [rawMarkdown, rawAlt, dataUrl] = match;
+			const start = match.index ?? 0;
+			const end = start + rawMarkdown.length;
+			const alt = rawAlt?.trim() || `粘贴图片 ${index + 1} | lg | center`;
+
+			normalizedBody += body.slice(cursor, start);
+
+			let uploadedUrl = uploadedByDataUrl.get(dataUrl);
+			if (!uploadedUrl) {
+				const extension = dataUrl.split(';')[0].split('/').pop() || 'png';
+				const file = await fileFromDataUrl(
+					dataUrl,
+					`${sanitizeFilenamePart(alt)}.${extension}`,
+				);
+				uploadedUrl = await uploadImageToGithub(file, index);
+				uploadedByDataUrl.set(dataUrl, uploadedUrl);
+			}
+
+			normalizedBody += `![${alt}](${uploadedUrl})`;
+			cursor = end;
+		}
+
+		normalizedBody += body.slice(cursor);
+		return normalizedBody;
+	};
+
+	const getEntryData = (entry) => entry?.get?.('data');
+
+	const readEntryDataField = (data, field) => {
+		if (!data) return undefined;
+		if (typeof data.get === 'function') return data.get(field);
+		return data[field];
+	};
+
+	const setEntryDataField = (data, field, value) => {
+		if (!data) return data;
+		if (typeof data.set === 'function') return data.set(field, value);
+		return { ...data, [field]: value };
+	};
+
+	const normalizeEmbeddedImagesBeforeSave = async ({ entry }) => {
+		const data = getEntryData(entry);
+		const body = readEntryDataField(data, 'body');
+		if (typeof body !== 'string' || !DATA_IMAGE_SOURCE_PATTERN.test(body)) return data;
+
+		showStatus('检测到正文里有内嵌图片，正在转成站内图片...', 'pending');
+		const normalizedBody = await normalizeMarkdownDataImages(body);
+		if (normalizedBody === body) return data;
+
+		showStatus('已把内嵌图片转成站内图片，正在继续保存...', 'success', 4200);
+		return setEntryDataField(data, 'body', normalizedBody);
+	};
+
 	const clipboardContainsOnlyLocalImageReferences = (clipboardData) => {
 		const imageSources = extractClipboardImageSources(clipboardData);
 		return imageSources.some((source) => isLocalImageReference(source));
@@ -390,6 +457,7 @@ export function setupAdminCms() {
 
 		if (!hasImageFile && !hasSupportedImageSource && !hasLocalImageReference) return;
 		event.preventDefault();
+		event.stopImmediatePropagation();
 
 		showStatus('正在上传粘贴的图片...', 'pending');
 
@@ -852,6 +920,11 @@ export function setupAdminCms() {
 		},
 		true,
 	);
+
+	window.CMS.registerEventListener({
+		name: 'preSave',
+		handler: normalizeEmbeddedImagesBeforeSave,
+	});
 
 	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
