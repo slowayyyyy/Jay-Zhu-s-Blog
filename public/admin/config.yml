@@ -317,7 +317,7 @@ collections:
               - label: 音乐文件
                 name: src
                 widget: file
-                media_folder: public/audio
+                media_folder: /public/audio
                 public_folder: /audio
                 allow_multiple: false
                 choose_url: false
