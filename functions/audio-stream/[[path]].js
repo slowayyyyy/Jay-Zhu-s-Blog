@@ -10,17 +10,25 @@ const AUDIO_CONTENT_TYPES = new Map([
 	['flac', 'audio/flac'],
 ]);
 
+const decodePathSegment = (value) => {
+	let decoded = value;
+	for (let attempt = 0; attempt < 3; attempt += 1) {
+		try {
+			const nextValue = decodeURIComponent(decoded);
+			if (nextValue === decoded) break;
+			decoded = nextValue;
+		} catch {
+			break;
+		}
+	}
+	return decoded;
+};
+
 const encodeAudioPath = (value) =>
 	String(value || '')
 		.split('/')
 		.filter((segment) => segment && segment !== '.' && segment !== '..')
-		.map((segment) => {
-			try {
-				return encodeURIComponent(decodeURIComponent(segment));
-			} catch {
-				return encodeURIComponent(segment);
-			}
-		})
+		.map((segment) => encodeURIComponent(decodePathSegment(segment)))
 		.join('/');
 
 export async function onRequest({ request, params }) {
@@ -32,7 +40,8 @@ export async function onRequest({ request, params }) {
 		});
 	}
 
-	const path = Array.isArray(params.path) ? params.path.join('/') : params.path;
+	const requestPath = new URL(request.url).pathname.replace(/^\/audio-stream\/?/u, '');
+	const path = requestPath || (Array.isArray(params.path) ? params.path.join('/') : params.path);
 	const encodedPath = encodeAudioPath(path);
 	if (!encodedPath) return new Response('Audio not found', { status: 404 });
 
