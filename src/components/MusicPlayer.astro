@@ -122,7 +122,7 @@ const { playlist } = Astro.props;
 				.split('/')
 				.map((part) => encodeURIComponent(part))
 				.join('/');
-			return `/audio-stream/${encodedPath}`;
+			return `https://cdn.jsdelivr.net/gh/slowayyyyy/Jay-Zhu-s-Blog@main/public/audio/${encodedPath}`;
 		};
 
 		const setPlayingState = (isPlaying) => {
