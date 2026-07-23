@@ -80,6 +80,8 @@ const { playlist } = Astro.props;
 		const collapseStorageKey = 'jay-player-collapsed';
 		let currentIndex = 0;
 		let pendingRestoreTime = 0;
+		let isSeekingWithControl = false;
+		let previewSeekTime = null;
 
 		const savedState = (() => {
 			try {
@@ -95,15 +97,32 @@ const { playlist } = Astro.props;
 			return `${minutes}:${String(Math.floor(seconds % 60)).padStart(2, '0')}`;
 		};
 
-		const updateProgress = () => {
+		const renderProgress = (seconds) => {
 			const duration = audio.duration;
 			const position = Number.isFinite(duration) && duration > 0
-				? (audio.currentTime / duration) * 100
+				? (seconds / duration) * 100
 				: 0;
 			progress.value = String(position);
 			progress.style.setProperty('--position', `${position}%`);
-			currentTime.textContent = formatTime(audio.currentTime);
+			currentTime.textContent = formatTime(seconds);
 			durationTime.textContent = formatTime(duration);
+		};
+
+		const updateProgress = () => {
+			if (isSeekingWithControl) return;
+			renderProgress(audio.currentTime);
+		};
+
+		const resolveTrackSource = (source) => {
+			if (!source.startsWith('/audio/') || ['localhost', '127.0.0.1'].includes(location.hostname)) {
+				return source;
+			}
+			const encodedPath = source
+				.slice('/audio/'.length)
+				.split('/')
+				.map((part) => encodeURIComponent(part))
+				.join('/');
+			return `/audio-stream/${encodedPath}`;
 		};
 
 		const setPlayingState = (isPlaying) => {
@@ -137,8 +156,10 @@ const { playlist } = Astro.props;
 
 			currentIndex = (index + playlist.length) % playlist.length;
 			const track = playlist[currentIndex];
+			isSeekingWithControl = false;
+			previewSeekTime = null;
 			pendingRestoreTime = restoreTime && typeof savedState.time === 'number' ? savedState.time : 0;
-			audio.src = track.src;
+			audio.src = resolveTrackSource(track.src);
 			title.textContent = track.title;
 			artist.textContent = track.artist;
 			setPlayingState(false);
@@ -192,21 +213,61 @@ const { playlist } = Astro.props;
 			if (player.classList.contains('is-collapsed')) setCollapsed(false);
 		});
 
-		progress.addEventListener('input', () => {
+		const previewProgressSeek = () => {
 			if (!Number.isFinite(audio.duration) || audio.duration <= 0) return;
-			audio.currentTime = (Number(progress.value) / 100) * audio.duration;
+			isSeekingWithControl = true;
+			previewSeekTime = (Number(progress.value) / 100) * audio.duration;
+			renderProgress(previewSeekTime);
+		};
+
+		const commitProgressSeek = () => {
+			if (!Number.isFinite(previewSeekTime)) {
+				isSeekingWithControl = false;
+				updateProgress();
+				return;
+			}
+			const targetTime = Math.min(audio.duration, Math.max(0, previewSeekTime));
+			previewSeekTime = null;
+			isSeekingWithControl = false;
+			audio.currentTime = targetTime;
+			renderProgress(targetTime);
+			persist(!audio.paused);
+		};
+
+		progress.addEventListener('pointerdown', () => {
+			isSeekingWithControl = true;
+		});
+		progress.addEventListener('input', previewProgressSeek);
+		progress.addEventListener('change', commitProgressSeek);
+		progress.addEventListener('pointerup', () => {
+			if (Number.isFinite(previewSeekTime)) {
+				commitProgressSeek();
+				return;
+			}
+			isSeekingWithControl = false;
+			updateProgress();
+		});
+		progress.addEventListener('pointercancel', () => {
+			previewSeekTime = null;
+			isSeekingWithControl = false;
 			updateProgress();
 		});
 
 		audio.addEventListener('loadedmetadata', () => {
-			if (pendingRestoreTime > 0 && pendingRestoreTime < audio.duration) {
-				audio.currentTime = pendingRestoreTime;
-				pendingRestoreTime = 0;
+			const restoreTime = pendingRestoreTime;
+			pendingRestoreTime = 0;
+			if (restoreTime > 0 && restoreTime < audio.duration) {
+				audio.currentTime = restoreTime;
 			}
 			updateProgress();
 		});
 
 		audio.addEventListener('timeupdate', () => {
+			if (isSeekingWithControl) return;
+			updateProgress();
+			persist(!audio.paused);
+		});
+		audio.addEventListener('seeked', () => {
 			updateProgress();
 			persist(!audio.paused);
 		});
