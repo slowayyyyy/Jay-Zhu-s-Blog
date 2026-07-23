@@ -4,7 +4,7 @@ backend:
   branch: main
   base_url: https://jay-zhu-s-blog.pages.dev
   auth_endpoint: api/auth
-  api_root: https://jay-zhu-s-blog.pages.dev/api/github
+  api_root: https://api.github.com
 
 local_backend: true
 locale: zh_Hans
@@ -317,7 +317,7 @@ collections:
               - label: 音乐文件
                 name: src
                 widget: file
-                media_folder: /public/audio
+                media_folder: public/audio
                 public_folder: /audio
                 allow_multiple: false
                 choose_url: false

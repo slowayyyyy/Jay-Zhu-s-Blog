@@ -83,7 +83,7 @@ export async function onRequest(context) {
 	};
 
 	if (method !== 'GET' && method !== 'HEAD') {
-		init.body = await request.arrayBuffer();
+		init.body = request.body;
 	}
 
 	const response = await fetch(targetUrl, init);
