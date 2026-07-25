@@ -310,6 +310,7 @@ collections:
             name: playlist
             widget: list
             collapsed: true
+            hint: 删除歌曲条目并保存网站设置后，对应 MP3 也会从 GitHub 仓库删除；以前已经遗留在仓库中的文件不会被自动清理。
             summary: "{{fields.title}} · {{fields.artist}}"
             fields:
               - { label: 歌曲名, name: title, widget: string }
