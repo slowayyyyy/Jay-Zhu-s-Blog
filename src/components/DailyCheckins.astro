@@ -283,9 +283,26 @@ const formatDate = (date: Date) => {
 	const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 	return hasTime ? `${dateLabel} · ${timeFormatter.format(date)}` : dateLabel;
 };
+const dashboardState = JSON.stringify({
+	habits: habits.map(({ id, name, color, weeklyGoal }) => ({ id, name, color, weeklyGoal })),
+	activityByDay: Object.fromEntries(activityByDay),
+	copy: {
+		weekRemaining: copy.weekRemaining,
+		weekComplete: copy.weekComplete,
+		recordsSummary: copy.recordsSummary,
+		statsLamps: copy.statsLamps,
+		statsDays: copy.statsDays,
+		statsMinutes: copy.statsMinutes,
+	},
+}).replaceAll('<', '\\u003c');
 ---
 
-<section class="daily-checkins container" aria-labelledby="daily-checkin-title" data-lamp-dashboard>
+<section
+	class="daily-checkins container"
+	aria-labelledby="daily-checkin-title"
+	data-lamp-dashboard
+	data-build-day={todayKey}
+>
 	<header class="checkin-heading">
 		<div>
 			<div class="eyebrow">{copy.pageKicker}</div>
@@ -310,12 +327,13 @@ const formatDate = (date: Date) => {
 				<span data-bilingual="text" data-zh={copy.todayLabel.zh} data-en={copy.todayLabel.en}>
 					{copy.todayLabel.zh}
 				</span>
-				<strong>{todayKey.slice(5).replace('-', ' / ')}</strong>
+				<strong data-today-value>{todayKey.slice(5).replace('-', ' / ')}</strong>
 			</div>
 			<div class="today-lamps">
 				{habits.map((habit) => (
 					<span
 						class:list={['mini-lamp', { 'is-lit': getMetric(todaySummary, habit.id).count > 0 }]}
+						data-today-habit={habit.id}
 						style={`--habit-color: ${habit.color}`}
 						title={habit.name.zh}
 					/>
@@ -375,6 +393,7 @@ const formatDate = (date: Date) => {
 				return (
 				<article
 					class="weekly-card glass-card"
+					data-weekly-habit={habit.id}
 					style={`--habit: ${habit.color}; --habit-glow: ${habit.color}`}
 				>
 					<div class="weekly-card-top">
@@ -388,13 +407,14 @@ const formatDate = (date: Date) => {
 								{habit.name.zh}
 							</h2>
 						</div>
-						<strong class="weekly-ratio">{completed}<span> / {goal}</span></strong>
+						<strong class="weekly-ratio"><b data-weekly-completed>{completed}</b><span> / {goal}</span></strong>
 					</div>
 					<div class="progress-track" aria-label={`${habit.name.zh}本周进度`}>
-						<span style={`--progress: ${percent}%`} />
+						<span data-weekly-progress style={`--progress: ${percent}%`} />
 					</div>
 					<div class="weekly-note">
 						<span
+							data-weekly-note
 							data-bilingual="text"
 							data-zh={remainingZh}
 							data-en={remainingEn}
@@ -443,7 +463,7 @@ const formatDate = (date: Date) => {
 				>
 					{copy.timeMonthTotal.zh}
 				</span>
-				<strong>{currentMonthTotalMinutes}</strong>
+				<strong data-current-month-total>{currentMonthTotalMinutes}</strong>
 				<small data-bilingual="text" data-zh={copy.timeUnit.zh} data-en={copy.timeUnit.en}>
 					{copy.timeUnit.zh}
 				</small>
@@ -451,7 +471,7 @@ const formatDate = (date: Date) => {
 		</div>
 		<div class="time-ledger-grid">
 			{timeSummary.map(({ habit, weekMinutes, monthMinutes, totalMinutes, timedSessions, averageMinutes }) => (
-				<article class="time-card" style={`--habit-color: ${habit.color}`}>
+				<article class="time-card" data-time-habit={habit.id} style={`--habit-color: ${habit.color}`}>
 					<div class="time-card-head">
 						<span class="time-card-code">{habit.code}</span>
 						<h3 data-bilingual="text" data-zh={habit.name.zh} data-en={habit.name.en}>
@@ -462,20 +482,20 @@ const formatDate = (date: Date) => {
 						<span data-bilingual="text" data-zh={copy.timeMonthLabel.zh} data-en={copy.timeMonthLabel.en}>
 							{copy.timeMonthLabel.zh}
 						</span>
-						<strong>{monthMinutes}</strong>
+						<strong data-time-month>{monthMinutes}</strong>
 						<small data-bilingual="text" data-zh={copy.timeUnit.zh} data-en={copy.timeUnit.en}>
 							{copy.timeUnit.zh}
 						</small>
 					</div>
 					<div class="time-share-track" aria-hidden="true">
-						<span style={`--time-share: ${monthMinutes > 0 ? Math.max(6, Math.round((monthMinutes / maxMonthMinutes) * 100)) : 0}%`} />
+						<span data-time-share style={`--time-share: ${monthMinutes > 0 ? Math.max(6, Math.round((monthMinutes / maxMonthMinutes) * 100)) : 0}%`} />
 					</div>
 					<dl class="time-card-metrics">
 						<div>
 							<dt data-bilingual="text" data-zh={copy.timeWeekLabel.zh} data-en={copy.timeWeekLabel.en}>
 								{copy.timeWeekLabel.zh}
 							</dt>
-							<dd>{weekMinutes}<small data-bilingual="text" data-zh={copy.timeUnit.zh} data-en={copy.timeUnit.en}>{copy.timeUnit.zh}</small></dd>
+							<dd><span data-time-week>{weekMinutes}</span><small data-bilingual="text" data-zh={copy.timeUnit.zh} data-en={copy.timeUnit.en}>{copy.timeUnit.zh}</small></dd>
 						</div>
 						<div>
 							<dt data-bilingual="text" data-zh={copy.timeTotalLabel.zh} data-en={copy.timeTotalLabel.en}>
@@ -585,6 +605,7 @@ const formatDate = (date: Date) => {
 										'has-entry': entryCount > 0,
 									},
 								]}
+								data-day-key={dayKey}
 								data-entry-target={entryCount > 0 ? dayKey : undefined}
 								aria-label={`${dayKey}，${habits.map((habit) => `${habit.name.zh}${getMetric(summary, habit.id).count > 0 ? '已完成' : '未完成'}`).join('，')}`}
 							>
@@ -603,19 +624,19 @@ const formatDate = (date: Date) => {
 					</div>
 					<div class="month-stats">
 						<div>
-							<strong>{calendar.lights}</strong>
+							<strong data-month-lights>{calendar.lights}</strong>
 							<span data-bilingual="text" data-zh={copy.statsLamps.zh} data-en={copy.statsLamps.en}>
 								{copy.statsLamps.zh}
 							</span>
 						</div>
 						<div>
-							<strong>{calendar.activeDays}</strong>
+							<strong data-month-days>{calendar.activeDays}</strong>
 							<span data-bilingual="text" data-zh={copy.statsDays.zh} data-en={copy.statsDays.en}>
 								{copy.statsDays.zh}
 							</span>
 						</div>
 						<div>
-							<strong>{calendar.minutes}</strong>
+							<strong data-month-minutes>{calendar.minutes}</strong>
 							<span data-bilingual="text" data-zh={copy.statsMinutes.zh} data-en={copy.statsMinutes.en}>
 								{copy.statsMinutes.zh}
 							</span>
@@ -634,6 +655,7 @@ const formatDate = (date: Date) => {
 			</h2>
 		</div>
 		<p
+			data-records-summary
 			data-bilingual="text"
 			data-zh={fillTemplate(copy.recordsSummary.zh, { days: currentMonth.activeDays, lights: currentMonth.lights })}
 			data-en={fillTemplate(copy.recordsSummary.en, { days: currentMonth.activeDays, lights: currentMonth.lights })}
@@ -719,37 +741,398 @@ const formatDate = (date: Date) => {
 			}
 		</div>
 	</div>
+	<script is:inline type="application/json" data-dashboard-state set:html={dashboardState} />
 </section>
 
 <script>
+	interface RuntimeHabit {
+		id: string;
+		name: { zh: string; en: string };
+		color: string;
+		weeklyGoal: number;
+	}
+
+	interface RuntimeMetric {
+		count: number;
+		minutes: number;
+	}
+
+	interface DashboardState {
+		habits: RuntimeHabit[];
+		activityByDay: Record<string, Record<string, RuntimeMetric>>;
+		copy: {
+			weekRemaining: { zh: string; en: string };
+			weekComplete: { zh: string; en: string };
+			recordsSummary: { zh: string; en: string };
+			statsLamps: { zh: string; en: string };
+			statsDays: { zh: string; en: string };
+			statsMinutes: { zh: string; en: string };
+		};
+	}
+
+	const getShanghaiDayKey = () => {
+		const parts = new Intl.DateTimeFormat('en-CA', {
+			timeZone: 'Asia/Shanghai',
+			year: 'numeric',
+			month: '2-digit',
+			day: '2-digit',
+		}).formatToParts(new Date());
+		const values = Object.fromEntries(parts.map((part) => [part.type, part.value]));
+		return `${values.year}-${values.month}-${values.day}`;
+	};
+
+	const addRuntimeDays = (dayKey: string, amount: number) => {
+		const [year, month, day] = dayKey.split('-').map(Number);
+		const date = new Date(Date.UTC(year, month - 1, day + amount));
+		return [
+			date.getUTCFullYear(),
+			String(date.getUTCMonth() + 1).padStart(2, '0'),
+			String(date.getUTCDate()).padStart(2, '0'),
+		].join('-');
+	};
+
+	const getRuntimeWeekDays = (dayKey: string) => {
+		const [year, month, day] = dayKey.split('-').map(Number);
+		const date = new Date(Date.UTC(year, month - 1, day));
+		const mondayOffset = (date.getUTCDay() + 6) % 7;
+		const weekStart = addRuntimeDays(dayKey, -mondayOffset);
+		return Array.from({ length: 7 }, (_, index) => addRuntimeDays(weekStart, index));
+	};
+
+	const fillRuntimeTemplate = (template: string, values: Record<string, number>) =>
+		Object.entries(values).reduce(
+			(result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+			template,
+		);
+
+	const setRuntimeBilingualText = (
+		element: HTMLElement | null,
+		copy: { zh: string; en: string },
+	) => {
+		if (!element) return;
+		element.dataset.bilingual = 'text';
+		element.dataset.zh = copy.zh;
+		element.dataset.en = copy.en;
+		element.textContent = document.documentElement.dataset.language === 'en' ? copy.en : copy.zh;
+	};
+
+	const getRuntimeMetric = (state: DashboardState, dayKey: string, habitId: string) =>
+		state.activityByDay[dayKey]?.[habitId] ?? { count: 0, minutes: 0 };
+
+	const getRuntimeMonthStats = (state: DashboardState, monthKey: string) => {
+		const entries = Object.entries(state.activityByDay).filter(([dayKey]) =>
+			dayKey.startsWith(monthKey),
+		);
+		return {
+			activeDays: entries.filter(([, summary]) =>
+				state.habits.some(({ id }) => Number(summary[id]?.count ?? 0) > 0),
+			).length,
+			lights: entries.reduce(
+				(total, [, summary]) =>
+					total
+					+ state.habits.reduce(
+						(count, { id }) => count + Number(Number(summary[id]?.count ?? 0) > 0),
+						0,
+					),
+				0,
+			),
+			minutes: entries.reduce(
+				(total, [, summary]) =>
+					total
+					+ state.habits.reduce(
+						(sum, { id }) => sum + Number(summary[id]?.minutes ?? 0),
+						0,
+					),
+				0,
+			),
+		};
+	};
+
+	const getRuntimeMonth = (monthKey: string) => {
+		const [year, month] = monthKey.split('-').map(Number);
+		const totalDays = new Date(Date.UTC(year, month, 0)).getUTCDate();
+		const leadingEmptyDays = (new Date(Date.UTC(year, month - 1, 1)).getUTCDay() + 6) % 7;
+		return {
+			year,
+			month,
+			leadingEmptyDays,
+			days: Array.from(
+				{ length: totalDays },
+				(_, index) => `${monthKey}-${String(index + 1).padStart(2, '0')}`,
+			),
+		};
+	};
+
+	const createRuntimeMonth = (
+		root: HTMLElement,
+		state: DashboardState,
+		monthKey: string,
+		todayKey: string,
+	) => {
+		const switcher = root.querySelector<HTMLElement>('.month-switcher');
+		const firstPanel = root.querySelector<HTMLElement>('[data-month-panel]');
+		if (!switcher || !firstPanel?.parentElement) return;
+
+		const calendar = getRuntimeMonth(monthKey);
+		const zhLabel = `${calendar.year} 年 ${calendar.month} 月`;
+		const enLabel = new Intl.DateTimeFormat('en-US', {
+			year: 'numeric',
+			month: 'long',
+			timeZone: 'UTC',
+		}).format(new Date(Date.UTC(calendar.year, calendar.month - 1, 1)));
+
+		const tab = document.createElement('button');
+		tab.type = 'button';
+		tab.setAttribute('role', 'tab');
+		tab.dataset.monthTarget = monthKey;
+		tab.setAttribute('aria-selected', 'false');
+		setRuntimeBilingualText(tab, { zh: zhLabel, en: enLabel });
+		switcher.prepend(tab);
+
+		const panel = document.createElement('div');
+		panel.className = 'month-panel';
+		panel.dataset.monthPanel = monthKey;
+		panel.hidden = true;
+
+		const weekdays = document.createElement('div');
+		weekdays.className = 'calendar-weekdays';
+		weekdays.setAttribute('aria-hidden', 'true');
+		[
+			['一', 'Mon'],
+			['二', 'Tue'],
+			['三', 'Wed'],
+			['四', 'Thu'],
+			['五', 'Fri'],
+			['六', 'Sat'],
+			['日', 'Sun'],
+		].forEach(([zh, en]) => {
+			const label = document.createElement('span');
+			setRuntimeBilingualText(label, { zh, en });
+			weekdays.append(label);
+		});
+		panel.append(weekdays);
+
+		const grid = document.createElement('div');
+		grid.className = 'calendar-grid';
+		Array.from({ length: calendar.leadingEmptyDays }).forEach(() => {
+			const empty = document.createElement('span');
+			empty.className = 'calendar-empty';
+			grid.append(empty);
+		});
+
+		calendar.days.forEach((dayKey, index) => {
+			const summary = state.activityByDay[dayKey] ?? {};
+			const entryCount = Object.values(summary).reduce(
+				(total, metric) => total + Number(metric.count ?? 0),
+				0,
+			);
+			const day = document.createElement('button');
+			day.type = 'button';
+			day.className = 'calendar-day';
+			day.classList.toggle('is-today', dayKey === todayKey);
+			day.classList.toggle('has-entry', entryCount > 0);
+			day.dataset.dayKey = dayKey;
+			if (entryCount > 0) day.dataset.entryTarget = dayKey;
+			day.setAttribute(
+				'aria-label',
+				`${dayKey}，${state.habits.map((habit) => `${habit.name.zh}${getRuntimeMetric(state, dayKey, habit.id).count > 0 ? '已完成' : '未完成'}`).join('，')}`,
+			);
+
+			const number = document.createElement('span');
+			number.className = 'day-number';
+			number.textContent = String(index + 1);
+			day.append(number);
+
+			const lamps = document.createElement('span');
+			lamps.className = 'day-lamps';
+			lamps.setAttribute('aria-hidden', 'true');
+			state.habits.forEach((habit) => {
+				const lamp = document.createElement('i');
+				lamp.className = 'calendar-lamp';
+				lamp.classList.toggle('is-lit', getRuntimeMetric(state, dayKey, habit.id).count > 0);
+				lamp.style.setProperty('--habit-color', habit.color);
+				lamps.append(lamp);
+			});
+			day.append(lamps);
+
+			if (entryCount > 0) {
+				const count = document.createElement('small');
+				count.textContent = String(entryCount);
+				day.append(count);
+			}
+			grid.append(day);
+		});
+		panel.append(grid);
+
+		const stats = getRuntimeMonthStats(state, monthKey);
+		const statsRow = document.createElement('div');
+		statsRow.className = 'month-stats';
+		[
+			['monthLights', stats.lights, state.copy.statsLamps],
+			['monthDays', stats.activeDays, state.copy.statsDays],
+			['monthMinutes', stats.minutes, state.copy.statsMinutes],
+		].forEach(([dataKey, value, label]) => {
+			const item = document.createElement('div');
+			const strong = document.createElement('strong');
+			strong.dataset[String(dataKey)] = '';
+			strong.textContent = String(value);
+			const span = document.createElement('span');
+			setRuntimeBilingualText(span, label as { zh: string; en: string });
+			item.append(strong, span);
+			statsRow.append(item);
+		});
+		panel.append(statsRow);
+		firstPanel.parentElement.insertBefore(panel, firstPanel);
+	};
+
+	const syncRuntimePeriod = (root: HTMLElement, state: DashboardState) => {
+		const todayKey = getShanghaiDayKey();
+		const monthKey = todayKey.slice(0, 7);
+		const weekDays = getRuntimeWeekDays(todayKey);
+		root.dataset.runtimeDay = todayKey;
+
+		const todayValue = root.querySelector<HTMLElement>('[data-today-value]');
+		if (todayValue) todayValue.textContent = todayKey.slice(5).replace('-', ' / ');
+		root.querySelectorAll<HTMLElement>('[data-today-habit]').forEach((lamp) => {
+			lamp.classList.toggle(
+				'is-lit',
+				getRuntimeMetric(state, todayKey, lamp.dataset.todayHabit ?? '').count > 0,
+			);
+		});
+
+		if (![...root.querySelectorAll<HTMLElement>('[data-month-panel]')].some(
+			(panel) => panel.dataset.monthPanel === monthKey,
+		)) {
+			createRuntimeMonth(root, state, monthKey, todayKey);
+		}
+
+		root.querySelectorAll<HTMLElement>('[data-day-key]').forEach((day) => {
+			day.classList.toggle('is-today', day.dataset.dayKey === todayKey);
+		});
+
+		state.habits.forEach((habit) => {
+			const completed = weekDays.filter(
+				(dayKey) => getRuntimeMetric(state, dayKey, habit.id).count > 0,
+			).length;
+			const card = [...root.querySelectorAll<HTMLElement>('[data-weekly-habit]')]
+				.find((item) => item.dataset.weeklyHabit === habit.id);
+			if (card) {
+				const completedLabel = card.querySelector<HTMLElement>('[data-weekly-completed]');
+				if (completedLabel) completedLabel.textContent = String(completed);
+				card.querySelector<HTMLElement>('[data-weekly-progress]')?.style.setProperty(
+					'--progress',
+					`${Math.min(100, Math.round((completed / habit.weeklyGoal) * 100))}%`,
+				);
+				const remaining = Math.max(0, habit.weeklyGoal - completed);
+				setRuntimeBilingualText(
+					card.querySelector<HTMLElement>('[data-weekly-note]'),
+					remaining > 0
+						? {
+								zh: fillRuntimeTemplate(state.copy.weekRemaining.zh, { count: remaining }),
+								en: fillRuntimeTemplate(state.copy.weekRemaining.en, { count: remaining }),
+							}
+						: state.copy.weekComplete,
+				);
+			}
+		});
+
+		const monthMinutes = new Map<string, number>();
+		state.habits.forEach((habit) => {
+			const weekTotal = weekDays.reduce(
+				(total, dayKey) => total + getRuntimeMetric(state, dayKey, habit.id).minutes,
+				0,
+			);
+			const monthTotal = Object.entries(state.activityByDay)
+				.filter(([dayKey]) => dayKey.startsWith(monthKey))
+				.reduce(
+					(total, [dayKey]) => total + getRuntimeMetric(state, dayKey, habit.id).minutes,
+					0,
+				);
+			monthMinutes.set(habit.id, monthTotal);
+			const card = [...root.querySelectorAll<HTMLElement>('[data-time-habit]')]
+				.find((item) => item.dataset.timeHabit === habit.id);
+			if (card) {
+				const monthValue = card.querySelector<HTMLElement>('[data-time-month]');
+				const weekValue = card.querySelector<HTMLElement>('[data-time-week]');
+				if (monthValue) monthValue.textContent = String(monthTotal);
+				if (weekValue) weekValue.textContent = String(weekTotal);
+			}
+		});
+
+		const currentMonthTotal = [...monthMinutes.values()].reduce((total, value) => total + value, 0);
+		const currentMonthValue = root.querySelector<HTMLElement>('[data-current-month-total]');
+		if (currentMonthValue) currentMonthValue.textContent = String(currentMonthTotal);
+		const maxMonthMinutes = Math.max(1, ...monthMinutes.values());
+		root.querySelectorAll<HTMLElement>('[data-time-habit]').forEach((card) => {
+			const minutes = monthMinutes.get(card.dataset.timeHabit ?? '') ?? 0;
+			card.querySelector<HTMLElement>('[data-time-share]')?.style.setProperty(
+				'--time-share',
+				`${minutes > 0 ? Math.max(6, Math.round((minutes / maxMonthMinutes) * 100)) : 0}%`,
+			);
+		});
+
+		const stats = getRuntimeMonthStats(state, monthKey);
+		setRuntimeBilingualText(root.querySelector<HTMLElement>('[data-records-summary]'), {
+			zh: fillRuntimeTemplate(state.copy.recordsSummary.zh, {
+				days: stats.activeDays,
+				lights: stats.lights,
+			}),
+			en: fillRuntimeTemplate(state.copy.recordsSummary.en, {
+				days: stats.activeDays,
+				lights: stats.lights,
+			}),
+		});
+
+		root.querySelectorAll<HTMLButtonElement>('[data-month-target]').forEach((tab) => {
+			const active = tab.dataset.monthTarget === monthKey;
+			tab.classList.toggle('is-active', active);
+			tab.setAttribute('aria-selected', String(active));
+		});
+		root.querySelectorAll<HTMLElement>('[data-month-panel]').forEach((panel) => {
+			panel.hidden = panel.dataset.monthPanel !== monthKey;
+		});
+	};
+
 	const setupLampDashboard = () => {
 		document
 			.querySelectorAll<HTMLElement>('[data-lamp-dashboard]:not([data-ready])')
 			.forEach((root) => {
 				root.dataset.ready = 'true';
-				const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-month-target]')];
-				const panels = [...root.querySelectorAll<HTMLElement>('[data-month-panel]')];
+				const stateElement = root.querySelector<HTMLScriptElement>('[data-dashboard-state]');
+				if (!stateElement?.textContent) return;
+				const state = JSON.parse(stateElement.textContent) as DashboardState;
+				syncRuntimePeriod(root, state);
 
-				tabs.forEach((tab) => {
-					tab.addEventListener('click', () => {
-						const target = tab.dataset.monthTarget;
-						tabs.forEach((candidate) => {
+				root.addEventListener('click', (event) => {
+					const target = event.target;
+					if (!(target instanceof Element)) return;
+					const tab = target.closest<HTMLButtonElement>('[data-month-target]');
+					if (tab && root.contains(tab)) {
+						const monthTarget = tab.dataset.monthTarget;
+						root.querySelectorAll<HTMLButtonElement>('[data-month-target]').forEach((candidate) => {
 							const active = candidate === tab;
 							candidate.classList.toggle('is-active', active);
 							candidate.setAttribute('aria-selected', String(active));
 						});
-						panels.forEach((panel) => {
-							panel.hidden = panel.dataset.monthPanel !== target;
+						root.querySelectorAll<HTMLElement>('[data-month-panel]').forEach((panel) => {
+							panel.hidden = panel.dataset.monthPanel !== monthTarget;
 						});
-					});
+						return;
+					}
+
+					const day = target.closest<HTMLButtonElement>('[data-entry-target]');
+					if (!day || !root.contains(day)) return;
+					const entry = document.getElementById(`checkin-day-${day.dataset.entryTarget}`);
+					entry?.scrollIntoView({ behavior: 'smooth', block: 'center' });
 				});
 
-				root.querySelectorAll<HTMLButtonElement>('[data-entry-target]').forEach((day) => {
-					day.addEventListener('click', () => {
-						const target = document.getElementById(`checkin-day-${day.dataset.entryTarget}`);
-						target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
-					});
-				});
+				const dayTimer = window.setInterval(() => {
+					if (!root.isConnected) {
+						window.clearInterval(dayTimer);
+						return;
+					}
+					if (root.dataset.runtimeDay !== getShanghaiDayKey()) syncRuntimePeriod(root, state);
+				}, 60_000);
 			});
 	};
 
