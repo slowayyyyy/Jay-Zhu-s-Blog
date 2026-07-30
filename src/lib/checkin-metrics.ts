@@ -1,4 +1,4 @@
-export type HabitCategory = 'english' | 'exercise' | 'other';
+export type LegacyHabitCategory = 'english' | 'exercise' | 'other';
 
 export interface CheckinMetricSource {
 	id: string;
@@ -7,7 +7,8 @@ export interface CheckinMetricSource {
 		day?: string;
 		title: string;
 		summary?: string;
-		category?: HabitCategory;
+		habit?: string;
+		category?: LegacyHabitCategory;
 		duration?: number;
 		activity?: string;
 		tags?: string[];
@@ -39,7 +40,10 @@ export const getCheckinDayKey = (checkin: CheckinMetricSource) =>
 		? checkin.data.day
 		: formatLocalDayKey(checkin.data.date);
 
-export const getCheckinCategory = (checkin: CheckinMetricSource): HabitCategory => {
+export const getCheckinHabitId = (checkin: CheckinMetricSource) => {
+	const configuredHabit = checkin.data.habit?.trim().toLowerCase();
+	if (configuredHabit) return configuredHabit;
+
 	if (checkin.data.category === 'english' || checkin.data.category === 'exercise') {
 		return checkin.data.category;
 	}

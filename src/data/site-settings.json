@@ -110,14 +110,106 @@
     "en": "Write complex things clearly, and keep ordinary days with care."
   },
   "checkinSettings": {
-    "weeklyGoals": {
-      "english": 5,
-      "exercise": 3
+    "copy": {
+      "pageKicker": "LIGHT THE DAY",
+      "pageTitle": {
+        "zh": "灯火计划",
+        "en": "Lamp Plan"
+      },
+      "pageIntro": {
+        "zh": "不追求完美连续，只把今天真正做过的事点亮。",
+        "en": "No perfect streaks, just a light for what was truly done today."
+      },
+      "todayLabel": {
+        "zh": "今天",
+        "en": "Today"
+      },
+      "quickKicker": "20 SECOND CHECK-IN",
+      "quickTitle": {
+        "zh": "今天，想点亮哪一盏灯？",
+        "en": "Which lamp will you light today?"
+      },
+      "quickIntro": {
+        "zh": "从一次足够小的行动开始，也算认真生活。",
+        "en": "A small action is still a meaningful start."
+      },
+      "quickAction": {
+        "zh": "快速记录 →",
+        "en": "Quick check-in →"
+      },
+      "weekRemaining": {
+        "zh": "本周再点亮 {count} 天",
+        "en": "{count} more day(s) this week"
+      },
+      "weekComplete": {
+        "zh": "本周目标已经完成",
+        "en": "Weekly goal complete"
+      },
+      "minimumLabel": {
+        "zh": "最低行动 {minutes} 分钟",
+        "en": "Minimum {minutes} min"
+      },
+      "calendarKicker": "LAMP CALENDAR",
+      "calendarTitle": {
+        "zh": "灯火日历",
+        "en": "Lamp Calendar"
+      },
+      "statsLamps": {
+        "zh": "点亮灯数",
+        "en": "Lamps lit"
+      },
+      "statsDays": {
+        "zh": "行动天数",
+        "en": "Active days"
+      },
+      "statsMinutes": {
+        "zh": "记录分钟",
+        "en": "Minutes logged"
+      },
+      "recordsKicker": "FIELD NOTES",
+      "recordsTitle": {
+        "zh": "所有记录",
+        "en": "All Notes"
+      },
+      "recordsSummary": {
+        "zh": "本月已经行动 {days} 天，点亮 {lights} 盏灯。",
+        "en": "{days} active days and {lights} lamps lit this month."
+      },
+      "listTitle": {
+        "zh": "全部记录",
+        "en": "All entries"
+      }
     },
-    "minimumMinutes": {
-      "english": 5,
-      "exercise": 10
-    }
+    "habits": [
+      {
+        "id": "english",
+        "name": {
+          "zh": "英语学习",
+          "en": "English"
+        },
+        "code": "EN",
+        "color": "#e3a34f",
+        "weeklyGoal": 5,
+        "minimumMinutes": 5,
+        "durations": [5, 10, 20, 30, 45, 60],
+        "activities": ["听力", "阅读", "口语", "背词", "写作", "其他"],
+        "enabled": true
+      },
+      {
+        "id": "exercise",
+        "name": {
+          "zh": "运动锻炼",
+          "en": "Exercise"
+        },
+        "code": "MOVE",
+        "color": "#4d9b91",
+        "weeklyGoal": 3,
+        "minimumMinutes": 10,
+        "durations": [10, 20, 30, 40, 60, 90],
+        "activities": ["快走", "跑步", "力量训练", "拉伸", "球类", "其他"],
+        "enabled": true
+      }
+    ]
   },
   "playlist": [
     {

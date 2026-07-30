@@ -111,10 +111,12 @@ collections:
         date_format: YYYY-MM-DD
         time_format: HH:mm
       - { label: 记录日期, name: day, widget: hidden, required: false }
+      - { label: 打卡模块 ID, name: habit, widget: string, required: false, hint: 使用快速打卡时会自动填写；手动编辑时请填写“灯火计划 → 打卡模块”中的模块 ID。 }
       - label: 打卡类型
         name: category
         widget: select
         default: other
+        hint: 仅用于兼容旧记录；新记录优先使用上面的“打卡模块 ID”。
         options:
           - { label: 英语学习, value: english }
           - { label: 运动锻炼, value: exercise }
@@ -221,20 +223,144 @@ collections:
             name: checkinSettings
             widget: object
             collapsed: false
-            hint: 设置英语学习和运动锻炼每周希望完成的天数，以及一次最低行动所需的分钟数。
+            hint: 管理每日打卡页面文案和打卡模块。新增、修改或排序模块后，前台目标卡、灯火日历和快速打卡会一起更新。
             fields:
-              - label: 每周目标
-                name: weeklyGoals
+              - label: 页面文案
+                name: copy
                 widget: object
+                collapsed: true
                 fields:
-                  - { label: 英语学习（天 / 周）, name: english, widget: number, value_type: int, min: 1, max: 7, default: 5 }
-                  - { label: 运动锻炼（天 / 周）, name: exercise, widget: number, value_type: int, min: 1, max: 7, default: 3 }
-              - label: 最低行动
-                name: minimumMinutes
-                widget: object
+                  - { label: 页面英文眉题, name: pageKicker, widget: string }
+                  - label: 页面标题
+                    name: pageTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 页面介绍
+                    name: pageIntro
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: text }
+                      - { label: 英文, name: en, widget: text }
+                  - label: “今天”文字
+                    name: todayLabel
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - { label: 快速打卡英文眉题, name: quickKicker, widget: string }
+                  - label: 快速打卡标题
+                    name: quickTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 快速打卡介绍
+                    name: quickIntro
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: text }
+                      - { label: 英文, name: en, widget: text }
+                  - label: 快速记录按钮文字
+                    name: quickAction
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 本周未完成提示
+                    name: weekRemaining
+                    widget: object
+                    hint: 使用 {count} 表示还需要完成的天数。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 本周完成提示
+                    name: weekComplete
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 最低行动提示
+                    name: minimumLabel
+                    widget: object
+                    hint: 使用 {minutes} 表示该模块的最低分钟数。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - { label: 日历英文眉题, name: calendarKicker, widget: string }
+                  - label: 日历标题
+                    name: calendarTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 点亮灯数文字
+                    name: statsLamps
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 行动天数文字
+                    name: statsDays
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 记录分钟文字
+                    name: statsMinutes
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - { label: 记录区英文眉题, name: recordsKicker, widget: string }
+                  - label: 记录区标题
+                    name: recordsTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 本月总结文案
+                    name: recordsSummary
+                    widget: object
+                    hint: 使用 {days} 表示行动天数，{lights} 表示点亮灯数。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 全部记录栏标题
+                    name: listTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+              - label: 打卡模块
+                name: habits
+                widget: list
+                collapsed: true
+                minimize_collapsed: false
+                summary: "{{fields.name.zh}} · 每周 {{fields.weeklyGoal}} 天"
+                hint: 可以新增、排序或停用模块。模块 ID 创建后尽量不要修改，否则旧记录无法继续归入该模块。
                 fields:
-                  - { label: 英语学习（分钟）, name: english, widget: number, value_type: int, min: 1, default: 5 }
-                  - { label: 运动锻炼（分钟）, name: exercise, widget: number, value_type: int, min: 1, default: 10 }
+                  - { label: 模块 ID, name: id, widget: string, pattern: ['^[a-z0-9-]+$', '只能使用小写英文字母、数字和短横线'], hint: 例如 reading、research、sleep。创建后尽量不要修改。 }
+                  - label: 模块名称
+                    name: name
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - { label: 短标识, name: code, widget: string, hint: 显示在快速打卡圆形图标中，例如 EN、RUN、READ。 }
+                  - { label: 主题颜色, name: color, widget: color, allowInput: true, enableAlpha: false }
+                  - { label: 每周目标（天）, name: weeklyGoal, widget: number, value_type: int, min: 1, max: 7, default: 3 }
+                  - { label: 最低行动（分钟）, name: minimumMinutes, widget: number, value_type: int, min: 1, default: 10 }
+                  - label: 快捷时长
+                    name: durations
+                    widget: list
+                    field: { label: 分钟, name: minutes, widget: number, value_type: int, min: 1 }
+                  - label: 活动选项
+                    name: activities
+                    widget: list
+                    field: { label: 活动名称, name: activity, widget: string }
+                  - { label: 启用此模块, name: enabled, widget: boolean, default: true }
           - label: 生活手账页面
             name: lifePage
             widget: object

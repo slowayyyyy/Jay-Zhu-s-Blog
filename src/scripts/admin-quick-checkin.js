@@ -1,20 +1,68 @@
-const HABITS = {
-	english: {
-		label: '英语学习',
-		icon: 'EN',
-		minimum: 5,
+import bundledSiteSettings from '../data/site-settings.json';
+
+const DEFAULT_HABITS = [
+	{
+		id: 'english',
+		name: { zh: '英语学习', en: 'English' },
+		code: 'EN',
+		color: '#e3a34f',
+		weeklyGoal: 5,
+		minimumMinutes: 5,
 		durations: [5, 10, 20, 30, 45, 60],
 		activities: ['听力', '阅读', '口语', '背词', '写作', '其他'],
-		tag: '英语',
+		enabled: true,
 	},
-	exercise: {
-		label: '运动锻炼',
-		icon: 'MOVE',
-		minimum: 10,
+	{
+		id: 'exercise',
+		name: { zh: '运动锻炼', en: 'Exercise' },
+		code: 'MOVE',
+		color: '#4d9b91',
+		weeklyGoal: 3,
+		minimumMinutes: 10,
 		durations: [10, 20, 30, 40, 60, 90],
 		activities: ['快走', '跑步', '力量训练', '拉伸', '球类', '其他'],
-		tag: '运动',
+		enabled: true,
 	},
+];
+
+const isValidColor = (value) => /^#[0-9a-f]{6}$/i.test(String(value ?? ''));
+const toPositiveNumbers = (values, fallback) => {
+	const normalized = Array.isArray(values)
+		? [...new Set(values.map(Number).filter((value) => Number.isFinite(value) && value > 0))]
+		: [];
+	return normalized.length > 0 ? normalized.sort((a, b) => a - b) : fallback;
+};
+
+export const normalizeQuickCheckinHabits = (settings = bundledSiteSettings) => {
+	const source = Array.isArray(settings?.checkinSettings?.habits)
+		? settings.checkinSettings.habits
+		: DEFAULT_HABITS;
+	const seen = new Set();
+	const habits = source.flatMap((item, index) => {
+		const id = String(item?.id ?? '').trim().toLowerCase();
+		const zh = String(item?.name?.zh ?? '').trim();
+		if (!id || !zh || item?.enabled === false || seen.has(id)) return [];
+		seen.add(id);
+		const fallback = DEFAULT_HABITS.find((habit) => habit.id === id) ?? DEFAULT_HABITS[index % DEFAULT_HABITS.length];
+		const activities = Array.isArray(item.activities)
+			? item.activities.map((value) => String(value).trim()).filter(Boolean)
+			: [];
+		return [{
+			id,
+			name: {
+				zh,
+				en: String(item?.name?.en ?? '').trim() || zh,
+			},
+			code: String(item?.code ?? '').trim().slice(0, 8).toUpperCase() || id.slice(0, 4).toUpperCase(),
+			color: isValidColor(item?.color) ? item.color : fallback.color,
+			weeklyGoal: Math.min(7, Math.max(1, Number(item?.weeklyGoal) || fallback.weeklyGoal)),
+			minimumMinutes: Math.max(1, Number(item?.minimumMinutes) || fallback.minimumMinutes),
+			durations: toPositiveNumbers(item?.durations, fallback.durations),
+			activities: activities.length > 0 ? activities : ['完成一次'],
+			enabled: true,
+		}];
+	});
+	return habits.length > 0 ? habits : DEFAULT_HABITS;
 };
 
 const localDateTimeValue = (date = new Date()) => {
@@ -24,39 +72,40 @@ const localDateTimeValue = (date = new Date()) => {
 
 const yamlString = (value) => JSON.stringify(String(value ?? ''));
 
-export const createCheckinMarkdown = ({ category, duration, activity, note, dateTime }) => {
-	const habit = HABITS[category];
+export const createCheckinMarkdown = ({ habit, duration, activity, note, dateTime }) => {
 	const day = dateTime.slice(0, 10);
 	const displayDateTime = dateTime.replace('T', ' ');
-	const title = `${habit.label} · ${activity}`;
+	const title = `${habit.name.zh} · ${activity}`;
 	const summary = `${activity} · ${duration} 分钟`;
 	const body = note.trim();
+	const legacyCategory = habit.id === 'english' || habit.id === 'exercise' ? habit.id : 'other';
 
 	return `---
 date: ${yamlString(displayDateTime)}
 day: ${yamlString(day)}
 title: ${yamlString(title)}
 summary: ${yamlString(summary)}
-category: ${category}
+habit: ${yamlString(habit.id)}
+category: ${legacyCategory}
 duration: ${duration}
 activity: ${yamlString(activity)}
 sortOrder: 0
 items: []
-tags:
-  - ${yamlString(habit.tag)}
+tags: []
 draft: false
 ---
 ${body}
 `;
 };
 
-export const createCheckinPath = ({ category, dateTime }) => {
+export const createCheckinPath = ({ habitId, dateTime }) => {
 	const day = dateTime.slice(0, 10);
 	const time = dateTime.slice(11, 16).replace(':', '');
 	const suffix =
 		globalThis.crypto?.randomUUID?.().slice(0, 8) ||
 		Math.random().toString(36).slice(2, 10);
-	return `src/content/checkins/${day}-${time}-${category}-${suffix}.md`;
+	const safeHabitId = String(habitId).replace(/[^a-z0-9-]/gi, '-').replace(/-+/g, '-');
+	return `src/content/checkins/${day}-${time}-${safeHabitId}-${suffix}.md`;
 };
 
 export function setupQuickCheckin({
@@ -66,6 +115,7 @@ export function setupQuickCheckin({
 	encodePathPreservingSlashes,
 	blobToBase64,
 	githubApiRequest,
+	readGithubJsonFile,
 	showStatus,
 }) {
 	if (document.querySelector('[data-quick-checkin-launcher]')) return;
@@ -188,7 +238,7 @@ export function setupQuickCheckin({
 
 		.quick-checkin-types {
 			display: grid;
-			grid-template-columns: 1fr 1fr;
+			grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
 			gap: 10px;
 		}
 
@@ -233,9 +283,14 @@ export function setupQuickCheckin({
 		}
 
 		.quick-checkin-type.is-active {
-			border-color: rgba(49, 95, 105, 0.54);
-			background: rgba(226, 239, 238, 0.82);
+			border-color: color-mix(in srgb, var(--quick-habit-color) 62%, transparent);
+			background: color-mix(in srgb, var(--quick-habit-color) 14%, white);
 			transform: translateY(-1px);
+		}
+
+		.quick-checkin-type.is-active .quick-checkin-type-mark {
+			background: color-mix(in srgb, var(--quick-habit-color) 18%, white);
+			color: color-mix(in srgb, var(--quick-habit-color) 78%, #172329);
 		}
 
 		.quick-checkin-card button:focus {
@@ -244,11 +299,6 @@ export function setupQuickCheckin({
 
 		.quick-checkin-card button:focus-visible {
 			box-shadow: 0 0 0 3px rgba(49, 95, 105, 0.18);
-		}
-
-		.quick-checkin-type[data-category="exercise"].is-active {
-			border-color: rgba(190, 119, 68, 0.5);
-			background: rgba(250, 235, 222, 0.86);
 		}
 
 		.quick-checkin-duration-list {
@@ -264,8 +314,8 @@ export function setupQuickCheckin({
 		}
 
 		.quick-checkin-duration.is-active {
-			border-color: #3f6f78;
-			background: #3f6f78;
+			border-color: var(--quick-habit-color, #3f6f78);
+			background: var(--quick-habit-color, #3f6f78);
 			color: #fff;
 		}
 
@@ -374,16 +424,7 @@ export function setupQuickCheckin({
 			</div>
 			<form data-quick-checkin-form>
 				<div class="quick-checkin-label">选择今天完成的事情</div>
-				<div class="quick-checkin-types">
-					<button class="quick-checkin-type is-active" type="button" data-category="english">
-						<span class="quick-checkin-type-mark">EN</span>
-						<span><strong>英语学习</strong><small>最低 5 分钟也算完成</small></span>
-					</button>
-					<button class="quick-checkin-type" type="button" data-category="exercise">
-						<span class="quick-checkin-type-mark">MOVE</span>
-						<span><strong>运动锻炼</strong><small>最低 10 分钟也算完成</small></span>
-					</button>
-				</div>
+				<div class="quick-checkin-types" data-habit-list></div>
 				<label class="quick-checkin-field">
 					<span>完成时长</span>
 					<div class="quick-checkin-duration-list" data-duration-list></div>
@@ -411,12 +452,14 @@ export function setupQuickCheckin({
 
 	const form = modal.querySelector('[data-quick-checkin-form]');
 	const feedback = modal.querySelector('[data-quick-checkin-feedback]');
+	const habitList = modal.querySelector('[data-habit-list]');
 	const durationList = modal.querySelector('[data-duration-list]');
 	const activitySelect = form.elements.activity;
 	const dateTimeInput = form.elements.dateTime;
 	const submitButton = form.querySelector('.quick-checkin-submit');
-	let selectedCategory = 'english';
-	let selectedDuration = HABITS.english.minimum;
+	let habits = normalizeQuickCheckinHabits();
+	let selectedHabitId = habits[0].id;
+	let selectedDuration = habits[0].minimumMinutes;
 
 	const setFeedback = (message = '', tone = 'info') => {
 		feedback.textContent = message;
@@ -424,10 +467,30 @@ export function setupQuickCheckin({
 	};
 
 	const renderHabitOptions = () => {
-		const habit = HABITS[selectedCategory];
-		modal.querySelectorAll('[data-category]').forEach((button) => {
-			button.classList.toggle('is-active', button.dataset.category === selectedCategory);
-		});
+		const habit = habits.find(({ id }) => id === selectedHabitId) ?? habits[0];
+		selectedHabitId = habit.id;
+		modal.style.setProperty('--quick-habit-color', habit.color);
+		habitList.replaceChildren(
+			...habits.map((candidate) => {
+				const button = document.createElement('button');
+				button.type = 'button';
+				button.className = 'quick-checkin-type';
+				button.classList.toggle('is-active', candidate.id === selectedHabitId);
+				button.dataset.habitId = candidate.id;
+				button.style.setProperty('--quick-habit-color', candidate.color);
+				const mark = document.createElement('span');
+				mark.className = 'quick-checkin-type-mark';
+				mark.textContent = candidate.code;
+				const copy = document.createElement('span');
+				const strong = document.createElement('strong');
+				strong.textContent = candidate.name.zh;
+				const small = document.createElement('small');
+				small.textContent = `最低 ${candidate.minimumMinutes} 分钟也算完成`;
+				copy.append(strong, small);
+				button.append(mark, copy);
+				return button;
+			}),
+		);
 
 		activitySelect.replaceChildren(
 			...habit.activities.map((activity) => {
@@ -451,14 +514,27 @@ export function setupQuickCheckin({
 		);
 	};
 
-	const openModal = (category = 'english') => {
+	const openModal = async (requestedHabitId = '') => {
 		if (!isLocalPreview && !getGithubAccessToken()) {
 			showStatus('请先使用 GitHub 登录后台，登录完成后点击右下角“快速打卡”。', 'info', 7600);
 			return;
 		}
 
-		selectedCategory = HABITS[category] ? category : 'english';
-		selectedDuration = HABITS[selectedCategory].minimum;
+		modal.hidden = false;
+		document.body.style.overflow = 'hidden';
+		setFeedback('正在读取最新的打卡模块...');
+		if (!isLocalPreview && typeof readGithubJsonFile === 'function') {
+			try {
+				habits = normalizeQuickCheckinHabits(await readGithubJsonFile('src/data/site-settings.json'));
+			} catch (error) {
+				console.warn('[Jay CMS] could not refresh quick check-in settings.', error);
+				habits = normalizeQuickCheckinHabits();
+			}
+		}
+		selectedHabitId = habits.some(({ id }) => id === requestedHabitId)
+			? requestedHabitId
+			: habits[0].id;
+		selectedDuration = habits.find(({ id }) => id === selectedHabitId)?.minimumMinutes ?? 5;
 		dateTimeInput.value = localDateTimeValue();
 		setFeedback(
 			isLocalPreview
@@ -466,9 +542,7 @@ export function setupQuickCheckin({
 				: '保存后会提交到 GitHub，前台通常在 1 到 3 分钟内点亮。',
 		);
 		renderHabitOptions();
-		modal.hidden = false;
-		document.body.style.overflow = 'hidden';
-		modal.querySelector(`[data-category="${selectedCategory}"]`)?.focus();
+		habitList.querySelector(`[data-habit-id="${CSS.escape(selectedHabitId)}"]`)?.focus();
 	};
 
 	const closeModal = () => {
@@ -487,12 +561,13 @@ export function setupQuickCheckin({
 		if (event.key === 'Escape' && !modal.hidden) closeModal();
 	});
 
-	modal.querySelectorAll('[data-category]').forEach((button) => {
-		button.addEventListener('click', () => {
-			selectedCategory = button.dataset.category;
-			selectedDuration = HABITS[selectedCategory].minimum;
-			renderHabitOptions();
-		});
+	habitList.addEventListener('click', (event) => {
+		const button = event.target.closest('[data-habit-id]');
+		if (!button) return;
+		selectedHabitId = button.dataset.habitId;
+		selectedDuration =
+			habits.find(({ id }) => id === selectedHabitId)?.minimumMinutes ?? selectedDuration;
+		renderHabitOptions();
 	});
 
 	durationList.addEventListener('click', (event) => {
@@ -516,7 +591,8 @@ export function setupQuickCheckin({
 		const dateTime = String(dateTimeInput.value || '');
 		const activity = String(activitySelect.value || '').trim();
 		const note = String(form.elements.note.value || '');
-		if (!dateTime || !activity || selectedDuration <= 0) {
+		const selectedHabit = habits.find(({ id }) => id === selectedHabitId);
+		if (!dateTime || !activity || selectedDuration <= 0 || !selectedHabit) {
 			setFeedback('请补全打卡类型、时长和完成时间。', 'error');
 			return;
 		}
@@ -527,11 +603,11 @@ export function setupQuickCheckin({
 
 		try {
 			const repoFilePath = createCheckinPath({
-				category: selectedCategory,
+				habitId: selectedHabit.id,
 				dateTime,
 			});
 			const markdown = createCheckinMarkdown({
-				category: selectedCategory,
+				habit: selectedHabit,
 				duration: selectedDuration,
 				activity,
 				note,
@@ -545,7 +621,7 @@ export function setupQuickCheckin({
 				method: 'PUT',
 				headers: { 'Content-Type': 'application/json' },
 				body: JSON.stringify({
-					message: `Create quick check-in ${dateTime.slice(0, 10)} ${HABITS[selectedCategory].label}`,
+					message: `Create quick check-in ${dateTime.slice(0, 10)} ${selectedHabit.name.zh}`,
 					content: await blobToBase64(
 						new Blob([markdown], { type: 'text/markdown;charset=utf-8' }),
 					),
@@ -559,7 +635,7 @@ export function setupQuickCheckin({
 
 			setFeedback('已经点亮并提交。Cloudflare 正在更新前台。', 'success');
 			showStatus(
-				`${HABITS[selectedCategory].label}打卡已提交到 GitHub，前台通常在 1 到 3 分钟内更新。`,
+				`${selectedHabit.name.zh}打卡已提交到 GitHub，前台通常在 1 到 3 分钟内更新。`,
 				'success',
 				7200,
 			);
@@ -580,8 +656,8 @@ export function setupQuickCheckin({
 		}
 	});
 
-	const requestedCategory = new URL(window.location.href).searchParams.get('quick-checkin');
-	if (requestedCategory) {
-		window.setTimeout(() => openModal(requestedCategory), 520);
+	const requestedHabitId = new URL(window.location.href).searchParams.get('quick-checkin');
+	if (requestedHabitId) {
+		window.setTimeout(() => openModal(requestedHabitId), 520);
 	}
 }

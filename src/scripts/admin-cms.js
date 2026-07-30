@@ -1323,6 +1323,7 @@ export function setupAdminCms() {
 		encodePathPreservingSlashes,
 		blobToBase64,
 		githubApiRequest,
+		readGithubJsonFile,
 		showStatus,
 	});
 }

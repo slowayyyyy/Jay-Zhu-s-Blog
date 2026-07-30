@@ -4,11 +4,10 @@ import { getTagLabel, getTagMap } from '../lib/content';
 import {
 	addDays,
 	formatShanghaiDayKey,
-	getCheckinCategory,
 	getCheckinDayKey,
+	getCheckinHabitId,
 	getMonthCalendar,
 	getWeekStart,
-	type HabitCategory,
 } from '../lib/checkin-metrics';
 import { renderMarkdownContent } from '../lib/markdown';
 import { siteConfig } from '../data/site';
@@ -17,11 +16,27 @@ interface Props {
 	checkins: CollectionEntry<'checkins'>[];
 }
 
-interface HabitDaySummary {
-	english: { count: number; minutes: number };
-	exercise: { count: number; minutes: number };
-	other: { count: number; minutes: number };
+interface BilingualCopy {
+	zh: string;
+	en: string;
 }
+
+interface HabitConfig {
+	id: string;
+	name: BilingualCopy;
+	code: string;
+	color: string;
+	weeklyGoal: number;
+	minimumMinutes: number;
+	enabled?: boolean;
+}
+
+interface HabitMetric {
+	count: number;
+	minutes: number;
+}
+
+type HabitDaySummary = Record<string, HabitMetric>;
 
 const { checkins } = Astro.props;
 const tagMap = await getTagMap();
@@ -38,27 +53,92 @@ const todayKey = formatShanghaiDayKey();
 const currentMonthKey = todayKey.slice(0, 7);
 const weekStart = getWeekStart(todayKey);
 const currentWeekDays = new Set(Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)));
-const configuredGoals = siteConfig.checkinSettings?.weeklyGoals;
-const configuredMinimums = siteConfig.checkinSettings?.minimumMinutes;
-const weeklyGoals = {
-	english: Math.min(7, Math.max(1, Number(configuredGoals?.english ?? 5))),
-	exercise: Math.min(7, Math.max(1, Number(configuredGoals?.exercise ?? 3))),
+const defaultHabits: HabitConfig[] = [
+	{
+		id: 'english',
+		name: { zh: '英语学习', en: 'English' },
+		code: 'EN',
+		color: '#e3a34f',
+		weeklyGoal: 5,
+		minimumMinutes: 5,
+	},
+	{
+		id: 'exercise',
+		name: { zh: '运动锻炼', en: 'Exercise' },
+		code: 'MOVE',
+		color: '#4d9b91',
+		weeklyGoal: 3,
+		minimumMinutes: 10,
+	},
+];
+const configuredHabits = siteConfig.checkinSettings?.habits;
+const seenHabitIds = new Set<string>();
+const habits: HabitConfig[] = (Array.isArray(configuredHabits) ? configuredHabits : defaultHabits)
+	.flatMap((item, index) => {
+		const id = String(item?.id ?? '').trim().toLowerCase();
+		const zh = String(item?.name?.zh ?? '').trim();
+		if (!id || !zh || item?.enabled === false || seenHabitIds.has(id)) return [];
+		seenHabitIds.add(id);
+		const fallback = defaultHabits.find((habit) => habit.id === id) ?? defaultHabits[index % 2];
+		return [{
+			id,
+			name: {
+				zh,
+				en: String(item?.name?.en ?? '').trim() || zh,
+			},
+			code: String(item?.code ?? '').trim().toUpperCase() || id.slice(0, 4).toUpperCase(),
+			color: /^#[0-9a-f]{6}$/i.test(String(item?.color ?? '')) ? String(item.color) : fallback.color,
+			weeklyGoal: Math.min(7, Math.max(1, Number(item?.weeklyGoal) || fallback.weeklyGoal)),
+			minimumMinutes: Math.max(1, Number(item?.minimumMinutes) || fallback.minimumMinutes),
+		}];
+	});
+if (habits.length === 0) habits.push(...defaultHabits);
+const habitMap = new Map(habits.map((habit) => [habit.id, habit]));
+const otherHabit: HabitConfig = {
+	id: 'other',
+	name: { zh: '其他记录', en: 'Other' },
+	code: 'OTHER',
+	color: '#82919a',
+	weeklyGoal: 1,
+	minimumMinutes: 1,
 };
-const minimumMinutes = {
-	english: Math.max(1, Number(configuredMinimums?.english ?? 5)),
-	exercise: Math.max(1, Number(configuredMinimums?.exercise ?? 10)),
-};
+const getHabit = (habitId: string) => habitMap.get(habitId) ?? otherHabit;
+const getMetric = (summary: HabitDaySummary, habitId: string): HabitMetric =>
+	summary[habitId] ?? { count: 0, minutes: 0 };
 
-const emptyDaySummary = (): HabitDaySummary => ({
-	english: { count: 0, minutes: 0 },
-	exercise: { count: 0, minutes: 0 },
-	other: { count: 0, minutes: 0 },
-});
+const defaults = {
+	pageKicker: 'LIGHT THE DAY',
+	pageTitle: { zh: '灯火计划', en: 'Lamp Plan' },
+	pageIntro: { zh: '不追求完美连续，只把今天真正做过的事点亮。', en: 'No perfect streaks, only the things you truly did today.' },
+	todayLabel: { zh: '今天', en: 'Today' },
+	quickKicker: '20 SECOND CHECK-IN',
+	quickTitle: { zh: '今天，想点亮哪一盏灯？', en: 'Which lamp will you light today?' },
+	quickIntro: { zh: '哪怕只完成最低行动，也算认真开始。', en: 'Even the minimum action counts as a real start.' },
+	quickAction: { zh: '快速记录 →', en: 'Quick check-in →' },
+	weekRemaining: { zh: '本周再点亮 {count} 天', en: '{count} more day(s) this week' },
+	weekComplete: { zh: '本周目标已经完成', en: 'Weekly goal complete' },
+	minimumLabel: { zh: '最低行动 {minutes} 分钟', en: 'Minimum {minutes} min' },
+	calendarKicker: 'LAMP CALENDAR',
+	calendarTitle: { zh: '灯火日历', en: 'Lamp Calendar' },
+	statsLamps: { zh: '点亮灯数', en: 'Lamps lit' },
+	statsDays: { zh: '行动天数', en: 'Active days' },
+	statsMinutes: { zh: '记录分钟', en: 'Minutes logged' },
+	recordsKicker: 'FIELD NOTES',
+	recordsTitle: { zh: '所有记录', en: 'All Notes' },
+	recordsSummary: { zh: '本月已经行动 {days} 天，点亮 {lights} 盏灯。', en: '{days} active days and {lights} lamps lit this month.' },
+	listTitle: { zh: '全部记录', en: 'All records' },
+};
+const copy = { ...defaults, ...(siteConfig.checkinSettings?.copy ?? {}) };
+const fillTemplate = (template: string, values: Record<string, string | number>) =>
+	Object.entries(values).reduce(
+		(result, [key, value]) => result.replaceAll(`{${key}}`, String(value)),
+		template,
+	);
 
 const enrichedCheckins = checkins.map((checkin) => ({
 	checkin,
 	dayKey: getCheckinDayKey(checkin),
-	category: getCheckinCategory(checkin),
+	habitId: getCheckinHabitId(checkin),
 }));
 const firstCheckinIdByDay = new Map<string, string>();
 for (const { checkin, dayKey } of enrichedCheckins) {
@@ -66,27 +146,30 @@ for (const { checkin, dayKey } of enrichedCheckins) {
 }
 const activityByDay = new Map<string, HabitDaySummary>();
 
-for (const { checkin, dayKey, category } of enrichedCheckins) {
-	const summary = activityByDay.get(dayKey) ?? emptyDaySummary();
-	summary[category].count += 1;
-	summary[category].minutes += Math.max(0, Number(checkin.data.duration ?? 0));
+for (const { checkin, dayKey, habitId } of enrichedCheckins) {
+	const summary = activityByDay.get(dayKey) ?? {};
+	const current = getMetric(summary, habitId);
+	summary[habitId] = {
+		count: current.count + 1,
+		minutes: current.minutes + Math.max(0, Number(checkin.data.duration ?? 0)),
+	};
 	activityByDay.set(dayKey, summary);
 }
 
-const completedDaysThisWeek = (category: 'english' | 'exercise') =>
-	[...currentWeekDays].filter((dayKey) => (activityByDay.get(dayKey)?.[category].count ?? 0) > 0)
+const completedDaysThisWeek = (habitId: string) =>
+	[...currentWeekDays].filter((dayKey) => getMetric(activityByDay.get(dayKey) ?? {}, habitId).count > 0)
 		.length;
 
-const weeklyProgress = (['english', 'exercise'] as const).map((category) => {
-	const completed = completedDaysThisWeek(category);
-	const goal = weeklyGoals[category];
+const weeklyProgress = habits.map((habit) => {
+	const completed = completedDaysThisWeek(habit.id);
+	const goal = habit.weeklyGoal;
 	return {
-		category,
+		habit,
 		completed,
 		goal,
 		percent: Math.min(100, Math.round((completed / goal) * 100)),
 		remaining: Math.max(0, goal - completed),
-		minimum: minimumMinutes[category],
+		minimum: habit.minimumMinutes,
 	};
 });
 
@@ -98,16 +181,17 @@ const monthCalendars = monthKeys.map((monthKey) => {
 	const entries = [...activityByDay.entries()].filter(([dayKey]) => dayKey.startsWith(monthKey));
 	const activeDays = new Set(
 		entries
-			.filter(([, summary]) => summary.english.count > 0 || summary.exercise.count > 0)
+			.filter(([, summary]) => habits.some(({ id }) => getMetric(summary, id).count > 0))
 			.map(([dayKey]) => dayKey),
 	).size;
 	const lights = entries.reduce(
 		(total, [, summary]) =>
-			total + Number(summary.english.count > 0) + Number(summary.exercise.count > 0),
+			total + habits.reduce((count, { id }) => count + Number(getMetric(summary, id).count > 0), 0),
 		0,
 	);
 	const minutes = entries.reduce(
-		(total, [, summary]) => total + summary.english.minutes + summary.exercise.minutes,
+		(total, [, summary]) =>
+			total + habits.reduce((sum, { id }) => sum + getMetric(summary, id).minutes, 0),
 		0,
 	);
 	const zhLabel = `${calendar.year} 年 ${calendar.month} 月`;
@@ -126,8 +210,8 @@ const monthCalendars = monthKeys.map((monthKey) => {
 		lights,
 		minutes,
 		dayCells: calendar.days.map((dayKey) => {
-			const summary = activityByDay.get(dayKey) ?? emptyDaySummary();
-			const entryCount = summary.english.count + summary.exercise.count + summary.other.count;
+			const summary = activityByDay.get(dayKey) ?? {};
+			const entryCount = Object.values(summary).reduce((sum, metric) => sum + metric.count, 0);
 			return {
 				dayKey,
 				dayNumber: Number(dayKey.slice(-2)),
@@ -142,7 +226,7 @@ const currentMonth = (
 	monthCalendars.find(({ monthKey }) => monthKey === currentMonthKey)
 	?? monthCalendars[0]
 )!;
-const todaySummary = activityByDay.get(todayKey) ?? emptyDaySummary();
+const todaySummary = activityByDay.get(todayKey) ?? {};
 const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
 	year: 'numeric',
 	month: '2-digit',
@@ -158,126 +242,160 @@ const formatDate = (date: Date) => {
 	const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 	return hasTime ? `${dateLabel} · ${timeFormatter.format(date)}` : dateLabel;
 };
-const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
-	english: { zh: '英语学习', en: 'English' },
-	exercise: { zh: '运动锻炼', en: 'Exercise' },
-	other: { zh: '其他记录', en: 'Other' },
-};
 ---
 
 <section class="daily-checkins container" aria-labelledby="daily-checkin-title" data-lamp-dashboard>
 	<header class="checkin-heading">
 		<div>
-			<div class="eyebrow" data-copy="checkins.kicker">LIGHT THE DAY</div>
-			<h1 class="section-title" id="daily-checkin-title" data-copy="checkins.title">灯火计划</h1>
-			<p class="checkin-intro" data-copy="checkins.intro">
-				不追求完美连续，只把今天真正做过的事点亮。
+			<div class="eyebrow">{copy.pageKicker}</div>
+			<h1
+				class="section-title"
+				id="daily-checkin-title"
+				data-bilingual="text"
+				data-zh={copy.pageTitle.zh}
+				data-en={copy.pageTitle.en}
+			>{copy.pageTitle.zh}</h1>
+			<p
+				class="checkin-intro"
+				data-bilingual="text"
+				data-zh={copy.pageIntro.zh}
+				data-en={copy.pageIntro.en}
+			>
+				{copy.pageIntro.zh}
 			</p>
 		</div>
 		<div class="today-state" aria-label="今日完成状态">
 			<div class="today-date">
-				<span data-bilingual="text" data-zh="今天" data-en="Today">今天</span>
+				<span data-bilingual="text" data-zh={copy.todayLabel.zh} data-en={copy.todayLabel.en}>
+					{copy.todayLabel.zh}
+				</span>
 				<strong>{todayKey.slice(5).replace('-', ' / ')}</strong>
 			</div>
 			<div class="today-lamps">
-				<span
-					class:list={['mini-lamp', 'is-english', { 'is-lit': todaySummary.english.count > 0 }]}
-					title="英语学习"
-				/>
-				<span
-					class:list={['mini-lamp', 'is-exercise', { 'is-lit': todaySummary.exercise.count > 0 }]}
-					title="运动锻炼"
-				/>
+				{habits.map((habit) => (
+					<span
+						class:list={['mini-lamp', { 'is-lit': getMetric(todaySummary, habit.id).count > 0 }]}
+						style={`--habit-color: ${habit.color}`}
+						title={habit.name.zh}
+					/>
+				))}
 			</div>
 		</div>
 	</header>
 
 	<div class="quick-panel glass-card">
 		<div class="quick-copy">
-			<span class="quick-kicker">20 SECOND CHECK-IN</span>
-			<h2 data-bilingual="text" data-zh="今天，想点亮哪一盏灯？" data-en="Which lamp will you light today?">
-				今天，想点亮哪一盏灯？
+			<span class="quick-kicker">{copy.quickKicker}</span>
+			<h2
+				data-bilingual="text"
+				data-zh={copy.quickTitle.zh}
+				data-en={copy.quickTitle.en}
+			>
+				{copy.quickTitle.zh}
 			</h2>
 			<p
 				data-bilingual="text"
-				data-zh={`英语 ${minimumMinutes.english} 分钟、运动 ${minimumMinutes.exercise} 分钟，也算认真开始。`}
-				data-en={`Even ${minimumMinutes.english} minutes of English or ${minimumMinutes.exercise} minutes of movement counts.`}
+				data-zh={copy.quickIntro.zh}
+				data-en={copy.quickIntro.en}
 			>
-				英语 {minimumMinutes.english} 分钟、运动 {minimumMinutes.exercise} 分钟，也算认真开始。
+				{copy.quickIntro.zh}
 			</p>
 		</div>
 		<div class="quick-actions">
-			<a class="quick-action is-english" href="/admin/?quick-checkin=english">
-				<span class="action-lamp" aria-hidden="true" />
-				<span>
-					<strong data-bilingual="text" data-zh="英语学习" data-en="English">英语学习</strong>
-					<small data-bilingual="text" data-zh="快速记录 →" data-en="Quick check-in →">快速记录 →</small>
-				</span>
-			</a>
-			<a class="quick-action is-exercise" href="/admin/?quick-checkin=exercise">
-				<span class="action-lamp" aria-hidden="true" />
-				<span>
-					<strong data-bilingual="text" data-zh="运动锻炼" data-en="Exercise">运动锻炼</strong>
-					<small data-bilingual="text" data-zh="快速记录 →" data-en="Quick check-in →">快速记录 →</small>
-				</span>
-			</a>
+			{habits.map((habit) => (
+				<a
+					class="quick-action"
+					href={`/admin/?quick-checkin=${encodeURIComponent(habit.id)}`}
+					style={`--habit-color: ${habit.color}`}
+				>
+					<span class="action-lamp" aria-hidden="true" />
+					<span>
+						<strong data-bilingual="text" data-zh={habit.name.zh} data-en={habit.name.en}>
+							{habit.name.zh}
+						</strong>
+						<small data-bilingual="text" data-zh={copy.quickAction.zh} data-en={copy.quickAction.en}>
+							{copy.quickAction.zh}
+						</small>
+					</span>
+				</a>
+			))}
 		</div>
 	</div>
 
 	<div class="weekly-grid">
 		{
-			weeklyProgress.map(({ category, completed, goal, percent, remaining, minimum }) => (
-				<article class:list={['weekly-card', `is-${category}`, 'glass-card']}>
+			weeklyProgress.map(({ habit, completed, goal, percent, remaining, minimum }) => {
+				const remainingZh = remaining > 0
+					? fillTemplate(copy.weekRemaining.zh, { count: remaining })
+					: copy.weekComplete.zh;
+				const remainingEn = remaining > 0
+					? fillTemplate(copy.weekRemaining.en, { count: remaining })
+					: copy.weekComplete.en;
+				return (
+				<article
+					class="weekly-card glass-card"
+					style={`--habit: ${habit.color}; --habit-glow: ${habit.color}`}
+				>
 					<div class="weekly-card-top">
 						<div>
-							<span class="habit-label">
-								{category === 'english' ? 'ENGLISH' : 'MOVEMENT'}
-							</span>
+							<span class="habit-label">{habit.code}</span>
 							<h2
 								data-bilingual="text"
-								data-zh={categoryCopy[category].zh}
-								data-en={categoryCopy[category].en}
+								data-zh={habit.name.zh}
+								data-en={habit.name.en}
 							>
-								{categoryCopy[category].zh}
+								{habit.name.zh}
 							</h2>
 						</div>
 						<strong class="weekly-ratio">{completed}<span> / {goal}</span></strong>
 					</div>
-					<div class="progress-track" aria-label={`${categoryCopy[category].zh}本周进度`}>
+					<div class="progress-track" aria-label={`${habit.name.zh}本周进度`}>
 						<span style={`--progress: ${percent}%`} />
 					</div>
 					<div class="weekly-note">
 						<span
 							data-bilingual="text"
-							data-zh={remaining > 0 ? `本周再点亮 ${remaining} 天` : '本周目标已经完成'}
-							data-en={remaining > 0 ? `${remaining} more day${remaining > 1 ? 's' : ''} this week` : 'Weekly goal complete'}
+							data-zh={remainingZh}
+							data-en={remainingEn}
 						>
-							{remaining > 0 ? `本周再点亮 ${remaining} 天` : '本周目标已经完成'}
+							{remainingZh}
 						</span>
 						<small
 							data-bilingual="text"
-							data-zh={`最低行动 ${minimum} 分钟`}
-							data-en={`Minimum ${minimum} min`}
+							data-zh={fillTemplate(copy.minimumLabel.zh, { minutes: minimum })}
+							data-en={fillTemplate(copy.minimumLabel.en, { minutes: minimum })}
 						>
-							最低行动 {minimum} 分钟
+							{fillTemplate(copy.minimumLabel.zh, { minutes: minimum })}
 						</small>
 					</div>
 				</article>
-			))
+				);
+			})
 		}
 	</div>
 
 	<section class="calendar-card glass-card" aria-labelledby="lamp-calendar-title">
 		<div class="calendar-heading">
 			<div>
-				<span class="calendar-kicker">LAMP CALENDAR</span>
-				<h2 id="lamp-calendar-title" data-bilingual="text" data-zh="灯火日历" data-en="Lamp Calendar">
-					灯火日历
+				<span class="calendar-kicker">{copy.calendarKicker}</span>
+				<h2
+					id="lamp-calendar-title"
+					data-bilingual="text"
+					data-zh={copy.calendarTitle.zh}
+					data-en={copy.calendarTitle.en}
+				>
+					{copy.calendarTitle.zh}
 				</h2>
 			</div>
 			<div class="lamp-legend" aria-label="图例">
-				<span><i class="legend-lamp is-english" /><b data-bilingual="text" data-zh="英语" data-en="English">英语</b></span>
-				<span><i class="legend-lamp is-exercise" /><b data-bilingual="text" data-zh="运动" data-en="Exercise">运动</b></span>
+				{habits.map((habit) => (
+					<span style={`--habit-color: ${habit.color}`}>
+						<i class="legend-lamp" />
+						<b data-bilingual="text" data-zh={habit.name.zh} data-en={habit.name.en}>
+							{habit.name.zh}
+						</b>
+					</span>
+				))}
 			</div>
 		</div>
 
@@ -329,12 +447,16 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 									},
 								]}
 								data-entry-target={entryCount > 0 ? dayKey : undefined}
-								aria-label={`${dayKey}，英语${summary.english.count > 0 ? '已完成' : '未完成'}，运动${summary.exercise.count > 0 ? '已完成' : '未完成'}`}
+								aria-label={`${dayKey}，${habits.map((habit) => `${habit.name.zh}${getMetric(summary, habit.id).count > 0 ? '已完成' : '未完成'}`).join('，')}`}
 							>
 								<span class="day-number">{dayNumber}</span>
 								<span class="day-lamps" aria-hidden="true">
-									<i class:list={['calendar-lamp', 'is-english', { 'is-lit': summary.english.count > 0 }]} />
-									<i class:list={['calendar-lamp', 'is-exercise', { 'is-lit': summary.exercise.count > 0 }]} />
+									{habits.map((habit) => (
+										<i
+											class:list={['calendar-lamp', { 'is-lit': getMetric(summary, habit.id).count > 0 }]}
+											style={`--habit-color: ${habit.color}`}
+										/>
+									))}
 								</span>
 								{entryCount > 0 && <small>{entryCount}</small>}
 							</button>
@@ -343,15 +465,21 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 					<div class="month-stats">
 						<div>
 							<strong>{calendar.lights}</strong>
-							<span data-bilingual="text" data-zh="点亮灯数" data-en="Lamps lit">点亮灯数</span>
+							<span data-bilingual="text" data-zh={copy.statsLamps.zh} data-en={copy.statsLamps.en}>
+								{copy.statsLamps.zh}
+							</span>
 						</div>
 						<div>
 							<strong>{calendar.activeDays}</strong>
-							<span data-bilingual="text" data-zh="行动天数" data-en="Active days">行动天数</span>
+							<span data-bilingual="text" data-zh={copy.statsDays.zh} data-en={copy.statsDays.en}>
+								{copy.statsDays.zh}
+							</span>
 						</div>
 						<div>
 							<strong>{calendar.minutes}</strong>
-							<span data-bilingual="text" data-zh="记录分钟" data-en="Minutes logged">记录分钟</span>
+							<span data-bilingual="text" data-zh={copy.statsMinutes.zh} data-en={copy.statsMinutes.en}>
+								{copy.statsMinutes.zh}
+							</span>
 						</div>
 					</div>
 				</div>
@@ -361,27 +489,33 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	<div class="records-heading">
 		<div>
-			<span class="records-kicker">FIELD NOTES</span>
-			<h2 data-bilingual="text" data-zh="所有记录" data-en="All Notes">所有记录</h2>
+			<span class="records-kicker">{copy.recordsKicker}</span>
+			<h2 data-bilingual="text" data-zh={copy.recordsTitle.zh} data-en={copy.recordsTitle.en}>
+				{copy.recordsTitle.zh}
+			</h2>
 		</div>
 		<p
 			data-bilingual="text"
-			data-zh={`本月已经行动 ${currentMonth.activeDays} 天，点亮 ${currentMonth.lights} 盏灯。`}
-			data-en={`${currentMonth.activeDays} active days and ${currentMonth.lights} lamps lit this month.`}
+			data-zh={fillTemplate(copy.recordsSummary.zh, { days: currentMonth.activeDays, lights: currentMonth.lights })}
+			data-en={fillTemplate(copy.recordsSummary.en, { days: currentMonth.activeDays, lights: currentMonth.lights })}
 		>
-			本月已经行动 {currentMonth.activeDays} 天，点亮 {currentMonth.lights} 盏灯。
+			{fillTemplate(copy.recordsSummary.zh, { days: currentMonth.activeDays, lights: currentMonth.lights })}
 		</p>
 	</div>
 
 	<div class="checkin-board glass-card">
 		<div class="board-topline">
 			<span class="board-mark" aria-hidden="true">✓</span>
-			<span data-copy="checkins.listTitle">全部记录</span>
+			<span data-bilingual="text" data-zh={copy.listTitle.zh} data-en={copy.listTitle.en}>
+				{copy.listTitle.zh}
+			</span>
 			<span class="board-count">{String(checkins.length).padStart(2, '0')}</span>
 		</div>
 		<div class="checkin-list">
 			{
-				enrichedCheckins.map(({ checkin, dayKey, category }) => (
+				enrichedCheckins.map(({ checkin, dayKey, habitId }) => {
+					const habit = getHabit(habitId);
+					return (
 					<article
 						class="checkin-entry"
 						id={firstCheckinIdByDay.get(dayKey) === checkin.id
@@ -393,20 +527,27 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 							<div class="entry-heading">
 								<h3>{checkin.data.title}</h3>
 								<span
-									class:list={['category-badge', `is-${category}`]}
+									class="category-badge"
+									style={`--habit-color: ${habit.color}`}
 									data-bilingual="text"
-									data-zh={categoryCopy[category].zh}
-									data-en={categoryCopy[category].en}
+									data-zh={habit.name.zh}
+									data-en={habit.name.en}
 								>
-									{categoryCopy[category].zh}
+									{habit.name.zh}
 								</span>
 							</div>
 							{checkin.data.summary && <p class="checkin-summary">{checkin.data.summary}</p>}
 							{checkin.data.duration > 0 && (
-								<div class="structured-summary">
-									<span>{checkin.data.activity || categoryCopy[category].zh}</span>
-									<strong>{checkin.data.duration} min</strong>
-								</div>
+								<dl class="checkin-details quick-record-details">
+									<div>
+										<dt data-bilingual="text" data-zh="记录项目" data-en="Activity">记录项目</dt>
+										<dd>{checkin.data.activity || habit.name.zh}</dd>
+									</div>
+									<div>
+										<dt data-bilingual="text" data-zh="完成时长" data-en="Duration">完成时长</dt>
+										<dd>{checkin.data.duration} 分钟</dd>
+									</div>
+								</dl>
 							)}
 							{renderedBodies.get(checkin.id) && (
 								<div class="checkin-body prose prose-compact" set:html={renderedBodies.get(checkin.id)} />
@@ -434,7 +575,8 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 							</div>
 						</div>
 					</article>
-				))
+					);
+				})
 			}
 		</div>
 	</div>
@@ -524,6 +666,7 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.today-lamps {
 		display: flex;
+		flex-wrap: wrap;
 		gap: 0.55rem;
 	}
 
@@ -542,18 +685,13 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 		height: 0.9rem;
 	}
 
-	.is-english.is-lit,
-	.quick-action.is-english .action-lamp,
-	.legend-lamp.is-english {
-		background: #e3a34f;
-		box-shadow: 0 0 0 4px rgba(227, 163, 79, 0.11), 0 0 18px rgba(227, 163, 79, 0.62);
-	}
-
-	.is-exercise.is-lit,
-	.quick-action.is-exercise .action-lamp,
-	.legend-lamp.is-exercise {
-		background: #4d9b91;
-		box-shadow: 0 0 0 4px rgba(77, 155, 145, 0.1), 0 0 18px rgba(77, 155, 145, 0.54);
+	:is(.mini-lamp, .calendar-lamp).is-lit,
+	.quick-action .action-lamp,
+	.legend-lamp {
+		background: var(--habit-color);
+		box-shadow:
+			0 0 0 4px color-mix(in srgb, var(--habit-color) 12%, transparent),
+			0 0 18px color-mix(in srgb, var(--habit-color) 62%, transparent);
 	}
 
 	.quick-panel {
@@ -599,7 +737,7 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.quick-actions {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(9rem, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
 		gap: 0.7rem;
 	}
 
@@ -618,7 +756,7 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.quick-action:hover {
 		transform: translateY(-3px);
-		border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+		border-color: color-mix(in srgb, var(--habit-color) 48%, var(--line));
 		box-shadow: 0 14px 30px rgba(45, 67, 87, 0.1);
 	}
 
@@ -644,7 +782,7 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.weekly-grid {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
+		grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
 		gap: 1rem;
 		margin-top: 1rem;
 	}
@@ -668,16 +806,6 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 		filter: blur(8px);
 		opacity: 0.15;
 		pointer-events: none;
-	}
-
-	.weekly-card.is-english {
-		--habit: #d8933d;
-		--habit-glow: #e7b46e;
-	}
-
-	.weekly-card.is-exercise {
-		--habit: #438b82;
-		--habit-glow: #71b0a8;
 	}
 
 	.weekly-card-top,
@@ -748,6 +876,8 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.lamp-legend {
 		display: flex;
+		flex-wrap: wrap;
+		justify-content: flex-end;
 		gap: 1rem;
 		color: var(--text-soft);
 		font-size: 0.76rem;
@@ -844,6 +974,7 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 
 	.day-lamps {
 		display: flex;
+		flex-wrap: wrap;
 		align-self: end;
 		gap: 0.55rem;
 		padding: 0.2rem 0.1rem;
@@ -972,19 +1103,9 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 		flex: 0 0 auto;
 		padding: 0.25rem 0.55rem;
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--line) 62%, transparent);
-		color: var(--text-soft);
+		background: color-mix(in srgb, var(--habit-color) 13%, transparent);
+		color: color-mix(in srgb, var(--habit-color) 78%, var(--text));
 		font-size: 0.68rem;
-	}
-
-	.category-badge.is-english {
-		background: rgba(227, 163, 79, 0.13);
-		color: #b97622;
-	}
-
-	.category-badge.is-exercise {
-		background: rgba(77, 155, 145, 0.13);
-		color: #347d74;
 	}
 
 	.checkin-summary {
@@ -992,19 +1113,11 @@ const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
 		color: var(--text-soft);
 	}
 
-	.structured-summary {
-		display: inline-flex;
-		align-items: center;
-		gap: 0.7rem;
-		margin-top: 0.75rem;
-		padding: 0.45rem 0.7rem;
+	.quick-record-details {
+		padding: 0.75rem 0.85rem;
 		border: 1px solid var(--line);
-		border-radius: 10px;
-		font-size: 0.8rem;
-	}
-
-	.structured-summary strong {
-		color: var(--accent);
+		border-radius: 12px;
+		background: color-mix(in srgb, var(--bg-panel) 72%, transparent);
 	}
 
 	.checkin-body {

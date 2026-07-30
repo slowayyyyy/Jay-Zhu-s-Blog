@@ -5,11 +5,15 @@ import SiteLayout from '../layouts/SiteLayout.astro';
 import { getAllCheckins } from '../lib/content';
 
 const checkins = await getAllCheckins();
+const checkinCopy = siteConfig.checkinSettings?.copy;
+const pageTitle = checkinCopy?.pageTitle?.zh ?? '灯火计划';
+const pageDescription =
+	checkinCopy?.pageIntro?.zh ?? '用灯火日历记录每天的行动，查看每周目标和长期积累。';
 ---
 
 <SiteLayout
-	title={`灯火计划 · 每日打卡 | ${siteConfig.name}`}
-	description="用灯火日历记录英语学习与运动锻炼，查看每周目标和长期积累。"
+	title={`${pageTitle} · 每日打卡 | ${siteConfig.name}`}
+	description={pageDescription}
 	pathname="/checkins/"
 >
 	<div class="checkins-page">
