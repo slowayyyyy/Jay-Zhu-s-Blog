@@ -334,7 +334,7 @@
       "enabled": true,
       "src": "/media/opening",
       "poster": "/images/opening-video-poster.jpg",
-      "playLabel": "开启有声开场",
+      "playLabel": "秒速五厘米",
       "skipLabel": "跳过并进入",
       "loadingLabel": "正在加载有声开场",
       "sizeLabel": "完整视频约 265 MB"

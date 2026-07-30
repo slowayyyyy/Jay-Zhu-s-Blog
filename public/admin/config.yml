@@ -214,7 +214,7 @@ collections:
                   - { label: 启用视频入口, name: enabled, widget: boolean, default: false }
                   - { label: 视频播放地址, name: src, widget: string, required: false, hint: 当前受保护地址为 /media/opening。不要改回公开的 r2.dev 地址，否则会绕过访问保护。 }
                   - { label: 视频封面, name: poster, widget: image, required: false, hint: 视频加载前显示，建议使用横向 16:9 图片。 }
-                  - { label: 播放按钮文字, name: playLabel, widget: string, default: 开启有声开场 }
+                  - { label: 播放按钮文字, name: playLabel, widget: string, default: 秒速五厘米 }
                   - { label: 跳过按钮文字, name: skipLabel, widget: string, default: 跳过并进入 }
                   - { label: 加载提示文字, name: loadingLabel, widget: string, default: 正在加载有声开场 }
                   - { label: 体积提示, name: sizeLabel, widget: string, required: false, default: 完整视频约 265 MB }

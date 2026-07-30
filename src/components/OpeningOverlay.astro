@@ -234,6 +234,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 				let isEntering = false;
 				let fallbackTimer;
 				let musicStarted = false;
+				let videoUiTimer;
 
 				const formatTime = (seconds) => {
 					if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
@@ -284,6 +285,19 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					) {
 						videoProgress.value = String(Math.round((video.currentTime / video.duration) * 1000));
 					}
+				};
+
+				const showVideoUi = () => {
+					clearTimeout(videoUiTimer);
+					overlay.classList.remove('is-video-ui-hidden');
+				};
+
+				const scheduleVideoUiHide = () => {
+					showVideoUi();
+					if (!(video instanceof HTMLVideoElement) || video.paused || isEntering) return;
+					videoUiTimer = setTimeout(() => {
+						if (!video.paused && !isEntering) overlay.classList.add('is-video-ui-hidden');
+					}, 2000);
 				};
 
 				const finishTransition = () => {
@@ -341,6 +355,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					const startVideo = async () => {
 						if (isEntering) return;
 						overlay.classList.add('is-video-active', 'is-video-loading');
+						showVideoUi();
 						if (videoStatus) videoStatus.textContent = loadingLabel;
 
 						if (!video.src) {
@@ -355,14 +370,19 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 							await video.play();
 							overlay.classList.remove('is-video-loading');
 							overlay.classList.add('is-video-playing');
+							scheduleVideoUiHide();
 						} catch {
 							overlay.classList.remove('is-video-loading', 'is-video-playing');
 							overlay.classList.add('has-video-error');
-							if (videoStatus) videoStatus.textContent = '视频未能播放，请检查网络或R2地址';
+							showVideoUi();
+							if (videoStatus) videoStatus.textContent = '视频未能播放，请检查网络或视频存储';
 						}
 					};
 
 					playVideoButton.addEventListener('click', startVideo);
+					overlay.addEventListener('pointermove', scheduleVideoUiHide, { passive: true });
+					overlay.addEventListener('pointerdown', scheduleVideoUiHide, { passive: true });
+					overlay.addEventListener('keydown', scheduleVideoUiHide);
 
 					toggleVideoButton?.addEventListener('click', async () => {
 						if (video.paused) {
@@ -394,15 +414,18 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 						overlay.classList.remove('is-video-loading', 'is-video-buffering', 'has-video-error');
 						overlay.classList.add('is-video-playing');
 						if (toggleVideoButton) toggleVideoButton.textContent = 'Ⅱ';
+						scheduleVideoUiHide();
 					});
 					video.addEventListener('pause', () => {
 						overlay.classList.remove('is-video-playing');
 						if (toggleVideoButton) toggleVideoButton.textContent = '▶';
+						showVideoUi();
 					});
 					video.addEventListener('error', () => {
 						overlay.classList.remove('is-video-loading', 'is-video-buffering', 'is-video-playing');
 						overlay.classList.add('has-video-error');
-						if (videoStatus) videoStatus.textContent = '视频加载失败，请检查R2公开地址';
+						showVideoUi();
+						if (videoStatus) videoStatus.textContent = '视频加载失败，请检查视频存储或网络';
 					});
 					video.addEventListener('ended', () => enterBlog(skipVideoButton || enterButton));
 				}
@@ -779,6 +802,11 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 	.video-controls {
 		display: flex;
 		align-items: center;
+		opacity: 1;
+		transform: translateY(0);
+		transition:
+			opacity 320ms ease,
+			transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
 	}
 
 	.video-topbar {
@@ -852,6 +880,23 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		height: 3px;
 		accent-color: #e7b66c;
 		cursor: pointer;
+	}
+
+	.is-video-active.is-video-ui-hidden {
+		cursor: none;
+	}
+
+	.is-video-active.is-video-ui-hidden :is(.video-topbar, .video-controls) {
+		pointer-events: none;
+		opacity: 0;
+	}
+
+	.is-video-active.is-video-ui-hidden .video-topbar {
+		transform: translateY(-0.75rem);
+	}
+
+	.is-video-active.is-video-ui-hidden .video-controls {
+		transform: translateY(0.75rem);
 	}
 
 	.is-igniting .opening-video-interface {
