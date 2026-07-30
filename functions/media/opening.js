@@ -1,0 +1,130 @@
+const OBJECT_KEY = 'opening/opening-5cm.mp4';
+const ALLOWED_FETCH_SITES = new Set(['same-origin', 'same-site']);
+
+const errorResponse = (message, status, extraHeaders = {}) =>
+	new Response(message, {
+		status,
+		headers: {
+			'cache-control': 'no-store',
+			'content-type': 'text/plain; charset=utf-8',
+			'x-content-type-options': 'nosniff',
+			...extraHeaders,
+		},
+	});
+
+const isSameSiteMediaRequest = (request) => {
+	const requestUrl = new URL(request.url);
+	const fetchSite = request.headers.get('sec-fetch-site');
+	const fetchDest = request.headers.get('sec-fetch-dest');
+	const referer = request.headers.get('referer');
+
+	if (fetchSite) return ALLOWED_FETCH_SITES.has(fetchSite);
+	if (referer) {
+		try {
+			return new URL(referer).origin === requestUrl.origin;
+		} catch {
+			return false;
+		}
+	}
+
+	// Some privacy-focused browsers omit site and referrer headers.
+	return fetchDest === 'video';
+};
+
+const parseRange = (rangeHeader) => {
+	if (!rangeHeader) return undefined;
+	const match = /^bytes=(\d*)-(\d*)$/u.exec(rangeHeader.trim());
+	if (!match || (!match[1] && !match[2])) return null;
+
+	if (!match[1]) {
+		const suffix = Number(match[2]);
+		return Number.isSafeInteger(suffix) && suffix > 0 ? { suffix } : null;
+	}
+
+	const offset = Number(match[1]);
+	if (!Number.isSafeInteger(offset) || offset < 0) return null;
+
+	if (!match[2]) return { offset };
+
+	const end = Number(match[2]);
+	if (!Number.isSafeInteger(end) || end < offset) return null;
+	return { offset, length: end - offset + 1 };
+};
+
+const buildObjectHeaders = (object, isRange) => {
+	const headers = new Headers();
+	object.writeHttpMetadata(headers);
+	headers.set('accept-ranges', 'bytes');
+	headers.set('cache-control', 'private, max-age=3600');
+	headers.set('content-disposition', 'inline');
+	headers.set('content-type', object.httpMetadata?.contentType || 'video/mp4');
+	headers.set('cross-origin-resource-policy', 'same-origin');
+	headers.set('etag', object.httpEtag);
+	headers.set('last-modified', object.uploaded.toUTCString());
+	headers.set('x-content-type-options', 'nosniff');
+
+	if (isRange && object.range) {
+		const suffix = Number.isFinite(object.range.suffix) ? object.range.suffix : 0;
+		const offset = Number.isFinite(object.range.offset)
+			? object.range.offset
+			: Math.max(0, object.size - suffix);
+		const length = Number.isFinite(object.range.length) ? object.range.length : suffix;
+		headers.set('content-length', String(length));
+		headers.set('content-range', `bytes ${offset}-${offset + length - 1}/${object.size}`);
+	} else {
+		headers.set('content-length', String(object.size));
+	}
+
+	return headers;
+};
+
+export async function onRequest(context) {
+	const { request, env } = context;
+	const method = request.method.toUpperCase();
+
+	if (method !== 'GET' && method !== 'HEAD') {
+		return errorResponse('Method not allowed', 405, { allow: 'GET, HEAD' });
+	}
+
+	if (!isSameSiteMediaRequest(request)) {
+		return errorResponse('Cross-site media request blocked', 403);
+	}
+
+	if (!env.BLOG_MEDIA) {
+		return errorResponse('BLOG_MEDIA binding is not configured', 503);
+	}
+
+	if (env.MEDIA_RATE_LIMITER) {
+		const clientKey = request.headers.get('cf-connecting-ip') || 'unknown';
+		const { success } = await env.MEDIA_RATE_LIMITER.limit({ key: `opening:${clientKey}` });
+		if (!success) {
+			return errorResponse('Too many media requests', 429, { 'retry-after': '60' });
+		}
+	}
+
+	if (method === 'HEAD') {
+		const object = await env.BLOG_MEDIA.head(OBJECT_KEY);
+		if (!object) return errorResponse('Video not found', 404);
+		return new Response(null, { headers: buildObjectHeaders(object, false) });
+	}
+
+	const rangeHeader = request.headers.get('range');
+	const range = parseRange(rangeHeader);
+	if (rangeHeader && !range) {
+		return errorResponse('Invalid byte range', 416, { 'content-range': 'bytes */*' });
+	}
+
+	try {
+		const object = await env.BLOG_MEDIA.get(OBJECT_KEY, range ? { range } : undefined);
+		if (!object?.body) return errorResponse('Video not found', 404);
+
+		return new Response(object.body, {
+			status: range ? 206 : 200,
+			headers: buildObjectHeaders(object, Boolean(range)),
+		});
+	} catch {
+		return errorResponse('Requested range is not satisfiable', 416, {
+			'content-range': 'bytes */*',
+		});
+	}
+}

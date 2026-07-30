@@ -332,7 +332,7 @@
     "coordinate": "31.2304° N · 121.4737° E",
     "video": {
       "enabled": true,
-      "src": "https://pub-30ecc0b5f7a947e0b8e2f62dc09947e3.r2.dev/opening/opening-5cm.mp4",
+      "src": "/media/opening",
       "poster": "/images/opening-video-poster.jpg",
       "playLabel": "开启有声开场",
       "skipLabel": "跳过并进入",

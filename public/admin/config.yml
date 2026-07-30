@@ -209,10 +209,10 @@ collections:
                 name: video
                 widget: object
                 collapsed: false
-                hint: 视频必须先上传到 Cloudflare R2，这里只填写公开访问地址，不要上传到 GitHub。
+                hint: 视频必须先上传到 Cloudflare R2，并通过博客的受保护地址播放，不要上传到 GitHub。
                 fields:
                   - { label: 启用视频入口, name: enabled, widget: boolean, default: false }
-                  - { label: R2 视频公开地址, name: src, widget: string, required: false, hint: 例如 https://media.example.com/opening.mp4。启用前请确认地址能直接打开视频。 }
+                  - { label: 视频播放地址, name: src, widget: string, required: false, hint: 当前受保护地址为 /media/opening。不要改回公开的 r2.dev 地址，否则会绕过访问保护。 }
                   - { label: 视频封面, name: poster, widget: image, required: false, hint: 视频加载前显示，建议使用横向 16:9 图片。 }
                   - { label: 播放按钮文字, name: playLabel, widget: string, default: 开启有声开场 }
                   - { label: 跳过按钮文字, name: skipLabel, widget: string, default: 跳过并进入 }
