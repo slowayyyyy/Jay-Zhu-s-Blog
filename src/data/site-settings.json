@@ -337,7 +337,13 @@
       "playLabel": "秒速五厘米",
       "skipLabel": "跳过并进入",
       "loadingLabel": "正在加载有声开场",
-      "sizeLabel": "完整视频约 265 MB"
+      "sizeLabel": "完整视频约 265 MB",
+      "subtitles": {
+        "enabled": true,
+        "src": "/subtitles/opening-5cm.vtt",
+        "toggleLabel": "字幕",
+        "offLabel": "字幕关"
+      }
     }
   },
   "description": "一个面向长期记录的个人博客，用来安放学习内容、科研过程与生活片段。",

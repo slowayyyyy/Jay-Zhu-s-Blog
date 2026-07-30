@@ -4,6 +4,10 @@ import { siteConfig } from '../data/site';
 const title = siteConfig.opening.title;
 const openingVideo = siteConfig.opening.video;
 const hasOpeningVideo = Boolean(openingVideo?.enabled && openingVideo.src?.trim());
+const openingSubtitles = openingVideo?.subtitles;
+const hasOpeningSubtitles = Boolean(
+	hasOpeningVideo && openingSubtitles?.enabled && openingSubtitles.src?.trim(),
+);
 const sceneWidth = 3840;
 const sceneHeight = 2160;
 
@@ -96,7 +100,20 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					poster={openingVideo.poster || undefined}
 					preload="none"
 					playsinline
-				/>
+				>
+					{
+						hasOpeningSubtitles && (
+							<track
+								id="opening-video-subtitle-track"
+								kind="subtitles"
+								src={openingSubtitles.src.trim()}
+								srclang="ja"
+								label="日本語 / 中文"
+								default
+							/>
+						)
+					}
+				</video>
 			)
 		}
 		<div class="wallpaper-scene" aria-hidden="true">
@@ -184,8 +201,39 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 							aria-label="视频播放进度"
 						/>
 						<span id="opening-video-duration">5:22</span>
+						{
+							hasOpeningSubtitles && (
+								<button
+									type="button"
+									id="toggle-opening-subtitles"
+									aria-label="显示或隐藏字幕"
+									data-on-label={openingSubtitles.toggleLabel || '字幕'}
+									data-off-label={openingSubtitles.offLabel || '字幕关'}
+								>
+									{openingSubtitles.toggleLabel || '字幕'}
+								</button>
+							)
+						}
 						<button type="button" id="mute-opening-video" aria-label="静音或恢复声音">原声</button>
 					</div>
+				</div>
+			)
+		}
+
+		{
+			hasOpeningSubtitles && (
+				<div class="opening-subtitles" id="opening-subtitles" aria-hidden="true">
+					{[0, 1].map((layerIndex) => (
+						<div class="subtitle-layer" data-subtitle-layer={layerIndex}>
+							<p class="subtitle-japanese" />
+							<p class="subtitle-chinese" />
+							<div class="subtitle-dust">
+								{Array.from({ length: 12 }, (_, index) => (
+									<i style={`--dust-index:${index};--dust-x:${(index * 23) % 97}%;--dust-delay:${(index % 6) * 32}ms`} />
+								))}
+							</div>
+						</div>
+					))}
 				</div>
 			)
 		}
@@ -220,10 +268,16 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		const skipVideoButton = document.getElementById('skip-opening-video');
 		const toggleVideoButton = document.getElementById('toggle-opening-video');
 		const muteVideoButton = document.getElementById('mute-opening-video');
+		const toggleSubtitleButton = document.getElementById('toggle-opening-subtitles');
 		const videoProgress = document.getElementById('opening-video-progress');
 		const videoCurrent = document.getElementById('opening-video-current');
 		const videoDuration = document.getElementById('opening-video-duration');
 		const videoStatus = document.getElementById('video-loading-status');
+		const subtitleTrackElement = document.getElementById('opening-video-subtitle-track');
+		const subtitleRoot = document.getElementById('opening-subtitles');
+		const subtitleLayers = subtitleRoot
+			? [...subtitleRoot.querySelectorAll('[data-subtitle-layer]')]
+			: [];
 
 		if (overlay && enterButton) {
 			if (sessionStorage.getItem('jay-intro-seen-lantern')) {
@@ -235,6 +289,9 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 				let fallbackTimer;
 				let musicStarted = false;
 				let videoUiTimer;
+				let activeSubtitleLayer;
+				let subtitleTransitionId = 0;
+				let subtitlesVisible = localStorage.getItem('jay-opening-subtitles') !== 'off';
 
 				const formatTime = (seconds) => {
 					if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
@@ -300,6 +357,73 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					}, 2000);
 				};
 
+				const clearSubtitleLayer = (layer) => {
+					layer.classList.remove('is-active', 'is-leaving');
+					const japanese = layer.querySelector('.subtitle-japanese');
+					const chinese = layer.querySelector('.subtitle-chinese');
+					if (japanese) japanese.textContent = '';
+					if (chinese) chinese.textContent = '';
+				};
+
+				const showSubtitle = (japaneseText = '', chineseText = '') => {
+					const transitionId = ++subtitleTransitionId;
+					const previousLayer = activeSubtitleLayer;
+					if (previousLayer) previousLayer.classList.add('is-leaving');
+
+					if (!subtitlesVisible || (!japaneseText && !chineseText) || subtitleLayers.length === 0) {
+						activeSubtitleLayer = undefined;
+						if (previousLayer) {
+							setTimeout(() => {
+								if (transitionId === subtitleTransitionId || previousLayer !== activeSubtitleLayer) {
+									clearSubtitleLayer(previousLayer);
+								}
+							}, 720);
+						}
+						return;
+					}
+
+					const nextLayer = subtitleLayers.find((layer) => layer !== previousLayer) || subtitleLayers[0];
+					clearSubtitleLayer(nextLayer);
+					const japanese = nextLayer.querySelector('.subtitle-japanese');
+					const chinese = nextLayer.querySelector('.subtitle-chinese');
+					if (japanese) japanese.textContent = japaneseText;
+					if (chinese) chinese.textContent = chineseText;
+					nextLayer.classList.add('is-active');
+					activeSubtitleLayer = nextLayer;
+
+					if (previousLayer && previousLayer !== nextLayer) {
+						setTimeout(() => {
+							if (previousLayer !== activeSubtitleLayer) clearSubtitleLayer(previousLayer);
+						}, 720);
+					}
+				};
+
+				const syncSubtitleCue = () => {
+					if (!(subtitleTrackElement instanceof HTMLTrackElement)) return;
+					const activeCue = subtitleTrackElement.track.activeCues?.[0];
+					const cueText = activeCue && 'text' in activeCue ? String(activeCue.text) : '';
+					const lines = cueText
+						.split(/\r?\n/)
+						.map((line) => line.replace(/<[^>]+>/g, '').trim())
+						.filter(Boolean);
+					showSubtitle(lines[0] || '', lines.slice(1).join(' '));
+				};
+
+				const applySubtitleVisibility = () => {
+					overlay.classList.toggle('are-subtitles-hidden', !subtitlesVisible);
+					if (toggleSubtitleButton) {
+						toggleSubtitleButton.textContent = subtitlesVisible
+							? toggleSubtitleButton.dataset.onLabel || '字幕'
+							: toggleSubtitleButton.dataset.offLabel || '字幕关';
+						toggleSubtitleButton.setAttribute('aria-pressed', String(subtitlesVisible));
+					}
+					if (subtitlesVisible) {
+						syncSubtitleCue();
+					} else {
+						showSubtitle();
+					}
+				};
+
 				const finishTransition = () => {
 					if (!isEntering || !overlay.isConnected) return;
 					clearTimeout(fallbackTimer);
@@ -352,6 +476,16 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 				if (video instanceof HTMLVideoElement && playVideoButton) {
 					const loadingLabel = videoStatus?.textContent || '正在加载有声开场';
 
+					if (subtitleTrackElement instanceof HTMLTrackElement) {
+						subtitleTrackElement.track.mode = 'hidden';
+						subtitleTrackElement.track.addEventListener('cuechange', syncSubtitleCue);
+						subtitleTrackElement.addEventListener('load', () => {
+							subtitleTrackElement.track.mode = 'hidden';
+							syncSubtitleCue();
+						});
+						applySubtitleVisibility();
+					}
+
 					const startVideo = async () => {
 						if (isEntering) return;
 						overlay.classList.add('is-video-active', 'is-video-loading');
@@ -399,6 +533,12 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					muteVideoButton?.addEventListener('click', () => {
 						video.muted = !video.muted;
 						muteVideoButton.textContent = video.muted ? '静音' : '原声';
+					});
+
+					toggleSubtitleButton?.addEventListener('click', () => {
+						subtitlesVisible = !subtitlesVisible;
+						localStorage.setItem('jay-opening-subtitles', subtitlesVisible ? 'on' : 'off');
+						applySubtitleVisibility();
 					});
 
 					videoProgress?.addEventListener('input', () => {
@@ -882,6 +1022,121 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		cursor: pointer;
 	}
 
+	.opening-subtitles {
+		position: absolute;
+		z-index: 3;
+		left: 50%;
+		bottom: clamp(5.4rem, 13vh, 8rem);
+		width: min(56rem, calc(100vw - 3rem));
+		min-height: 6rem;
+		pointer-events: none;
+		opacity: 0;
+		transform: translateX(-50%);
+		transition:
+			bottom 520ms cubic-bezier(0.22, 1, 0.36, 1),
+			opacity 360ms ease;
+	}
+
+	.is-video-active .opening-subtitles {
+		opacity: 1;
+	}
+
+	.is-video-active.is-video-ui-hidden .opening-subtitles {
+		bottom: clamp(2.4rem, 7vh, 4.8rem);
+	}
+
+	.are-subtitles-hidden .opening-subtitles,
+	.is-igniting .opening-subtitles {
+		opacity: 0;
+	}
+
+	.subtitle-layer {
+		position: absolute;
+		left: 0;
+		bottom: 0;
+		width: 100%;
+		padding: 1.1rem 2.2rem 1.2rem;
+		text-align: center;
+		opacity: 0;
+		filter: blur(12px);
+		transform: translateY(0.8rem) scale(0.985);
+		will-change: opacity, filter, transform;
+	}
+
+	.subtitle-layer::before {
+		content: '';
+		position: absolute;
+		z-index: -1;
+		inset: -1.2rem -2rem -1rem;
+		background: radial-gradient(
+			ellipse at center,
+			rgba(3, 7, 13, 0.5) 0%,
+			rgba(3, 7, 13, 0.24) 46%,
+			transparent 76%
+		);
+		filter: blur(8px);
+	}
+
+	.subtitle-layer.is-active {
+		animation: subtitle-gather 680ms cubic-bezier(0.2, 0.78, 0.22, 1) both;
+	}
+
+	.subtitle-layer.is-leaving {
+		animation: subtitle-dissolve 680ms cubic-bezier(0.4, 0, 0.8, 0.25) both;
+	}
+
+	.subtitle-japanese,
+	.subtitle-chinese {
+		margin: 0;
+		color: #fff;
+		text-wrap: balance;
+		text-shadow:
+			0 1px 2px rgba(0, 0, 0, 0.86),
+			0 4px 18px rgba(0, 0, 0, 0.7),
+			0 0 28px rgba(221, 236, 255, 0.24);
+	}
+
+	.subtitle-japanese {
+		font-family: 'Yu Mincho', 'Hiragino Mincho ProN', var(--font-serif);
+		font-size: clamp(1.05rem, 2.1vw, 1.55rem);
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		line-height: 1.45;
+	}
+
+	.subtitle-chinese {
+		margin-top: 0.38rem;
+		color: rgba(255, 255, 255, 0.86);
+		font-size: clamp(0.76rem, 1.25vw, 0.94rem);
+		font-weight: 400;
+		letter-spacing: 0.16em;
+		line-height: 1.55;
+	}
+
+	.subtitle-dust {
+		position: absolute;
+		inset: 0;
+		overflow: hidden;
+	}
+
+	.subtitle-dust i {
+		position: absolute;
+		left: var(--dust-x);
+		top: calc(17% + var(--dust-index) * 5%);
+		width: calc(2px + var(--dust-index) * 0.12px);
+		aspect-ratio: 1;
+		border-radius: 50%;
+		background: rgba(242, 247, 255, 0.88);
+		box-shadow:
+			0 0 0.45rem rgba(208, 226, 255, 0.68),
+			0 0 1rem rgba(255, 220, 173, 0.34);
+		opacity: 0;
+	}
+
+	.subtitle-layer.is-leaving .subtitle-dust i {
+		animation: subtitle-dust-rise 620ms var(--dust-delay) ease-out both;
+	}
+
 	.is-video-active.is-video-ui-hidden {
 		cursor: none;
 	}
@@ -897,6 +1152,48 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 
 	.is-video-active.is-video-ui-hidden .video-controls {
 		transform: translateY(0.75rem);
+	}
+
+	@keyframes subtitle-gather {
+		0% {
+			opacity: 0;
+			filter: blur(14px);
+			transform: translateY(0.8rem) scale(0.98);
+			letter-spacing: 0.16em;
+		}
+		42% { opacity: 0.8; }
+		100% {
+			opacity: 1;
+			filter: blur(0);
+			transform: translateY(0) scale(1);
+			letter-spacing: normal;
+		}
+	}
+
+	@keyframes subtitle-dissolve {
+		0% {
+			opacity: 1;
+			filter: blur(0);
+			transform: translateY(0) scale(1);
+		}
+		48% { opacity: 0.68; }
+		100% {
+			opacity: 0;
+			filter: blur(11px);
+			transform: translateY(-1.1rem) scale(1.018);
+		}
+	}
+
+	@keyframes subtitle-dust-rise {
+		0% {
+			opacity: 0;
+			transform: translate(0, 0) scale(0.6);
+		}
+		24% { opacity: 0.9; }
+		100% {
+			opacity: 0;
+			transform: translate(calc((var(--dust-index) - 5) * 0.22rem), -2.2rem) scale(0);
+		}
 	}
 
 	.is-igniting .opening-video-interface {
@@ -1219,6 +1516,14 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		50% { transform: translateY(3px); }
 	}
 
+	@media (prefers-reduced-motion: reduce) {
+		.subtitle-layer.is-active,
+		.subtitle-layer.is-leaving,
+		.subtitle-layer.is-leaving .subtitle-dust i {
+			animation-duration: 1ms;
+		}
+	}
+
 	@media (max-width: 640px) {
 		.opening-content { padding: 1rem; }
 		.opening-title { font-size: clamp(1.9rem, 8vw, 2.7rem); letter-spacing: 0; }
@@ -1233,5 +1538,21 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		.video-topbar { justify-content: flex-end; }
 		.video-controls { gap: 0.45rem; padding: 0.6rem; }
 		.video-controls button { min-width: 2rem; padding-inline: 0.5rem; }
+		.opening-subtitles {
+			bottom: 5.2rem;
+			width: calc(100vw - 1.2rem);
+			min-height: 5.2rem;
+		}
+		.is-video-active.is-video-ui-hidden .opening-subtitles { bottom: 2rem; }
+		.subtitle-layer { padding: 0.8rem 0.75rem 0.9rem; }
+		.subtitle-japanese {
+			font-size: clamp(0.96rem, 4.5vw, 1.22rem);
+			letter-spacing: 0.04em;
+		}
+		.subtitle-chinese {
+			margin-top: 0.24rem;
+			font-size: clamp(0.7rem, 3.2vw, 0.84rem);
+			letter-spacing: 0.1em;
+		}
 	}
 </style>

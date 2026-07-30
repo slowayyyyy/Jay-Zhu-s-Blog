@@ -218,6 +218,16 @@ collections:
                   - { label: 跳过按钮文字, name: skipLabel, widget: string, default: 跳过并进入 }
                   - { label: 加载提示文字, name: loadingLabel, widget: string, default: 正在加载有声开场 }
                   - { label: 体积提示, name: sizeLabel, widget: string, required: false, default: 完整视频约 265 MB }
+                  - label: 双语字幕
+                    name: subtitles
+                    widget: object
+                    collapsed: true
+                    hint: 字幕文件使用 WebVTT 格式；每条字幕第一行为日文，第二行为中文。
+                    fields:
+                      - { label: 启用字幕, name: enabled, widget: boolean, default: true }
+                      - { label: 字幕文件地址, name: src, widget: string, default: /subtitles/opening-5cm.vtt, hint: 完整歌词字幕准备好后替换此 VTT 文件。 }
+                      - { label: 字幕按钮文字, name: toggleLabel, widget: string, default: 字幕 }
+                      - { label: 字幕关闭文字, name: offLabel, widget: string, default: 字幕关 }
           - label: 首页介绍
             name: homeIntro
             widget: object
