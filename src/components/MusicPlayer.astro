@@ -113,18 +113,6 @@ const { playlist } = Astro.props;
 			renderProgress(audio.currentTime);
 		};
 
-		const resolveTrackSource = (source) => {
-			if (!source.startsWith('/audio/') || ['localhost', '127.0.0.1'].includes(location.hostname)) {
-				return source;
-			}
-			const encodedPath = source
-				.slice('/audio/'.length)
-				.split('/')
-				.map((part) => encodeURIComponent(part))
-				.join('/');
-			return `https://cdn.jsdelivr.net/gh/slowayyyyy/Jay-Zhu-s-Blog@main/public/audio/${encodedPath}`;
-		};
-
 		const setPlayingState = (isPlaying) => {
 			player.classList.toggle('is-playing', isPlaying);
 			state.textContent = isPlaying ? '❚❚' : '▶';
@@ -159,7 +147,7 @@ const { playlist } = Astro.props;
 			isSeekingWithControl = false;
 			previewSeekTime = null;
 			pendingRestoreTime = restoreTime && typeof savedState.time === 'number' ? savedState.time : 0;
-			audio.src = resolveTrackSource(track.src);
+			audio.src = track.src;
 			title.textContent = track.title;
 			artist.textContent = track.artist;
 			setPlayingState(false);

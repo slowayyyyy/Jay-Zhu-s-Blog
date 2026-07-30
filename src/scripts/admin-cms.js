@@ -1,6 +1,7 @@
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { setupHabitSelectWidget, setupQuickCheckin } from './admin-quick-checkin.js';
+import { setupR2AudioWidget } from './admin-r2-audio.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -8,6 +9,7 @@ const DEFAULT_GITHUB_BRANCH = 'main';
 const SITE_SETTINGS_REPO_PATH = 'src/data/site-settings.json';
 const MANAGED_AUDIO_PUBLIC_PREFIX = '/audio/';
 const MANAGED_AUDIO_REPO_PREFIX = 'public/audio/';
+const MANAGED_R2_AUDIO_PUBLIC_PREFIX = '/media/audio/';
 const GITHUB_TOKEN_PATTERN =
 	/(gho_[A-Za-z0-9_]+|ghu_[A-Za-z0-9_]+|ghs_[A-Za-z0-9_]+|ghr_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)/;
 const IMAGE_EXTENSION_BY_TYPE = new Map([
@@ -79,7 +81,7 @@ export function setupAdminCms() {
 	let statusTimer;
 	let reloadTimer;
 	let idleTimer;
-	let pendingRemovedAudioPaths = [];
+	let pendingRemovedAudioFiles = [];
 	const replayedPasteEvents = new WeakSet();
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
@@ -319,6 +321,25 @@ export function setupAdminCms() {
 			throw new Error(body.message || `audio_file_delete_failed:${deleteResponse.status}`);
 		}
 		return true;
+	};
+
+	const deleteR2Audio = async (path) => {
+		const githubToken = getGithubAccessToken();
+		if (!githubToken) throw new Error('missing_github_token');
+		const response = await fetch(
+			`/api/media/audio/${encodePathPreservingSlashes(path)}`,
+			{
+				method: 'DELETE',
+				headers: {
+					Authorization: `Bearer ${githubToken}`,
+				},
+			},
+		);
+		const body = await response.json().catch(() => ({}));
+		if (!response.ok) {
+			throw new Error(body.error || `r2_audio_delete_failed:${response.status}`);
+		}
+		return body.deleted === true;
 	};
 
 	const uploadImageToGithub = async (file, index = 0) => {
@@ -604,16 +625,19 @@ export function setupAdminCms() {
 	const toPlainValue = (value) =>
 		typeof value?.toJS === 'function' ? value.toJS() : value;
 
-	const managedAudioRepoPath = (source) => {
+	const managedAudioReference = (source) => {
 		if (typeof source !== 'string') return null;
 		const trimmedSource = source.trim();
-		if (!trimmedSource.startsWith(MANAGED_AUDIO_PUBLIC_PREFIX)) return null;
+		const isR2Audio = trimmedSource.startsWith(MANAGED_R2_AUDIO_PUBLIC_PREFIX);
+		const isGithubAudio = trimmedSource.startsWith(MANAGED_AUDIO_PUBLIC_PREFIX);
+		if (!isR2Audio && !isGithubAudio) return null;
+		const publicPrefix = isR2Audio
+			? MANAGED_R2_AUDIO_PUBLIC_PREFIX
+			: MANAGED_AUDIO_PUBLIC_PREFIX;
 
 		let relativePath;
 		try {
-			relativePath = decodeURIComponent(
-				trimmedSource.slice(MANAGED_AUDIO_PUBLIC_PREFIX.length),
-			);
+			relativePath = decodeURIComponent(trimmedSource.slice(publicPrefix.length));
 		} catch {
 			return null;
 		}
@@ -625,17 +649,25 @@ export function setupAdminCms() {
 		) {
 			return null;
 		}
-		return `${MANAGED_AUDIO_REPO_PREFIX}${segments.join('/')}`;
+		const path = segments.join('/');
+		return isR2Audio
+			? { key: `r2:${path}`, kind: 'r2', path }
+			: {
+					key: `github:${MANAGED_AUDIO_REPO_PREFIX}${path}`,
+					kind: 'github',
+					path: `${MANAGED_AUDIO_REPO_PREFIX}${path}`,
+				};
 	};
 
-	const playlistAudioPaths = (settings) => {
+	const playlistAudioReferences = (settings) => {
 		const playlist = toPlainValue(readEntryDataField(settings, 'playlist'));
-		if (!Array.isArray(playlist)) return new Set();
+		if (!Array.isArray(playlist)) return new Map();
 
-		return new Set(
+		return new Map(
 			playlist
-				.map((track) => managedAudioRepoPath(readEntryDataField(track, 'src')))
-				.filter(Boolean),
+				.map((track) => managedAudioReference(readEntryDataField(track, 'src')))
+				.filter(Boolean)
+				.map((reference) => [reference.key, reference]),
 		);
 	};
 
@@ -645,16 +677,16 @@ export function setupAdminCms() {
 
 		try {
 			const savedSettings = await readGithubJsonFile(SITE_SETTINGS_REPO_PATH);
-			const savedAudioPaths = playlistAudioPaths(savedSettings);
-			const nextAudioPaths = playlistAudioPaths(data);
-			pendingRemovedAudioPaths = [...savedAudioPaths].filter(
-				(repoFilePath) => !nextAudioPaths.has(repoFilePath),
-			);
+			const savedAudioFiles = playlistAudioReferences(savedSettings);
+			const nextAudioFiles = playlistAudioReferences(data);
+			pendingRemovedAudioFiles = [...savedAudioFiles.entries()]
+				.filter(([key]) => !nextAudioFiles.has(key))
+				.map(([, reference]) => reference);
 		} catch (error) {
-			pendingRemovedAudioPaths = [];
+			pendingRemovedAudioFiles = [];
 			console.error('[Jay CMS] could not compare the saved audio playlist.', error);
 			showStatus(
-				'网站设置仍会保存，但暂时无法核对 GitHub 歌单，因此本次不会自动删除音乐文件。',
+				'网站设置仍会保存，但暂时无法核对已发布歌单，因此本次不会自动删除音乐文件。',
 				'error',
 				7600,
 			);
@@ -667,16 +699,20 @@ export function setupAdminCms() {
 		if (
 			entry?.get?.('collection') !== 'site_settings' ||
 			isLocalPreview ||
-			pendingRemovedAudioPaths.length === 0
+			pendingRemovedAudioFiles.length === 0
 		) {
 			return 0;
 		}
 
-		const pathsToDelete = pendingRemovedAudioPaths;
-		pendingRemovedAudioPaths = [];
+		const filesToDelete = pendingRemovedAudioFiles;
+		pendingRemovedAudioFiles = [];
 		let deletedCount = 0;
-		for (const repoFilePath of pathsToDelete) {
-			if (await deleteGithubFile(repoFilePath)) deletedCount += 1;
+		for (const file of filesToDelete) {
+			const deleted =
+				file.kind === 'r2'
+					? await deleteR2Audio(file.path)
+					: await deleteGithubFile(file.path);
+			if (deleted) deletedCount += 1;
 		}
 		return deletedCount;
 	};
@@ -1238,8 +1274,8 @@ export function setupAdminCms() {
 		showStatus(`正在保存${label}...`, 'pending', 1600);
 
 		try {
-			if (pendingRemovedAudioPaths.length > 0) {
-				showStatus('网站设置已保存，正在同步删除仓库中的音乐文件...', 'pending');
+			if (pendingRemovedAudioFiles.length > 0) {
+				showStatus('网站设置已保存，正在同步删除音乐存储中的文件...', 'pending');
 				deletedAudioCount = await deleteRemovedAudioAfterSave(entry);
 			}
 		} catch (error) {
@@ -1273,7 +1309,7 @@ export function setupAdminCms() {
 
 				if (audioCleanupError) {
 					showStatus(
-						`${label}已保存，但音乐文件未能从 GitHub 删除：${audioCleanupError.message || '未知错误'}。请刷新后台后重试。`,
+						`${label}已保存，但音乐文件未能从存储中删除：${audioCleanupError.message || '未知错误'}。请刷新后台后重试。`,
 						'error',
 						9000,
 					);
@@ -1282,7 +1318,7 @@ export function setupAdminCms() {
 
 				showStatus(
 					deletedAudioCount > 0
-						? `${label}已提交到 GitHub，并已从仓库删除 ${deletedAudioCount} 个音乐文件。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`
+						? `${label}已提交到 GitHub，并已从音乐存储删除 ${deletedAudioCount} 个文件。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`
 						: `${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
 					'info',
 					6400,
@@ -1333,6 +1369,12 @@ export function setupAdminCms() {
 	setupHabitSelectWidget({
 		isLocalPreview,
 		readGithubJsonFile,
+	});
+
+	setupR2AudioWidget({
+		getGithubAccessToken,
+		isLocalPreview,
+		showStatus,
 	});
 
 	setupQuickCheckin({

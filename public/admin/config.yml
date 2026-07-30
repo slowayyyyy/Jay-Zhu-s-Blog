@@ -556,15 +556,12 @@ collections:
             name: playlist
             widget: list
             collapsed: true
-            hint: 删除歌曲条目并保存网站设置后，对应 MP3 也会从 GitHub 仓库删除；以前已经遗留在仓库中的文件不会被自动清理。
+            hint: 音乐文件直接上传到 Cloudflare R2；删除歌曲条目并保存后，对应 R2 文件也会自动删除。
             summary: "{{fields.title}} · {{fields.artist}}"
             fields:
               - { label: 歌曲名, name: title, widget: string }
               - { label: 歌手 / 来源, name: artist, widget: string }
               - label: 音乐文件
                 name: src
-                widget: file
-                media_folder: /public/audio
-                public_folder: /audio
-                allow_multiple: false
-                choose_url: false
+                widget: r2-audio
+                hint: 支持 MP3、M4A、AAC、OGG、OPUS、WAV 和 FLAC，单个文件不超过 50 MB。
