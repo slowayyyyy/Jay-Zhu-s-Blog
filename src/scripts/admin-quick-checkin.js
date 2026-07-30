@@ -65,6 +65,140 @@ export const normalizeQuickCheckinHabits = (settings = bundledSiteSettings) => {
 	return habits.length > 0 ? habits : DEFAULT_HABITS;
 };
 
+const withOtherHabit = (habits) => {
+	const options = [...habits];
+	if (!options.some(({ id }) => id === 'other')) {
+		options.push({
+			id: 'other',
+			name: { zh: '其他记录', en: 'Other' },
+			code: 'OTHER',
+			color: '#82919a',
+			weeklyGoal: 1,
+			minimumMinutes: 1,
+			durations: [5, 10, 20, 30, 60],
+			activities: ['其他'],
+			enabled: true,
+		});
+	}
+	return options;
+};
+
+export function setupHabitSelectWidget({ isLocalPreview, readGithubJsonFile }) {
+	if (window.__jayHabitSelectWidget || !window.CMS) return;
+	const createClass = window.createClass;
+	const h = window.h;
+	if (typeof createClass !== 'function' || typeof h !== 'function') {
+		console.error('[Jay CMS] Decap widget helpers are unavailable.');
+		return;
+	}
+
+	window.__jayHabitSelectWidget = true;
+	const fallbackHabits = () => withOtherHabit(normalizeQuickCheckinHabits());
+	const HabitSelectControl = createClass({
+		getInitialState() {
+			return {
+				habits: fallbackHabits(),
+				loading: !isLocalPreview,
+				error: '',
+			};
+		},
+
+		componentDidMount() {
+			this.isMountedControl = true;
+			if (!isLocalPreview) void this.loadLatestHabits();
+		},
+
+		componentWillUnmount() {
+			this.isMountedControl = false;
+		},
+
+		async loadLatestHabits() {
+			try {
+				const settings = await readGithubJsonFile('src/data/site-settings.json');
+				if (!this.isMountedControl) return;
+				this.setState({
+					habits: withOtherHabit(normalizeQuickCheckinHabits(settings)),
+					loading: false,
+					error: '',
+				});
+			} catch (error) {
+				console.warn('[Jay CMS] could not refresh habit select options.', error);
+				if (!this.isMountedControl) return;
+				this.setState({
+					habits: fallbackHabits(),
+					loading: false,
+					error: '读取最新模块失败，当前显示上次发布的模块列表。',
+				});
+			}
+		},
+
+		handleChange(event) {
+			this.props.onChange(event.target.value);
+		},
+
+		render() {
+			const value = String(this.props.value || '');
+			const habits = [...this.state.habits];
+			if (value && !habits.some(({ id }) => id === value)) {
+				habits.unshift({
+					id: value,
+					name: { zh: `${value}（旧模块或已停用）`, en: value },
+					color: '#82919a',
+				});
+			}
+			const helperText = this.state.loading
+				? '正在读取最新打卡模块...'
+				: this.state.error || '选项与“网站与个人资料 → 灯火计划 → 打卡模块”同步。';
+
+			return h(
+				'div',
+				{},
+				h(
+					'select',
+					{
+						id: this.props.forID,
+						className: this.props.classNameWrapper,
+						value,
+						onChange: this.handleChange,
+						style: {
+							width: '100%',
+							minHeight: '42px',
+							padding: '8px 12px',
+							border: '1px solid #c8d1d5',
+							borderRadius: '4px',
+							background: '#fff',
+							color: '#172329',
+							fontSize: '14px',
+						},
+					},
+					h('option', { value: '', disabled: true }, '请选择打卡模块'),
+					...habits.map((habit) =>
+						h(
+							'option',
+							{ key: habit.id, value: habit.id },
+							`${habit.name.zh} · ${habit.code || habit.id.toUpperCase()}`,
+						),
+					),
+				),
+				h(
+					'small',
+					{
+						style: {
+							display: 'block',
+							marginTop: '6px',
+							color: this.state.error ? '#a04c4c' : '#68777d',
+							lineHeight: '1.5',
+						},
+					},
+					helperText,
+				),
+			);
+		},
+	});
+
+	window.CMS.registerWidget('habit-select', HabitSelectControl);
+}
+
 const localDateTimeValue = (date = new Date()) => {
 	const localTime = new Date(date.getTime() - date.getTimezoneOffset() * 60_000);
 	return localTime.toISOString().slice(0, 16);

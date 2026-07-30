@@ -1,6 +1,6 @@
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
-import { setupQuickCheckin } from './admin-quick-checkin.js';
+import { setupHabitSelectWidget, setupQuickCheckin } from './admin-quick-checkin.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -699,9 +699,23 @@ export function setupAdminCms() {
 		return setEntryDataField(data, 'body', normalizedBody);
 	};
 
+	const normalizeCheckinModuleBeforeSave = (entry, data) => {
+		if (entry?.get?.('collection') !== 'checkins') return data;
+		const habit = String(readEntryDataField(data, 'habit') || '').trim().toLowerCase();
+		if (!habit) {
+			showStatus('请选择打卡模块后再保存。', 'error', 7600);
+			throw new Error('missing_checkin_habit');
+		}
+		const legacyCategory = habit === 'english' || habit === 'exercise' ? habit : 'other';
+		let normalizedData = setEntryDataField(data, 'habit', habit);
+		normalizedData = setEntryDataField(normalizedData, 'category', legacyCategory);
+		return normalizedData;
+	};
+
 	const prepareEntryBeforeSave = async (payload) => {
 		await captureRemovedAudioBeforeSave(payload);
-		return normalizeEmbeddedImagesBeforeSave(payload);
+		const normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
+		return normalizeCheckinModuleBeforeSave(payload.entry, normalizedData);
 	};
 
 	const clipboardContainsOnlyLocalImageReferences = (clipboardData) => {
@@ -1314,6 +1328,11 @@ export function setupAdminCms() {
 
 	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
+	});
+
+	setupHabitSelectWidget({
+		isLocalPreview,
+		readGithubJsonFile,
 	});
 
 	setupQuickCheckin({

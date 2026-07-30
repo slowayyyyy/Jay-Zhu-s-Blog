@@ -111,16 +111,14 @@ collections:
         date_format: YYYY-MM-DD
         time_format: HH:mm
       - { label: 记录日期, name: day, widget: hidden, required: false }
-      - { label: 打卡模块 ID, name: habit, widget: string, required: false, hint: 使用快速打卡时会自动填写；手动编辑时请填写“灯火计划 → 打卡模块”中的模块 ID。 }
-      - label: 打卡类型
+      - label: 打卡模块
+        name: habit
+        widget: habit-select
+        hint: 选项会自动读取“灯火计划 → 打卡模块”，新增阅读、科研等模块后会同步显示。
+      - label: 旧版兼容类型
         name: category
-        widget: select
+        widget: hidden
         default: other
-        hint: 仅用于兼容旧记录；新记录优先使用上面的“打卡模块 ID”。
-        options:
-          - { label: 英语学习, value: english }
-          - { label: 运动锻炼, value: exercise }
-          - { label: 其他记录, value: other }
       - label: 完成时长（分钟）
         name: duration
         widget: number
