@@ -112,9 +112,14 @@
   "checkinSettings": {
     "copy": {
       "quickKicker": "20 SECOND CHECK-IN",
+      "timeKicker": "TIME LEDGER",
       "statsMinutes": {
         "zh": "记录分钟",
         "en": "Minutes logged"
+      },
+      "timeMonthLabel": {
+        "zh": "本月",
+        "en": "This month"
       },
       "weekRemaining": {
         "zh": "本周再点亮 {count} 天",
@@ -124,6 +129,10 @@
       "quickAction": {
         "zh": "快速记录 →",
         "en": "Quick check-in →"
+      },
+      "timeAverageLabel": {
+        "zh": "平均 {minutes} 分钟 / 次",
+        "en": "{minutes} min per session"
       },
       "recordsSummary": {
         "zh": "本月已经行动 {days} 天，点亮 {lights} 盏灯。",
@@ -137,18 +146,42 @@
         "zh": "灯火计划",
         "en": "Lamp Plan"
       },
+      "timeSessionsLabel": {
+        "zh": "{count} 次计时记录",
+        "en": "{count} timed sessions"
+      },
       "quickTitle": {
         "zh": "今天，想点亮哪一盏灯？",
         "en": "Which lamp will you light today?"
+      },
+      "timeTitle": {
+        "zh": "时间账本",
+        "en": "Time Ledger"
       },
       "weekComplete": {
         "zh": "本周目标已经完成",
         "en": "Weekly goal complete"
       },
+      "timeUnit": {
+        "zh": "分钟",
+        "en": "min"
+      },
       "calendarKicker": "LAMP CALENDAR",
+      "timeMonthTotal": {
+        "zh": "本月总投入",
+        "en": "Total this month"
+      },
       "todayLabel": {
         "zh": "今天",
         "en": "Today"
+      },
+      "timeWeekLabel": {
+        "zh": "本周",
+        "en": "This week"
+      },
+      "timeEmptyLabel": {
+        "zh": "尚未记录时长",
+        "en": "No timed sessions yet"
       },
       "recordsKicker": "FIELD NOTES",
       "recordsTitle": {
@@ -171,6 +204,10 @@
         "zh": "点亮灯数",
         "en": "Lamps lit"
       },
+      "timeTotalLabel": {
+        "zh": "累计",
+        "en": "All time"
+      },
       "pageIntro": {
         "zh": "不追求完美连续，只把今天真正做过的事点亮。",
         "en": "No perfect streaks, just a light for what was truly done today."
@@ -179,46 +216,9 @@
         "zh": "从一次足够小的行动开始，也算认真生活。",
         "en": "A small action is still a meaningful start."
       },
-      "timeKicker": "TIME LEDGER",
-      "timeTitle": {
-        "zh": "时间账本",
-        "en": "Time Ledger"
-      },
       "timeIntro": {
         "zh": "按模块回看时间真正流向了哪里。",
         "en": "See where your time actually went, one habit at a time."
-      },
-      "timeMonthTotal": {
-        "zh": "本月总投入",
-        "en": "Total this month"
-      },
-      "timeWeekLabel": {
-        "zh": "本周",
-        "en": "This week"
-      },
-      "timeMonthLabel": {
-        "zh": "本月",
-        "en": "This month"
-      },
-      "timeTotalLabel": {
-        "zh": "累计",
-        "en": "All time"
-      },
-      "timeSessionsLabel": {
-        "zh": "{count} 次计时记录",
-        "en": "{count} timed sessions"
-      },
-      "timeAverageLabel": {
-        "zh": "平均 {minutes} 分钟 / 次",
-        "en": "{minutes} min per session"
-      },
-      "timeEmptyLabel": {
-        "zh": "尚未记录时长",
-        "en": "No timed sessions yet"
-      },
-      "timeUnit": {
-        "zh": "分钟",
-        "en": "min"
       }
     },
     "habits": [
@@ -287,7 +287,8 @@
         },
         "code": "RE",
         "activities": [
-          "阅读"
+          "读论文",
+          "读纸质书"
         ],
         "minimumMinutes": 10,
         "weeklyGoal": 3,
@@ -296,7 +297,8 @@
           10,
           20,
           30,
-          60
+          60,
+          120
         ]
       }
     ]
