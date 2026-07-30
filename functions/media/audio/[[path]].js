@@ -109,7 +109,7 @@ const migrateLegacyAudio = async ({ bucket, path, objectKey }) => {
 	if (!response.ok || !response.body) return false;
 
 	const contentLength = Number(response.headers.get('content-length') || 0);
-	if (contentLength <= 0 || contentLength > MAX_LEGACY_AUDIO_BYTES) return false;
+	if (contentLength > MAX_LEGACY_AUDIO_BYTES) return false;
 	const contentType = response.headers.get('content-type') || 'audio/mpeg';
 	if (!contentType.toLowerCase().startsWith('audio/')) return false;
 
