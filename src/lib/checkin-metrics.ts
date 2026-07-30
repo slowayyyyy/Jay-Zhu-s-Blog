@@ -13,6 +13,7 @@ export interface CheckinMetricSource {
 		activity?: string;
 		tags?: string[];
 	};
+	body?: string;
 }
 
 const DAY_PATTERN = /^\d{4}-\d{2}-\d{2}$/;
@@ -59,6 +60,36 @@ export const getCheckinHabitId = (checkin: CheckinMetricSource) => {
 	if (ENGLISH_PATTERN.test(searchable)) return 'english';
 	if (EXERCISE_PATTERN.test(searchable)) return 'exercise';
 	return 'other';
+};
+
+const findDurationValues = (text: string, pattern: RegExp) =>
+	[...text.matchAll(pattern)]
+		.map((match) => Number(match[1]))
+		.filter((value) => Number.isFinite(value) && value > 0);
+
+export const getCheckinDurationMinutes = (checkin: CheckinMetricSource) => {
+	const explicitDuration = Number(checkin.data.duration ?? 0);
+	if (Number.isFinite(explicitDuration) && explicitDuration > 0) return explicitDuration;
+
+	const searchable = [
+		checkin.data.summary,
+		checkin.data.activity,
+		checkin.body,
+	]
+		.filter(Boolean)
+		.join(' ');
+	const hours = findDurationValues(
+		searchable,
+		/(\d+(?:\.\d+)?)\s*(?:小时|hours?|hrs?|h)(?![a-z])/giu,
+	);
+	const minutes = findDurationValues(
+		searchable,
+		/(\d+(?:\.\d+)?)\s*(?:分钟|minutes?|mins?|min)(?![a-z])/giu,
+	);
+	return Math.round(
+		hours.reduce((total, value) => total + value * 60, 0)
+		+ minutes.reduce((total, value) => total + value, 0),
+	);
 };
 
 export const parseDayKey = (dayKey: string) => {

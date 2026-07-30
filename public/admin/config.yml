@@ -288,6 +288,69 @@ collections:
                     fields:
                       - { label: 中文, name: zh, widget: string }
                       - { label: 英文, name: en, widget: string }
+                  - { label: 时间统计英文眉题, name: timeKicker, widget: string }
+                  - label: 时间统计标题
+                    name: timeTitle
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 时间统计介绍
+                    name: timeIntro
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: text }
+                      - { label: 英文, name: en, widget: text }
+                  - label: 本月总投入文字
+                    name: timeMonthTotal
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 本周统计文字
+                    name: timeWeekLabel
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 本月统计文字
+                    name: timeMonthLabel
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 累计统计文字
+                    name: timeTotalLabel
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 计时次数模板
+                    name: timeSessionsLabel
+                    widget: object
+                    hint: 使用 {count} 表示计时记录次数。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 平均时长模板
+                    name: timeAverageLabel
+                    widget: object
+                    hint: 使用 {minutes} 表示单次平均分钟数。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 暂无时长提示
+                    name: timeEmptyLabel
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
+                  - label: 分钟单位
+                    name: timeUnit
+                    widget: object
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
                   - { label: 日历英文眉题, name: calendarKicker, widget: string }
                   - label: 日历标题
                     name: calendarTitle
