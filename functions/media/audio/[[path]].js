@@ -1,6 +1,8 @@
 const AUDIO_OBJECT_PREFIX = 'audio/';
 const ALLOWED_FETCH_SITES = new Set(['same-origin', 'same-site']);
 const MAX_LEGACY_AUDIO_BYTES = 50 * 1024 * 1024;
+const LEGACY_AUDIO_CDN_ROOT =
+	'https://cdn.jsdelivr.net/gh/slowayyyyy/Jay-Zhu-s-Blog@main/public/audio/';
 
 const errorResponse = (message, status, extraHeaders = {}) =>
 	new Response(message, {
@@ -96,8 +98,8 @@ const encodePath = (path) =>
 		.map((segment) => encodeURIComponent(segment))
 		.join('/');
 
-const migrateLegacyAudio = async ({ request, bucket, path, objectKey }) => {
-	const legacyUrl = new URL(`/audio/${encodePath(path)}`, request.url);
+const migrateLegacyAudio = async ({ bucket, path, objectKey }) => {
+	const legacyUrl = new URL(encodePath(path), LEGACY_AUDIO_CDN_ROOT);
 	const response = await fetch(legacyUrl, {
 		headers: {
 			Accept: 'audio/*',
@@ -152,7 +154,6 @@ export async function onRequest(context) {
 	let metadata = await env.BLOG_MEDIA.head(objectKey);
 	if (!metadata) {
 		const migrated = await migrateLegacyAudio({
-			request,
 			bucket: env.BLOG_MEDIA,
 			path,
 			objectKey,
