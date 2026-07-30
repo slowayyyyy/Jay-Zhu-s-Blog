@@ -110,6 +110,24 @@ collections:
         format: YYYY-MM-DD HH:mm
         date_format: YYYY-MM-DD
         time_format: HH:mm
+      - { label: 记录日期, name: day, widget: hidden, required: false }
+      - label: 打卡类型
+        name: category
+        widget: select
+        default: other
+        options:
+          - { label: 英语学习, value: english }
+          - { label: 运动锻炼, value: exercise }
+          - { label: 其他记录, value: other }
+      - label: 完成时长（分钟）
+        name: duration
+        widget: number
+        value_type: int
+        default: 0
+        min: 0
+        required: false
+        hint: 用于灯火日历和趋势统计；不按时长计算的记录可以填 0。
+      - { label: 具体活动, name: activity, widget: string, required: false, hint: 例如“英语听力”“跑步”或“力量训练”。 }
       - { label: 标题, name: title, widget: string, default: 今日打卡 }
       - label: 排序值
         name: sortOrder
@@ -199,6 +217,24 @@ collections:
             fields:
               - { label: 中文, name: zh, widget: string }
               - { label: 英文, name: en, widget: string }
+          - label: 灯火计划
+            name: checkinSettings
+            widget: object
+            collapsed: false
+            hint: 设置英语学习和运动锻炼每周希望完成的天数，以及一次最低行动所需的分钟数。
+            fields:
+              - label: 每周目标
+                name: weeklyGoals
+                widget: object
+                fields:
+                  - { label: 英语学习（天 / 周）, name: english, widget: number, value_type: int, min: 1, max: 7, default: 5 }
+                  - { label: 运动锻炼（天 / 周）, name: exercise, widget: number, value_type: int, min: 1, max: 7, default: 3 }
+              - label: 最低行动
+                name: minimumMinutes
+                widget: object
+                fields:
+                  - { label: 英语学习（分钟）, name: english, widget: number, value_type: int, min: 1, default: 5 }
+                  - { label: 运动锻炼（分钟）, name: exercise, widget: number, value_type: int, min: 1, default: 10 }
           - label: 生活手账页面
             name: lifePage
             widget: object

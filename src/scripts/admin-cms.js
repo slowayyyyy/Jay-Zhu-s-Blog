@@ -1,5 +1,6 @@
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
+import { setupQuickCheckin } from './admin-quick-checkin.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -1313,5 +1314,15 @@ export function setupAdminCms() {
 
 	['postSave', 'postPublish', 'postUnpublish'].forEach((name) => {
 		window.CMS.registerEventListener({ name, handler: handleContentUpdate });
+	});
+
+	setupQuickCheckin({
+		isLocalPreview,
+		getGithubAccessToken,
+		getGithubRepoInfo,
+		encodePathPreservingSlashes,
+		blobToBase64,
+		githubApiRequest,
+		showStatus,
 	});
 }

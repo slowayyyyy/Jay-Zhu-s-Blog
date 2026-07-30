@@ -109,6 +109,16 @@
     "zh": "把复杂的事写清楚，把普通的日子认真留下。",
     "en": "Write complex things clearly, and keep ordinary days with care."
   },
+  "checkinSettings": {
+    "weeklyGoals": {
+      "english": 5,
+      "exercise": 3
+    },
+    "minimumMinutes": {
+      "english": 5,
+      "exercise": 10
+    }
+  },
   "playlist": [
     {
       "title": "180°",

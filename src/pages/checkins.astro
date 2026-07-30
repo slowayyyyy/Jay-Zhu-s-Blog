@@ -8,8 +8,8 @@ const checkins = await getAllCheckins();
 ---
 
 <SiteLayout
-	title={`每日打卡 | ${siteConfig.name}`}
-	description="按日期记录每天完成的学习、科研、阅读与运动。"
+	title={`灯火计划 · 每日打卡 | ${siteConfig.name}`}
+	description="用灯火日历记录英语学习与运动锻炼，查看每周目标和长期积累。"
 	pathname="/checkins/"
 >
 	<div class="checkins-page">
@@ -19,12 +19,12 @@ const checkins = await getAllCheckins();
 
 <style>
 	.checkins-page {
-		padding: 4.2rem 0 2rem;
+		padding: 0 0 2rem;
 	}
 
 	@media (max-width: 680px) {
 		.checkins-page {
-			padding-top: 2.5rem;
+			padding-top: 0;
 		}
 	}
 </style>

@@ -51,9 +51,9 @@ export const translations = {
 			player: '音乐播放器',
 		},
 		checkins: {
-			kicker: 'DAILY LOG',
-			title: '每日打卡',
-			intro: '用最短的文字，留下今天确实做过的事。',
+			kicker: 'LIGHT THE DAY',
+			title: '灯火计划',
+			intro: '不追求完美连续，只把今天真正做过的事点亮。',
 			listTitle: '全部记录',
 		},
 			home: {
@@ -133,9 +133,9 @@ export const translations = {
 			player: 'Music Player',
 		},
 		checkins: {
-			kicker: 'DAILY LOG',
-			title: 'Daily Check-in',
-			intro: 'A short record of what was actually done today.',
+			kicker: 'LIGHT THE DAY',
+			title: 'Lamp Plan',
+			intro: 'No perfect streaks, just a light for what was truly done today.',
 			listTitle: 'All entries',
 		},
 			home: {

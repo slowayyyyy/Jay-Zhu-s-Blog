@@ -22,8 +22,12 @@ const checkins = defineCollection({
 	loader: glob({ pattern: '**/*.md', base: './src/content/checkins' }),
 	schema: z.object({
 		date: z.coerce.date(),
+		day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 		title: z.string(),
 		summary: z.string().default(''),
+		category: z.enum(['english', 'exercise', 'other']).default('other'),
+		duration: z.coerce.number().int().min(0).default(0),
+		activity: z.string().default(''),
 		sortOrder: z.coerce.number().int().default(0),
 		items: z
 			.array(

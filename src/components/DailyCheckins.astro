@@ -1,10 +1,26 @@
 ---
 import type { CollectionEntry } from 'astro:content';
-import { renderMarkdownContent } from '../lib/markdown';
 import { getTagLabel, getTagMap } from '../lib/content';
+import {
+	addDays,
+	formatShanghaiDayKey,
+	getCheckinCategory,
+	getCheckinDayKey,
+	getMonthCalendar,
+	getWeekStart,
+	type HabitCategory,
+} from '../lib/checkin-metrics';
+import { renderMarkdownContent } from '../lib/markdown';
+import { siteConfig } from '../data/site';
 
 interface Props {
 	checkins: CollectionEntry<'checkins'>[];
+}
+
+interface HabitDaySummary {
+	english: { count: number; minutes: number };
+	exercise: { count: number; minutes: number };
+	other: { count: number; minutes: number };
 }
 
 const { checkins } = Astro.props;
@@ -17,33 +33,343 @@ const renderedBodies = new Map(
 		] as const),
 	),
 );
+
+const todayKey = formatShanghaiDayKey();
+const currentMonthKey = todayKey.slice(0, 7);
+const weekStart = getWeekStart(todayKey);
+const currentWeekDays = new Set(Array.from({ length: 7 }, (_, index) => addDays(weekStart, index)));
+const configuredGoals = siteConfig.checkinSettings?.weeklyGoals;
+const configuredMinimums = siteConfig.checkinSettings?.minimumMinutes;
+const weeklyGoals = {
+	english: Math.min(7, Math.max(1, Number(configuredGoals?.english ?? 5))),
+	exercise: Math.min(7, Math.max(1, Number(configuredGoals?.exercise ?? 3))),
+};
+const minimumMinutes = {
+	english: Math.max(1, Number(configuredMinimums?.english ?? 5)),
+	exercise: Math.max(1, Number(configuredMinimums?.exercise ?? 10)),
+};
+
+const emptyDaySummary = (): HabitDaySummary => ({
+	english: { count: 0, minutes: 0 },
+	exercise: { count: 0, minutes: 0 },
+	other: { count: 0, minutes: 0 },
+});
+
+const enrichedCheckins = checkins.map((checkin) => ({
+	checkin,
+	dayKey: getCheckinDayKey(checkin),
+	category: getCheckinCategory(checkin),
+}));
+const firstCheckinIdByDay = new Map<string, string>();
+for (const { checkin, dayKey } of enrichedCheckins) {
+	if (!firstCheckinIdByDay.has(dayKey)) firstCheckinIdByDay.set(dayKey, checkin.id);
+}
+const activityByDay = new Map<string, HabitDaySummary>();
+
+for (const { checkin, dayKey, category } of enrichedCheckins) {
+	const summary = activityByDay.get(dayKey) ?? emptyDaySummary();
+	summary[category].count += 1;
+	summary[category].minutes += Math.max(0, Number(checkin.data.duration ?? 0));
+	activityByDay.set(dayKey, summary);
+}
+
+const completedDaysThisWeek = (category: 'english' | 'exercise') =>
+	[...currentWeekDays].filter((dayKey) => (activityByDay.get(dayKey)?.[category].count ?? 0) > 0)
+		.length;
+
+const weeklyProgress = (['english', 'exercise'] as const).map((category) => {
+	const completed = completedDaysThisWeek(category);
+	const goal = weeklyGoals[category];
+	return {
+		category,
+		completed,
+		goal,
+		percent: Math.min(100, Math.round((completed / goal) * 100)),
+		remaining: Math.max(0, goal - completed),
+		minimum: minimumMinutes[category],
+	};
+});
+
+const monthKeys = [
+	...new Set([currentMonthKey, ...enrichedCheckins.map(({ dayKey }) => dayKey.slice(0, 7))]),
+].sort((a, b) => b.localeCompare(a));
+const monthCalendars = monthKeys.map((monthKey) => {
+	const calendar = getMonthCalendar(monthKey);
+	const entries = [...activityByDay.entries()].filter(([dayKey]) => dayKey.startsWith(monthKey));
+	const activeDays = new Set(
+		entries
+			.filter(([, summary]) => summary.english.count > 0 || summary.exercise.count > 0)
+			.map(([dayKey]) => dayKey),
+	).size;
+	const lights = entries.reduce(
+		(total, [, summary]) =>
+			total + Number(summary.english.count > 0) + Number(summary.exercise.count > 0),
+		0,
+	);
+	const minutes = entries.reduce(
+		(total, [, summary]) => total + summary.english.minutes + summary.exercise.minutes,
+		0,
+	);
+	const zhLabel = `${calendar.year} 年 ${calendar.month} 月`;
+	const enLabel = new Intl.DateTimeFormat('en-US', {
+		year: 'numeric',
+		month: 'long',
+		timeZone: 'UTC',
+	}).format(new Date(Date.UTC(calendar.year, calendar.month - 1, 1)));
+
+	return {
+		...calendar,
+		monthKey,
+		zhLabel,
+		enLabel,
+		activeDays,
+		lights,
+		minutes,
+		dayCells: calendar.days.map((dayKey) => {
+			const summary = activityByDay.get(dayKey) ?? emptyDaySummary();
+			const entryCount = summary.english.count + summary.exercise.count + summary.other.count;
+			return {
+				dayKey,
+				dayNumber: Number(dayKey.slice(-2)),
+				summary,
+				entryCount,
+			};
+		}),
+	};
+});
+
+const currentMonth = (
+	monthCalendars.find(({ monthKey }) => monthKey === currentMonthKey)
+	?? monthCalendars[0]
+)!;
+const todaySummary = activityByDay.get(todayKey) ?? emptyDaySummary();
 const dateFormatter = new Intl.DateTimeFormat('zh-CN', {
 	year: 'numeric',
 	month: '2-digit',
 	day: '2-digit',
 });
-
 const timeFormatter = new Intl.DateTimeFormat('zh-CN', {
 	hour: '2-digit',
 	minute: '2-digit',
 	hour12: false,
 });
-
 const formatDate = (date: Date) => {
 	const dateLabel = dateFormatter.format(date).replaceAll('/', ' / ');
 	const hasTime = date.getHours() !== 0 || date.getMinutes() !== 0;
 	return hasTime ? `${dateLabel} · ${timeFormatter.format(date)}` : dateLabel;
 };
+const categoryCopy: Record<HabitCategory, { zh: string; en: string }> = {
+	english: { zh: '英语学习', en: 'English' },
+	exercise: { zh: '运动锻炼', en: 'Exercise' },
+	other: { zh: '其他记录', en: 'Other' },
+};
 ---
 
-<section class="daily-checkins container" aria-labelledby="daily-checkin-title">
-	<div class="checkin-heading">
+<section class="daily-checkins container" aria-labelledby="daily-checkin-title" data-lamp-dashboard>
+	<header class="checkin-heading">
 		<div>
-			<div class="eyebrow" data-copy="checkins.kicker">DAILY LOG</div>
-			<h1 class="section-title" id="daily-checkin-title" data-copy="checkins.title">每日打卡</h1>
+			<div class="eyebrow" data-copy="checkins.kicker">LIGHT THE DAY</div>
+			<h1 class="section-title" id="daily-checkin-title" data-copy="checkins.title">灯火计划</h1>
+			<p class="checkin-intro" data-copy="checkins.intro">
+				不追求完美连续，只把今天真正做过的事点亮。
+			</p>
 		</div>
-		<p class="checkin-intro" data-copy="checkins.intro">
-			用最短的文字，留下今天确实做过的事。
+		<div class="today-state" aria-label="今日完成状态">
+			<div class="today-date">
+				<span data-bilingual="text" data-zh="今天" data-en="Today">今天</span>
+				<strong>{todayKey.slice(5).replace('-', ' / ')}</strong>
+			</div>
+			<div class="today-lamps">
+				<span
+					class:list={['mini-lamp', 'is-english', { 'is-lit': todaySummary.english.count > 0 }]}
+					title="英语学习"
+				/>
+				<span
+					class:list={['mini-lamp', 'is-exercise', { 'is-lit': todaySummary.exercise.count > 0 }]}
+					title="运动锻炼"
+				/>
+			</div>
+		</div>
+	</header>
+
+	<div class="quick-panel glass-card">
+		<div class="quick-copy">
+			<span class="quick-kicker">20 SECOND CHECK-IN</span>
+			<h2 data-bilingual="text" data-zh="今天，想点亮哪一盏灯？" data-en="Which lamp will you light today?">
+				今天，想点亮哪一盏灯？
+			</h2>
+			<p
+				data-bilingual="text"
+				data-zh={`英语 ${minimumMinutes.english} 分钟、运动 ${minimumMinutes.exercise} 分钟，也算认真开始。`}
+				data-en={`Even ${minimumMinutes.english} minutes of English or ${minimumMinutes.exercise} minutes of movement counts.`}
+			>
+				英语 {minimumMinutes.english} 分钟、运动 {minimumMinutes.exercise} 分钟，也算认真开始。
+			</p>
+		</div>
+		<div class="quick-actions">
+			<a class="quick-action is-english" href="/admin/?quick-checkin=english">
+				<span class="action-lamp" aria-hidden="true" />
+				<span>
+					<strong data-bilingual="text" data-zh="英语学习" data-en="English">英语学习</strong>
+					<small data-bilingual="text" data-zh="快速记录 →" data-en="Quick check-in →">快速记录 →</small>
+				</span>
+			</a>
+			<a class="quick-action is-exercise" href="/admin/?quick-checkin=exercise">
+				<span class="action-lamp" aria-hidden="true" />
+				<span>
+					<strong data-bilingual="text" data-zh="运动锻炼" data-en="Exercise">运动锻炼</strong>
+					<small data-bilingual="text" data-zh="快速记录 →" data-en="Quick check-in →">快速记录 →</small>
+				</span>
+			</a>
+		</div>
+	</div>
+
+	<div class="weekly-grid">
+		{
+			weeklyProgress.map(({ category, completed, goal, percent, remaining, minimum }) => (
+				<article class:list={['weekly-card', `is-${category}`, 'glass-card']}>
+					<div class="weekly-card-top">
+						<div>
+							<span class="habit-label">
+								{category === 'english' ? 'ENGLISH' : 'MOVEMENT'}
+							</span>
+							<h2
+								data-bilingual="text"
+								data-zh={categoryCopy[category].zh}
+								data-en={categoryCopy[category].en}
+							>
+								{categoryCopy[category].zh}
+							</h2>
+						</div>
+						<strong class="weekly-ratio">{completed}<span> / {goal}</span></strong>
+					</div>
+					<div class="progress-track" aria-label={`${categoryCopy[category].zh}本周进度`}>
+						<span style={`--progress: ${percent}%`} />
+					</div>
+					<div class="weekly-note">
+						<span
+							data-bilingual="text"
+							data-zh={remaining > 0 ? `本周再点亮 ${remaining} 天` : '本周目标已经完成'}
+							data-en={remaining > 0 ? `${remaining} more day${remaining > 1 ? 's' : ''} this week` : 'Weekly goal complete'}
+						>
+							{remaining > 0 ? `本周再点亮 ${remaining} 天` : '本周目标已经完成'}
+						</span>
+						<small
+							data-bilingual="text"
+							data-zh={`最低行动 ${minimum} 分钟`}
+							data-en={`Minimum ${minimum} min`}
+						>
+							最低行动 {minimum} 分钟
+						</small>
+					</div>
+				</article>
+			))
+		}
+	</div>
+
+	<section class="calendar-card glass-card" aria-labelledby="lamp-calendar-title">
+		<div class="calendar-heading">
+			<div>
+				<span class="calendar-kicker">LAMP CALENDAR</span>
+				<h2 id="lamp-calendar-title" data-bilingual="text" data-zh="灯火日历" data-en="Lamp Calendar">
+					灯火日历
+				</h2>
+			</div>
+			<div class="lamp-legend" aria-label="图例">
+				<span><i class="legend-lamp is-english" /><b data-bilingual="text" data-zh="英语" data-en="English">英语</b></span>
+				<span><i class="legend-lamp is-exercise" /><b data-bilingual="text" data-zh="运动" data-en="Exercise">运动</b></span>
+			</div>
+		</div>
+
+		<div class="month-switcher" role="tablist" aria-label="选择月份">
+			{
+				monthCalendars.map(({ monthKey, zhLabel, enLabel }, index) => (
+					<button
+						type="button"
+						role="tab"
+						class:list={{ 'is-active': index === 0 }}
+						aria-selected={index === 0 ? 'true' : 'false'}
+						data-month-target={monthKey}
+						data-bilingual="text"
+						data-zh={zhLabel}
+						data-en={enLabel}
+					>
+						{zhLabel}
+					</button>
+				))
+			}
+		</div>
+
+		{
+			monthCalendars.map((calendar, index) => (
+				<div class="month-panel" data-month-panel={calendar.monthKey} hidden={index !== 0}>
+					<div class="calendar-weekdays" aria-hidden="true">
+						{[
+							['一', 'Mon'],
+							['二', 'Tue'],
+							['三', 'Wed'],
+							['四', 'Thu'],
+							['五', 'Fri'],
+							['六', 'Sat'],
+							['日', 'Sun'],
+						].map(([zh, en]) => (
+							<span data-bilingual="text" data-zh={zh} data-en={en}>{zh}</span>
+						))}
+					</div>
+					<div class="calendar-grid">
+						{Array.from({ length: calendar.leadingEmptyDays }, () => <span class="calendar-empty" />)}
+						{calendar.dayCells.map(({ dayKey, dayNumber, summary, entryCount }) => (
+							<button
+								type="button"
+								class:list={[
+									'calendar-day',
+									{
+										'is-today': dayKey === todayKey,
+										'has-entry': entryCount > 0,
+									},
+								]}
+								data-entry-target={entryCount > 0 ? dayKey : undefined}
+								aria-label={`${dayKey}，英语${summary.english.count > 0 ? '已完成' : '未完成'}，运动${summary.exercise.count > 0 ? '已完成' : '未完成'}`}
+							>
+								<span class="day-number">{dayNumber}</span>
+								<span class="day-lamps" aria-hidden="true">
+									<i class:list={['calendar-lamp', 'is-english', { 'is-lit': summary.english.count > 0 }]} />
+									<i class:list={['calendar-lamp', 'is-exercise', { 'is-lit': summary.exercise.count > 0 }]} />
+								</span>
+								{entryCount > 0 && <small>{entryCount}</small>}
+							</button>
+						))}
+					</div>
+					<div class="month-stats">
+						<div>
+							<strong>{calendar.lights}</strong>
+							<span data-bilingual="text" data-zh="点亮灯数" data-en="Lamps lit">点亮灯数</span>
+						</div>
+						<div>
+							<strong>{calendar.activeDays}</strong>
+							<span data-bilingual="text" data-zh="行动天数" data-en="Active days">行动天数</span>
+						</div>
+						<div>
+							<strong>{calendar.minutes}</strong>
+							<span data-bilingual="text" data-zh="记录分钟" data-en="Minutes logged">记录分钟</span>
+						</div>
+					</div>
+				</div>
+			))
+		}
+	</section>
+
+	<div class="records-heading">
+		<div>
+			<span class="records-kicker">FIELD NOTES</span>
+			<h2 data-bilingual="text" data-zh="所有记录" data-en="All Notes">所有记录</h2>
+		</div>
+		<p
+			data-bilingual="text"
+			data-zh={`本月已经行动 ${currentMonth.activeDays} 天，点亮 ${currentMonth.lights} 盏灯。`}
+			data-en={`${currentMonth.activeDays} active days and ${currentMonth.lights} lamps lit this month.`}
+		>
+			本月已经行动 {currentMonth.activeDays} 天，点亮 {currentMonth.lights} 盏灯。
 		</p>
 	</div>
 
@@ -55,17 +381,36 @@ const formatDate = (date: Date) => {
 		</div>
 		<div class="checkin-list">
 			{
-				checkins.map((checkin) => (
-					<article class="checkin-entry">
+				enrichedCheckins.map(({ checkin, dayKey, category }) => (
+					<article
+						class="checkin-entry"
+						id={firstCheckinIdByDay.get(dayKey) === checkin.id
+							? `checkin-day-${dayKey}`
+							: `checkin-${checkin.id.replaceAll('/', '-')}`}
+					>
 						<time datetime={checkin.data.date.toISOString()}>{formatDate(checkin.data.date)}</time>
 						<div class="checkin-content">
-							<h3>{checkin.data.title}</h3>
+							<div class="entry-heading">
+								<h3>{checkin.data.title}</h3>
+								<span
+									class:list={['category-badge', `is-${category}`]}
+									data-bilingual="text"
+									data-zh={categoryCopy[category].zh}
+									data-en={categoryCopy[category].en}
+								>
+									{categoryCopy[category].zh}
+								</span>
+							</div>
 							{checkin.data.summary && <p class="checkin-summary">{checkin.data.summary}</p>}
-							{
-								renderedBodies.get(checkin.id) && (
-									<div class="checkin-body prose prose-compact" set:html={renderedBodies.get(checkin.id)} />
-								)
-							}
+							{checkin.data.duration > 0 && (
+								<div class="structured-summary">
+									<span>{checkin.data.activity || categoryCopy[category].zh}</span>
+									<strong>{checkin.data.duration} min</strong>
+								</div>
+							)}
+							{renderedBodies.get(checkin.id) && (
+								<div class="checkin-body prose prose-compact" set:html={renderedBodies.get(checkin.id)} />
+							)}
 							{checkin.data.items.length > 0 && (
 								<dl class="checkin-details">
 									{checkin.data.items.map((item) => (
@@ -95,10 +440,46 @@ const formatDate = (date: Date) => {
 	</div>
 </section>
 
+<script>
+	const setupLampDashboard = () => {
+		document
+			.querySelectorAll<HTMLElement>('[data-lamp-dashboard]:not([data-ready])')
+			.forEach((root) => {
+				root.dataset.ready = 'true';
+				const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-month-target]')];
+				const panels = [...root.querySelectorAll<HTMLElement>('[data-month-panel]')];
+
+				tabs.forEach((tab) => {
+					tab.addEventListener('click', () => {
+						const target = tab.dataset.monthTarget;
+						tabs.forEach((candidate) => {
+							const active = candidate === tab;
+							candidate.classList.toggle('is-active', active);
+							candidate.setAttribute('aria-selected', String(active));
+						});
+						panels.forEach((panel) => {
+							panel.hidden = panel.dataset.monthPanel !== target;
+						});
+					});
+				});
+
+				root.querySelectorAll<HTMLButtonElement>('[data-entry-target]').forEach((day) => {
+					day.addEventListener('click', () => {
+						const target = document.getElementById(`checkin-day-${day.dataset.entryTarget}`);
+						target?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+					});
+				});
+			});
+	};
+
+	setupLampDashboard();
+	document.addEventListener('astro:page-load', setupLampDashboard);
+</script>
+
 <style>
 	.daily-checkins {
-		padding: 2.2rem 0 2.5rem;
-		animation: checkin-rise 720ms 240ms both;
+		padding: 3.4rem 0 3rem;
+		animation: checkin-rise 720ms 180ms both;
 	}
 
 	.checkin-heading {
@@ -106,18 +487,415 @@ const formatDate = (date: Date) => {
 		align-items: end;
 		justify-content: space-between;
 		gap: 2rem;
-		margin-bottom: 1.15rem;
+		margin-bottom: 1.3rem;
 	}
 
 	.checkin-heading .section-title {
-		margin-top: 0.4rem;
+		margin-top: 0.45rem;
 	}
 
 	.checkin-intro {
-		max-width: 25rem;
-		margin: 0 0 0.25rem;
+		max-width: 37rem;
+		margin: 0.8rem 0 0;
 		color: var(--text-soft);
-		text-align: right;
+	}
+
+	.today-state {
+		display: flex;
+		align-items: center;
+		gap: 1rem;
+		padding: 0.8rem 1rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--bg-panel) 88%, transparent);
+	}
+
+	.today-date {
+		display: grid;
+		font-size: 0.72rem;
+		color: var(--text-soft);
+	}
+
+	.today-date strong {
+		color: var(--text);
+		font-family: var(--font-serif);
+		font-size: 0.95rem;
+	}
+
+	.today-lamps {
+		display: flex;
+		gap: 0.55rem;
+	}
+
+	.mini-lamp,
+	.calendar-lamp,
+	.legend-lamp,
+	.action-lamp {
+		display: inline-block;
+		border-radius: 50%;
+		background: color-mix(in srgb, var(--line) 82%, transparent);
+		box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.12);
+	}
+
+	.mini-lamp {
+		width: 0.9rem;
+		height: 0.9rem;
+	}
+
+	.is-english.is-lit,
+	.quick-action.is-english .action-lamp,
+	.legend-lamp.is-english {
+		background: #e3a34f;
+		box-shadow: 0 0 0 4px rgba(227, 163, 79, 0.11), 0 0 18px rgba(227, 163, 79, 0.62);
+	}
+
+	.is-exercise.is-lit,
+	.quick-action.is-exercise .action-lamp,
+	.legend-lamp.is-exercise {
+		background: #4d9b91;
+		box-shadow: 0 0 0 4px rgba(77, 155, 145, 0.1), 0 0 18px rgba(77, 155, 145, 0.54);
+	}
+
+	.quick-panel {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 2rem;
+		padding: 1.5rem;
+		border-radius: var(--radius-xl);
+		background:
+			radial-gradient(circle at 80% 0%, rgba(227, 163, 79, 0.12), transparent 34%),
+			radial-gradient(circle at 94% 100%, rgba(77, 155, 145, 0.12), transparent 32%),
+			var(--bg-panel);
+	}
+
+	.quick-kicker,
+	.calendar-kicker,
+	.records-kicker,
+	.habit-label {
+		color: var(--text-soft);
+		font-size: 0.68rem;
+		font-weight: 700;
+		letter-spacing: 0.18em;
+	}
+
+	.quick-copy h2,
+	.calendar-heading h2,
+	.records-heading h2,
+	.weekly-card h2 {
+		margin: 0.28rem 0 0;
+		font-family: var(--font-serif);
+		letter-spacing: -0.035em;
+	}
+
+	.quick-copy h2 {
+		font-size: clamp(1.4rem, 2.6vw, 2rem);
+	}
+
+	.quick-copy p {
+		margin: 0.38rem 0 0;
+		color: var(--text-soft);
+	}
+
+	.quick-actions {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(9rem, 1fr));
+		gap: 0.7rem;
+	}
+
+	.quick-action {
+		display: grid;
+		grid-template-columns: auto 1fr;
+		align-items: center;
+		gap: 0.8rem;
+		min-width: 9rem;
+		padding: 0.95rem 1rem;
+		border: 1px solid var(--line);
+		border-radius: 18px;
+		background: color-mix(in srgb, var(--bg-panel) 88%, transparent);
+		transition: transform var(--transition), border-color var(--transition), box-shadow var(--transition);
+	}
+
+	.quick-action:hover {
+		transform: translateY(-3px);
+		border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+		box-shadow: 0 14px 30px rgba(45, 67, 87, 0.1);
+	}
+
+	.action-lamp {
+		width: 1rem;
+		height: 1rem;
+	}
+
+	.quick-action strong,
+	.quick-action small {
+		display: block;
+	}
+
+	.quick-action strong {
+		font-size: 0.92rem;
+	}
+
+	.quick-action small {
+		margin-top: 0.12rem;
+		color: var(--text-soft);
+		font-size: 0.72rem;
+	}
+
+	.weekly-grid {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		gap: 1rem;
+		margin-top: 1rem;
+	}
+
+	.weekly-card {
+		position: relative;
+		overflow: hidden;
+		padding: 1.35rem 1.45rem;
+		border-radius: var(--radius-lg);
+	}
+
+	.weekly-card::after {
+		content: '';
+		position: absolute;
+		right: -2rem;
+		bottom: -3rem;
+		width: 9rem;
+		height: 9rem;
+		border-radius: 50%;
+		background: var(--habit-glow);
+		filter: blur(8px);
+		opacity: 0.15;
+		pointer-events: none;
+	}
+
+	.weekly-card.is-english {
+		--habit: #d8933d;
+		--habit-glow: #e7b46e;
+	}
+
+	.weekly-card.is-exercise {
+		--habit: #438b82;
+		--habit-glow: #71b0a8;
+	}
+
+	.weekly-card-top,
+	.weekly-note,
+	.calendar-heading,
+	.records-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	.weekly-card h2 {
+		font-size: 1.35rem;
+	}
+
+	.weekly-ratio {
+		color: var(--habit);
+		font-family: var(--font-serif);
+		font-size: 2rem;
+		font-weight: 500;
+	}
+
+	.weekly-ratio span {
+		color: var(--text-soft);
+		font-size: 1rem;
+	}
+
+	.progress-track {
+		height: 0.5rem;
+		margin: 1rem 0 0.8rem;
+		overflow: hidden;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--line) 72%, transparent);
+	}
+
+	.progress-track span {
+		display: block;
+		width: var(--progress);
+		height: 100%;
+		border-radius: inherit;
+		background: linear-gradient(90deg, var(--habit), color-mix(in srgb, var(--habit) 58%, white));
+		transition: width 600ms ease;
+	}
+
+	.weekly-note {
+		color: var(--text-soft);
+		font-size: 0.82rem;
+	}
+
+	.weekly-note small {
+		padding: 0.2rem 0.5rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--habit) 9%, transparent);
+		color: var(--habit);
+	}
+
+	.calendar-card {
+		margin-top: 1rem;
+		padding: 1.55rem;
+		border-radius: var(--radius-xl);
+	}
+
+	.calendar-heading h2,
+	.records-heading h2 {
+		font-size: clamp(1.55rem, 3vw, 2.2rem);
+	}
+
+	.lamp-legend {
+		display: flex;
+		gap: 1rem;
+		color: var(--text-soft);
+		font-size: 0.76rem;
+	}
+
+	.lamp-legend span {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.45rem;
+	}
+
+	.lamp-legend b {
+		font-weight: 500;
+	}
+
+	.legend-lamp {
+		width: 0.65rem;
+		height: 0.65rem;
+	}
+
+	.month-switcher {
+		display: flex;
+		gap: 0.5rem;
+		margin: 1.2rem 0;
+		padding-bottom: 0.15rem;
+		overflow-x: auto;
+	}
+
+	.month-switcher button {
+		flex: 0 0 auto;
+		padding: 0.55rem 0.85rem;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		background: transparent;
+		color: var(--text-soft);
+	}
+
+	.month-switcher button.is-active {
+		border-color: transparent;
+		background: var(--accent);
+		color: #fff;
+	}
+
+	.month-panel[hidden] {
+		display: none;
+	}
+
+	.calendar-weekdays,
+	.calendar-grid {
+		display: grid;
+		grid-template-columns: repeat(7, minmax(0, 1fr));
+		gap: 0.55rem;
+	}
+
+	.calendar-weekdays {
+		margin-bottom: 0.55rem;
+		color: var(--text-soft);
+		font-size: 0.68rem;
+		text-align: center;
+	}
+
+	.calendar-day,
+	.calendar-empty {
+		min-height: 5rem;
+	}
+
+	.calendar-day {
+		position: relative;
+		display: grid;
+		grid-template-rows: auto 1fr;
+		padding: 0.55rem;
+		border: 1px solid var(--line);
+		border-radius: 15px;
+		background: color-mix(in srgb, var(--bg-panel) 82%, transparent);
+		color: var(--text);
+		text-align: left;
+		transition: transform var(--transition), border-color var(--transition), background var(--transition);
+	}
+
+	.calendar-day.has-entry:hover {
+		transform: translateY(-2px);
+		border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+	}
+
+	.calendar-day.is-today {
+		border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
+		background: color-mix(in srgb, var(--accent) 7%, var(--bg-panel));
+	}
+
+	.day-number {
+		font-family: var(--font-serif);
+		font-size: 0.9rem;
+	}
+
+	.day-lamps {
+		display: flex;
+		align-self: end;
+		gap: 0.55rem;
+		padding: 0.2rem 0.1rem;
+	}
+
+	.calendar-lamp {
+		width: 0.72rem;
+		height: 0.72rem;
+	}
+
+	.calendar-day small {
+		position: absolute;
+		top: 0.5rem;
+		right: 0.55rem;
+		color: var(--text-soft);
+		font-size: 0.62rem;
+	}
+
+	.month-stats {
+		display: grid;
+		grid-template-columns: repeat(3, 1fr);
+		gap: 0.7rem;
+		margin-top: 1rem;
+	}
+
+	.month-stats div {
+		display: grid;
+		padding: 0.85rem 1rem;
+		border: 1px solid var(--line);
+		border-radius: 15px;
+		background: color-mix(in srgb, var(--bg-panel) 80%, transparent);
+	}
+
+	.month-stats strong {
+		font-family: var(--font-serif);
+		font-size: 1.55rem;
+		font-weight: 500;
+	}
+
+	.month-stats span {
+		color: var(--text-soft);
+		font-size: 0.72rem;
+	}
+
+	.records-heading {
+		align-items: end;
+		margin: 2.5rem 0 1rem;
+	}
+
+	.records-heading p {
+		margin: 0 0 0.2rem;
+		color: var(--text-soft);
 	}
 
 	.checkin-board {
@@ -132,9 +910,9 @@ const formatDate = (date: Date) => {
 		gap: 0.75rem;
 		padding: 1rem 0;
 		border-bottom: 1px solid var(--line);
+		color: var(--text-soft);
 		font-size: 0.78rem;
 		letter-spacing: 0.14em;
-		color: var(--text-soft);
 	}
 
 	.board-mark {
@@ -149,9 +927,9 @@ const formatDate = (date: Date) => {
 	}
 
 	.board-count {
+		color: var(--accent);
 		font-family: var(--font-serif);
 		font-size: 1rem;
-		color: var(--accent);
 	}
 
 	.checkin-entry {
@@ -160,6 +938,7 @@ const formatDate = (date: Date) => {
 		gap: 1.75rem;
 		padding: 1.65rem 0;
 		border-bottom: 1px solid var(--line);
+		scroll-margin-top: 8rem;
 	}
 
 	.checkin-entry:last-child {
@@ -175,6 +954,13 @@ const formatDate = (date: Date) => {
 		letter-spacing: 0.04em;
 	}
 
+	.entry-heading {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
 	.checkin-content h3 {
 		margin: 0;
 		font-family: var(--font-serif);
@@ -182,9 +968,43 @@ const formatDate = (date: Date) => {
 		line-height: 1.35;
 	}
 
+	.category-badge {
+		flex: 0 0 auto;
+		padding: 0.25rem 0.55rem;
+		border-radius: 999px;
+		background: color-mix(in srgb, var(--line) 62%, transparent);
+		color: var(--text-soft);
+		font-size: 0.68rem;
+	}
+
+	.category-badge.is-english {
+		background: rgba(227, 163, 79, 0.13);
+		color: #b97622;
+	}
+
+	.category-badge.is-exercise {
+		background: rgba(77, 155, 145, 0.13);
+		color: #347d74;
+	}
+
 	.checkin-summary {
 		margin: 0.32rem 0 0;
 		color: var(--text-soft);
+	}
+
+	.structured-summary {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.7rem;
+		margin-top: 0.75rem;
+		padding: 0.45rem 0.7rem;
+		border: 1px solid var(--line);
+		border-radius: 10px;
+		font-size: 0.8rem;
+	}
+
+	.structured-summary strong {
+		color: var(--accent);
 	}
 
 	.checkin-body {
@@ -241,14 +1061,80 @@ const formatDate = (date: Date) => {
 		to { opacity: 1; transform: translateY(0); }
 	}
 
-	@media (max-width: 680px) {
-		.checkin-heading {
-			display: block;
+	@media (max-width: 820px) {
+		.quick-panel {
+			grid-template-columns: 1fr;
 		}
 
-		.checkin-intro {
-			margin-top: 0.7rem;
-			text-align: left;
+		.quick-actions {
+			width: 100%;
+		}
+	}
+
+	@media (max-width: 680px) {
+		.daily-checkins {
+			padding-top: 2.2rem;
+		}
+
+		.checkin-heading,
+		.calendar-heading,
+		.records-heading {
+			display: grid;
+			align-items: start;
+		}
+
+		.today-state {
+			width: fit-content;
+		}
+
+		.quick-panel,
+		.calendar-card {
+			padding: 1rem;
+		}
+
+		.quick-actions,
+		.weekly-grid {
+			grid-template-columns: 1fr;
+		}
+
+		.weekly-note {
+			align-items: flex-start;
+		}
+
+		.calendar-weekdays,
+		.calendar-grid {
+			gap: 0.3rem;
+		}
+
+		.calendar-day,
+		.calendar-empty {
+			min-height: 3.9rem;
+		}
+
+		.calendar-day {
+			padding: 0.38rem;
+			border-radius: 11px;
+		}
+
+		.day-lamps {
+			gap: 0.35rem;
+		}
+
+		.calendar-lamp {
+			width: 0.58rem;
+			height: 0.58rem;
+		}
+
+		.month-stats {
+			gap: 0.4rem;
+		}
+
+		.month-stats div {
+			padding: 0.7rem 0.6rem;
+		}
+
+		.records-heading p {
+			max-width: 20rem;
 		}
 
 		.checkin-board {
