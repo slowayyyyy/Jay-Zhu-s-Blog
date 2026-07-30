@@ -329,7 +329,16 @@
     "title": "点亮每一盏灯",
     "kicker": "JAY ZHU'S BLOG · EST. 2026",
     "caption": "LIGHT EVERY LAMP ALONG THE WAY",
-    "coordinate": "31.2304° N · 121.4737° E"
+    "coordinate": "31.2304° N · 121.4737° E",
+    "video": {
+      "enabled": true,
+      "src": "https://pub-30ecc0b5f7a947e0b8e2f62dc09947e3.r2.dev/opening/opening-5cm.mp4",
+      "poster": "/images/opening-video-poster.jpg",
+      "playLabel": "开启有声开场",
+      "skipLabel": "跳过并进入",
+      "loadingLabel": "正在加载有声开场",
+      "sizeLabel": "完整视频约 265 MB"
+    }
   },
   "description": "一个面向长期记录的个人博客，用来安放学习内容、科研过程与生活片段。",
   "brandSubtitle": "Even ordinary days deserve to dance"

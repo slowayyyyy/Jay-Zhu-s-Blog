@@ -2,6 +2,8 @@
 import { siteConfig } from '../data/site';
 
 const title = siteConfig.opening.title;
+const openingVideo = siteConfig.opening.video;
+const hasOpeningVideo = Boolean(openingVideo?.enabled && openingVideo.src?.trim());
 const sceneWidth = 3840;
 const sceneHeight = 2160;
 
@@ -85,6 +87,18 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 
 <section class="opening-overlay" id="opening-overlay" aria-label="博客起始页">
 	<div class="opening-visual">
+		{
+			hasOpeningVideo && (
+				<video
+					class="opening-video"
+					id="opening-video"
+					data-src={openingVideo.src.trim()}
+					poster={openingVideo.poster || undefined}
+					preload="none"
+					playsinline
+				/>
+			)
+		}
 		<div class="wallpaper-scene" aria-hidden="true">
 			<img
 				class="scene-background"
@@ -129,13 +143,52 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 			</h1>
 			<div class="title-rule" aria-hidden="true"><span /></div>
 			<p class="opening-caption">{siteConfig.opening.caption}</p>
-			<button type="button" class="enter-button" id="enter-blog">
-				<span data-copy="common.enter">进入博客</span>
-				<span class="enter-arrow" aria-hidden="true">↓</span>
-			</button>
+			<div class="opening-actions">
+				<button type="button" class="enter-button" id="enter-blog">
+					<span data-copy="common.enter">进入博客</span>
+					<span class="enter-arrow" aria-hidden="true">↓</span>
+				</button>
+				{
+					hasOpeningVideo && (
+						<button type="button" class="video-start-button" id="play-opening-video">
+							<span class="video-play-mark" aria-hidden="true">▶</span>
+							<span>
+								<strong>{openingVideo.playLabel}</strong>
+								{openingVideo.sizeLabel && <small>{openingVideo.sizeLabel}</small>}
+							</span>
+						</button>
+					)
+				}
+			</div>
 		</div>
 
 		<p class="opening-coordinate" aria-hidden="true">{siteConfig.opening.coordinate}</p>
+
+		{
+			hasOpeningVideo && (
+				<div class="opening-video-interface" id="opening-video-interface">
+					<div class="video-topbar">
+						<span>ORIGINAL SOUND · CINEMA OPENING</span>
+						<button type="button" id="skip-opening-video">{openingVideo.skipLabel}</button>
+					</div>
+					<p class="video-loading-status" id="video-loading-status">{openingVideo.loadingLabel}</p>
+					<div class="video-controls">
+						<button type="button" id="toggle-opening-video" aria-label="播放或暂停视频">Ⅱ</button>
+						<span id="opening-video-current">0:00</span>
+						<input
+							type="range"
+							id="opening-video-progress"
+							min="0"
+							max="1000"
+							value="0"
+							aria-label="视频播放进度"
+						/>
+						<span id="opening-video-duration">5:22</span>
+						<button type="button" id="mute-opening-video" aria-label="静音或恢复声音">原声</button>
+					</div>
+				</div>
+			)
+		}
 	</div>
 
 	<div class="ignition-effects" aria-hidden="true">
@@ -159,61 +212,202 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 
 <script is:inline data-astro-rerun>
 	(() => {
-	const overlay = document.getElementById('opening-overlay');
-	const enterButton = document.getElementById('enter-blog');
-	const openingTitle = document.getElementById('opening-title');
+		const overlay = document.getElementById('opening-overlay');
+		const enterButton = document.getElementById('enter-blog');
+		const openingTitle = document.getElementById('opening-title');
+		const video = document.getElementById('opening-video');
+		const playVideoButton = document.getElementById('play-opening-video');
+		const skipVideoButton = document.getElementById('skip-opening-video');
+		const toggleVideoButton = document.getElementById('toggle-opening-video');
+		const muteVideoButton = document.getElementById('mute-opening-video');
+		const videoProgress = document.getElementById('opening-video-progress');
+		const videoCurrent = document.getElementById('opening-video-current');
+		const videoDuration = document.getElementById('opening-video-duration');
+		const videoStatus = document.getElementById('video-loading-status');
 
-	if (overlay && enterButton) {
-		if (sessionStorage.getItem('jay-intro-seen-lantern')) {
-			document.body.classList.remove('intro-active');
-			document.body.classList.remove('intro-transition');
-			overlay.remove();
-		} else {
-			let isEntering = false;
-			let fallbackTimer;
-
-			const finishTransition = () => {
-				if (!isEntering || !overlay.isConnected) return;
-				clearTimeout(fallbackTimer);
-				document.documentElement.dataset.introSeen = 'seen';
-				document.body.classList.remove('intro-active', 'intro-transition');
-				overlay.remove();
-			};
-
-			enterButton.addEventListener('click', () => {
-				if (isEntering) return;
-				isEntering = true;
-
-				const buttonRect = enterButton.getBoundingClientRect();
-				const titleRect = openingTitle?.getBoundingClientRect() ?? buttonRect;
-				const sparkX = buttonRect.left + buttonRect.width / 2;
-				const sparkY = buttonRect.top + buttonRect.height / 2;
-				const igniteX = titleRect.left + titleRect.width / 2;
-				const igniteY = titleRect.top + titleRect.height / 2;
-
-				overlay.style.setProperty('--spark-x', `${sparkX}px`);
-				overlay.style.setProperty('--spark-y', `${sparkY}px`);
-				overlay.style.setProperty('--ignite-x', `${igniteX}px`);
-				overlay.style.setProperty('--ignite-y', `${igniteY}px`);
-				overlay.style.setProperty('--thread-height', `${Math.max(0, sparkY - igniteY)}px`);
-
-				sessionStorage.setItem('jay-intro-seen-lantern', '1');
-				document.body.classList.add('intro-transition');
-				overlay.classList.add('is-igniting');
+		if (overlay && enterButton) {
+			if (sessionStorage.getItem('jay-intro-seen-lantern')) {
 				document.body.classList.remove('intro-active');
+				document.body.classList.remove('intro-transition');
+				overlay.remove();
+			} else {
+				let isEntering = false;
+				let fallbackTimer;
+				let musicStarted = false;
 
-				window.dispatchEvent(new CustomEvent('jay:intro-enter'));
-				document.dispatchEvent(new CustomEvent('jay:intro-enter'));
+				const formatTime = (seconds) => {
+					if (!Number.isFinite(seconds) || seconds < 0) return '0:00';
+					const minutes = Math.floor(seconds / 60);
+					return `${minutes}:${Math.floor(seconds % 60).toString().padStart(2, '0')}`;
+				};
 
-				const visual = overlay.querySelector('.opening-visual');
-				visual?.addEventListener('animationend', (event) => {
-					if (event.target !== visual || event.animationName !== 'curtain-into-light') return;
-					finishTransition();
-				});
-				fallbackTimer = setTimeout(finishTransition, 1700);
-			});
+				const startBlogMusic = () => {
+					if (musicStarted) return;
+					musicStarted = true;
+					window.dispatchEvent(new CustomEvent('jay:intro-enter'));
+					document.dispatchEvent(new CustomEvent('jay:intro-enter'));
+				};
+
+				const fadeOutVideoAudio = () => {
+					if (!(video instanceof HTMLVideoElement) || video.paused || video.muted || video.volume === 0) {
+						if (video instanceof HTMLVideoElement) video.pause();
+						startBlogMusic();
+						return;
+					}
+
+					const startedAt = performance.now();
+					const initialVolume = video.volume;
+					const fadeDuration = 900;
+					const fade = (now) => {
+						const progress = Math.min(1, (now - startedAt) / fadeDuration);
+						video.volume = initialVolume * (1 - progress);
+						if (progress < 1 && !video.paused) {
+							requestAnimationFrame(fade);
+							return;
+						}
+						video.pause();
+						startBlogMusic();
+					};
+					requestAnimationFrame(fade);
+				};
+
+				const updateVideoProgress = () => {
+					if (!(video instanceof HTMLVideoElement)) return;
+					if (videoCurrent) videoCurrent.textContent = formatTime(video.currentTime);
+					if (videoDuration && Number.isFinite(video.duration)) {
+						videoDuration.textContent = formatTime(video.duration);
+					}
+					if (
+						videoProgress instanceof HTMLInputElement &&
+						Number.isFinite(video.duration) &&
+						video.duration > 0
+					) {
+						videoProgress.value = String(Math.round((video.currentTime / video.duration) * 1000));
+					}
+				};
+
+				const finishTransition = () => {
+					if (!isEntering || !overlay.isConnected) return;
+					clearTimeout(fallbackTimer);
+					if (video instanceof HTMLVideoElement) video.pause();
+					document.documentElement.dataset.introSeen = 'seen';
+					document.body.classList.remove('intro-active', 'intro-transition');
+					overlay.remove();
+				};
+
+				const enterBlog = (triggerButton = enterButton) => {
+					if (isEntering) return;
+					isEntering = true;
+
+					const buttonRect = triggerButton.getBoundingClientRect();
+					const titleRect = openingTitle?.getBoundingClientRect() ?? buttonRect;
+					const sparkX = buttonRect.left + buttonRect.width / 2;
+					const sparkY = buttonRect.top + buttonRect.height / 2;
+					const isVideoActive = overlay.classList.contains('is-video-active');
+					const igniteX = isVideoActive ? window.innerWidth / 2 : titleRect.left + titleRect.width / 2;
+					const igniteY = isVideoActive ? window.innerHeight / 2 : titleRect.top + titleRect.height / 2;
+
+					overlay.style.setProperty('--spark-x', `${sparkX}px`);
+					overlay.style.setProperty('--spark-y', `${sparkY}px`);
+					overlay.style.setProperty('--ignite-x', `${igniteX}px`);
+					overlay.style.setProperty('--ignite-y', `${igniteY}px`);
+					overlay.style.setProperty('--thread-height', `${Math.max(0, sparkY - igniteY)}px`);
+
+					sessionStorage.setItem('jay-intro-seen-lantern', '1');
+					document.body.classList.add('intro-transition');
+					overlay.classList.add('is-igniting');
+					document.body.classList.remove('intro-active');
+
+					if (isVideoActive) {
+						fadeOutVideoAudio();
+					} else {
+						startBlogMusic();
+					}
+
+					const visual = overlay.querySelector('.opening-visual');
+					visual?.addEventListener('animationend', (event) => {
+						if (event.target !== visual || event.animationName !== 'curtain-into-light') return;
+						finishTransition();
+					});
+					fallbackTimer = setTimeout(finishTransition, 1700);
+				};
+
+				enterButton.addEventListener('click', () => enterBlog(enterButton));
+				skipVideoButton?.addEventListener('click', () => enterBlog(skipVideoButton));
+
+				if (video instanceof HTMLVideoElement && playVideoButton) {
+					const loadingLabel = videoStatus?.textContent || '正在加载有声开场';
+
+					const startVideo = async () => {
+						if (isEntering) return;
+						overlay.classList.add('is-video-active', 'is-video-loading');
+						if (videoStatus) videoStatus.textContent = loadingLabel;
+
+						if (!video.src) {
+							video.src = video.dataset.src || '';
+							video.load();
+						}
+
+						video.muted = false;
+						video.volume = 0.82;
+
+						try {
+							await video.play();
+							overlay.classList.remove('is-video-loading');
+							overlay.classList.add('is-video-playing');
+						} catch {
+							overlay.classList.remove('is-video-loading', 'is-video-playing');
+							overlay.classList.add('has-video-error');
+							if (videoStatus) videoStatus.textContent = '视频未能播放，请检查网络或R2地址';
+						}
+					};
+
+					playVideoButton.addEventListener('click', startVideo);
+
+					toggleVideoButton?.addEventListener('click', async () => {
+						if (video.paused) {
+							try {
+								await video.play();
+							} catch {
+								if (videoStatus) videoStatus.textContent = '浏览器阻止了播放，请再次点击';
+							}
+							return;
+						}
+						video.pause();
+					});
+
+					muteVideoButton?.addEventListener('click', () => {
+						video.muted = !video.muted;
+						muteVideoButton.textContent = video.muted ? '静音' : '原声';
+					});
+
+					videoProgress?.addEventListener('input', () => {
+						if (!(videoProgress instanceof HTMLInputElement) || !Number.isFinite(video.duration)) return;
+						video.currentTime = (Number(videoProgress.value) / 1000) * video.duration;
+						updateVideoProgress();
+					});
+
+					video.addEventListener('loadedmetadata', updateVideoProgress);
+					video.addEventListener('timeupdate', updateVideoProgress);
+					video.addEventListener('waiting', () => overlay.classList.add('is-video-buffering'));
+					video.addEventListener('playing', () => {
+						overlay.classList.remove('is-video-loading', 'is-video-buffering', 'has-video-error');
+						overlay.classList.add('is-video-playing');
+						if (toggleVideoButton) toggleVideoButton.textContent = 'Ⅱ';
+					});
+					video.addEventListener('pause', () => {
+						overlay.classList.remove('is-video-playing');
+						if (toggleVideoButton) toggleVideoButton.textContent = '▶';
+					});
+					video.addEventListener('error', () => {
+						overlay.classList.remove('is-video-loading', 'is-video-buffering', 'is-video-playing');
+						overlay.classList.add('has-video-error');
+						if (videoStatus) videoStatus.textContent = '视频加载失败，请检查R2公开地址';
+					});
+					video.addEventListener('ended', () => enterBlog(skipVideoButton || enterButton));
+				}
+			}
 		}
-	}
 	})();
 </script>
 
@@ -277,6 +471,30 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		height: max(100vh, 56.25vw);
 		transform: translate(-50%, -50%) scale(1.035);
 		animation: scene-awaken 14s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+		transition: opacity 900ms ease, filter 900ms ease;
+	}
+
+	.opening-video {
+		position: absolute;
+		z-index: -3;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		background: #080b10;
+		opacity: 0;
+		transform: scale(1.015);
+		transition: opacity 900ms ease, transform 7s linear;
+	}
+
+	.is-video-active .opening-video {
+		opacity: 1;
+		transform: scale(1);
+	}
+
+	.is-video-active .wallpaper-scene {
+		opacity: 0;
+		filter: blur(10px);
 	}
 
 	.scene-background {
@@ -344,10 +562,17 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 	}
 
 	.opening-shade {
-		z-index: -3;
+		z-index: -2;
 		background:
 			linear-gradient(180deg, rgba(7, 12, 20, 0.02), rgba(7, 12, 20, 0.04) 48%, rgba(6, 9, 15, 0.25)),
 			radial-gradient(ellipse at center, transparent 28%, rgba(6, 9, 15, 0.18) 115%);
+		transition: background 700ms ease;
+	}
+
+	.is-video-active .opening-shade {
+		background:
+			linear-gradient(180deg, rgba(2, 5, 10, 0.25), transparent 25%, transparent 68%, rgba(2, 5, 10, 0.48)),
+			radial-gradient(ellipse at center, transparent 45%, rgba(3, 6, 10, 0.18) 120%);
 	}
 
 	.opening-grain {
@@ -365,6 +590,14 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		padding: 2rem;
 		text-align: center;
 		color: #fff;
+		transition: opacity 520ms ease, transform 720ms cubic-bezier(0.2, 0.75, 0.2, 1), filter 520ms ease;
+	}
+
+	.is-video-active .opening-content {
+		pointer-events: none;
+		opacity: 0;
+		filter: blur(8px);
+		transform: translateY(-18px) scale(0.98);
 	}
 
 	.opening-kicker,
@@ -420,12 +653,22 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		animation-delay: 2.55s;
 	}
 
-	.enter-button {
+	.opening-actions {
+		display: flex;
+		align-items: stretch;
+		justify-content: center;
+		gap: 0.75rem;
+		margin-top: 2.3rem;
+	}
+
+	.enter-button,
+	.video-start-button {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.85rem;
-		margin-top: 2.3rem;
-		padding: 0.82rem 1.25rem 0.82rem 1.45rem;
+		justify-content: center;
+		gap: 0.72rem;
+		min-height: 3.55rem;
+		padding: 0.72rem 1.1rem 0.72rem 1.3rem;
 		border: 1px solid rgba(255, 255, 255, 0.5);
 		border-radius: 999px;
 		background: rgba(8, 12, 20, 0.2);
@@ -439,13 +682,53 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		transition:
 			background 260ms ease,
 			border-color 260ms ease,
-			transform 260ms ease;
+			transform 260ms ease,
+			box-shadow 260ms ease;
 	}
 
-	.enter-button:hover {
+	.enter-button:hover,
+	.video-start-button:hover {
 		background: rgba(255, 255, 255, 0.18);
 		border-color: rgba(255, 255, 255, 0.88);
 		transform: translateY(-2px);
+		box-shadow: 0 12px 35px rgba(0, 0, 0, 0.22);
+	}
+
+	.video-start-button {
+		padding-right: 1.35rem;
+		border-color: rgba(241, 194, 126, 0.58);
+		animation-delay: 3.08s;
+		text-align: left;
+	}
+
+	.video-start-button strong,
+	.video-start-button small {
+		display: block;
+	}
+
+	.video-start-button strong {
+		font-size: 0.85rem;
+		font-weight: 500;
+		letter-spacing: 0.1em;
+	}
+
+	.video-start-button small {
+		margin-top: 0.18rem;
+		color: rgba(255, 255, 255, 0.58);
+		font-size: 0.58rem;
+		letter-spacing: 0.06em;
+	}
+
+	.video-play-mark {
+		display: grid;
+		place-items: center;
+		width: 1.75rem;
+		height: 1.75rem;
+		padding-left: 0.12rem;
+		border-radius: 50%;
+		background: rgba(225, 162, 76, 0.3);
+		color: #fff4d6;
+		font-size: 0.68rem;
 	}
 
 	.enter-arrow {
@@ -466,6 +749,114 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		color: rgba(255, 255, 255, 0.48);
 		font-size: 0.62rem;
 		letter-spacing: 0.18em;
+		transition: opacity 360ms ease;
+	}
+
+	.is-video-active .opening-coordinate {
+		opacity: 0;
+	}
+
+	.opening-video-interface {
+		position: absolute;
+		z-index: 4;
+		inset: 0;
+		display: flex;
+		flex-direction: column;
+		justify-content: space-between;
+		padding: 1.4rem 1.6rem 1.5rem;
+		color: #fff;
+		pointer-events: none;
+		opacity: 0;
+		transition: opacity 520ms 240ms ease;
+	}
+
+	.is-video-active .opening-video-interface {
+		pointer-events: auto;
+		opacity: 1;
+	}
+
+	.video-topbar,
+	.video-controls {
+		display: flex;
+		align-items: center;
+	}
+
+	.video-topbar {
+		justify-content: space-between;
+		color: rgba(255, 255, 255, 0.68);
+		font-size: 0.62rem;
+		letter-spacing: 0.2em;
+	}
+
+	.video-topbar button,
+	.video-controls button {
+		border: 1px solid rgba(255, 255, 255, 0.32);
+		background: rgba(6, 9, 14, 0.42);
+		backdrop-filter: blur(12px);
+		color: #fff;
+	}
+
+	.video-topbar button {
+		padding: 0.65rem 0.9rem;
+		border-radius: 999px;
+		font-size: 0.75rem;
+		letter-spacing: 0.08em;
+	}
+
+	.video-loading-status {
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin: 0;
+		padding: 0.7rem 1rem;
+		border-radius: 999px;
+		background: rgba(5, 8, 13, 0.48);
+		backdrop-filter: blur(14px);
+		font-size: 0.76rem;
+		letter-spacing: 0.12em;
+		opacity: 0;
+		transform: translate(-50%, -50%);
+		transition: opacity 240ms ease;
+	}
+
+	:is(.is-video-loading, .is-video-buffering, .has-video-error) .video-loading-status {
+		opacity: 1;
+	}
+
+	.video-controls {
+		gap: 0.75rem;
+		width: min(100%, 54rem);
+		margin-inline: auto;
+		padding: 0.72rem 0.85rem;
+		border: 1px solid rgba(255, 255, 255, 0.16);
+		border-radius: 999px;
+		background: rgba(5, 8, 13, 0.4);
+		backdrop-filter: blur(16px);
+		box-shadow: 0 14px 45px rgba(0, 0, 0, 0.22);
+		font-variant-numeric: tabular-nums;
+		font-size: 0.68rem;
+	}
+
+	.video-controls button {
+		flex: 0 0 auto;
+		min-width: 2.2rem;
+		height: 2.2rem;
+		padding-inline: 0.65rem;
+		border-radius: 999px;
+		font-size: 0.68rem;
+	}
+
+	.video-controls input {
+		flex: 1;
+		min-width: 5rem;
+		height: 3px;
+		accent-color: #e7b66c;
+		cursor: pointer;
+	}
+
+	.is-igniting .opening-video-interface {
+		pointer-events: none;
+		opacity: 0;
 	}
 
 	.ignition-effects {
@@ -610,7 +1001,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		animation: spark-flight 680ms calc(170ms + var(--spark-delay)) ease-out both;
 	}
 
-	.is-igniting .enter-button {
+	.is-igniting :is(.enter-button, .video-start-button) {
 		pointer-events: none;
 		animation: button-becomes-spark 260ms ease-in both;
 	}
@@ -789,5 +1180,13 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		.opening-coordinate { display: none; }
 		.opening-kicker,
 		.opening-caption { letter-spacing: 0.2em; }
+		.opening-actions { flex-direction: column; align-items: center; }
+		.enter-button,
+		.video-start-button { width: min(18rem, 88vw); }
+		.opening-video-interface { padding: 1rem 0.8rem; }
+		.video-topbar > span { display: none; }
+		.video-topbar { justify-content: flex-end; }
+		.video-controls { gap: 0.45rem; padding: 0.6rem; }
+		.video-controls button { min-width: 2rem; padding-inline: 0.5rem; }
 	}
 </style>

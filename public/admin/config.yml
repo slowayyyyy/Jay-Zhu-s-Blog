@@ -205,6 +205,19 @@ collections:
               - { label: 上方小字, name: kicker, widget: string }
               - { label: 下方英文, name: caption, widget: string }
               - { label: 右下角坐标, name: coordinate, widget: string, required: false }
+              - label: 有声视频开场
+                name: video
+                widget: object
+                collapsed: false
+                hint: 视频必须先上传到 Cloudflare R2，这里只填写公开访问地址，不要上传到 GitHub。
+                fields:
+                  - { label: 启用视频入口, name: enabled, widget: boolean, default: false }
+                  - { label: R2 视频公开地址, name: src, widget: string, required: false, hint: 例如 https://media.example.com/opening.mp4。启用前请确认地址能直接打开视频。 }
+                  - { label: 视频封面, name: poster, widget: image, required: false, hint: 视频加载前显示，建议使用横向 16:9 图片。 }
+                  - { label: 播放按钮文字, name: playLabel, widget: string, default: 开启有声开场 }
+                  - { label: 跳过按钮文字, name: skipLabel, widget: string, default: 跳过并进入 }
+                  - { label: 加载提示文字, name: loadingLabel, widget: string, default: 正在加载有声开场 }
+                  - { label: 体积提示, name: sizeLabel, widget: string, required: false, default: 完整视频约 265 MB }
           - label: 首页介绍
             name: homeIntro
             widget: object
