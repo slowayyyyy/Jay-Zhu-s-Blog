@@ -108,12 +108,14 @@ const migrateLegacyAudio = async ({ bucket, path, objectKey }) => {
 	});
 	if (!response.ok || !response.body) return false;
 
-	const contentLength = Number(response.headers.get('content-length') || 0);
-	if (contentLength > MAX_LEGACY_AUDIO_BYTES) return false;
+	const audioBytes = await response.arrayBuffer();
+	if (audioBytes.byteLength <= 0 || audioBytes.byteLength > MAX_LEGACY_AUDIO_BYTES) {
+		return false;
+	}
 	const contentType = response.headers.get('content-type') || 'audio/mpeg';
 	if (!contentType.toLowerCase().startsWith('audio/')) return false;
 
-	const object = await bucket.put(objectKey, response.body, {
+	const object = await bucket.put(objectKey, audioBytes, {
 		httpMetadata: {
 			contentType,
 			contentDisposition: 'inline',
