@@ -125,6 +125,7 @@ const defaults = {
 	timeMonthTotal: { zh: '本月总投入', en: 'Total this month' },
 	timeWeekLabel: { zh: '本周', en: 'This week' },
 	timeMonthLabel: { zh: '本月', en: 'This month' },
+	timeGoalLabel: { zh: '月度基准 {minutes} 分钟', en: 'Monthly baseline {minutes} min' },
 	timeTotalLabel: { zh: '累计', en: 'All time' },
 	timeSessionsLabel: { zh: '{count} 次计时记录', en: '{count} timed sessions' },
 	timeAverageLabel: { zh: '平均 {minutes} 分钟 / 次', en: '{minutes} min per session' },
@@ -199,10 +200,13 @@ const timeSummary = habits.map((habit) => {
 		(total, { durationMinutes }) => total + durationMinutes,
 		0,
 	);
+	const monthGoalMinutes = habit.weeklyGoal * 4 * habit.minimumMinutes;
 	return {
 		habit,
 		weekMinutes,
 		monthMinutes,
+		monthGoalMinutes,
+		monthProgress: Math.min(100, Math.round((monthMinutes / monthGoalMinutes) * 100)),
 		totalMinutes,
 		timedSessions: timedEntries.length,
 		averageMinutes: timedEntries.length > 0 ? Math.round(totalMinutes / timedEntries.length) : 0,
@@ -212,7 +216,6 @@ const currentMonthTotalMinutes = timeSummary.reduce(
 	(total, summary) => total + summary.monthMinutes,
 	0,
 );
-const maxMonthMinutes = Math.max(1, ...timeSummary.map(({ monthMinutes }) => monthMinutes));
 
 const monthKeys = [
 	...new Set([currentMonthKey, ...enrichedCheckins.map(({ dayKey }) => dayKey.slice(0, 7))]),
@@ -284,11 +287,18 @@ const formatDate = (date: Date) => {
 	return hasTime ? `${dateLabel} · ${timeFormatter.format(date)}` : dateLabel;
 };
 const dashboardState = JSON.stringify({
-	habits: habits.map(({ id, name, color, weeklyGoal }) => ({ id, name, color, weeklyGoal })),
+	habits: habits.map(({ id, name, color, weeklyGoal, minimumMinutes }) => ({
+		id,
+		name,
+		color,
+		weeklyGoal,
+		minimumMinutes,
+	})),
 	activityByDay: Object.fromEntries(activityByDay),
 	copy: {
 		weekRemaining: copy.weekRemaining,
 		weekComplete: copy.weekComplete,
+		timeGoalLabel: copy.timeGoalLabel,
 		recordsSummary: copy.recordsSummary,
 		statsLamps: copy.statsLamps,
 		statsDays: copy.statsDays,
@@ -470,7 +480,7 @@ const dashboardState = JSON.stringify({
 			</div>
 		</div>
 		<div class="time-ledger-grid">
-			{timeSummary.map(({ habit, weekMinutes, monthMinutes, totalMinutes, timedSessions, averageMinutes }) => (
+			{timeSummary.map(({ habit, weekMinutes, monthMinutes, monthGoalMinutes, monthProgress, totalMinutes, timedSessions, averageMinutes }) => (
 				<article class="time-card" data-time-habit={habit.id} style={`--habit-color: ${habit.color}`}>
 					<div class="time-card-head">
 						<span class="time-card-code">{habit.code}</span>
@@ -487,8 +497,19 @@ const dashboardState = JSON.stringify({
 							{copy.timeUnit.zh}
 						</small>
 					</div>
+					<div class="time-goal-row">
+						<span
+							data-time-goal-label
+							data-bilingual="text"
+							data-zh={fillTemplate(copy.timeGoalLabel.zh, { minutes: monthGoalMinutes })}
+							data-en={fillTemplate(copy.timeGoalLabel.en, { minutes: monthGoalMinutes })}
+						>
+							{fillTemplate(copy.timeGoalLabel.zh, { minutes: monthGoalMinutes })}
+						</span>
+						<strong data-time-goal-percent>{monthProgress}%</strong>
+					</div>
 					<div class="time-share-track" aria-hidden="true">
-						<span data-time-share style={`--time-share: ${monthMinutes > 0 ? Math.max(6, Math.round((monthMinutes / maxMonthMinutes) * 100)) : 0}%`} />
+						<span data-time-share style={`--time-share: ${monthProgress}%`} />
 					</div>
 					<dl class="time-card-metrics">
 						<div>
@@ -750,6 +771,7 @@ const dashboardState = JSON.stringify({
 		name: { zh: string; en: string };
 		color: string;
 		weeklyGoal: number;
+		minimumMinutes: number;
 	}
 
 	interface RuntimeMetric {
@@ -763,6 +785,7 @@ const dashboardState = JSON.stringify({
 		copy: {
 			weekRemaining: { zh: string; en: string };
 			weekComplete: { zh: string; en: string };
+			timeGoalLabel: { zh: string; en: string };
 			recordsSummary: { zh: string; en: string };
 			statsLamps: { zh: string; en: string };
 			statsDays: { zh: string; en: string };
@@ -1056,21 +1079,34 @@ const dashboardState = JSON.stringify({
 				const weekValue = card.querySelector<HTMLElement>('[data-time-week]');
 				if (monthValue) monthValue.textContent = String(monthTotal);
 				if (weekValue) weekValue.textContent = String(weekTotal);
+				const monthGoal = habit.weeklyGoal * 4 * habit.minimumMinutes;
+				const monthProgress = Math.min(
+					100,
+					Math.round((monthTotal / monthGoal) * 100),
+				);
+				setRuntimeBilingualText(
+					card.querySelector<HTMLElement>('[data-time-goal-label]'),
+					{
+						zh: fillRuntimeTemplate(state.copy.timeGoalLabel.zh, {
+							minutes: monthGoal,
+						}),
+						en: fillRuntimeTemplate(state.copy.timeGoalLabel.en, {
+							minutes: monthGoal,
+						}),
+					},
+				);
+				const progressValue = card.querySelector<HTMLElement>('[data-time-goal-percent]');
+				if (progressValue) progressValue.textContent = `${monthProgress}%`;
+				card.querySelector<HTMLElement>('[data-time-share]')?.style.setProperty(
+					'--time-share',
+					`${monthProgress}%`,
+				);
 			}
 		});
 
 		const currentMonthTotal = [...monthMinutes.values()].reduce((total, value) => total + value, 0);
 		const currentMonthValue = root.querySelector<HTMLElement>('[data-current-month-total]');
 		if (currentMonthValue) currentMonthValue.textContent = String(currentMonthTotal);
-		const maxMonthMinutes = Math.max(1, ...monthMinutes.values());
-		root.querySelectorAll<HTMLElement>('[data-time-habit]').forEach((card) => {
-			const minutes = monthMinutes.get(card.dataset.timeHabit ?? '') ?? 0;
-			card.querySelector<HTMLElement>('[data-time-share]')?.style.setProperty(
-				'--time-share',
-				`${minutes > 0 ? Math.max(6, Math.round((minutes / maxMonthMinutes) * 100)) : 0}%`,
-			);
-		});
-
 		const stats = getRuntimeMonthStats(state, monthKey);
 		setRuntimeBilingualText(root.querySelector<HTMLElement>('[data-records-summary]'), {
 			zh: fillRuntimeTemplate(state.copy.recordsSummary.zh, {
@@ -1536,10 +1572,26 @@ const dashboardState = JSON.stringify({
 
 	.time-share-track {
 		height: 0.35rem;
-		margin: 0.7rem 0 0.9rem;
+		margin: 0.35rem 0 0.9rem;
 		overflow: hidden;
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--line) 72%, transparent);
+	}
+
+	.time-goal-row {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.75rem;
+		margin-top: 0.65rem;
+		color: var(--text-soft);
+		font-size: 0.65rem;
+	}
+
+	.time-goal-row strong {
+		color: var(--habit-color);
+		font-size: 0.72rem;
+		font-weight: 700;
 	}
 
 	.time-share-track span {
@@ -1549,6 +1601,7 @@ const dashboardState = JSON.stringify({
 		border-radius: inherit;
 		background: var(--habit-color);
 		box-shadow: 0 0 12px color-mix(in srgb, var(--habit-color) 45%, transparent);
+		transition: width 600ms ease;
 	}
 
 	.time-card-metrics {

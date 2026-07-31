@@ -121,6 +121,10 @@
         "zh": "本月",
         "en": "This month"
       },
+      "timeGoalLabel": {
+        "zh": "月度基准 {minutes} 分钟",
+        "en": "Monthly baseline {minutes} min"
+      },
       "weekRemaining": {
         "zh": "本周再点亮 {count} 天",
         "en": "{count} more day(s) this week"

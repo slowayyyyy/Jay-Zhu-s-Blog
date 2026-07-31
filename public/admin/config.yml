@@ -340,6 +340,13 @@ collections:
                     fields:
                       - { label: 中文, name: zh, widget: string }
                       - { label: 英文, name: en, widget: string }
+                  - label: 月度时间基准模板
+                    name: timeGoalLabel
+                    widget: object
+                    hint: 使用 {minutes} 表示“每周目标次数 × 4 周 × 最低行动分钟数”得到的月度基准。
+                    fields:
+                      - { label: 中文, name: zh, widget: string }
+                      - { label: 英文, name: en, widget: string }
                   - label: 累计统计文字
                     name: timeTotalLabel
                     widget: object
