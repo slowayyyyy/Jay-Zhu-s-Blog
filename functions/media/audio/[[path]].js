@@ -18,7 +18,15 @@ const errorResponse = (message, status, extraHeaders = {}) =>
 const getPath = (params) => {
 	const value = params?.path;
 	const path = Array.isArray(value) ? value.join('/') : String(value || '');
-	const segments = path.split('/').filter(Boolean);
+	let segments;
+	try {
+		segments = path
+			.split('/')
+			.filter(Boolean)
+			.map((segment) => decodeURIComponent(segment));
+	} catch {
+		return null;
+	}
 	if (
 		segments.length === 0 ||
 		segments.some((segment) => segment === '.' || segment === '..')
