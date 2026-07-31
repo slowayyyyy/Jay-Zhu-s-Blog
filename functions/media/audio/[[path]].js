@@ -1,8 +1,5 @@
 const AUDIO_OBJECT_PREFIX = 'audio/';
 const ALLOWED_FETCH_SITES = new Set(['same-origin', 'same-site']);
-const MAX_LEGACY_AUDIO_BYTES = 50 * 1024 * 1024;
-const LEGACY_AUDIO_CDN_ROOT =
-	'https://cdn.jsdelivr.net/gh/slowayyyyy/Jay-Zhu-s-Blog@main/public/audio/';
 
 const errorResponse = (message, status, extraHeaders = {}) =>
 	new Response(message, {
@@ -100,41 +97,6 @@ const buildObjectHeaders = (object, isRange) => {
 	return headers;
 };
 
-const encodePath = (path) =>
-	path
-		.split('/')
-		.map((segment) => encodeURIComponent(segment))
-		.join('/');
-
-const migrateLegacyAudio = async ({ bucket, path, objectKey }) => {
-	const legacyUrl = new URL(encodePath(path), LEGACY_AUDIO_CDN_ROOT);
-	const response = await fetch(legacyUrl, {
-		headers: {
-			Accept: 'audio/*',
-			'User-Agent': 'Jay-Zhu-s-Blog R2 Audio Migration',
-		},
-	});
-	if (!response.ok || !response.body) return false;
-
-	const audioBytes = await response.arrayBuffer();
-	if (audioBytes.byteLength <= 0 || audioBytes.byteLength > MAX_LEGACY_AUDIO_BYTES) {
-		return false;
-	}
-	const contentType = response.headers.get('content-type') || 'audio/mpeg';
-	if (!contentType.toLowerCase().startsWith('audio/')) return false;
-
-	const object = await bucket.put(objectKey, audioBytes, {
-		httpMetadata: {
-			contentType,
-			contentDisposition: 'inline',
-		},
-		customMetadata: {
-			migratedFrom: legacyUrl.pathname,
-		},
-	});
-	return Boolean(object);
-};
-
 export async function onRequest(context) {
 	const { request, env, params } = context;
 	const method = request.method.toUpperCase();
@@ -161,17 +123,8 @@ export async function onRequest(context) {
 		}
 	}
 
-	let metadata = await env.BLOG_MEDIA.head(objectKey);
-	if (!metadata) {
-		const migrated = await migrateLegacyAudio({
-			bucket: env.BLOG_MEDIA,
-			path,
-			objectKey,
-		});
-		if (migrated) metadata = await env.BLOG_MEDIA.head(objectKey);
-	}
-
 	if (method === 'HEAD') {
+		const metadata = await env.BLOG_MEDIA.head(objectKey);
 		if (!metadata) return errorResponse('Audio not found', 404);
 		return new Response(null, { headers: buildObjectHeaders(metadata, false) });
 	}

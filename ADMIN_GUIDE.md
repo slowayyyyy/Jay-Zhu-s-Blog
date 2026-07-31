@@ -73,7 +73,7 @@ npm run dev:stop
 - 生活手账独立的页面介绍和侧栏文案
 - 音乐播放器歌单和音乐文件
 
-上传的头像和正文图片会保存到 `public/uploads/`，音乐文件会保存到 `public/audio/`。
+上传的头像和正文图片会保存到 GitHub 的 `public/uploads/`。音乐文件会由专用控件直接上传到 Cloudflare R2，不再占用 GitHub 仓库空间；删除歌曲条目并保存后，对应 R2 文件也会自动删除。
 
 ## 三、检查修改结果
 

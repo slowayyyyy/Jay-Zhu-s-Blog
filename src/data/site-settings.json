@@ -307,22 +307,22 @@
     {
       "title": "180°",
       "artist": "孙燕姿",
-      "src": "/audio/孙燕姿-180度.mp3"
+      "src": "/media/audio/孙燕姿-180度.mp3"
     },
     {
-      "src": "/audio/entoy、suru-blue-mood.mp3",
+      "src": "/media/audio/entoy、suru-blue-mood.mp3",
       "title": "Blue mood",
       "artist": "entoy,suru"
     },
     {
       "title": "太聪明",
       "artist": "陈绮贞",
-      "src": "/audio/陈绮贞-太聪明.mp3"
+      "src": "/media/audio/陈绮贞-太聪明.mp3"
     },
     {
       "title": "旅行的意义",
       "artist": "陈绮贞",
-      "src": "/audio/陈绮贞-旅行的意义.mp3"
+      "src": "/media/audio/陈绮贞-旅行的意义.mp3"
     }
   ],
   "opening": {

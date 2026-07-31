@@ -62,9 +62,10 @@ src/
   pages/                 # 路由页面
 functions/
   api/views.js           # Cloudflare Pages Functions 阅读量接口
+  api/media/audio/       # 仅博主可用的 R2 音乐上传与删除接口
+  media/audio/           # 支持 Range 的 R2 音乐播放接口
 public/
   admin/                 # 内容管理后台配置
-  audio/                 # 音乐文件
   images/                # 预置图片资源
   uploads/               # 后台上传的头像和正文图片
 ```
@@ -138,20 +139,12 @@ tags:
 
 ## 音乐播放器怎么换歌
 
-1. 把音乐文件放进 `public/audio/`
-2. 到 `src/data/site.ts` 修改 `playlist`
+1. 打开线上 `/admin/` 并使用 GitHub 登录。
+2. 进入“网站与个人资料 → 音乐播放器歌单”。
+3. 新增歌曲并点击“选择并上传音乐”，文件会直接写入 Cloudflare R2。
+4. 填写歌曲名和歌手后保存网站设置，Cloudflare Pages 完成构建后前台生效。
 
-示例：
-
-```ts
-playlist: [
-  {
-    title: 'Your Track',
-    artist: 'Artist Name',
-    src: '/audio/your-track.mp3',
-  },
-],
-```
+删除歌曲条目并保存后，对应的 R2 音乐对象也会自动删除。支持 MP3、M4A、AAC、OGG、OPUS、WAV 和 FLAC，单个文件上限为 50 MB。
 
 注意：
 
