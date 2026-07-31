@@ -375,6 +375,7 @@ const dashboardState = JSON.stringify({
 				<a
 					class="quick-action"
 					href={`/admin/?quick-checkin=${encodeURIComponent(habit.id)}`}
+					data-quick-habit={habit.id}
 					style={`--habit-color: ${habit.color}`}
 				>
 					<span class="action-lamp" aria-hidden="true" />
@@ -404,7 +405,9 @@ const dashboardState = JSON.stringify({
 				<article
 					class="weekly-card glass-card"
 					data-weekly-habit={habit.id}
-					style={`--habit: ${habit.color}; --habit-glow: ${habit.color}`}
+					data-weekly-goal={goal}
+					data-minimum-minutes={minimum}
+					style={`--habit: ${habit.color}`}
 				>
 					<div class="weekly-card-top">
 						<div>
@@ -481,7 +484,12 @@ const dashboardState = JSON.stringify({
 		</div>
 		<div class="time-ledger-grid">
 			{timeSummary.map(({ habit, weekMinutes, monthMinutes, monthGoalMinutes, monthProgress, totalMinutes, timedSessions, averageMinutes }) => (
-				<article class="time-card" data-time-habit={habit.id} style={`--habit-color: ${habit.color}`}>
+				<article
+					class="time-card"
+					data-time-habit={habit.id}
+					data-month-goal={monthGoalMinutes}
+					style={`--habit-color: ${habit.color}`}
+				>
 					<div class="time-card-head">
 						<span class="time-card-code">{habit.code}</span>
 						<h3 data-bilingual="text" data-zh={habit.name.zh} data-en={habit.name.en}>
@@ -569,7 +577,7 @@ const dashboardState = JSON.stringify({
 			</div>
 			<div class="lamp-legend" aria-label="图例">
 				{habits.map((habit) => (
-					<span style={`--habit-color: ${habit.color}`}>
+					<span data-legend-habit={habit.id} style={`--habit-color: ${habit.color}`}>
 						<i class="legend-lamp" />
 						<b data-bilingual="text" data-zh={habit.name.zh} data-en={habit.name.en}>
 							{habit.name.zh}
@@ -1351,20 +1359,27 @@ const dashboardState = JSON.stringify({
 		position: relative;
 		overflow: hidden;
 		padding: 1.35rem 1.45rem;
+		border-color: color-mix(in srgb, var(--habit) 15%, var(--line));
 		border-radius: var(--radius-lg);
+		background:
+			linear-gradient(
+				118deg,
+				color-mix(in srgb, var(--habit) 4%, transparent),
+				transparent 42%
+			),
+			var(--bg-panel);
 	}
 
-	.weekly-card::after {
+	.weekly-card::before {
 		content: '';
 		position: absolute;
-		right: -2rem;
-		bottom: -3rem;
-		width: 9rem;
-		height: 9rem;
-		border-radius: 50%;
-		background: var(--habit-glow);
-		filter: blur(8px);
-		opacity: 0.15;
+		top: 0;
+		left: 1.45rem;
+		width: 4.25rem;
+		height: 2px;
+		border-radius: 0 0 999px 999px;
+		background: linear-gradient(90deg, var(--habit), transparent);
+		opacity: 0.72;
 		pointer-events: none;
 	}
 
@@ -1380,6 +1395,23 @@ const dashboardState = JSON.stringify({
 
 	.weekly-card h2 {
 		font-size: 1.35rem;
+	}
+
+	.weekly-card .habit-label {
+		display: inline-flex;
+		align-items: center;
+		gap: 0.48rem;
+		color: color-mix(in srgb, var(--habit) 68%, var(--text-soft));
+	}
+
+	.weekly-card .habit-label::before {
+		content: '';
+		width: 0.42rem;
+		height: 0.42rem;
+		border: 1.5px solid var(--habit);
+		border-radius: 1px;
+		box-shadow: 0 0 0 3px color-mix(in srgb, var(--habit) 8%, transparent);
+		transform: rotate(45deg);
 	}
 
 	.weekly-ratio {

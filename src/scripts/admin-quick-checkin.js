@@ -47,6 +47,8 @@ export const normalizeQuickCheckinHabits = (settings = bundledSiteSettings) => {
 		const activities = Array.isArray(item.activities)
 			? item.activities.map((value) => String(value).trim()).filter(Boolean)
 			: [];
+		const minimumMinutes = Math.max(1, Number(item?.minimumMinutes) || fallback.minimumMinutes);
+		const durations = toPositiveNumbers(item?.durations, fallback.durations);
 		return [{
 			id,
 			name: {
@@ -56,8 +58,8 @@ export const normalizeQuickCheckinHabits = (settings = bundledSiteSettings) => {
 			code: String(item?.code ?? '').trim().slice(0, 8).toUpperCase() || id.slice(0, 4).toUpperCase(),
 			color: isValidColor(item?.color) ? item.color : fallback.color,
 			weeklyGoal: Math.min(7, Math.max(1, Number(item?.weeklyGoal) || fallback.weeklyGoal)),
-			minimumMinutes: Math.max(1, Number(item?.minimumMinutes) || fallback.minimumMinutes),
-			durations: toPositiveNumbers(item?.durations, fallback.durations),
+			minimumMinutes,
+			durations: [...new Set([minimumMinutes, ...durations])].sort((a, b) => a - b),
 			activities: activities.length > 0 ? activities : ['完成一次'],
 			enabled: true,
 		}];
