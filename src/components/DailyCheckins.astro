@@ -1357,30 +1357,10 @@ const dashboardState = JSON.stringify({
 
 	.weekly-card {
 		position: relative;
-		overflow: hidden;
-		padding: 1.35rem 1.45rem;
-		border-color: color-mix(in srgb, var(--habit) 15%, var(--line));
+		padding: 1.45rem 1.5rem;
+		border-color: var(--line);
 		border-radius: var(--radius-lg);
-		background:
-			linear-gradient(
-				118deg,
-				color-mix(in srgb, var(--habit) 4%, transparent),
-				transparent 42%
-			),
-			var(--bg-panel);
-	}
-
-	.weekly-card::before {
-		content: '';
-		position: absolute;
-		top: 0;
-		left: 1.45rem;
-		width: 4.25rem;
-		height: 2px;
-		border-radius: 0 0 999px 999px;
-		background: linear-gradient(90deg, var(--habit), transparent);
-		opacity: 0.72;
-		pointer-events: none;
+		background: var(--bg-panel);
 	}
 
 	.weekly-card-top,
@@ -1400,18 +1380,16 @@ const dashboardState = JSON.stringify({
 	.weekly-card .habit-label {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.48rem;
-		color: color-mix(in srgb, var(--habit) 68%, var(--text-soft));
+		gap: 0.55rem;
+		color: var(--text-soft);
 	}
 
 	.weekly-card .habit-label::before {
 		content: '';
-		width: 0.42rem;
-		height: 0.42rem;
-		border: 1.5px solid var(--habit);
-		border-radius: 1px;
-		box-shadow: 0 0 0 3px color-mix(in srgb, var(--habit) 8%, transparent);
-		transform: rotate(45deg);
+		width: 1rem;
+		height: 2px;
+		border-radius: 999px;
+		background: var(--habit);
 	}
 
 	.weekly-ratio {
@@ -1449,10 +1427,22 @@ const dashboardState = JSON.stringify({
 	}
 
 	.weekly-note small {
-		padding: 0.2rem 0.5rem;
+		display: inline-flex;
+		align-items: center;
+		gap: 0.4rem;
+		padding: 0.22rem 0.55rem;
+		border: 1px solid var(--line);
 		border-radius: 999px;
-		background: color-mix(in srgb, var(--habit) 9%, transparent);
-		color: var(--habit);
+		background: color-mix(in srgb, var(--bg-panel) 82%, transparent);
+		color: var(--text-soft);
+	}
+
+	.weekly-note small::before {
+		content: '';
+		width: 0.34rem;
+		height: 0.34rem;
+		border-radius: 50%;
+		background: var(--habit);
 	}
 
 	.time-ledger {
