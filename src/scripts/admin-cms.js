@@ -1,3 +1,5 @@
+import katex from 'katex';
+import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { setupHabitSelectWidget, setupQuickCheckin } from './admin-quick-checkin.js';
@@ -38,6 +40,22 @@ const MARKDOWN_TRANSIENT_IMAGE_PATTERN =
 const LARGE_CLIPBOARD_IMAGE_BYTES = 900 * 1024;
 const MAX_CLIPBOARD_IMAGE_EDGE = 2560;
 
+const escapeAdminHtml = (value) =>
+	String(value ?? '')
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;')
+		.replaceAll('"', '&quot;')
+		.replaceAll("'", '&#39;');
+
+const renderAdminFormula = (formula, displayMode = true) =>
+	katex.renderToString(String(formula ?? '').trim(), {
+		displayMode,
+		throwOnError: false,
+		strict: false,
+		trust: false,
+	});
+
 const readConfigValue = (source, key) => {
 	if (!source) return undefined;
 	if (typeof source.get === 'function') return source.get(key);
@@ -76,6 +94,48 @@ export function setupAdminCms() {
 
 	window.CMS.registerRemarkPlugin(remarkTightInlineFormatting);
 	window.CMS.registerRemarkPlugin(remarkImagePresentation);
+	window.CMS.registerPreviewStyle(katexStylesUrl);
+	window.CMS.registerPreviewStyle(
+		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}',
+		{ raw: true },
+	);
+	window.CMS.registerEditorComponent({
+		id: 'latex-block',
+		label: '数学公式（LaTeX）',
+		collapsed: false,
+		fields: [
+			{
+				name: 'formula',
+				label: 'LaTeX 公式',
+				widget: 'text',
+				default: String.raw`E = mc^2`,
+				hint: String.raw`只填写公式内容，不需要输入 $$。例如：\frac{1}{n}\sum_{i=1}^{n}x_i`,
+			},
+		],
+		pattern: /^\$\$\r?\n([\s\S]*?)\r?\n\$\$$/m,
+		fromBlock: (match) => ({ formula: match[1].trim() }),
+		toBlock: ({ formula }) => `$$\n${String(formula ?? '').trim()}\n$$`,
+		toPreview: ({ formula }) =>
+			`<div class="jay-formula-preview">${renderAdminFormula(formula, true)}</div>`,
+	});
+	window.CMS.registerEditorComponent({
+		id: 'mermaid-diagram',
+		label: 'Mermaid 图表',
+		collapsed: false,
+		fields: [
+			{
+				name: 'diagram',
+				label: 'Mermaid 源码',
+				widget: 'text',
+				default: 'flowchart LR\n  A[开始] --> B[完成]',
+			},
+		],
+		pattern: /^```mermaid\r?\n([\s\S]*?)\r?\n```$/m,
+		fromBlock: (match) => ({ diagram: match[1].trim() }),
+		toBlock: ({ diagram }) => `\`\`\`mermaid\n${String(diagram ?? '').trim()}\n\`\`\``,
+		toPreview: ({ diagram }) =>
+			`<pre class="jay-mermaid-preview">${escapeAdminHtml(diagram)}</pre>`,
+	});
 
 	let syncTimer;
 	let statusTimer;

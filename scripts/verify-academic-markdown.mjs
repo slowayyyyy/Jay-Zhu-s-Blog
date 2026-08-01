@@ -1,0 +1,74 @@
+import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
+import { remarkAcademicCitations } from '../src/lib/remark-academic-citations.mjs';
+
+const processor = await createMarkdownProcessor({
+	remarkPlugins: [remarkMath, remarkAcademicCitations],
+	rehypePlugins: [[rehypeKatex, { strict: false, throwOnError: false, trust: false }]],
+	remarkRehype: {
+		footnoteLabel: '脚注',
+		footnoteBackLabel: '返回正文',
+	},
+	syntaxHighlight: {
+		type: 'shiki',
+		excludeLangs: ['math', 'mermaid'],
+	},
+});
+
+const markdown = [
+	String.raw`行内公式 $E = mc^2$，论文结论 [@vaswani2017, p. 3]。`,
+	'',
+	'$$',
+	String.raw`\mathcal{L} = -\sum_{i=1}^{n} y_i \log \hat{y}_i`,
+	'$$',
+	'',
+	'脚注示例。[^note]',
+	'',
+	'[^note]: 脚注内容。',
+	'',
+	'```mermaid',
+	'flowchart LR',
+	'  A --> B',
+	'```',
+	'',
+	'```python',
+	'print("hello")',
+	'```',
+].join('\n');
+
+const { code } = await processor.render(markdown, {
+	frontmatter: {
+		references: [
+			{
+				key: 'vaswani2017',
+				authors: 'Vaswani, A., et al.',
+				title: 'Attention Is All You Need',
+				venue: 'NeurIPS',
+				year: 2017,
+				doi: '10.48550/arXiv.1706.03762',
+			},
+		],
+	},
+});
+
+const checks = {
+	inlineMath: code.includes('<span class="katex">'),
+	displayMath: code.includes('<span class="katex-display">'),
+	footnote: code.includes('data-footnotes') && code.includes('脚注内容'),
+	mermaid: code.includes('class="language-mermaid"') && code.includes('flowchart LR'),
+	code: code.includes('print') && code.includes('class="astro-code'),
+	citation: code.includes('class="academic-citation"') && code.includes('href="#ref-vaswani2017"'),
+	bibliography:
+		code.includes('class="academic-references"') && code.includes('Attention Is All You Need'),
+};
+
+const failures = Object.entries(checks)
+	.filter(([, passed]) => !passed)
+	.map(([name]) => name);
+
+if (failures.length > 0) {
+	throw new Error(`Academic Markdown verification failed: ${failures.join(', ')}`);
+}
+
+console.log('Academic Markdown verification passed: math, Mermaid, footnotes, code, and citations.');

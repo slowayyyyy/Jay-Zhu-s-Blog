@@ -13,6 +13,19 @@ const posts = defineCollection({
 		sortOrder: z.coerce.number().int().default(0),
 		section: z.enum(['study', 'research', 'life']),
 		tags: z.array(z.string()).default([]),
+		references: z
+			.array(
+				z.object({
+					key: z.string(),
+					authors: z.string(),
+					title: z.string(),
+					venue: z.string().optional(),
+					year: z.coerce.number().int().optional(),
+					doi: z.string().optional(),
+					url: z.url().optional(),
+				}),
+			)
+			.default([]),
 		featured: z.boolean().default(false),
 		draft: z.boolean().default(false),
 	}),

@@ -1,0 +1,130 @@
+<script>
+	let mermaidApiPromise: Promise<typeof import('mermaid').default> | undefined;
+	let diagramSequence = 0;
+
+	const getMermaid = async () => {
+		if (!mermaidApiPromise) {
+			mermaidApiPromise = import('mermaid').then(({ default: mermaid }) => mermaid);
+		}
+		return mermaidApiPromise;
+	};
+
+	const copyText = async (value: string) => {
+		if (navigator.clipboard?.writeText) {
+			await navigator.clipboard.writeText(value);
+			return;
+		}
+		const textarea = document.createElement('textarea');
+		textarea.value = value;
+		textarea.style.position = 'fixed';
+		textarea.style.opacity = '0';
+		document.body.append(textarea);
+		textarea.select();
+		(document as unknown as { execCommand: (command: string) => boolean }).execCommand('copy');
+		textarea.remove();
+	};
+
+	const prepareMermaidBlocks = (root: ParentNode = document) => {
+		root.querySelectorAll<HTMLElement>('.prose pre:not([data-academic-ready])').forEach((pre) => {
+			const code = pre.querySelector<HTMLElement>(':scope > code.language-mermaid');
+			if (!code) return;
+			pre.dataset.academicReady = 'true';
+			const figure = document.createElement('figure');
+			figure.className = 'mermaid-figure';
+			const diagram = document.createElement('div');
+			diagram.className = 'mermaid-diagram';
+			diagram.dataset.mermaidSource = code.textContent?.trim() ?? '';
+			diagram.setAttribute('role', 'img');
+			diagram.setAttribute('aria-label', 'Mermaid diagram');
+			figure.append(diagram);
+			pre.replaceWith(figure);
+		});
+	};
+
+	const renderMermaidDiagrams = async (root: ParentNode = document) => {
+		const diagrams = [...root.querySelectorAll<HTMLElement>('.mermaid-diagram')];
+		if (diagrams.length === 0) return;
+		const mermaid = await getMermaid();
+		const dark = document.documentElement.dataset.theme === 'dark';
+		mermaid.initialize({
+			startOnLoad: false,
+			securityLevel: 'strict',
+			theme: dark ? 'dark' : 'neutral',
+			fontFamily: 'Avenir Next, Segoe UI, PingFang SC, sans-serif',
+		});
+
+		for (const diagram of diagrams) {
+			const source = diagram.dataset.mermaidSource ?? '';
+			if (!source) continue;
+			diagram.classList.add('is-rendering');
+			try {
+				const id = `jay-mermaid-${Date.now()}-${diagramSequence++}`;
+				const { svg, bindFunctions } = await mermaid.render(id, source);
+				diagram.innerHTML = svg;
+				bindFunctions?.(diagram);
+				diagram.dataset.mermaidTheme = dark ? 'dark' : 'light';
+				diagram.classList.remove('has-error');
+			} catch (error) {
+				console.error('[Jay Blog] Mermaid rendering failed.', error);
+				diagram.textContent = `Mermaid 图表语法有误\n\n${source}`;
+				diagram.classList.add('has-error');
+			} finally {
+				diagram.classList.remove('is-rendering');
+			}
+		}
+	};
+
+	const enhanceCodeBlocks = (root: ParentNode = document) => {
+		root.querySelectorAll<HTMLElement>('.prose pre:not([data-academic-ready])').forEach((pre) => {
+			const code = pre.querySelector<HTMLElement>(':scope > code');
+			if (!code || code.classList.contains('math-display')) return;
+			pre.dataset.academicReady = 'true';
+			const shell = document.createElement('div');
+			shell.className = 'code-block-shell';
+			const toolbar = document.createElement('div');
+			toolbar.className = 'code-block-toolbar';
+			const language = document.createElement('span');
+			language.textContent = [...code.classList]
+				.find((name) => name.startsWith('language-'))
+				?.replace('language-', '') || 'code';
+			const button = document.createElement('button');
+			button.type = 'button';
+			button.className = 'code-copy-button';
+			button.textContent = '复制代码';
+			button.setAttribute('aria-label', '复制代码');
+			button.addEventListener('click', async () => {
+				try {
+					await copyText(code.textContent ?? '');
+					button.textContent = '已复制';
+					button.classList.add('is-copied');
+					window.setTimeout(() => {
+						button.textContent = '复制代码';
+						button.classList.remove('is-copied');
+					}, 1600);
+				} catch (error) {
+					console.error('[Jay Blog] Copying code failed.', error);
+					button.textContent = '复制失败';
+				}
+			});
+			toolbar.append(language, button);
+			pre.before(shell);
+			shell.append(toolbar, pre);
+		});
+	};
+
+	const enhanceAcademicContent = async () => {
+		prepareMermaidBlocks();
+		enhanceCodeBlocks();
+		await renderMermaidDiagrams();
+	};
+
+	if (!(window as typeof window & { __jayAcademicEnhancements?: boolean }).__jayAcademicEnhancements) {
+		(window as typeof window & { __jayAcademicEnhancements?: boolean }).__jayAcademicEnhancements = true;
+		document.addEventListener('astro:page-load', enhanceAcademicContent);
+		document.addEventListener('jay:theme-change', () => {
+			window.setTimeout(() => void renderMermaidDiagrams(), 0);
+		});
+	}
+
+	void enhanceAcademicContent();
+</script>

@@ -268,6 +268,146 @@ html[data-intro-seen='seen'] .opening-overlay {
 	overflow-x: auto;
 }
 
+.prose :where(.katex-display) {
+	margin: 1.6rem 0;
+	padding: 0.5rem 0.25rem;
+	overflow-x: auto;
+	overflow-y: hidden;
+}
+
+.prose :where(.katex-display > .katex) {
+	display: inline-block;
+	min-width: max-content;
+}
+
+.prose pre:has(> code.math-display) {
+	padding: 0;
+	background: transparent;
+	color: var(--text);
+	box-shadow: none;
+}
+
+.code-block-shell {
+	position: relative;
+	margin: 1.5rem 0;
+	overflow: hidden;
+	border: 1px solid rgba(255, 255, 255, 0.08);
+	border-radius: 1rem;
+	background: rgba(17, 17, 17, 0.94);
+}
+
+.code-block-shell .code-block-toolbar {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	min-height: 2.35rem;
+	padding: 0.35rem 0.55rem 0.35rem 0.85rem;
+	border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+	color: rgba(255, 255, 255, 0.55);
+	font-size: 0.7rem;
+	letter-spacing: 0.08em;
+	text-transform: uppercase;
+}
+
+.code-block-shell pre {
+	margin: 0;
+	border-radius: 0;
+}
+
+.code-copy-button {
+	padding: 0.3rem 0.62rem;
+	border: 1px solid rgba(255, 255, 255, 0.12);
+	border-radius: 999px;
+	background: rgba(255, 255, 255, 0.06);
+	color: rgba(255, 255, 255, 0.76);
+	font-size: 0.7rem;
+	letter-spacing: 0;
+	text-transform: none;
+	transition: border-color var(--transition), background var(--transition), color var(--transition);
+}
+
+.code-copy-button:hover,
+.code-copy-button.is-copied {
+	border-color: color-mix(in srgb, var(--accent) 60%, transparent);
+	background: color-mix(in srgb, var(--accent) 24%, transparent);
+	color: #fff;
+}
+
+.mermaid-figure {
+	margin: 1.8rem 0;
+	padding: clamp(0.8rem, 2vw, 1.35rem);
+	overflow-x: auto;
+	border: 1px solid var(--line);
+	border-radius: var(--radius-md);
+	background: color-mix(in srgb, var(--bg-panel) 94%, transparent);
+}
+
+.mermaid-diagram {
+	display: grid;
+	place-items: center;
+	min-width: min(34rem, 100%);
+}
+
+.mermaid-diagram svg {
+	display: block;
+	max-width: 100%;
+	height: auto;
+}
+
+.mermaid-diagram.is-rendering {
+	min-height: 10rem;
+}
+
+.mermaid-diagram.has-error {
+	display: block;
+	padding: 1rem;
+	color: #b13f3f;
+	font-family: ui-monospace, SFMono-Regular, Consolas, monospace;
+	font-size: 0.82rem;
+	white-space: pre-wrap;
+}
+
+.prose a.academic-citation {
+	font-family: var(--font-ui);
+	font-size: 0.82em;
+	font-weight: 700;
+	text-decoration: none;
+	vertical-align: 0.08em;
+}
+
+.prose .academic-references-title {
+	margin-top: 2.6rem;
+}
+
+.prose .academic-references {
+	padding-left: 1.45rem;
+	color: var(--text-soft);
+	font-size: 0.9rem;
+}
+
+.prose .academic-references li {
+	padding-left: 0.35rem;
+	scroll-margin-top: 6rem;
+}
+
+.prose :where([data-footnotes]) {
+	margin-top: 2.6rem;
+	padding-top: 1rem;
+	border-top: 1px solid var(--line);
+	color: var(--text-soft);
+	font-size: 0.88rem;
+}
+
+.prose :where([data-footnote-ref]) {
+	font-weight: 700;
+	text-decoration: none;
+}
+
+.prose :where([data-footnote-backref]) {
+	margin-left: 0.25rem;
+	text-decoration: none;
+}
+
 .prose :where(figure.prose-media) {
 	margin: 1.6rem 0;
 }

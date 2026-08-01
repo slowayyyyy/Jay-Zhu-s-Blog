@@ -1,5 +1,8 @@
 import { createMarkdownProcessor } from '@astrojs/markdown-remark';
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math';
 import { remarkImagePresentation } from './remark-image-presentation.mjs';
+import { remarkAcademicCitations } from './remark-academic-citations.mjs';
 import { remarkTightInlineFormatting } from './remark-tight-inline-formatting.mjs';
 
 let markdownProcessorPromise: ReturnType<typeof createMarkdownProcessor> | undefined;
@@ -7,7 +10,21 @@ let markdownProcessorPromise: ReturnType<typeof createMarkdownProcessor> | undef
 function getMarkdownProcessor() {
 	if (!markdownProcessorPromise) {
 		markdownProcessorPromise = createMarkdownProcessor({
-			remarkPlugins: [remarkTightInlineFormatting, remarkImagePresentation],
+			remarkPlugins: [
+				remarkMath,
+				remarkTightInlineFormatting,
+				remarkImagePresentation,
+				remarkAcademicCitations,
+			],
+			rehypePlugins: [[rehypeKatex, { strict: false, throwOnError: false, trust: false }]],
+			remarkRehype: {
+				footnoteLabel: '脚注',
+				footnoteBackLabel: '返回正文',
+			},
+			syntaxHighlight: {
+				type: 'shiki',
+				excludeLangs: ['math', 'mermaid'],
+			},
 			shikiConfig: {
 				theme: 'github-dark-default',
 				wrap: true,
