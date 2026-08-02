@@ -120,7 +120,7 @@ const publicationYearLabel = publicationYears.length > 1
 						data-en={siteConfig.homePage.featuredTitle.en}
 					/>
 				</header>
-				<div class="featured-list">
+				<div class:list={['featured-list', `featured-list--${featuredPosts.length}`]}>
 					{featuredPosts.map((post) => <PostCard post={post} headingLevel="h3" />)}
 				</div>
 			</section>
@@ -387,30 +387,39 @@ const publicationYearLabel = publicationYears.length > 1
 		column-gap: clamp(2rem, 5vw, 4rem);
 	}
 
-	.featured-list :global(.post-card:first-child) {
+	.featured-list--1 {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.featured-list--3 :global(.post-card:first-child) {
 		grid-column: 1 / -1;
 		padding-block: 2rem;
 	}
 
-	.featured-list :global(.post-card:not(:first-child)) {
+	.featured-list--2 :global(.post-card),
+	.featured-list--3 :global(.post-card:not(:first-child)) {
 		grid-template-columns: 1fr auto;
 		gap: 0.75rem 1rem;
 		align-content: start;
 		padding-block: 1.6rem;
 	}
 
-	.featured-list :global(.post-card:not(:first-child) .post-rail),
-	.featured-list :global(.post-card:not(:first-child) .post-content) {
+	.featured-list--2 :global(.post-card .post-rail),
+	.featured-list--2 :global(.post-card .post-content),
+	.featured-list--3 :global(.post-card:not(:first-child) .post-rail),
+	.featured-list--3 :global(.post-card:not(:first-child) .post-content) {
 		grid-column: 1 / -1;
 	}
 
-	.featured-list :global(.post-card:not(:first-child) .post-rail) {
+	.featured-list--2 :global(.post-card .post-rail),
+	.featured-list--3 :global(.post-card:not(:first-child) .post-rail) {
 		display: flex;
 		align-items: center;
 		justify-content: space-between;
 	}
 
-	.featured-list :global(.post-card:not(:first-child) .read-link) {
+	.featured-list--2 :global(.post-card .read-link),
+	.featured-list--3 :global(.post-card:not(:first-child) .read-link) {
 		grid-column: 1;
 		justify-self: start;
 	}
@@ -515,7 +524,7 @@ const publicationYearLabel = publicationYears.length > 1
 			grid-template-columns: 1fr;
 		}
 
-		.featured-list :global(.post-card:first-child) {
+		.featured-list--3 :global(.post-card:first-child) {
 			grid-column: auto;
 		}
 	}
