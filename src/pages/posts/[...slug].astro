@@ -183,6 +183,7 @@ const tagMap = await getTagMap();
 
 	.article-body {
 		grid-column: 1;
+		width: 100%;
 		max-width: 48rem;
 		min-width: 0;
 		padding: 0;
@@ -224,7 +225,10 @@ const tagMap = await getTagMap();
 		}
 
 		.article-aside { grid-row: 1; }
-		.article-body { grid-row: 2; }
+		.article-body {
+			grid-row: 2;
+			margin-inline: auto;
+		}
 	}
 
 	@media (max-width: 640px) {

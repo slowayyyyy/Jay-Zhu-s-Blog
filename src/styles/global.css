@@ -257,6 +257,7 @@ html[data-intro-seen='seen'] .opening-overlay {
 }
 
 .prose {
+	--prose-reading-width: min(100%, 46rem);
 	font-size: clamp(1rem, 1.15vw, 1.065rem);
 	line-height: 1.82;
 }
@@ -278,12 +279,13 @@ html[data-intro-seen='seen'] .opening-overlay {
 	font-size: 1.28rem;
 }
 
-.prose :where(p, ul, ol, blockquote) {
-	max-width: 72ch;
+.prose > :where(p, ul, ol, blockquote, h2, h3, h4, [data-footnotes]) {
+	width: var(--prose-reading-width);
+	margin-inline: auto;
 }
 
 .prose blockquote {
-	margin: 2rem 0;
+	margin: 2rem auto;
 	padding: 0.35rem 0 0.35rem 1.25rem;
 	border-left: 1px solid var(--focus-ring);
 	color: var(--text-soft);

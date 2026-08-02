@@ -154,7 +154,7 @@ The light theme uses cool paper, dense blue-black ink, and patinated teal; dark 
 - **Display:** major page identity and section openings use a compact, tightly tracked serif scale.
 - **Headline:** publication sections, article subsections, and ledger headings use the same serif voice at a restrained intermediate scale.
 - **Title:** article rows and field-note entries use balanced serif titles with modest negative tracking.
-- **Body:** long-form prose uses the sans stack at a generous line height, with paragraphs and lists constrained to 72ch.
+- **Body:** long-form prose uses the sans stack at a generous line height. Ordinary text, headings, lists, and quotations share a centered 46rem reading measure; research figures and technical blocks may extend to the 48rem media rail.
 - **Label:** dates, reading times, codes, and small state descriptions use compact sans text; letterspaced uppercase is reserved for stable publication labels.
 
 ### Named Rules
@@ -165,11 +165,13 @@ The light theme uses cool paper, dense blue-black ink, and patinated teal; dark 
 
 ## Layout
 
-The publication frame is `min(1160px, calc(100vw - 2rem))`, narrowing to `min(100vw - 1.1rem, 100%)` below 720px. Desktop home layouts pair a dominant editorial column with a narrow publication index or marginal rail. Article prose stays within 48rem and is paired with a table-of-contents rail until 1080px.
+The publication frame is `min(1160px, calc(100vw - 2rem))`, narrowing to `min(100vw - 1.1rem, 100%)` below 720px. Desktop home layouts pair a dominant editorial column with a narrow publication index or marginal rail. Article pages use a centered 46rem reading measure inside a 48rem media rail and are paired with a table-of-contents rail until 1080px.
 
 The first viewport uses a compact sticky masthead bounded by top and bottom rules. The homepage orientation sits left and the publication index right; at 940px both become a single column and navigation moves behind a geometric two-line menu. At 720px post rows collapse from date/content/action columns into a stacked reading order.
 
 **The Reading Column Rule.** Side rails provide orientation but never compress the primary reading column below a comfortable measure.
+
+**The Symmetric Media Rule.** Research figures, formulas, tables, and code may exceed the ordinary reading measure only through equal left and right expansion; wide media never grows from one side of the prose column.
 
 **The Progressive Ledger Rule.** Calendar and chronological records remain primary; author tools, goals, and metrics disclose through ruled details regions.
 
