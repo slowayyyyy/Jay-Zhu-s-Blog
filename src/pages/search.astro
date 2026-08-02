@@ -12,17 +12,22 @@ const years = getYearSummary(posts);
 <SiteLayout pathname="/search/" title={`搜索 | Jay Zhu's Blog`} description="按关键词、标签与时间快速检索博客内容。">
 	<section class="container search-page">
 		<div class="page-head">
-			<div class="eyebrow" data-copy="nav.search" />
-			<h1 class="section-title" data-copy="search.title" />
+			<h1 data-copy="search.title" />
 			<p class="muted" data-copy="search.intro" />
 		</div>
 
-		<div class="search-panel glass-card">
-			<div class="filter-grid">
-				<label>
+		<div class="search-panel">
+			<div class="keyword-row">
+				<label class="keyword-field">
 					<span data-copy="search.keyword" />
 					<input type="search" data-filter="keyword" data-copy="search.keywordPlaceholder" data-copy-attr="placeholder" />
 				</label>
+			</div>
+			<details class="advanced-filters">
+				<summary>
+					<span data-bilingual="text" data-zh="高级筛选" data-en="Advanced filters">高级筛选</span>
+				</summary>
+				<div class="filter-grid">
 				<label>
 					<span data-copy="search.section" />
 					<select data-filter="section">
@@ -50,7 +55,8 @@ const years = getYearSummary(posts);
 						{tags.map((tag) => <option value={tag.tag}>{tag.label}</option>)}
 					</select>
 				</label>
-			</div>
+				</div>
+			</details>
 			<div class="filter-actions">
 				<strong class="result-count" data-result-count>{posts.length} 篇结果</strong>
 				<button type="button" class="button-secondary" data-reset-filters data-copy="search.reset" />
@@ -75,7 +81,7 @@ const years = getYearSummary(posts);
 			}
 		</div>
 
-		<p class="empty-state glass-card" data-empty-state hidden data-copy="search.empty" />
+		<p class="empty-state" data-empty-state hidden data-copy="search.empty" />
 	</section>
 </SiteLayout>
 
@@ -177,22 +183,78 @@ const years = getYearSummary(posts);
 
 <style>
 	.search-page {
-		padding: 6.8rem 0 4rem;
+		padding: clamp(3.5rem, 7vw, 6rem) 0 4rem;
 	}
 
 	.page-head {
 		max-width: 46rem;
 	}
 
+	.page-head h1 {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: clamp(2.8rem, 7vw, 5.2rem);
+		line-height: 1;
+		letter-spacing: -0.04em;
+	}
+
+	.page-head p { margin: 1rem 0 0; font-size: 1.05rem; }
+
 	.search-panel {
 		margin-top: 1.5rem;
-		padding: 1.3rem;
-		border-radius: var(--radius-xl);
+		padding: 1.2rem 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.keyword-field {
+		display: grid;
+		grid-template-columns: 7rem minmax(0, 1fr);
+		align-items: center;
+		gap: 1rem;
+	}
+
+	.keyword-field input { width: 100%; }
+
+	.advanced-filters {
+		margin-top: 0.8rem;
+	}
+
+	.advanced-filters summary {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+		color: var(--accent);
+		cursor: pointer;
+	}
+
+	.advanced-filters summary::after {
+		content: '';
+		width: 0.7rem;
+		height: 1px;
+		margin-left: 0.5rem;
+		background: currentColor;
+	}
+
+	.advanced-filters summary::before {
+		content: '';
+		order: 2;
+		width: 1px;
+		height: 0.7rem;
+		margin-left: -0.85rem;
+		background: currentColor;
+		transition: transform var(--transition);
+	}
+
+	.advanced-filters[open] summary::before { transform: scaleY(0); }
+
+	.advanced-filters .filter-grid {
+		margin-top: 0.8rem;
 	}
 
 	.filter-grid {
 		display: grid;
-		grid-template-columns: repeat(4, minmax(0, 1fr));
+		grid-template-columns: repeat(3, minmax(0, 1fr));
 		gap: 0.9rem;
 	}
 
@@ -207,12 +269,13 @@ const years = getYearSummary(posts);
 	}
 
 	.filter-grid input,
-	.filter-grid select {
+	.filter-grid select,
+	.keyword-field input {
 		height: 3rem;
 		padding: 0 0.95rem;
-		border-radius: 0.95rem;
+		border-radius: var(--radius-sm);
 		border: 1px solid var(--line);
-		background: rgba(255, 255, 255, 0.05);
+		background: color-mix(in srgb, var(--bg-panel) 96%, transparent);
 		color: inherit;
 	}
 
@@ -232,9 +295,10 @@ const years = getYearSummary(posts);
 	}
 
 	.empty-state {
-		padding: 1.2rem;
-		border-radius: var(--radius-xl);
+		padding: 1.2rem 0;
 		margin-top: 1rem;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
 		color: var(--text-soft);
 	}
 
@@ -245,6 +309,7 @@ const years = getYearSummary(posts);
 	}
 
 	@media (max-width: 640px) {
+		.keyword-field { grid-template-columns: 1fr; }
 		.filter-grid {
 			grid-template-columns: 1fr;
 		}

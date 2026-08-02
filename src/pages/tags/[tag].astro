@@ -22,7 +22,6 @@ const tagLabel = getTagLabel(tag, tagMap);
 
 <SiteLayout pathname={`/tags/${tag}/`} title={`${tagLabel} | 标签归档`} description={`查看与 ${tagLabel} 相关的全部文章。`}>
 	<section class="container archive-page">
-		<div class="eyebrow">Tag</div>
 		<h1 class="section-title">#{tagLabel}</h1>
 		<p class="muted">共 {posts.length} 篇相关文章。</p>
 		<div class="archive-list">

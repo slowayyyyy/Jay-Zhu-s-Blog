@@ -7,14 +7,13 @@ import { getLifePosts, getPostSlug } from '../lib/content';
 const posts = await getLifePosts();
 const latest = posts[0];
 const latestSlug = latest ? getPostSlug(latest) : null;
+const remainingPosts = posts.slice(1);
 ---
 
 <SiteLayout pathname="/life/" title={`生活手账 | ${siteConfig.name}`} description="记录阅读、锻炼与日常片段的生活栏目。">
 	<section class="container life-page">
 		<div class="life-head">
-			<div class="eyebrow" data-copy="nav.life" />
 			<h1
-				class="section-title"
 				data-bilingual="text"
 				data-zh={siteConfig.lifePage.title.zh}
 				data-en={siteConfig.lifePage.title.en}
@@ -33,17 +32,17 @@ const latestSlug = latest ? getPostSlug(latest) : null;
 
 		{
 			latest && (
-				<section class="life-highlight glass-card">
+				<section class="life-highlight">
 					<div class="highlight-copy">
-						<div
-							class="eyebrow"
+						<h2>{latest.data.title}</h2>
+						<p
+							class="highlight-label"
 							data-bilingual="text"
 							data-zh={siteConfig.lifePage.highlightTitle.zh}
 							data-en={siteConfig.lifePage.highlightTitle.en}
 						>
 							{siteConfig.lifePage.highlightTitle.zh}
-						</div>
-						<h2>{latest.data.title}</h2>
+						</p>
 						<p>{latest.data.excerpt}</p>
 						<a class="button-primary" href={`/posts/${latestSlug}/`} data-copy="common.readMore" />
 					</div>
@@ -61,30 +60,55 @@ const latestSlug = latest ? getPostSlug(latest) : null;
 		}
 
 		<div class="life-list">
-			{posts.map((post) => <PostCard post={post} />)}
+			{remainingPosts.map((post) => <PostCard post={post} />)}
 		</div>
 	</section>
 </SiteLayout>
 
 <style>
 	.life-page {
-		padding: 6.8rem 0 4rem;
+		padding: clamp(3.5rem, 7vw, 6rem) 0 4rem;
+	}
+
+	.life-head {
+		max-width: 46rem;
+	}
+
+	.life-head h1 {
+		margin: 0;
+		font-family: var(--font-serif);
+		font-size: clamp(2.8rem, 7vw, 5.2rem);
+		line-height: 1;
+		letter-spacing: -0.04em;
+	}
+
+	.life-head p {
+		margin: 1rem 0 0;
+		font-size: 1.05rem;
 	}
 
 	.life-highlight {
 		display: grid;
-		grid-template-columns: 1.2fr 0.8fr;
-		gap: 1rem;
-		padding: 1.4rem;
-		border-radius: var(--radius-xl);
-		margin-top: 1.5rem;
+		grid-template-columns: minmax(0, 1.25fr) minmax(15rem, 0.55fr);
+		gap: clamp(2rem, 6vw, 5rem);
+		margin-top: clamp(2rem, 5vw, 3.5rem);
+		padding: clamp(1.5rem, 4vw, 3rem) 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.highlight-label {
+		margin: 0 0 0.7rem;
+		color: var(--accent-life);
+		font-size: 0.85rem;
 	}
 
 	.highlight-copy h2 {
-		margin: 0.85rem 0 0.7rem;
+		margin: 0 0 0.35rem;
 		font-family: var(--font-serif);
-		font-size: clamp(2rem, 4vw, 3rem);
-		line-height: 1.03;
+		font-size: clamp(2rem, 4vw, 3.2rem);
+		line-height: 1.08;
+		letter-spacing: -0.03em;
 	}
 
 	.highlight-copy p,
@@ -94,22 +118,22 @@ const latestSlug = latest ? getPostSlug(latest) : null;
 	}
 
 	.highlight-side {
-		padding: 1.2rem;
-		border-radius: var(--radius-lg);
-		background:
-			linear-gradient(135deg, rgba(200, 124, 88, 0.14), transparent),
-			rgba(255, 255, 255, 0.04);
+		align-self: end;
+		padding: 0.9rem 0 0 1.2rem;
+		border-left: 1px solid var(--accent-life);
+		font-family: var(--font-serif);
 	}
 
 	.life-list {
 		display: grid;
-		gap: 1rem;
-		margin-top: 1.4rem;
+		margin-top: 2.5rem;
 	}
 
 	@media (max-width: 900px) {
 		.life-highlight {
 			grid-template-columns: 1fr;
 		}
+
+		.highlight-side { border-top: 1px solid var(--line); border-left: 0; padding: 1rem 0 0; }
 	}
 </style>

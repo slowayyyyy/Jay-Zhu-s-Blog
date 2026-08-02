@@ -41,9 +41,8 @@ const tagMap = await getTagMap();
 
 <SiteLayout pathname={`/posts/${slug}/`} title={`${post.data.title} | Jay Zhu's Blog`} description={post.data.description}>
 	<section class="container article-shell">
-		<div class="article-head glass-card">
+		<header class="article-head">
 			<a class="section-chip article-section" href={`/search/?section=${post.data.section}`} style={`--chip-accent:${section.accent};`}>
-				<span class="chip-dot" />
 				<span data-copy={`section.${post.data.section}`}>{section.zh}</span>
 			</a>
 			<h1>{post.data.title}</h1>
@@ -70,21 +69,21 @@ const tagMap = await getTagMap();
 			<div class="article-tags">
 				{post.data.tags.map((tag) => <a class="tag-chip" href={`/search/?tag=${encodeURIComponent(tag)}`}>#{getTagLabel(tag, tagMap)}</a>)}
 			</div>
-		</div>
+		</header>
 
 		<div class="article-layout">
-			<article class="article-body prose glass-card" set:html={articleHtml} />
 			<div class="article-aside">
 				<TableOfContents headings={headings} />
 			</div>
+			<article class="article-body prose" set:html={articleHtml} />
 		</div>
 
 		{
 			relatedPosts.length > 0 && (
-				<section class="related-posts">
-					<div class="eyebrow" data-copy="article.related" />
+				<section class="related-posts" aria-labelledby="related-title">
+					<h2 id="related-title" data-copy="article.related" />
 					<div class="related-grid">
-						{relatedPosts.map((related) => <PostCard post={related} />)}
+						{relatedPosts.map((related) => <PostCard post={related} headingLevel="h3" />)}
 					</div>
 				</section>
 			)
@@ -94,20 +93,42 @@ const tagMap = await getTagMap();
 
 <style>
 	.article-shell {
-		padding: 6.8rem 0 4rem;
+		padding: clamp(3.5rem, 7vw, 6rem) 0 4rem;
 	}
 
 	.article-head {
-		padding: 1.65rem;
-		border-radius: var(--radius-xl);
+		padding: 0 0 clamp(2rem, 5vw, 3.5rem);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.article-section {
+		position: relative;
+		min-height: 2.75rem;
+		padding: 0 0 0 0.8rem;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		color: color-mix(in srgb, var(--chip-accent) 78%, var(--text));
+	}
+
+	.article-section::before {
+		content: '';
+		position: absolute;
+		top: 0.8rem;
+		bottom: 0.8rem;
+		left: 0;
+		width: 1px;
+		background: var(--chip-accent);
 	}
 
 	.article-head h1 {
-		margin: 1rem 0 0.85rem;
+		max-width: 19ch;
+		margin: 0.9rem 0 1rem;
 		font-family: var(--font-serif);
-		font-size: clamp(2.5rem, 5vw, 4.7rem);
-		line-height: 0.98;
-		letter-spacing: -0.05em;
+		font-size: clamp(2.15rem, 5vw, 4.1rem);
+		line-height: 1.06;
+		letter-spacing: -0.035em;
+		text-wrap: balance;
 	}
 
 	.article-head p {
@@ -121,7 +142,7 @@ const tagMap = await getTagMap();
 		display: flex;
 		flex-wrap: wrap;
 		gap: 1rem 1.4rem;
-		margin-top: 1.3rem;
+		margin-top: 1.6rem;
 		color: var(--text-soft);
 	}
 
@@ -139,23 +160,51 @@ const tagMap = await getTagMap();
 		display: flex;
 		flex-wrap: wrap;
 		gap: 0.6rem;
-		margin-top: 1.2rem;
+		margin-top: 1rem;
+	}
+
+	.article-tags .tag-chip {
+		min-height: 2.75rem;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		text-decoration: underline;
+		text-decoration-color: var(--line);
+		text-underline-offset: 0.25rem;
 	}
 
 	.article-layout {
 		display: grid;
-		grid-template-columns: minmax(0, 1.35fr) minmax(16rem, 0.7fr);
-		gap: 1rem;
-		margin-top: 1rem;
+		grid-template-columns: minmax(0, 1fr) minmax(15rem, 0.34fr);
+		gap: clamp(2rem, 5vw, 4.5rem);
+		margin-top: clamp(2.5rem, 6vw, 4.5rem);
 	}
 
 	.article-body {
-		padding: clamp(1.2rem, 3vw, 2rem);
-		border-radius: var(--radius-xl);
+		grid-column: 1;
+		max-width: 48rem;
+		min-width: 0;
+		padding: 0;
+	}
+
+	.article-aside {
+		grid-column: 2;
+		grid-row: 1;
+		min-width: 0;
 	}
 
 	.related-posts {
-		margin-top: 2rem;
+		margin-top: clamp(3rem, 7vw, 5.5rem);
+		padding-top: 1.5rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.related-posts > h2 {
+		margin: 0 0 0.8rem;
+		font-family: var(--font-serif);
+		font-size: clamp(1.65rem, 3vw, 2.35rem);
+		letter-spacing: -0.025em;
 	}
 
 	.related-grid {
@@ -168,5 +217,19 @@ const tagMap = await getTagMap();
 		.article-layout {
 			grid-template-columns: 1fr;
 		}
+
+		.article-aside,
+		.article-body {
+			grid-column: 1;
+		}
+
+		.article-aside { grid-row: 1; }
+		.article-body { grid-row: 2; }
+	}
+
+	@media (max-width: 640px) {
+		.article-shell { padding-top: 2.8rem; }
+		.article-head h1 { font-size: clamp(2rem, 11vw, 3.1rem); }
+		.article-meta { display: grid; gap: 0.55rem; }
 	}
 </style>

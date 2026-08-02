@@ -3,7 +3,7 @@ import { siteConfig } from '../data/site';
 ---
 
 <footer class="site-footer">
-	<div class="container footer-card glass-card">
+	<div class="container footer-card">
 		<div>
 			<div class="footer-title">{siteConfig.name}</div>
 			<p class="footer-text" data-bilingual="text" data-zh={siteConfig.description} data-en={siteConfig.descriptionEn} />
@@ -26,10 +26,10 @@ import { siteConfig } from '../data/site';
 	.footer-card {
 		display: flex;
 		justify-content: space-between;
-		align-items: center;
+		align-items: start;
 		gap: 1.4rem;
-		padding: 1.3rem 1.6rem;
-		border-radius: var(--radius-xl);
+		padding: 1.5rem 0;
+		border-top: 1px solid var(--line);
 	}
 
 	.footer-title {
@@ -47,9 +47,17 @@ import { siteConfig } from '../data/site';
 	.footer-links {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 1rem;
+		gap: 0.4rem 1.2rem;
 		color: var(--text-soft);
 	}
+
+	.footer-links a {
+		display: inline-flex;
+		align-items: center;
+		min-height: 2.75rem;
+	}
+
+	.footer-links a:hover { color: var(--accent); }
 
 	@media (max-width: 780px) {
 		.footer-card {

@@ -1,177 +1,145 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-08-02T10:46:12.0631838+08:00",
+  "generatedAt": "2026-08-02T11:33:00.7403678+08:00",
   "title": "Design System: Jay Zhu's Blog",
   "extensions": {
     "colorMeta": {
-      "mist-paper": {
-        "role": "neutral",
-        "displayName": "Mist Paper",
-        "canonical": "#f7f9fb",
-        "tonalRamp": ["#1b1f22", "#30363b", "#50585f", "#747e86", "#9da6ad", "#c4cbd0", "#e2e7ea", "#f7f9fb"]
-      },
-      "ink": {
-        "role": "neutral",
-        "displayName": "Notebook Ink",
-        "canonical": "#18212b",
-        "tonalRamp": ["#11171e", "#18212b", "#31404f", "#52616f", "#75838f", "#a0aab2", "#cbd1d5", "#f0f2f4"]
-      },
-      "patina-teal": {
-        "role": "primary",
-        "displayName": "Patina Teal",
-        "canonical": "#376d7b",
-        "tonalRamp": ["#102326", "#183940", "#24515b", "#376d7b", "#568b98", "#83abb4", "#b5cbd0", "#e7f0f2"]
-      },
-      "lantern-warmth": {
-        "role": "secondary",
-        "displayName": "Lantern Warmth",
-        "canonical": "#f0a77a",
-        "tonalRamp": ["#2c1810", "#512a1b", "#7d432a", "#aa6140", "#d68158", "#f0a77a", "#f7c9ad", "#fce9dc"]
-      }
+      "paper": { "role": "neutral", "displayName": "Quiet Paper", "canonical": "#f7f9fb", "tonalRamp": ["oklch(15% 0.008 240)", "oklch(26% 0.008 240)", "oklch(38% 0.008 240)", "oklch(50% 0.008 240)", "oklch(62% 0.008 240)", "oklch(74% 0.008 240)", "oklch(86% 0.008 240)", "oklch(95% 0.008 240)"] },
+      "paper-panel": { "role": "neutral", "displayName": "Paper Panel", "canonical": "rgba(255, 255, 255, 0.92)", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] },
+      "ink": { "role": "neutral", "displayName": "Blue-Black Ink", "canonical": "#18212b", "tonalRamp": ["oklch(15% 0.025 245)", "oklch(26% 0.025 245)", "oklch(38% 0.025 245)", "oklch(50% 0.025 245)", "oklch(62% 0.025 245)", "oklch(74% 0.025 245)", "oklch(86% 0.025 245)", "oklch(95% 0.025 245)"] },
+      "ink-soft": { "role": "neutral", "displayName": "Soft Ink", "canonical": "rgba(24, 33, 43, 0.68)", "tonalRamp": ["oklch(15% 0.02 245)", "oklch(26% 0.02 245)", "oklch(38% 0.02 245)", "oklch(50% 0.02 245)", "oklch(62% 0.02 245)", "oklch(74% 0.02 245)", "oklch(86% 0.02 245)", "oklch(95% 0.02 245)"] },
+      "rule": { "role": "neutral", "displayName": "Notebook Rule", "canonical": "rgba(31, 51, 69, 0.1)", "tonalRamp": ["oklch(15% 0.018 240)", "oklch(26% 0.018 240)", "oklch(38% 0.018 240)", "oklch(50% 0.018 240)", "oklch(62% 0.018 240)", "oklch(74% 0.018 240)", "oklch(86% 0.018 240)", "oklch(95% 0.018 240)"] },
+      "patina-teal": { "role": "primary", "displayName": "Patina Teal", "canonical": "#376d7b", "tonalRamp": ["oklch(15% 0.055 215)", "oklch(26% 0.055 215)", "oklch(38% 0.055 215)", "oklch(50% 0.055 215)", "oklch(62% 0.055 215)", "oklch(74% 0.055 215)", "oklch(86% 0.04 215)", "oklch(95% 0.02 215)"] },
+      "quiet-sage": { "role": "secondary", "displayName": "Quiet Sage", "canonical": "#87a99e", "tonalRamp": ["oklch(15% 0.035 175)", "oklch(26% 0.035 175)", "oklch(38% 0.035 175)", "oklch(50% 0.035 175)", "oklch(62% 0.035 175)", "oklch(74% 0.035 175)", "oklch(86% 0.03 175)", "oklch(95% 0.015 175)"] },
+      "study-clay": { "role": "secondary", "displayName": "Study Clay", "canonical": "#b06b4f", "tonalRamp": ["oklch(15% 0.08 45)", "oklch(26% 0.08 45)", "oklch(38% 0.08 45)", "oklch(50% 0.08 45)", "oklch(62% 0.08 45)", "oklch(74% 0.07 45)", "oklch(86% 0.045 45)", "oklch(95% 0.02 45)"] },
+      "research-teal": { "role": "secondary", "displayName": "Research Teal", "canonical": "#3f7582", "tonalRamp": ["oklch(15% 0.05 215)", "oklch(26% 0.05 215)", "oklch(38% 0.05 215)", "oklch(50% 0.05 215)", "oklch(62% 0.05 215)", "oklch(74% 0.045 215)", "oklch(86% 0.03 215)", "oklch(95% 0.015 215)"] },
+      "life-moss": { "role": "secondary", "displayName": "Life Moss", "canonical": "#72875d", "tonalRamp": ["oklch(15% 0.055 125)", "oklch(26% 0.055 125)", "oklch(38% 0.055 125)", "oklch(50% 0.055 125)", "oklch(62% 0.055 125)", "oklch(74% 0.05 125)", "oklch(86% 0.035 125)", "oklch(95% 0.018 125)"] },
+      "focus-amber": { "role": "primary", "displayName": "Focus Amber", "canonical": "#d98949", "tonalRamp": ["oklch(15% 0.11 55)", "oklch(26% 0.11 55)", "oklch(38% 0.11 55)", "oklch(50% 0.11 55)", "oklch(62% 0.11 55)", "oklch(74% 0.09 55)", "oklch(86% 0.055 55)", "oklch(95% 0.025 55)"] },
+      "night-paper": { "role": "neutral", "displayName": "Night Charcoal", "canonical": "#111111", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] },
+      "night-panel": { "role": "neutral", "displayName": "Night Panel", "canonical": "rgba(28, 28, 28, 0.86)", "tonalRamp": ["oklch(15% 0 0)", "oklch(26% 0 0)", "oklch(38% 0 0)", "oklch(50% 0 0)", "oklch(62% 0 0)", "oklch(74% 0 0)", "oklch(86% 0 0)", "oklch(95% 0 0)"] },
+      "night-ink": { "role": "neutral", "displayName": "Parchment Ink", "canonical": "#f5efe8", "tonalRamp": ["oklch(15% 0.015 75)", "oklch(26% 0.015 75)", "oklch(38% 0.015 75)", "oklch(50% 0.015 75)", "oklch(62% 0.015 75)", "oklch(74% 0.015 75)", "oklch(86% 0.015 75)", "oklch(95% 0.015 75)"] },
+      "lantern-warmth": { "role": "primary", "displayName": "Lantern Warmth", "canonical": "#f0a77a", "tonalRamp": ["oklch(15% 0.09 55)", "oklch(26% 0.09 55)", "oklch(38% 0.09 55)", "oklch(50% 0.09 55)", "oklch(62% 0.09 55)", "oklch(74% 0.08 55)", "oklch(86% 0.05 55)", "oklch(95% 0.022 55)"] }
     },
     "typographyMeta": {
-      "display": {
-        "displayName": "Editorial Display",
-        "purpose": "Authorship, article identity, and major chapter transitions."
-      },
-      "body": {
-        "displayName": "Quiet Humanist Body",
-        "purpose": "Long Chinese explanations, controls, metadata, and research reading."
-      },
-      "label": {
-        "displayName": "Publication Label",
-        "purpose": "Dates and stable editorial metadata, used sparingly."
-      }
+      "display": { "displayName": "Authored Display", "purpose": "Major identity and section openings in the bundled serif pairing." },
+      "headline": { "displayName": "Editorial Headline", "purpose": "Publication sections, article subsections, and ledger headings." },
+      "title": { "displayName": "Entry Title", "purpose": "Post rows and field-note entries." },
+      "body": { "displayName": "Reading Text", "purpose": "Long-form prose and explanatory copy." },
+      "label": { "displayName": "Evidence Label", "purpose": "Dates, durations, counts, codes, and compact interface states." }
     },
     "shadows": [
-      {
-        "name": "ambient-panel",
-        "value": "0 18px 55px rgba(45, 67, 87, 0.08)",
-        "purpose": "Existing transition token for truly floating or independent surfaces, not default section framing."
-      },
-      {
-        "name": "night-float",
-        "value": "0 24px 80px rgba(0, 0, 0, 0.45)",
-        "purpose": "Dark-mode floating controls and overlays only."
-      }
+      { "name": "ambient-panel", "value": "0 18px 55px rgba(45, 67, 87, 0.08)", "purpose": "Broad separation for transient or legacy elevated surfaces in light mode." },
+      { "name": "mobile-navigation", "value": "0 20px 48px rgba(30, 48, 62, 0.16)", "purpose": "Separates the disclosed mobile navigation from the opaque masthead." },
+      { "name": "media-lift", "value": "0 20px 42px rgba(45, 67, 87, 0.14)", "purpose": "Frames authored figures against the paper field." },
+      { "name": "player-lift", "value": "0 12px 30px rgba(45, 67, 87, 0.14)", "purpose": "Keeps the collapsed floating music control legible above content." }
     ],
     "motion": [
-      {
-        "name": "state-standard",
-        "value": "260ms ease",
-        "purpose": "Hover, focus, and compact control state changes."
-      },
-      {
-        "name": "entry-light",
-        "value": "720ms cubic-bezier(0.18, 0.78, 0.22, 1)",
-        "purpose": "Major entry and opening-to-publication transitions only."
-      }
+      { "name": "state-standard", "value": "260ms ease", "purpose": "Shared hover, rule, color, and disclosure transitions." },
+      { "name": "page-catches-light", "value": "980ms cubic-bezier(0.18, 0.78, 0.22, 1)", "purpose": "Carries the publication into view after the lantern opening." },
+      { "name": "player-collapse", "value": "300ms cubic-bezier(0.2, 0.75, 0.25, 1)", "purpose": "Moves the floating player between expanded and record-only states." },
+      { "name": "reduced-motion", "value": "1ms", "purpose": "Effectively removes animation and transition duration when reduced motion is requested." }
     ],
     "breakpoints": [
-      {
-        "name": "mobile",
-        "value": "640px"
-      },
-      {
-        "name": "reading-collapse",
-        "value": "720px"
-      },
-      {
-        "name": "layout-collapse",
-        "value": "1040px"
-      }
+      { "name": "article-rail", "value": "1080px" },
+      { "name": "masthead-and-home", "value": "940px" },
+      { "name": "post-row", "value": "720px" },
+      { "name": "player-safe-zone", "value": "640px" }
     ]
   },
   "components": [
     {
+      "name": "Paper Masthead",
+      "kind": "nav",
+      "refersTo": "masthead",
+      "description": "Opaque, rule-bound publication navigation with a square ink monogram.",
+      "html": "<header class=\"ds-masthead\"><a class=\"ds-brand\" href=\"#\"><span class=\"ds-brand-mark\">J</span><strong>Jay Zhu's Blog</strong></a><nav><a class=\"ds-nav-link ds-active\" href=\"#\">Home</a><a class=\"ds-nav-link\" href=\"#\">Archive</a></nav></header>",
+      "css": ".ds-masthead{display:flex;align-items:center;justify-content:space-between;min-height:4.5rem;padding:.55rem .7rem;border-top:1px solid rgba(31,51,69,.1);border-bottom:1px solid rgba(31,51,69,.1);background:#f7f9fb;color:#18212b;font-family:\"Avenir Next\",\"Segoe UI\",sans-serif}.ds-brand{display:flex;align-items:center;gap:.75rem;color:inherit;text-decoration:none}.ds-brand-mark{display:grid;place-items:center;width:2.45rem;height:2.45rem;border-radius:4px;background:#18212b;color:#f7f9fb;font-family:\"Newsreader Variable\",serif;font-size:1.25rem}.ds-nav-link{display:inline-flex;align-items:center;min-height:2.75rem;padding:.55rem .78rem;border-bottom:1px solid transparent;color:rgba(24,33,43,.68);text-decoration:none}.ds-nav-link:hover,.ds-nav-link:focus-visible,.ds-nav-link.ds-active{border-bottom-color:#376d7b;color:#18212b}.ds-nav-link:focus-visible{outline:3px solid #d98949;outline-offset:3px}"
+    },
+    {
       "name": "Primary Action",
       "kind": "button",
-      "refersTo": "button-primary",
-      "description": "The single prominent action in a region.",
-      "html": "<button class=\"ds-btn-primary\">进入阅读</button>",
-      "css": ".ds-btn-primary { border: 1px solid transparent; border-radius: 999px; padding: .9rem 1.35rem; background: #376d7b; color: #fff; font: 600 1rem/1.2 sans-serif; transition: transform 260ms ease, background 260ms ease; } .ds-btn-primary:hover { transform: translateY(-2px); background: #2b5d69; } .ds-btn-primary:focus-visible { outline: 3px solid #f0a77a; outline-offset: 3px; }"
+      "description": "Rare prominent action with the shipped teal gradient and pill silhouette.",
+      "html": "<button class=\"ds-primary-action\">Search notes</button>",
+      "css": ".ds-primary-action{display:inline-flex;align-items:center;justify-content:center;min-height:2.75rem;padding:.9rem 1.35rem;border:1px solid transparent;border-radius:999px;background:linear-gradient(135deg,#376d7b,color-mix(in srgb,#376d7b 72%,white));color:#fff;font:inherit;box-shadow:0 14px 30px rgba(55,109,123,.2);transition:transform 260ms ease,box-shadow 260ms ease}.ds-primary-action:hover{transform:translateY(-2px)}.ds-primary-action:active{transform:translateY(0)}.ds-primary-action:focus-visible{outline:3px solid #d98949;outline-offset:3px}"
     },
     {
-      "name": "Secondary Action",
-      "kind": "button",
-      "refersTo": "button-secondary",
-      "description": "A quiet adjacent action that does not compete with the primary path.",
-      "html": "<button class=\"ds-btn-secondary\">查看归档</button>",
-      "css": ".ds-btn-secondary { border: 1px solid rgba(31, 51, 69, .14); border-radius: 999px; padding: .9rem 1.35rem; background: transparent; color: #18212b; font: 500 1rem/1.2 sans-serif; transition: border-color 260ms ease, color 260ms ease; } .ds-btn-secondary:hover { border-color: #376d7b; color: #376d7b; } .ds-btn-secondary:focus-visible { outline: 3px solid #f0a77a; outline-offset: 3px; }"
-    },
-    {
-      "name": "Search Field",
-      "kind": "input",
-      "refersTo": "search-input",
-      "description": "A paper-like field with explicit focus rather than glass depth.",
-      "html": "<label class=\"ds-field\"><span>关键词</span><input placeholder=\"搜索文章\"></label>",
-      "css": ".ds-field { display: grid; gap: .45rem; color: rgba(24, 33, 43, .68); font: 500 .82rem/1.4 sans-serif; } .ds-field input { min-height: 48px; border: 1px solid rgba(31, 51, 69, .14); border-radius: 12px; padding: .75rem .9rem; background: #fff; color: #18212b; font: 400 1rem/1.5 sans-serif; } .ds-field input:focus-visible { outline: 3px solid rgba(55, 109, 123, .28); border-color: #376d7b; outline-offset: 2px; }"
-    },
-    {
-      "name": "Navigation Link",
-      "kind": "nav",
-      "refersTo": "navigation-link",
-      "description": "Compact route navigation with a quiet active underline.",
-      "html": "<a class=\"ds-nav-link is-active\" href=\"#\">科研记录</a>",
-      "css": ".ds-nav-link { display: inline-flex; min-height: 44px; align-items: center; color: rgba(24, 33, 43, .68); font: 500 .92rem/1.2 sans-serif; text-decoration: none; border-bottom: 2px solid transparent; } .ds-nav-link:hover, .ds-nav-link.is-active { color: #18212b; border-bottom-color: #376d7b; } .ds-nav-link:focus-visible { outline: 3px solid #f0a77a; outline-offset: 3px; }"
+      "name": "Publication Index Row",
+      "kind": "custom",
+      "refersTo": "publication-index-row",
+      "description": "Rule-separated index entry with a tabular count.",
+      "html": "<a class=\"ds-index-row\" href=\"#\"><span>Research notes</span><strong>12</strong></a>",
+      "css": ".ds-index-row{display:flex;align-items:center;justify-content:space-between;min-height:3.25rem;border-top:1px solid rgba(31,51,69,.1);color:rgba(24,33,43,.68);font-family:\"Avenir Next\",\"Segoe UI\",sans-serif;text-decoration:none}.ds-index-row strong{color:#18212b;font-variant-numeric:tabular-nums}.ds-index-row:hover{color:#376d7b}.ds-index-row:focus-visible{outline:3px solid #d98949;outline-offset:3px}"
     },
     {
       "name": "Editorial Post Row",
       "kind": "card",
-      "refersTo": "editorial-surface",
-      "description": "Chronological content grouped by spacing and a fine rule instead of a floating card.",
-      "html": "<article class=\"ds-post-row\"><time>2026.08.02</time><h3>把复杂的事写清楚</h3><p>一段简短而具体的文章摘要。</p></article>",
-      "css": ".ds-post-row { display: grid; grid-template-columns: 8rem 1fr; gap: .5rem 1.5rem; padding: 1.5rem 0; border-top: 1px solid rgba(31, 51, 69, .1); color: #18212b; } .ds-post-row time { color: rgba(24, 33, 43, .6); font: 500 .78rem/1.5 sans-serif; letter-spacing: .08em; } .ds-post-row h3 { margin: 0; font: 700 1.32rem/1.15 serif; } .ds-post-row p { grid-column: 2; margin: .35rem 0 0; color: rgba(24, 33, 43, .68); font: 400 1rem/1.65 sans-serif; }"
+      "refersTo": "post-row",
+      "description": "Open chronological entry with a semantic lead rule and no card shell.",
+      "html": "<article class=\"ds-post-row\"><div class=\"ds-post-rail\"><time>2026.08.02</time><span>Research</span></div><div><h3><a href=\"#\">A field note on careful systems</a></h3><p>Evidence, context, and the next useful question.</p></div><a class=\"ds-read\" href=\"#\" aria-label=\"Read note\"><svg viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"m6 3 5 5-5 5\"/></svg></a></article>",
+      "css": ".ds-post-row{position:relative;display:grid;grid-template-columns:8.5rem minmax(0,1fr) auto;gap:1.25rem;padding:1.6rem .3rem;border-top:1px solid rgba(31,51,69,.1);color:#18212b;font-family:\"Avenir Next\",\"Segoe UI\",sans-serif;transition:background 260ms ease,padding 260ms ease}.ds-post-row:before{content:\"\";position:absolute;top:-1px;left:0;width:3rem;height:1px;background:#3f7582;transition:transform 260ms ease;transform-origin:left}.ds-post-row:hover{padding-inline:.75rem;background:rgba(255,255,255,.66)}.ds-post-row:hover:before{transform:scaleX(1.66)}.ds-post-rail{display:grid;gap:.6rem;color:rgba(24,33,43,.68);font-size:.76rem;font-variant-numeric:tabular-nums}.ds-post-row h3{margin:0;font-family:\"Newsreader Variable\",\"ZCOOL XiaoWei\",serif;font-size:1.55rem;line-height:1.18}.ds-post-row h3 a{color:inherit;text-decoration:none}.ds-post-row p{margin:.65rem 0 0;color:rgba(24,33,43,.68)}.ds-read{align-self:start;display:grid;place-items:center;width:2.75rem;height:2.75rem;color:#376d7b}.ds-read svg{width:1rem;fill:none;stroke:currentColor;stroke-width:1.5}.ds-read:focus-visible{outline:3px solid #d98949;outline-offset:3px}"
     },
     {
-      "name": "Topic Tag",
-      "kind": "chip",
-      "refersTo": "tag-chip",
-      "description": "A compact semantic filter with an adequate interactive target.",
-      "html": "<a class=\"ds-tag\" href=\"#\">论文阅读</a>",
-      "css": ".ds-tag { display: inline-flex; min-height: 44px; align-items: center; border-bottom: 1px solid rgba(55, 109, 123, .35); color: #376d7b; font: 500 .82rem/1.2 sans-serif; text-decoration: none; } .ds-tag:hover { border-bottom-color: #376d7b; } .ds-tag:focus-visible { outline: 3px solid #f0a77a; outline-offset: 3px; }"
+      "name": "Check-in Flame Day",
+      "kind": "custom",
+      "refersTo": "calendar-day",
+      "description": "Ruled calendar cell where accumulated practice appears as small asymmetric flames.",
+      "html": "<button class=\"ds-calendar-day\"><span>12</span><span class=\"ds-flames\"><i class=\"ds-flame ds-lit\"></i><i class=\"ds-flame\"></i><i class=\"ds-flame ds-lit\"></i></span></button>",
+      "css": ".ds-calendar-day{display:grid;grid-template-rows:auto 1fr;min-width:6rem;min-height:5rem;padding:.55rem;border:0;border-top:1px solid rgba(31,51,69,.1);border-bottom:1px solid transparent;border-radius:0;background:transparent;color:#18212b;text-align:left;font-family:\"Newsreader Variable\",serif;transition:transform 260ms ease,background 260ms ease}.ds-calendar-day:hover{transform:translateY(-1px);border-bottom-color:rgba(55,109,123,.45);background:rgba(55,109,123,.04)}.ds-calendar-day:focus-visible{outline:3px solid #d98949;outline-offset:3px}.ds-flames{display:flex;align-self:end;gap:.55rem}.ds-flame{width:.52rem;height:.8rem;border-radius:70% 30% 65% 35%;background:rgba(31,51,69,.1);transform:rotate(5deg)}.ds-flame.ds-lit{background:#b06b4f;box-shadow:0 0 0 4px rgba(176,107,79,.12),0 0 18px rgba(176,107,79,.45)}"
+    },
+    {
+      "name": "Ruled Disclosure",
+      "kind": "custom",
+      "description": "Progressive ledger section with a CSS-drawn plus/minus marker.",
+      "html": "<details class=\"ds-disclosure\"><summary><span>Reflective metrics</span><small>Goals and totals</small><i></i></summary><p>Supporting analysis follows the primary record.</p></details>",
+      "css": ".ds-disclosure{border-top:1px solid rgba(31,51,69,.1);border-bottom:1px solid rgba(31,51,69,.1);color:#18212b;font-family:\"Avenir Next\",\"Segoe UI\",sans-serif}.ds-disclosure summary{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:1rem;min-height:3.6rem;cursor:pointer;list-style:none}.ds-disclosure summary::-webkit-details-marker{display:none}.ds-disclosure small{color:rgba(24,33,43,.68)}.ds-disclosure i{position:relative;width:.85rem;height:.85rem}.ds-disclosure i:before,.ds-disclosure i:after{content:\"\";position:absolute;background:#376d7b}.ds-disclosure i:before{top:50%;left:0;width:.85rem;height:1px}.ds-disclosure i:after{top:0;left:50%;width:1px;height:.85rem;transition:transform 260ms ease}.ds-disclosure[open] i:after{transform:scaleY(0)}.ds-disclosure summary:focus-visible{outline:3px solid #d98949;outline-offset:3px}.ds-disclosure p{color:rgba(24,33,43,.68)}"
+    },
+    {
+      "name": "Collapsed Music Record",
+      "kind": "custom",
+      "description": "Circular record-only player state that relocates into the mobile masthead safe zone.",
+      "html": "<button class=\"ds-player-record\" aria-label=\"Open music player\"><span>J</span></button>",
+      "css": ".ds-player-record{display:grid;place-items:center;width:2.75rem;height:2.75rem;padding:.25rem;border:0;border-radius:50%;background:repeating-radial-gradient(circle,transparent 0 3px,rgba(255,255,255,.08) 3.5px 4px),conic-gradient(from 35deg,#11151a,#44505a,#0b0d10,#2a333b,#11151a);color:#fff;box-shadow:0 12px 30px rgba(45,67,87,.14);transition:transform 180ms ease}.ds-player-record span{display:grid;place-items:center;width:.85rem;height:.85rem;border:1px solid rgba(255,255,255,.72);border-radius:50%;background:linear-gradient(135deg,#d79a68,#527f88);font-family:\"Newsreader Variable\",serif;font-size:.58rem}.ds-player-record:hover{transform:scale(1.05)}.ds-player-record:active{transform:scale(.98)}.ds-player-record:focus-visible{outline:3px solid #d98949;outline-offset:3px}@media(max-width:640px){.ds-player-record{position:fixed;top:.75rem;right:4.15rem}}@media(prefers-reduced-motion:reduce){.ds-player-record{transition-duration:1ms}}"
     }
   ],
   "narrative": {
     "northStar": "灯下研究手记 / The Illuminated Field Notebook",
-    "overview": "The blog should feel like opening one coherent notebook whose pages contain research, learning, and ordinary life at different scales. The cinematic opening is the moment a lamp is lit; the publication that follows is the quiet desk beneath that light. Identity comes from editorial composition, typographic rhythm, fine rules, marginal notes, and selective warmth rather than stacked translucent cards.",
+    "overview": "The shipped blog is a quiet academic field notebook on a cool paper-gray ground. Its authority comes from editorial structure: an opaque ruled masthead, open publication rows, narrow marginal notes, dense ink, and restrained teal marks. The cinematic lantern opening is the threshold; the publication after it is calm and substantially quieter.\n\nThe system rejects both glass-card dashboard styling and generic portfolio composition. Warm light is rare and meaningful, while typography, rules, and whitespace carry most of the hierarchy. Daily practice reads as accumulated field evidence rather than a scorecard.",
     "keyCharacteristics": [
-      "Reading-first editorial hierarchy with restrained asymmetry.",
-      "Cool paper, dark ink, patinated teal, and rare lantern warmth.",
-      "Fine rules and spacing establish groups before containers do.",
-      "Motion explains entry, continuity, and state."
+      "Opaque paper-native surfaces with fine horizontal rules.",
+      "Self-hosted Newsreader Variable and ZCOOL XiaoWei for authored display text.",
+      "Clear sans-serif reading and interface text.",
+      "Open editorial rows, publication indexes, marginal notes, and ledger structures.",
+      "Patinated teal for interaction, semantic section colors for provenance, and rare warm lantern accents.",
+      "Geometric line icons and flame-shaped check-in marks instead of text glyphs."
     ],
     "rules": [
-      {
-        "name": "The One Lamp Rule",
-        "body": "Lantern warmth should occupy less than ten percent of a normal reading viewport. Its rarity gives it meaning.",
-        "section": "colors"
-      },
-      {
-        "name": "The Paper Before Glass Rule",
-        "body": "Reading surfaces are opaque or nearly opaque. Glass is reserved for transient controls, the opening, and the compact music player.",
-        "section": "elevation"
-      },
-      {
-        "name": "The Two Voices Rule",
-        "body": "Serif speaks for authorship and reflection; sans-serif speaks for navigation, evidence, and operation.",
-        "section": "typography"
-      },
-      {
-        "name": "The Progressive Ledger Rule",
-        "body": "Check-in records and calendar come first; goals, totals, and analysis unfold on demand rather than appearing simultaneously.",
-        "section": "layout"
-      }
+      { "name": "The One Lamp Rule", "body": "Warm light remains scarce in ordinary reading views; it marks attention, active light, or transition rather than decorating whole sections.", "section": "colors" },
+      { "name": "The Semantic Section Rule", "body": "Study, research, and life colors identify provenance through short rules, flame marks, and compact labels, never through competing full-surface washes.", "section": "colors" },
+      { "name": "The Paper Before Glass Rule", "body": "Opaque paper is the default. Transparency and blur belong only to the opening and compact floating media controls.", "section": "colors" },
+      { "name": "The Two Voices Rule", "body": "Serif speaks for authorship and reflection; sans-serif speaks for navigation, evidence, and operation.", "section": "typography" },
+      { "name": "The Local Display Rule", "body": "Display identity uses the bundled Newsreader Variable and ZCOOL XiaoWei files, not a platform-dependent display face or remote font request.", "section": "typography" },
+      { "name": "The Reading Column Rule", "body": "Side rails provide orientation but never compress the primary reading column below a comfortable measure.", "section": "layout" },
+      { "name": "The Progressive Ledger Rule", "body": "Calendar and chronological records remain primary; author tools, goals, and metrics disclose through ruled details regions.", "section": "layout" },
+      { "name": "The Masthead Safe-Zone Rule", "body": "On screens at or below 640px, the collapsed music player moves to the masthead at `top: 0.75rem; right: 4.15rem`, leaving the menu trigger clear.", "section": "layout" },
+      { "name": "The Resting Surface Rule", "body": "Publication rows, ledgers, calendar cells, masthead, and article structures remain complete with no shadow.", "section": "elevation" },
+      { "name": "The Earned Radius Rule", "body": "Open editorial content stays square; curvature signals a discrete control, media object, or transient surface.", "section": "shapes" },
+      { "name": "The Drawn Icon Rule", "body": "Controls use inline SVG or CSS geometry with currentColor; Unicode arrows, suns, moons, and other font glyphs are not the icon language.", "section": "shapes" }
     ],
     "dos": [
-      "Do preserve the 点亮每一盏灯 opening as the strongest experiential signature.",
-      "Do use typography, whitespace, and fine rules to create hierarchy before adding a container.",
-      "Do test every change in light/dark, Chinese/English, desktop/mobile, reduced motion, and keyboard navigation."
+      "Do use open rows, fine rules, publication indexes, and marginal notes before introducing containers.",
+      "Do preserve self-hosted Newsreader Variable and ZCOOL XiaoWei as the authored display identity.",
+      "Do use teal for interaction, semantic accents for provenance, and warmth only for active light or the dark-theme lantern role.",
+      "Do build icons from inline SVG or CSS lines using currentColor.",
+      "Do express check-in completion as accumulated flame marks and reflective records, not pressure.",
+      "Do keep the collapsed mobile player at the masthead-safe position and verify reduced motion, keyboard focus, Chinese/English, and both themes."
     ],
     "donts": [
-      "Don't make every page from interchangeable grids of translucent rounded cards.",
-      "Don't expose author-only CMS actions as public visitor actions.",
-      "Don't use progress bars and ratios as the dominant emotional expression of daily life."
+      "Don't turn the homepage, article index, or ledger into a grid of translucent rounded cards.",
+      "Don't use blur or shadow as the default means of separating reading content.",
+      "Don't replace ruled navigation states with generic filled pills.",
+      "Don't introduce remote or system display faces in place of the bundled serif pairing.",
+      "Don't use Unicode glyphs as interface icons when the shipped language is geometric.",
+      "Don't make empty check-in days red, punitive, streak-driven, or rank-based."
     ]
   }
 }

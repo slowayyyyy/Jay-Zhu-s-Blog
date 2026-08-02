@@ -16,106 +16,170 @@ const items = [
 ];
 ---
 
-<header class="site-header">
-	<div class="container header-inner glass-card">
-		<a class="brand" href="/">
-			<div class="brand-mark">J</div>
-			<div>
-				<div class="brand-name">{siteConfig.name}</div>
-				<div class="brand-sub">{siteConfig.brandSubtitle}</div>
-			</div>
+<header class="site-header" data-site-header>
+	<div class="container header-inner">
+		<a class="brand" href="/" aria-label={`${siteConfig.name} 首页`}>
+			<span class="brand-mark" aria-hidden="true">J</span>
+			<span class="brand-copy">
+				<strong class="brand-name">{siteConfig.name}</strong>
+				<span class="brand-sub">{siteConfig.brandSubtitle}</span>
+			</span>
 		</a>
-		<nav aria-label="Primary">
-			<ul class="nav-list">
-				{
-					items.map((item) => (
-						<li>
-							<a
-								href={item.href}
-								class:list={[
-									'nav-link',
-									pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
-										? 'is-active'
-										: '',
-								]}
-								data-copy={item.key}
-							/>
-						</li>
-					))
-				}
-				<li>
-					<a class="nav-link" href="/rss.xml" data-copy="nav.rss" />
-				</li>
-			</ul>
-		</nav>
-		<div class="header-controls">
-			<button type="button" class="control-button" data-theme-toggle aria-label="Toggle theme">
-				<span aria-hidden="true">◐</span>
-				<span data-copy="controls.theme" />
-			</button>
-			<button type="button" class="control-button" data-language-toggle aria-label="Toggle language">
-				<span aria-hidden="true">中 / EN</span>
-			</button>
+
+		<button
+			type="button"
+			class="menu-toggle"
+			data-menu-toggle
+			aria-expanded="false"
+			aria-controls="site-navigation"
+			aria-label="打开导航菜单"
+		>
+			<span aria-hidden="true" />
+			<span aria-hidden="true" />
+		</button>
+
+		<div class="primary-navigation" id="site-navigation" data-primary-navigation>
+			<nav aria-label="Primary">
+				<ul class="nav-list">
+					{
+						items.map((item) => (
+							<li>
+								<a
+									href={item.href}
+									class:list={[
+										'nav-link',
+										pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+											? 'is-active'
+											: '',
+									]}
+									aria-current={
+										pathname === item.href || (item.href !== '/' && pathname.startsWith(item.href))
+											? 'page'
+											: undefined
+									}
+									data-copy={item.key}
+								/>
+							</li>
+						))
+					}
+					<li><a class="nav-link" href="/rss.xml" data-copy="nav.rss" /></li>
+				</ul>
+			</nav>
+
+			<div class="header-controls">
+				<button type="button" class="control-button" data-theme-toggle aria-label="切换明暗模式">
+					<span data-copy="controls.theme" />
+				</button>
+				<button type="button" class="control-button" data-language-toggle aria-label="切换中英文">
+					<span aria-hidden="true">中 / EN</span>
+				</button>
+			</div>
 		</div>
 	</div>
 </header>
+
+<script is:inline data-astro-rerun>
+	(() => {
+		const header = document.querySelector('[data-site-header]');
+		if (!(header instanceof HTMLElement) || header.dataset.menuReady === 'true') return;
+		header.dataset.menuReady = 'true';
+
+		const toggle = header.querySelector('[data-menu-toggle]');
+		const navigation = header.querySelector('[data-primary-navigation]');
+		if (!(toggle instanceof HTMLButtonElement) || !(navigation instanceof HTMLElement)) return;
+
+		const setOpen = (open) => {
+			navigation.classList.toggle('is-open', open);
+			toggle.setAttribute('aria-expanded', String(open));
+			toggle.setAttribute('aria-label', open ? '关闭导航菜单' : '打开导航菜单');
+		};
+
+		toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+		header.addEventListener('keydown', (event) => {
+			if (event.key !== 'Escape') return;
+			setOpen(false);
+			toggle.focus();
+		});
+		navigation.querySelectorAll('a').forEach((link) => {
+			link.addEventListener('click', () => setOpen(false));
+		});
+	})();
+</script>
 
 <style>
 	.site-header {
 		position: sticky;
 		top: 0;
 		z-index: 40;
-		padding: 1rem 0 0;
+		padding: 0.65rem 0 0;
 	}
 
 	.header-inner {
+		position: relative;
 		display: grid;
-		grid-template-columns: auto 1fr auto;
+		grid-template-columns: auto minmax(0, 1fr);
 		align-items: center;
-		gap: 1rem;
-		padding: 1rem 1.2rem;
-		border-radius: 999px;
+		gap: 1.2rem;
+		min-height: 4.5rem;
+		padding: 0.55rem 0.7rem 0.55rem 0.8rem;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+		background: var(--bg);
 	}
 
 	.brand {
 		display: inline-flex;
 		align-items: center;
-		gap: 0.9rem;
+		gap: 0.75rem;
 		min-width: 0;
 	}
 
 	.brand-mark {
-		width: 3rem;
-		height: 3rem;
-		border-radius: 50%;
 		display: grid;
 		place-items: center;
-		background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent-2) 45%, white));
-		color: white;
+		width: 2.45rem;
+		height: 2.45rem;
+		border-radius: 0.25rem;
+		background: var(--text);
+		color: var(--bg);
 		font-family: var(--font-serif);
-		font-size: 1.55rem;
-		box-shadow: 0 12px 24px rgba(0, 0, 0, 0.18);
+		font-size: 1.25rem;
+		line-height: 1;
+	}
+
+	.brand-copy {
+		display: grid;
+		min-width: 0;
 	}
 
 	.brand-name {
 		font-family: var(--font-serif);
-		font-size: 1.1rem;
-		line-height: 1;
+		font-size: 1rem;
+		line-height: 1.1;
+		white-space: nowrap;
 	}
 
 	.brand-sub {
-		font-size: 0.78rem;
+		margin-top: 0.2rem;
 		color: var(--text-soft);
-		margin-top: 0.28rem;
+		font-size: 0.68rem;
+		white-space: nowrap;
+	}
+
+	.primary-navigation {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 1rem;
 	}
 
 	.nav-list {
-		list-style: none;
 		display: flex;
 		justify-content: center;
-		gap: 0.4rem;
-		padding: 0;
+		gap: 0.2rem;
 		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
 	.nav-link,
@@ -123,52 +187,111 @@ const items = [
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
-		gap: 0.4rem;
-		padding: 0.75rem 0.95rem;
-		border-radius: 999px;
-		border: 1px solid transparent;
-		transition:
-			background var(--transition),
-			border-color var(--transition),
-			transform var(--transition);
+		min-height: 2.75rem;
+		padding: 0.55rem 0.78rem;
+		border: 0;
+		border-bottom: 1px solid transparent;
+		border-radius: 0;
+		background: transparent;
+		color: var(--text-soft);
+		font-size: 0.86rem;
+		transition: color var(--transition), border-color var(--transition);
 	}
 
-	.nav-link.is-active,
 	.nav-link:hover,
-	.control-button:hover {
-		transform: translateY(-1px);
-		background: rgba(255, 255, 255, 0.06);
-		border-color: var(--line);
+	.nav-link.is-active {
+		border-bottom-color: var(--accent);
+		color: var(--text);
 	}
 
 	.header-controls {
 		display: flex;
-		gap: 0.5rem;
+		gap: 0.2rem;
+		padding-left: 0.45rem;
+		border-left: 1px solid var(--line);
 	}
 
-	.control-button {
-		background: transparent;
-		color: inherit;
+	.control-button:hover {
+		color: var(--accent);
 	}
+
+	.menu-toggle {
+		display: none;
+		place-items: center;
+		width: 2.75rem;
+		height: 2.75rem;
+		padding: 0;
+		border: 1px solid var(--line);
+		border-radius: var(--radius-sm);
+		background: transparent;
+		color: var(--text);
+	}
+
+	.menu-toggle span {
+		position: absolute;
+		width: 1.1rem;
+		height: 1px;
+		background: currentColor;
+		transition: transform var(--transition);
+	}
+
+	.menu-toggle span:first-child { transform: translateY(-0.22rem); }
+	.menu-toggle span:last-child { transform: translateY(0.22rem); }
+	.menu-toggle[aria-expanded='true'] span:first-child { transform: rotate(45deg); }
+	.menu-toggle[aria-expanded='true'] span:last-child { transform: rotate(-45deg); }
 
 	@media (max-width: 940px) {
+		.site-header { padding-top: 0.4rem; }
+
 		.header-inner {
-			grid-template-columns: 1fr;
-			border-radius: var(--radius-xl);
+			grid-template-columns: minmax(0, 1fr) auto;
+			min-height: 3.8rem;
+			padding: 0.45rem 0.5rem 0.45rem 0.65rem;
 		}
 
-		.nav-list {
-			flex-wrap: wrap;
+		.brand-mark {
+			width: 2.25rem;
+			height: 2.25rem;
 		}
+
+		.brand-sub { display: none; }
+		.menu-toggle { display: grid; }
+
+		.primary-navigation {
+			position: absolute;
+			top: calc(100% + 0.45rem);
+			right: 0;
+			left: 0;
+			display: none;
+			gap: 0.7rem;
+			padding: 0.7rem;
+			border: 1px solid var(--line);
+			border-radius: var(--radius-sm);
+			background: var(--bg);
+			box-shadow: 0 20px 48px rgba(30, 48, 62, 0.16);
+		}
+
+		.primary-navigation.is-open { display: grid; }
+
+		.nav-list {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			gap: 0;
+		}
+
+		.nav-link {
+			justify-content: flex-start;
+			min-height: 3rem;
+			padding-inline: 0.8rem;
+			border-bottom-color: var(--line);
+		}
+
+		.nav-link.is-active { color: var(--accent); }
 
 		.header-controls {
 			justify-content: flex-end;
-		}
-	}
-
-	@media (max-width: 640px) {
-		.brand-sub {
-			display: none;
+			padding: 0.2rem 0 0;
+			border-left: 0;
 		}
 	}
 </style>

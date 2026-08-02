@@ -13,7 +13,7 @@ const years = getYearSummary(posts);
 ---
 
 <aside class="taxonomy-panel">
-	<section class="taxonomy-card glass-card">
+	<section class="taxonomy-section">
 		<h3 data-copy="common.sections" />
 		<div class="taxonomy-links">
 			{
@@ -26,7 +26,7 @@ const years = getYearSummary(posts);
 			}
 		</div>
 	</section>
-	<section class="taxonomy-card glass-card">
+	<section class="taxonomy-section">
 		<h3 data-copy="common.tags" />
 		<div class="tag-list">
 			{
@@ -38,7 +38,7 @@ const years = getYearSummary(posts);
 			}
 		</div>
 	</section>
-	<section class="taxonomy-card glass-card">
+	<section class="taxonomy-section">
 		<h3 data-copy="common.archive" />
 		<div class="taxonomy-links">
 			{
@@ -56,23 +56,23 @@ const years = getYearSummary(posts);
 <style>
 	.taxonomy-panel {
 		display: grid;
-		gap: 1rem;
+		gap: 2rem;
 	}
 
-	.taxonomy-card {
-		padding: 1.2rem 1.2rem 1.25rem;
-		border-radius: var(--radius-xl);
+	.taxonomy-section {
+		padding-top: 1rem;
+		border-top: 1px solid var(--line);
 	}
 
-	.taxonomy-card h3 {
-		margin: 0 0 1rem;
+	.taxonomy-section h3 {
+		margin: 0 0 0.75rem;
 		font-family: var(--font-serif);
-		font-size: 1.2rem;
+		font-size: 1rem;
 	}
 
 	.taxonomy-links {
 		display: grid;
-		gap: 0.65rem;
+		gap: 0;
 	}
 
 	.taxonomy-links a {
@@ -80,15 +80,36 @@ const years = getYearSummary(posts);
 		align-items: center;
 		justify-content: space-between;
 		gap: 1rem;
-		padding: 0.72rem 0.9rem;
-		border-radius: var(--radius-md);
-		background: rgba(255, 255, 255, 0.06);
-		border: 1px solid var(--line);
+		min-height: 2.8rem;
+		border-bottom: 1px solid var(--line);
+		color: var(--text-soft);
+		font-size: 0.86rem;
+	}
+
+	.taxonomy-links a:hover {
+		color: var(--accent);
 	}
 
 	.tag-list {
 		display: flex;
 		flex-wrap: wrap;
-		gap: 0.55rem;
+		gap: 0.2rem 0.75rem;
+	}
+
+	.tag-list .tag-chip {
+		min-height: 2.75rem;
+		padding: 0;
+		border: 0;
+		border-radius: 0;
+		background: transparent;
+		color: var(--text-soft);
+		text-decoration: underline;
+		text-decoration-color: transparent;
+		text-underline-offset: 0.2em;
+	}
+
+	.tag-list .tag-chip:hover {
+		color: var(--accent);
+		text-decoration-color: currentColor;
 	}
 </style>

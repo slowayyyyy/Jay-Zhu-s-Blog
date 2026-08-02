@@ -97,7 +97,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					class="opening-video"
 					id="opening-video"
 					data-src={openingVideo.src.trim()}
-					poster={openingVideo.poster || undefined}
+					data-poster={openingVideo.poster || undefined}
 					preload="none"
 					playsinline
 				>
@@ -119,15 +119,14 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		<div class="wallpaper-scene" aria-hidden="true">
 			<img
 				class="scene-background"
-				src="/images/lantern-scene/background.webp"
+				data-src="/images/lantern-scene/background.webp"
 				alt=""
-				fetchpriority="high"
 			/>
 			{
 				layers.map((layer, index) => (
 					<img
 						class:list={['scene-layer', `scene-${layer.kind}`]}
-						src={`/images/lantern-scene/${layer.src}`}
+						data-src={`/images/lantern-scene/${layer.src}`}
 						alt=""
 						style={layerStyle(layer, index)}
 						draggable="false"
@@ -183,7 +182,12 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 
 		{
 			hasOpeningVideo && (
-				<div class="opening-video-interface" id="opening-video-interface">
+				<div
+					class="opening-video-interface"
+					id="opening-video-interface"
+					aria-hidden="true"
+					inert
+				>
 					<div class="video-topbar">
 						<span>ORIGINAL SOUND · CINEMA OPENING</span>
 						<button type="button" id="skip-opening-video">{openingVideo.skipLabel}</button>
@@ -273,6 +277,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		const videoCurrent = document.getElementById('opening-video-current');
 		const videoDuration = document.getElementById('opening-video-duration');
 		const videoStatus = document.getElementById('video-loading-status');
+		const videoInterface = document.getElementById('opening-video-interface');
 		const subtitleTrackElement = document.getElementById('opening-video-subtitle-track');
 		const subtitleRoot = document.getElementById('opening-subtitles');
 		const subtitleLayers = subtitleRoot
@@ -285,6 +290,14 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 				document.body.classList.remove('intro-transition');
 				overlay.remove();
 			} else {
+				overlay.querySelectorAll('img[data-src]').forEach((image) => {
+					if (!(image instanceof HTMLImageElement)) return;
+					image.src = image.dataset.src || '';
+				});
+				if (video instanceof HTMLVideoElement && video.dataset.poster) {
+					video.poster = video.dataset.poster;
+				}
+
 				let isEntering = false;
 				let fallbackTimer;
 				let musicStarted = false;
@@ -347,6 +360,12 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 				const showVideoUi = () => {
 					clearTimeout(videoUiTimer);
 					overlay.classList.remove('is-video-ui-hidden');
+				};
+
+				const setVideoInterfaceAvailable = (available) => {
+					if (!(videoInterface instanceof HTMLElement)) return;
+					videoInterface.toggleAttribute('inert', !available);
+					videoInterface.setAttribute('aria-hidden', String(!available));
 				};
 
 				const scheduleVideoUiHide = () => {
@@ -488,6 +507,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 
 					const startVideo = async () => {
 						if (isEntering) return;
+						setVideoInterfaceAvailable(true);
 						overlay.classList.add('is-video-active', 'is-video-loading');
 						showVideoUi();
 						if (videoStatus) videoStatus.textContent = loadingLabel;
@@ -517,6 +537,7 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 					overlay.addEventListener('pointermove', scheduleVideoUiHide, { passive: true });
 					overlay.addEventListener('pointerdown', scheduleVideoUiHide, { passive: true });
 					overlay.addEventListener('keydown', scheduleVideoUiHide);
+					overlay.addEventListener('focusin', showVideoUi);
 
 					toggleVideoButton?.addEventListener('click', async () => {
 						if (video.paused) {
@@ -839,9 +860,8 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 		color: #fff;
 		font-size: 0.9rem;
 		letter-spacing: 0.12em;
-		opacity: 0;
-		transform: translateY(12px);
-		animation: quiet-rise 860ms 2.95s ease forwards;
+		opacity: 1;
+		transform: translateY(0);
 		transition:
 			background 260ms ease,
 			border-color 260ms ease,
@@ -860,7 +880,6 @@ const transitionSparks = Array.from({ length: 18 }, (_, index) => {
 	.video-start-button {
 		padding-right: 1.35rem;
 		border-color: rgba(241, 194, 126, 0.58);
-		animation-delay: 3.08s;
 		text-align: left;
 	}
 

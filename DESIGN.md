@@ -1,44 +1,55 @@
 ---
 name: Jay Zhu's Blog
-description: An illuminated field notebook for research, learning, and ordinary life.
+description: An illuminated academic field notebook for research, learning, and ordinary life.
 colors:
-  mist-paper: "#f7f9fb"
-  clear-paper: "#ffffff"
+  paper: "#f7f9fb"
+  paper-panel: "rgba(255, 255, 255, 0.92)"
   ink: "#18212b"
   ink-soft: "rgba(24, 33, 43, 0.68)"
+  rule: "rgba(31, 51, 69, 0.1)"
   patina-teal: "#376d7b"
   quiet-sage: "#87a99e"
   study-clay: "#b06b4f"
   research-teal: "#3f7582"
   life-moss: "#72875d"
-  night-charcoal: "#111111"
+  focus-amber: "#d98949"
+  night-paper: "#111111"
+  night-panel: "rgba(28, 28, 28, 0.86)"
   night-ink: "#f5efe8"
   lantern-warmth: "#f0a77a"
 typography:
   display:
-    fontFamily: '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Source Han Serif SC", "Noto Serif SC", serif'
+    fontFamily: '"Newsreader Variable", "ZCOOL XiaoWei", "Source Han Serif SC", serif'
     fontSize: "clamp(2rem, 4vw, 3.15rem)"
     fontWeight: 700
     lineHeight: 1.06
     letterSpacing: "-0.04em"
-  title:
-    fontFamily: '"Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Source Han Serif SC", "Noto Serif SC", serif'
-    fontSize: "1.32rem"
+  headline:
+    fontFamily: '"Newsreader Variable", "ZCOOL XiaoWei", "Source Han Serif SC", serif'
+    fontSize: "clamp(1.55rem, 3vw, 2.2rem)"
     fontWeight: 700
     lineHeight: 1.15
-    letterSpacing: "-0.03em"
+    letterSpacing: "-0.035em"
+  title:
+    fontFamily: '"Newsreader Variable", "ZCOOL XiaoWei", "Source Han Serif SC", serif'
+    fontSize: "clamp(1.35rem, 2.5vw, 1.9rem)"
+    fontWeight: 700
+    lineHeight: 1.18
+    letterSpacing: "-0.025em"
   body:
     fontFamily: '"Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif'
-    fontSize: "1rem"
+    fontSize: "clamp(1rem, 1.15vw, 1.065rem)"
     fontWeight: 400
-    lineHeight: 1.72
+    lineHeight: 1.82
   label:
     fontFamily: '"Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif'
-    fontSize: "0.82rem"
+    fontSize: "0.78rem"
     fontWeight: 500
     lineHeight: 1.4
-    letterSpacing: "0.12em"
+    letterSpacing: "0.04em"
 rounded:
+  none: "0"
+  mark: "4px"
   sm: "12px"
   md: "16px"
   lg: "20px"
@@ -52,26 +63,33 @@ spacing:
   xl: "2rem"
   section: "4rem"
 components:
-  button-primary:
-    backgroundColor: "{colors.patina-teal}"
-    textColor: "{colors.clear-paper}"
-    rounded: "{rounded.pill}"
-    padding: "0.9rem 1.35rem"
-  button-secondary:
+  masthead:
+    backgroundColor: "{colors.paper}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "0.55rem 0.7rem"
+    height: "4.5rem"
+  post-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink}"
-    rounded: "{rounded.pill}"
-    padding: "0.9rem 1.35rem"
-  editorial-surface:
-    backgroundColor: "{colors.clear-paper}"
-    textColor: "{colors.ink}"
-    rounded: "{rounded.md}"
-    padding: "1.25rem"
-  tag-chip:
+    rounded: "{rounded.none}"
+    padding: "1.6rem 0.3rem"
+  publication-index-row:
     backgroundColor: "transparent"
     textColor: "{colors.ink-soft}"
-    rounded: "{rounded.pill}"
-    padding: "0.36rem 0.72rem"
+    rounded: "{rounded.none}"
+    height: "3.25rem"
+  tag-link:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink-soft}"
+    rounded: "{rounded.none}"
+    height: "2rem"
+  calendar-day:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.none}"
+    padding: "0.55rem"
+    height: "5rem"
 ---
 
 # Design System: Jay Zhu's Blog
@@ -80,161 +98,156 @@ components:
 
 **Creative North Star: “灯下研究手记 / The Illuminated Field Notebook”**
 
-The blog should feel like opening one coherent notebook whose pages contain research, learning, and ordinary life at different scales. The cinematic opening is the moment a lamp is lit; the publication that follows is the quiet desk beneath that light. The transition should be emotional but the reading surface should remain calm, legible, and useful for long sessions.
+The shipped blog is a quiet academic field notebook on a cool paper-gray ground. Its authority comes from editorial structure: an opaque ruled masthead, open publication rows, narrow marginal notes, dense ink, and restrained teal marks. The cinematic lantern opening is the threshold; the publication after it is calm and substantially quieter.
 
-This document records the real reusable tokens already present in the implementation and sets the direction for their next evolution. The identity should come from editorial composition, typographic rhythm, fine rules, marginal notes, and selective warmth rather than from stacking translucent rounded cards. Academic credibility and autobiographical intimacy must coexist without turning the site into either a corporate dashboard or a decorative scrapbook.
+The system rejects both glass-card dashboard styling and generic portfolio composition. Warm light is rare and meaningful, while typography, rules, and whitespace carry most of the hierarchy. Daily practice reads as accumulated field evidence rather than a scorecard.
 
 **Key Characteristics:**
 
-- Reading-first editorial hierarchy with restrained asymmetry.
-- Cool paper, dark ink, patinated teal, and rare lantern warmth.
-- Serif display voices paired with quiet humanist interface text.
-- Fine rules and spacing establish groups before containers do.
-- Motion explains entry, continuity, and state; it does not decorate every element.
-- The light metaphor appears as accumulation and emphasis, never as gamified pressure.
+- Opaque paper-native surfaces with fine horizontal rules.
+- Self-hosted Newsreader Variable and ZCOOL XiaoWei for authored display text.
+- Clear sans-serif reading and interface text.
+- Open editorial rows, publication indexes, marginal notes, and ledger structures.
+- Patinated teal for interaction, semantic section colors for provenance, and rare warm lantern accents.
+- Geometric line icons and flame-shaped check-in marks instead of text glyphs.
 
 ## Colors
 
-The palette moves from misted paper and dense ink toward teal patina, with warm light used as a scarce emotional signal. Section colors are semantic identifiers, not competing brand accents.
+The light theme uses cool paper, dense blue-black ink, and patinated teal; dark mode shifts to warm charcoal and parchment ink, with lantern warmth becoming the active accent.
 
 ### Primary
 
-- **Patina Teal:** the principal interactive color for links, selected states, and the few actions that need clear prominence.
-- **Lantern Warmth:** the emotional bridge from the opening into the publication, reserved for moments of attention, memory, and active light in dark mode.
+- **Patina Teal:** principal links, active rules, selected states, and progress in the light publication.
+- **Lantern Warmth:** dark-theme interaction and the emotional light carried out of the opening.
 
 ### Secondary
 
-- **Quiet Sage:** supporting diagrams, subtle data states, and calm secondary accents.
-- **Study Clay, Research Teal, and Life Moss:** stable section identities used in small marks, metadata, and navigation cues rather than full card washes.
+- **Quiet Sage:** calm supporting states and secondary visual evidence.
+- **Study Clay, Research Teal, and Life Moss:** small provenance marks for study, research, and life entries.
 
 ### Neutral
 
-- **Mist Paper and Clear Paper:** the principal light surfaces. Most reading areas should be open paper rather than translucent glass.
-- **Ink and Soft Ink:** primary and secondary reading tones with enough hierarchy to avoid relying on size alone.
-- **Night Charcoal and Night Ink:** a warm dark-reading environment, not a mechanical inversion of the light theme.
+- **Paper and Paper Panel:** the page field and the few slightly separated transient surfaces.
+- **Ink and Soft Ink:** primary reading and supporting metadata.
+- **Rule:** low-contrast dividers that establish grouping without boxes.
+- **Night Paper, Night Panel, and Night Ink:** warm dark-reading counterparts rather than a mechanical inversion.
+- **Focus Amber:** a high-visibility keyboard outline in the light theme.
 
 ### Named Rules
 
-**The One Lamp Rule.** Lantern warmth should occupy less than ten percent of a normal reading viewport. Its rarity gives it meaning.
+**The One Lamp Rule.** Warm light remains scarce in ordinary reading views; it marks attention, active light, or transition rather than decorating whole sections.
 
-**The Semantic Section Rule.** Study, research, and life colors identify provenance; they never become independent decorative palettes on the same screen.
+**The Semantic Section Rule.** Study, research, and life colors identify provenance through short rules, flame marks, and compact labels, never through competing full-surface washes.
 
-**The Paper Before Glass Rule.** Reading surfaces are opaque or nearly opaque. Glass is reserved for transient controls, the opening, and the compact music player.
+**The Paper Before Glass Rule.** Opaque paper is the default. Transparency and blur belong only to the opening and compact floating media controls.
 
 ## Typography
 
-**Display Font:** the incumbent editorial serif stack, led by Iowan Old Style and CJK serif fallbacks.
+**Display Font:** self-hosted Newsreader Variable with self-hosted ZCOOL XiaoWei for Chinese display support, followed by Source Han Serif SC and serif.
 
-**Body Font:** the incumbent humanist/system sans stack, led by Avenir Next, Segoe UI, and PingFang SC.
+**Body Font:** Avenir Next, Segoe UI, PingFang SC, Hiragino Sans GB, Noto Sans SC, and sans-serif.
 
-**Label Font:** the body stack at smaller sizes with restrained tracking; monospace is reserved for code and genuinely technical values.
-
-**Character:** serif type gives titles, quotations, and major chapter transitions literary weight. Sans-serif text keeps long Chinese explanations, controls, metadata, and research notation clear. A future self-hosted CJK face may replace platform-dependent fallbacks only after its weight, download cost, and Chinese rendering are tested.
+**Character:** variable serif titles feel literary and research-oriented without looking ceremonial. The clear sans stack handles long reading, controls, metadata, and bilingual interface copy. Tabular numerals support dates, counts, durations, and ledger totals.
 
 ### Hierarchy
 
-- **Display:** reserved for the opening title, homepage identity, and article title. It should usually fit within two lines on desktop and three on narrow mobile screens.
-- **Headline:** page and section introductions. The page should not repeat the same phrase as both an eyebrow and a headline.
-- **Title:** article cards, notebook entries, and subsections. Heading levels must follow document structure rather than visual convenience.
-- **Body:** long-form reading at approximately 65–72 Latin characters per line, with equivalent comfortable Chinese measure and a line height near 1.7.
-- **Label:** dates, sections, and compact state descriptions. Uppercase English labels are used only where they function as a stable publication convention.
+- **Display:** major page identity and section openings use a compact, tightly tracked serif scale.
+- **Headline:** publication sections, article subsections, and ledger headings use the same serif voice at a restrained intermediate scale.
+- **Title:** article rows and field-note entries use balanced serif titles with modest negative tracking.
+- **Body:** long-form prose uses the sans stack at a generous line height, with paragraphs and lists constrained to 72ch.
+- **Label:** dates, reading times, codes, and small state descriptions use compact sans text; letterspaced uppercase is reserved for stable publication labels.
 
 ### Named Rules
 
-**The Two Voices Rule.** Serif speaks for authorship and reflection; sans-serif speaks for navigation, evidence, and operation. A third decorative voice is not introduced.
+**The Two Voices Rule.** Serif speaks for authorship and reflection; sans-serif speaks for navigation, evidence, and operation.
 
-**The One Heading Rule.** Each region has one visible heading. Kicker, title, and supporting copy must not restate the same phrase.
+**The Local Display Rule.** Display identity uses the bundled Newsreader Variable and ZCOOL XiaoWei files, not a platform-dependent display face or remote font request.
 
 ## Layout
 
-The main publication uses the existing 1160px maximum container as its wide frame, but content is organized through editorial columns rather than universal card grids. Article prose occupies a narrower reading column; metadata, table of contents, citations, and contextual notes live in a deliberate margin when space allows.
+The publication frame is `min(1160px, calc(100vw - 2rem))`, narrowing to `min(100vw - 1.1rem, 100%)` below 720px. Desktop home layouts pair a dominant editorial column with a narrow publication index or marginal rail. Article prose stays within 48rem and is paired with a table-of-contents rail until 1080px.
 
-Desktop layouts may use measured asymmetry: a primary reading column paired with a narrow index or annotation rail. The homepage should feel like entering Jay's library, with a clear chronological stream and a compact index, not a dashboard of equally weighted modules. About and life pages should vary composition according to content instead of repeating four equal cards.
+The first viewport uses a compact sticky masthead bounded by top and bottom rules. The homepage orientation sits left and the publication index right; at 940px both become a single column and navigation moves behind a geometric two-line menu. At 720px post rows collapse from date/content/action columns into a stacked reading order.
 
-On mobile, the header becomes one compact row with navigation behind an explicit menu. Sticky chrome, including the player, must not consume a meaningful fraction of the reading viewport. The article table of contents must be available before or during reading, never only after the article body. Horizontal scrolling is limited to intrinsically wide content such as formulas, code, tables, and month selectors.
+**The Reading Column Rule.** Side rails provide orientation but never compress the primary reading column below a comfortable measure.
 
-**The Reading Column Rule.** No decorative side module may reduce the primary reading column below a comfortable measure.
+**The Progressive Ledger Rule.** Calendar and chronological records remain primary; author tools, goals, and metrics disclose through ruled details regions.
 
-**The Progressive Ledger Rule.** Check-in records and calendar come first; goals, totals, and analysis unfold on demand rather than appearing simultaneously.
+**The Masthead Safe-Zone Rule.** On screens at or below 640px, the collapsed music player moves to the masthead at `top: 0.75rem; right: 4.15rem`, leaving the menu trigger clear.
 
 ## Elevation & Depth
 
-The target system is flat by default and layered only when state requires it. Fine borders, tonal paper shifts, whitespace, and overlap establish depth before shadows. Ambient shadows belong to temporary floating controls, the music player, modal states, and intentional hover lift; they do not surround every section.
+The publication is flat by default. One-pixel rules, paper shifts, and spacing establish structure before shadow. Ambient shadow is limited to the open mobile navigation, media, the expanded or collapsed music player, and deliberate interactive lift. The paper field itself uses two faint radial washes and a low-opacity dot grain rather than a flat solid fill.
 
-The current diffuse card shadow remains a transition token for existing components, not a mandate for new work. Backdrop blur is an experiential material for the opening and transient controls, not the default article surface.
+### Shadow Vocabulary
 
-**The Resting Surface Rule.** A surface at rest should still look complete with its shadow removed.
+- **Ambient Panel:** a broad, low-opacity shadow for legacy/transient elevated surfaces.
+- **Mobile Navigation:** a tighter shadow that separates the disclosed menu from the masthead.
+- **Media Lift:** a moderate shadow around authored images against the paper field.
+- **Player Lift:** a compact shadow for the floating music control and its active play button.
+
+### Named Rules
+
+**The Resting Surface Rule.** Publication rows, ledgers, calendar cells, masthead, and article structures remain complete with no shadow.
 
 ## Shapes
 
-Corners follow a restrained hierarchy. Small controls and inline groups use 12–16px radii. Large 20–28px radii are reserved for true page-level frames, significant media, or the opening experience. Fully rounded pills are limited to compact toggles, tags, and controls whose shape communicates their behavior.
+The dominant form language is orthogonal and rule-bound. Masthead, navigation links, publication rows, article tags, ledger cards, and calendar cells use square edges. The `4px` brand mark and thin line-built chevrons, plus/minus controls, and menu bars provide precise geometry.
 
-Thin rules, clipped media, underlines, and marginal markers should provide more of the publication's visual signature than circles or decorative dots. Section identity may use one repeated marginal glyph or rule treatment, but never an unrelated ornament per page.
+Radii are functional exceptions: 12–16px for disclosed panels and technical media, 20–28px for substantial media or floating player surfaces, circles for playback controls and the record disc, and pills only for true compact toggles, progress tracks, or category badges. Check-in lights use an asymmetric `70% 30% 65% 35%` flame silhouette rotated five degrees.
 
-**The Earned Radius Rule.** The larger the radius, the more important and self-contained the surface must be.
+**The Earned Radius Rule.** Open editorial content stays square; curvature signals a discrete control, media object, or transient surface.
+
+**The Drawn Icon Rule.** Controls use inline SVG or CSS geometry with `currentColor`; Unicode arrows, suns, moons, and other font glyphs are not the icon language.
 
 ## Components
 
-### Navigation
+### Masthead and Navigation
 
-- Desktop navigation remains one line, visually quiet, and clearly indicates the active route.
-- Mobile navigation uses a compact trigger and an accessible disclosure panel; it never wraps the full desktop navigation into several sticky rows.
-- Theme and language controls remain persistent but secondary to route navigation.
+- The sticky masthead is opaque paper with top and bottom rules, a 4px-square ink brand mark, quiet centered navigation, and secondary theme/language controls.
+- Active and hover states use a teal underline rather than a filled navigation pill.
+- Below 940px, a geometric two-line trigger opens an opaque two-column menu; Escape closes it and returns focus.
 
-### Buttons
+### Publication Index and Post Rows
 
-- Primary actions use patina teal in light mode and a controlled warm accent in dark mode.
-- Secondary actions are border or text-led rather than white pills floating on white paper.
-- Every interactive element receives an explicit high-contrast `:focus-visible` treatment in both themes.
-- Author-only actions are labelled and visually separated from public reading actions.
-
-### Tags and Filters
-
-- Tags identify topics and enable filtering; they should not make every metadata item look clickable.
-- Touch targets include adequate invisible or visible padding even when the visual chip remains compact.
-- Search starts with keyword intent. Date, section, and tag filters appear progressively or in a clearly secondary advanced-filter group.
-
-### Cards and Containers
-
-- Containers are used for actual grouping, selection, or independent state. Chronological article lists prefer open rows, rules, and spacing.
-- Featured content is not repeated unchanged in the latest stream.
-- Hover can raise an article slightly, but scaling must not disturb neighboring layout or compromise reduced-motion preferences.
+- Index entries are open 3.25rem rows separated by rules, with tabular counts aligned opposite their labels.
+- Post entries use date and section in a narrow rail, a serif title and excerpt, and a geometric chevron action.
+- Each row begins with a short semantic-color rule that lengthens on hover; the row receives only a faint paper shift.
 
 ### Article Reading
 
-- Article identity, abstract, metadata, tags, and reading controls form one clear opening sequence.
-- The title scale is bounded for long Chinese titles. Figures, captions, code, formulas, references, and footnotes share one measured reading rhythm.
-- Bright figures in dark mode receive a neutral viewing surround to soften luminance jumps without altering the source image.
+- The article opening is one ruled sequence of provenance, title, summary, metadata, and tags.
+- Tags are underlined text links rather than floating chips. Prose, references, footnotes, code, formulas, figures, and captions share the reading rhythm.
+- Bright figures in dark mode receive a neutral light surround without altering the source image.
 
 ### Check-in Ledger
 
-- The public page is a reflective record, not a public data-entry form. Quick author actions belong in an authenticated author affordance or the CMS.
-- Calendar illumination and chronological notes are primary. Weekly goals and time totals are supporting analysis disclosed progressively.
-- Completion language recognizes accumulated action without punitive streaks, rankings, or failure-colored empty states.
+- Daily practice is represented by ruled weekly, time, calendar, and chronological ledger structures with tabular values.
+- Lit states use asymmetric flame marks in the habit color with a restrained halo; unlit states recede into the rule color without failure styling.
+- Author tools and reflective metrics use line-built plus/minus disclosure marks. Public records remain primary and non-gamified.
 
-### Opening and Music
+### Music Player
 
-- The opening remains a distinct cinematic threshold but always offers an immediately available entry path.
-- Controls that are visually hidden are also removed from the focus order and accessibility tree until available.
-- Once the opening has been seen in the current session, its heavy assets should not be downloaded unless the visitor explicitly reopens it.
-- The collapsed player occupies minimal space, preserves continuous playback, and exposes a reliable focus-visible control.
+- The floating player is the principal glass-like exception: a rounded compact panel with a rotating record, inline SVG controls, an accent progress track, and persistent playback state.
+- Collapsing reduces it to a 2.75rem circular record control. On mobile it occupies the masthead safe position rather than covering reading content or the menu.
+- Rotation and state transitions collapse to effectively instant behavior under reduced-motion preferences.
 
 ## Do's and Don'ts
 
 ### Do
 
-- **Do** preserve the “点亮每一盏灯” opening as the strongest experiential signature.
-- **Do** carry the light metaphor into content through rare warmth, accumulated calendar light, and marginal emphasis.
-- **Do** prioritize reading order, heading semantics, keyboard operation, and mobile viewport economy before decorative polish.
-- **Do** use typography, whitespace, and fine rules to create hierarchy before adding a container.
-- **Do** keep research, learning, and life recognizably related while giving each a small semantic marker.
-- **Do** test every visual change in light/dark, Chinese/English, desktop/mobile, reduced motion, and keyboard navigation.
+- **Do** use open rows, fine rules, publication indexes, and marginal notes before introducing containers.
+- **Do** preserve self-hosted Newsreader Variable and ZCOOL XiaoWei as the authored display identity.
+- **Do** use teal for interaction, semantic accents for provenance, and warmth only for active light or the dark-theme lantern role.
+- **Do** build icons from inline SVG or CSS lines using `currentColor`.
+- **Do** express check-in completion as accumulated flame marks and reflective records, not pressure.
+- **Do** keep the collapsed mobile player at the masthead-safe position and verify reduced motion, keyboard focus, Chinese/English, and both themes.
 
 ### Don't
 
-- **Don't** make the homepage, about page, and ledger from interchangeable grids of translucent rounded cards.
-- **Don't** expose author-only CMS actions as if they were public visitor actions.
-- **Don't** use progress bars and ratios as the dominant emotional expression of daily life.
-- **Don't** repeat the same post, heading, label, or call to action within one reading sequence.
-- **Don't** let sticky navigation or the player consume a substantial portion of a mobile viewport.
-- **Don't** introduce a new framework or heavy animation library solely for visual novelty.
+- **Don't** turn the homepage, article index, or ledger into a grid of translucent rounded cards.
+- **Don't** use blur or shadow as the default means of separating reading content.
+- **Don't** replace ruled navigation states with generic filled pills.
+- **Don't** introduce remote or system display faces in place of the bundled serif pairing.
+- **Don't** use Unicode glyphs as interface icons when the shipped language is geometric.
+- **Don't** make empty check-in days red, punitive, streak-driven, or rank-based.

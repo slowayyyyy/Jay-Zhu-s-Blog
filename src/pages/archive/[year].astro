@@ -20,7 +20,6 @@ const { year, posts } = Astro.props;
 
 <SiteLayout pathname={`/archive/${year}/`} title={`${year} 年归档`} description={`查看 ${year} 年发布的全部文章。`}>
 	<section class="container archive-page">
-		<div class="eyebrow" data-copy="common.archive" />
 		<h1 class="section-title">{year}</h1>
 		<p class="muted">共 {posts.length} 篇文章。</p>
 		<div class="archive-list">

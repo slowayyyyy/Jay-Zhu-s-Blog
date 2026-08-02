@@ -315,7 +315,6 @@ const dashboardState = JSON.stringify({
 >
 	<header class="checkin-heading">
 		<div>
-			<div class="eyebrow">{copy.pageKicker}</div>
 			<h1
 				class="section-title"
 				id="daily-checkin-title"
@@ -352,9 +351,13 @@ const dashboardState = JSON.stringify({
 		</div>
 	</header>
 
-	<div class="quick-panel glass-card">
+	<details class="author-tools">
+		<summary>
+			<span data-bilingual="text" data-zh="作者快速记录" data-en="Author quick entry">作者快速记录</span>
+			<small data-bilingual="text" data-zh="打开后将进入博客管理后台" data-en="Opens the private blog CMS">打开后将进入博客管理后台</small>
+		</summary>
+	<div class="quick-panel">
 		<div class="quick-copy">
-			<span class="quick-kicker">{copy.quickKicker}</span>
 			<h2
 				data-bilingual="text"
 				data-zh={copy.quickTitle.zh}
@@ -391,7 +394,14 @@ const dashboardState = JSON.stringify({
 			))}
 		</div>
 	</div>
+	</details>
 
+	<details class="reflection-metrics">
+		<summary>
+			<span data-bilingual="text" data-zh="目标与时间总结" data-en="Goals and time summary">目标与时间总结</span>
+			<small data-bilingual="text" data-zh="查看每周目标、月度基准与累计时间" data-en="Weekly goals, monthly baselines, and totals">查看每周目标、月度基准与累计时间</small>
+		</summary>
+		<div class="metrics-content">
 	<div class="weekly-grid">
 		{
 			weeklyProgress.map(({ habit, completed, goal, percent, remaining, minimum }) => {
@@ -403,7 +413,7 @@ const dashboardState = JSON.stringify({
 					: copy.weekComplete.en;
 				return (
 				<article
-					class="weekly-card glass-card"
+					class="weekly-card"
 					data-weekly-habit={habit.id}
 					data-weekly-goal={goal}
 					data-minimum-minutes={minimum}
@@ -423,7 +433,7 @@ const dashboardState = JSON.stringify({
 						<strong class="weekly-ratio"><b data-weekly-completed>{completed}</b><span> / {goal}</span></strong>
 					</div>
 					<div class="progress-track" aria-label={`${habit.name.zh}本周进度`}>
-						<span data-weekly-progress style={`--progress: ${percent}%`} />
+						<span data-weekly-progress style={`--progress-scale: ${percent / 100}`} />
 					</div>
 					<div class="weekly-note">
 						<span
@@ -448,10 +458,9 @@ const dashboardState = JSON.stringify({
 		}
 	</div>
 
-	<section class="time-ledger glass-card" aria-labelledby="time-ledger-title">
+	<section class="time-ledger" aria-labelledby="time-ledger-title">
 		<div class="time-ledger-heading">
 			<div>
-				<span class="time-kicker">{copy.timeKicker}</span>
 				<h2
 					id="time-ledger-title"
 					data-bilingual="text"
@@ -517,7 +526,7 @@ const dashboardState = JSON.stringify({
 						<strong data-time-goal-percent>{monthProgress}%</strong>
 					</div>
 					<div class="time-share-track" aria-hidden="true">
-						<span data-time-share style={`--time-share: ${monthProgress}%`} />
+						<span data-time-share style={`--time-share-scale: ${monthProgress / 100}`} />
 					</div>
 					<dl class="time-card-metrics">
 						<div>
@@ -561,11 +570,12 @@ const dashboardState = JSON.stringify({
 			))}
 		</div>
 	</section>
+		</div>
+	</details>
 
-	<section class="calendar-card glass-card" aria-labelledby="lamp-calendar-title">
+	<section class="calendar-card" aria-labelledby="lamp-calendar-title">
 		<div class="calendar-heading">
 			<div>
-				<span class="calendar-kicker">{copy.calendarKicker}</span>
 				<h2
 					id="lamp-calendar-title"
 					data-bilingual="text"
@@ -678,7 +688,6 @@ const dashboardState = JSON.stringify({
 
 	<div class="records-heading">
 		<div>
-			<span class="records-kicker">{copy.recordsKicker}</span>
 			<h2 data-bilingual="text" data-zh={copy.recordsTitle.zh} data-en={copy.recordsTitle.en}>
 				{copy.recordsTitle.zh}
 			</h2>
@@ -693,9 +702,8 @@ const dashboardState = JSON.stringify({
 		</p>
 	</div>
 
-	<div class="checkin-board glass-card">
+	<div class="checkin-board">
 		<div class="board-topline">
-			<span class="board-mark" aria-hidden="true">✓</span>
 			<span data-bilingual="text" data-zh={copy.listTitle.zh} data-en={copy.listTitle.en}>
 				{copy.listTitle.zh}
 			</span>
@@ -1051,8 +1059,8 @@ const dashboardState = JSON.stringify({
 				const completedLabel = card.querySelector<HTMLElement>('[data-weekly-completed]');
 				if (completedLabel) completedLabel.textContent = String(completed);
 				card.querySelector<HTMLElement>('[data-weekly-progress]')?.style.setProperty(
-					'--progress',
-					`${Math.min(100, Math.round((completed / habit.weeklyGoal) * 100))}%`,
+					'--progress-scale',
+					String(Math.min(1, completed / habit.weeklyGoal)),
 				);
 				const remaining = Math.max(0, habit.weeklyGoal - completed);
 				setRuntimeBilingualText(
@@ -1106,8 +1114,8 @@ const dashboardState = JSON.stringify({
 				const progressValue = card.querySelector<HTMLElement>('[data-time-goal-percent]');
 				if (progressValue) progressValue.textContent = `${monthProgress}%`;
 				card.querySelector<HTMLElement>('[data-time-share]')?.style.setProperty(
-					'--time-share',
-					`${monthProgress}%`,
+					'--time-share-scale',
+					String(monthProgress / 100),
 				);
 			}
 		});
@@ -1186,7 +1194,7 @@ const dashboardState = JSON.stringify({
 
 <style>
 	.daily-checkins {
-		padding: 3.4rem 0 3rem;
+		padding: clamp(3.5rem, 7vw, 6rem) 0 3rem;
 		animation: checkin-rise 720ms 180ms both;
 	}
 
@@ -1199,7 +1207,8 @@ const dashboardState = JSON.stringify({
 	}
 
 	.checkin-heading .section-title {
-		margin-top: 0.45rem;
+		font-size: clamp(2.8rem, 7vw, 5.2rem);
+		line-height: 1;
 	}
 
 	.checkin-intro {
@@ -1217,6 +1226,61 @@ const dashboardState = JSON.stringify({
 		border-radius: 999px;
 		background: color-mix(in srgb, var(--bg-panel) 88%, transparent);
 	}
+
+	.author-tools,
+	.reflection-metrics {
+		margin-top: 1rem;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+	}
+
+	.author-tools > summary,
+	.reflection-metrics > summary {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto auto;
+		align-items: center;
+		gap: 1rem;
+		min-height: 3.6rem;
+		color: var(--text);
+		cursor: pointer;
+		list-style: none;
+	}
+
+	.author-tools > summary::-webkit-details-marker,
+	.reflection-metrics > summary::-webkit-details-marker { display: none; }
+
+	.author-tools > summary::after,
+	.reflection-metrics > summary::after {
+		content: '';
+		grid-column: 3;
+		grid-row: 1;
+		width: 0.85rem;
+		height: 1px;
+		background: var(--accent);
+	}
+
+	.author-tools > summary::before,
+	.reflection-metrics > summary::before {
+		content: '';
+		grid-column: 3;
+		grid-row: 1;
+		width: 1px;
+		height: 0.85rem;
+		justify-self: center;
+		background: var(--accent);
+		transition: transform var(--transition);
+	}
+
+	.author-tools[open] > summary::before,
+	.reflection-metrics[open] > summary::before { transform: scaleY(0); }
+
+	.author-tools > summary small,
+	.reflection-metrics > summary small {
+		color: var(--text-soft);
+		font-size: 0.76rem;
+	}
+
+	.metrics-content { padding-bottom: 1rem; }
 
 	.today-date {
 		display: grid;
@@ -1237,13 +1301,21 @@ const dashboardState = JSON.stringify({
 	}
 
 	.mini-lamp,
-	.calendar-lamp,
-	.legend-lamp,
 	.action-lamp {
 		display: inline-block;
 		border-radius: 50%;
 		background: color-mix(in srgb, var(--line) 82%, transparent);
 		box-shadow: inset 0 -1px 2px rgba(0, 0, 0, 0.12);
+	}
+
+	.calendar-lamp,
+	.legend-lamp {
+		display: inline-block;
+		width: 0.52rem;
+		height: 0.8rem;
+		border-radius: 70% 30% 65% 35%;
+		background: color-mix(in srgb, var(--line) 88%, transparent);
+		transform: rotate(5deg);
 	}
 
 	.mini-lamp {
@@ -1265,18 +1337,9 @@ const dashboardState = JSON.stringify({
 		grid-template-columns: minmax(0, 1fr) auto;
 		align-items: center;
 		gap: 2rem;
-		padding: 1.5rem;
-		border-radius: var(--radius-xl);
-		background:
-			radial-gradient(circle at 80% 0%, rgba(227, 163, 79, 0.12), transparent 34%),
-			radial-gradient(circle at 94% 100%, rgba(77, 155, 145, 0.12), transparent 32%),
-			var(--bg-panel);
+		padding: 1rem 0 1.4rem;
 	}
 
-	.quick-kicker,
-	.time-kicker,
-	.calendar-kicker,
-	.records-kicker,
 	.habit-label {
 		color: var(--text-soft);
 		font-size: 0.68rem;
@@ -1357,10 +1420,10 @@ const dashboardState = JSON.stringify({
 
 	.weekly-card {
 		position: relative;
-		padding: 1.45rem 1.5rem;
-		border-color: var(--line);
-		border-radius: var(--radius-lg);
-		background: var(--bg-panel);
+		padding: 1.3rem 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+		background: transparent;
 	}
 
 	.weekly-card-top,
@@ -1414,11 +1477,13 @@ const dashboardState = JSON.stringify({
 
 	.progress-track span {
 		display: block;
-		width: var(--progress);
+		width: 100%;
 		height: 100%;
 		border-radius: inherit;
 		background: linear-gradient(90deg, var(--habit), color-mix(in srgb, var(--habit) 58%, white));
-		transition: width 600ms ease;
+		transform: scaleX(var(--progress-scale));
+		transform-origin: left;
+		transition: transform 600ms ease;
 	}
 
 	.weekly-note {
@@ -1430,10 +1495,9 @@ const dashboardState = JSON.stringify({
 		display: inline-flex;
 		align-items: center;
 		gap: 0.4rem;
-		padding: 0.22rem 0.55rem;
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--bg-panel) 82%, transparent);
+		padding: 0;
+		border: 0;
+		background: transparent;
 		color: var(--text-soft);
 	}
 
@@ -1449,12 +1513,8 @@ const dashboardState = JSON.stringify({
 		position: relative;
 		overflow: hidden;
 		margin-top: 1rem;
-		padding: 1.55rem;
-		border-radius: var(--radius-xl);
-		background:
-			radial-gradient(circle at 8% 0%, rgba(227, 163, 79, 0.09), transparent 28%),
-			radial-gradient(circle at 92% 100%, rgba(77, 155, 145, 0.1), transparent 32%),
-			var(--bg-panel);
+		padding: 1.55rem 0 0;
+		border-top: 1px solid var(--line);
 	}
 
 	.time-ledger-heading {
@@ -1484,10 +1544,10 @@ const dashboardState = JSON.stringify({
 		align-items: baseline;
 		column-gap: 0.45rem;
 		min-width: 8rem;
-		padding: 0.8rem 1rem;
-		border: 1px solid var(--line);
-		border-radius: 17px;
-		background: color-mix(in srgb, var(--bg-panel) 84%, transparent);
+		padding: 0.8rem 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+		background: transparent;
 	}
 
 	.month-time-total > span {
@@ -1518,30 +1578,10 @@ const dashboardState = JSON.stringify({
 
 	.time-card {
 		position: relative;
-		overflow: hidden;
-		padding: 1.1rem;
-		border: 1px solid color-mix(in srgb, var(--habit-color) 20%, var(--line));
-		border-radius: 18px;
-		background:
-			linear-gradient(
-				145deg,
-				color-mix(in srgb, var(--habit-color) 7%, var(--bg-panel)),
-				color-mix(in srgb, var(--bg-panel) 94%, transparent)
-			);
-	}
-
-	.time-card::after {
-		content: '';
-		position: absolute;
-		right: -2.8rem;
-		top: -3.3rem;
-		width: 8rem;
-		height: 8rem;
-		border-radius: 50%;
-		background: var(--habit-color);
-		filter: blur(18px);
-		opacity: 0.08;
-		pointer-events: none;
+		padding: 1.1rem 0;
+		border-top: 1px solid color-mix(in srgb, var(--habit-color) 34%, var(--line));
+		border-bottom: 1px solid var(--line);
+		background: transparent;
 	}
 
 	.time-card-head {
@@ -1551,9 +1591,8 @@ const dashboardState = JSON.stringify({
 	}
 
 	.time-card-code {
-		padding: 0.22rem 0.42rem;
-		border-radius: 999px;
-		background: color-mix(in srgb, var(--habit-color) 13%, transparent);
+		padding: 0;
+		background: transparent;
 		color: color-mix(in srgb, var(--habit-color) 82%, var(--text));
 		font-size: 0.62rem;
 		font-weight: 800;
@@ -1618,12 +1657,14 @@ const dashboardState = JSON.stringify({
 
 	.time-share-track span {
 		display: block;
-		width: var(--time-share);
+		width: 100%;
 		height: 100%;
 		border-radius: inherit;
 		background: var(--habit-color);
 		box-shadow: 0 0 12px color-mix(in srgb, var(--habit-color) 45%, transparent);
-		transition: width 600ms ease;
+		transform: scaleX(var(--time-share-scale));
+		transform-origin: left;
+		transition: transform 600ms ease;
 	}
 
 	.time-card-metrics {
@@ -1634,10 +1675,9 @@ const dashboardState = JSON.stringify({
 	}
 
 	.time-card-metrics > div {
-		padding: 0.65rem 0.7rem;
-		border: 1px solid var(--line);
-		border-radius: 12px;
-		background: color-mix(in srgb, var(--bg-panel) 72%, transparent);
+		padding: 0.65rem 0;
+		border-top: 1px solid var(--line);
+		background: transparent;
 	}
 
 	.time-card-metrics dt {
@@ -1669,9 +1709,9 @@ const dashboardState = JSON.stringify({
 	}
 
 	.calendar-card {
-		margin-top: 1rem;
-		padding: 1.55rem;
-		border-radius: var(--radius-xl);
+		margin-top: 2.5rem;
+		padding: 1.5rem 0 0;
+		border-top: 1px solid var(--line);
 	}
 
 	.calendar-heading h2,
@@ -1696,11 +1736,6 @@ const dashboardState = JSON.stringify({
 
 	.lamp-legend b {
 		font-weight: 500;
-	}
-
-	.legend-lamp {
-		width: 0.65rem;
-		height: 0.65rem;
 	}
 
 	.month-switcher {
@@ -1754,22 +1789,25 @@ const dashboardState = JSON.stringify({
 		display: grid;
 		grid-template-rows: auto 1fr;
 		padding: 0.55rem;
-		border: 1px solid var(--line);
-		border-radius: 15px;
-		background: color-mix(in srgb, var(--bg-panel) 82%, transparent);
+		border: 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid transparent;
+		border-radius: 0;
+		background: transparent;
 		color: var(--text);
 		text-align: left;
 		transition: transform var(--transition), border-color var(--transition), background var(--transition);
 	}
 
 	.calendar-day.has-entry:hover {
-		transform: translateY(-2px);
-		border-color: color-mix(in srgb, var(--accent) 38%, var(--line));
+		transform: translateY(-1px);
+		border-bottom-color: color-mix(in srgb, var(--accent) 45%, var(--line));
+		background: color-mix(in srgb, var(--accent) 4%, transparent);
 	}
 
 	.calendar-day.is-today {
-		border-color: color-mix(in srgb, var(--accent) 60%, var(--line));
-		background: color-mix(in srgb, var(--accent) 7%, var(--bg-panel));
+		border-top-color: color-mix(in srgb, var(--accent) 72%, var(--line));
+		background: color-mix(in srgb, var(--accent) 6%, transparent);
 	}
 
 	.day-number {
@@ -1786,8 +1824,8 @@ const dashboardState = JSON.stringify({
 	}
 
 	.calendar-lamp {
-		width: 0.72rem;
-		height: 0.72rem;
+		width: 0.52rem;
+		height: 0.8rem;
 	}
 
 	.calendar-day small {
@@ -1807,10 +1845,10 @@ const dashboardState = JSON.stringify({
 
 	.month-stats div {
 		display: grid;
-		padding: 0.85rem 1rem;
-		border: 1px solid var(--line);
-		border-radius: 15px;
-		background: color-mix(in srgb, var(--bg-panel) 80%, transparent);
+		padding: 0.85rem 0;
+		border-top: 1px solid var(--line);
+		border-bottom: 1px solid var(--line);
+		background: transparent;
 	}
 
 	.month-stats strong {
@@ -1835,13 +1873,13 @@ const dashboardState = JSON.stringify({
 	}
 
 	.checkin-board {
-		padding: 0 1.6rem;
-		border-radius: var(--radius-xl);
+		padding: 0;
+		border-top: 1px solid var(--line);
 	}
 
 	.board-topline {
 		display: grid;
-		grid-template-columns: auto 1fr auto;
+		grid-template-columns: 1fr auto;
 		align-items: center;
 		gap: 0.75rem;
 		padding: 1rem 0;
@@ -1849,17 +1887,6 @@ const dashboardState = JSON.stringify({
 		color: var(--text-soft);
 		font-size: 0.78rem;
 		letter-spacing: 0.14em;
-	}
-
-	.board-mark {
-		display: grid;
-		place-items: center;
-		width: 1.65rem;
-		height: 1.65rem;
-		border-radius: 50%;
-		background: color-mix(in srgb, var(--accent) 12%, white);
-		color: var(--accent);
-		font-weight: 700;
 	}
 
 	.board-count {
@@ -2038,7 +2065,6 @@ const dashboardState = JSON.stringify({
 
 		.calendar-day {
 			padding: 0.38rem;
-			border-radius: 11px;
 		}
 
 		.day-lamps {
@@ -2046,8 +2072,8 @@ const dashboardState = JSON.stringify({
 		}
 
 		.calendar-lamp {
-			width: 0.58rem;
-			height: 0.58rem;
+			width: 0.42rem;
+			height: 0.64rem;
 		}
 
 		.month-stats {

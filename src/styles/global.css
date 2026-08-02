@@ -1,3 +1,6 @@
+@import '@fontsource-variable/newsreader';
+@import '@fontsource/zcool-xiaowei/400.css';
+
 :root {
 	--bg: #f7f9fb;
 	--bg-panel: rgba(255, 255, 255, 0.92);
@@ -16,8 +19,10 @@
 	--radius-sm: 12px;
 	--container: min(1160px, calc(100vw - 2rem));
 	--transition: 260ms ease;
+	--focus-ring: #d98949;
 	--font-ui: "Avenir Next", "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Noto Sans SC", sans-serif;
-	--font-serif: "Iowan Old Style", "Palatino Linotype", "Book Antiqua", "Source Han Serif SC", "Noto Serif SC", serif;
+	--font-sans: var(--font-ui);
+	--font-serif: "Newsreader Variable", "ZCOOL XiaoWei", "Source Han Serif SC", serif;
 }
 
 :root[data-theme='dark'] {
@@ -32,6 +37,7 @@
 	--accent-study: #ee9a76;
 	--accent-research: #8ab9c2;
 	--accent-life: #d5ad7c;
+	--focus-ring: #ffd0a8;
 }
 
 *,
@@ -94,6 +100,16 @@ button {
 	cursor: pointer;
 }
 
+:where(a, button, input, select, textarea, summary):focus-visible {
+	outline: 3px solid var(--focus-ring);
+	outline-offset: 3px;
+}
+
+::selection {
+	background: color-mix(in srgb, var(--accent) 24%, transparent);
+	color: var(--text);
+}
+
 .container {
 	width: var(--container);
 	margin: 0 auto;
@@ -130,6 +146,12 @@ button {
 	border: 1px solid var(--line);
 	backdrop-filter: blur(22px);
 	box-shadow: var(--shadow);
+}
+
+.editorial-surface {
+	background: color-mix(in srgb, var(--bg-panel) 98%, transparent);
+	border: 1px solid var(--line);
+	border-radius: var(--radius-md);
 }
 
 .intro-active {
@@ -235,7 +257,8 @@ html[data-intro-seen='seen'] .opening-overlay {
 }
 
 .prose {
-	font-size: 1.04rem;
+	font-size: clamp(1rem, 1.15vw, 1.065rem);
+	line-height: 1.82;
 }
 
 .prose :where(h2, h3, h4) {
@@ -247,12 +270,24 @@ html[data-intro-seen='seen'] .opening-overlay {
 
 .prose h2 {
 	margin-top: 3rem;
-	font-size: clamp(1.6rem, 3vw, 2.2rem);
+	font-size: clamp(1.55rem, 3vw, 2.05rem);
 }
 
 .prose h3 {
 	margin-top: 2rem;
-	font-size: 1.32rem;
+	font-size: 1.28rem;
+}
+
+.prose :where(p, ul, ol, blockquote) {
+	max-width: 72ch;
+}
+
+.prose blockquote {
+	margin: 2rem 0;
+	padding: 0.35rem 0 0.35rem 1.25rem;
+	border-left: 1px solid var(--focus-ring);
+	color: var(--text-soft);
+	font-family: var(--font-serif);
 }
 
 .prose a {
@@ -424,6 +459,12 @@ html[data-intro-seen='seen'] .opening-overlay {
 	box-shadow: 0 20px 42px rgba(45, 67, 87, 0.14);
 }
 
+:root[data-theme='dark'] .prose :where(figure.prose-media) {
+	padding: clamp(0.35rem, 1vw, 0.75rem);
+	border-radius: var(--radius-md);
+	background: rgba(255, 255, 255, 0.9);
+}
+
 .prose :where(figure.prose-media > img.prose-image) {
 	margin-inline: auto;
 }
@@ -490,5 +531,12 @@ html[data-intro-seen='seen'] .opening-overlay {
 		animation-duration: 1ms !important;
 		animation-iteration-count: 1 !important;
 		transition-duration: 1ms !important;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.opening-overlay :where(.enter-button, .video-start-button) {
+		opacity: 1 !important;
+		transform: none !important;
 	}
 }
