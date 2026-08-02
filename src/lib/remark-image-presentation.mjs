@@ -1,5 +1,5 @@
 const DEFAULT_SIZE = 'md';
-const DEFAULT_ALIGN = 'center';
+const DEFAULT_ALIGN = 'left';
 
 const SIZE_ALIASES = new Map([
 	['xs', 'xs'],
@@ -212,26 +212,56 @@ const applyFigurePresentation = (node, presentation) => {
 	};
 };
 
+const hasVisibleContent = (children) =>
+	children.some((child) => child.type !== 'text' || child.value.trim().length > 0);
+
+const splitParagraphAroundImages = (paragraph) => {
+	const segments = [];
+	let inlineChildren = [];
+
+	const flushInlineChildren = () => {
+		if (hasVisibleContent(inlineChildren)) {
+			segments.push({ ...paragraph, children: inlineChildren });
+		}
+		inlineChildren = [];
+	};
+
+	for (const child of paragraph.children) {
+		if (child?.type !== 'image') {
+			inlineChildren.push(child);
+			continue;
+		}
+
+		flushInlineChildren();
+		const presentation = applyImagePresentation(child);
+		const figure = { ...paragraph, children: [child] };
+		applyFigurePresentation(figure, presentation);
+		segments.push(figure);
+	}
+
+	flushInlineChildren();
+	return segments;
+};
+
 const visitTree = (node) => {
 	if (!node?.children) return;
 
-	if (node.type === 'paragraph') {
-		const imageChildren = node.children.filter((child) => child?.type === 'image');
-		if (imageChildren.length > 0) {
-			if (node.children.length === 1 && node.children[0]?.type === 'image') {
-				const presentation = applyImagePresentation(node.children[0]);
-				applyFigurePresentation(node, presentation);
-			} else {
-				for (const child of imageChildren) {
-					applyImagePresentation(child);
-				}
+	const nextChildren = [];
+	for (const child of node.children) {
+		if (child?.type === 'paragraph' && child.children?.some((item) => item?.type === 'image')) {
+			const segments = splitParagraphAroundImages(child);
+			for (const segment of segments) {
+				visitTree(segment);
+				nextChildren.push(segment);
 			}
+			continue;
 		}
+
+		visitTree(child);
+		nextChildren.push(child);
 	}
 
-	for (const child of node.children) {
-		visitTree(child);
-	}
+	node.children = nextChildren;
 };
 
 export function remarkImagePresentation() {

@@ -501,7 +501,7 @@ html[data-intro-seen='seen'] .opening-overlay {
 
 .prose :where(figure.prose-media--lg > img.prose-image),
 .prose :where(img.prose-image--lg) {
-	--prose-media-width: 42rem;
+	--prose-media-width: 48rem;
 }
 
 .prose :where(figure.prose-media--full > img.prose-image),

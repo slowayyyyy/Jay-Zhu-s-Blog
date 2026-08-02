@@ -2,9 +2,10 @@ import { createMarkdownProcessor } from '@astrojs/markdown-remark';
 import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math';
 import { remarkAcademicCitations } from '../src/lib/remark-academic-citations.mjs';
+import { remarkImagePresentation } from '../src/lib/remark-image-presentation.mjs';
 
 const processor = await createMarkdownProcessor({
-	remarkPlugins: [remarkMath, remarkAcademicCitations],
+	remarkPlugins: [remarkMath, remarkImagePresentation, remarkAcademicCitations],
 	rehypePlugins: [[rehypeKatex, { strict: false, throwOnError: false, trust: false }]],
 	remarkRehype: {
 		footnoteLabel: '脚注',
@@ -20,6 +21,8 @@ const markdown = [
 	String.raw`行内公式 $E = mc^2$，论文结论 [@vaswani2017, p. 3]。`,
 	'',
 	'上标 x<sup>2</sup>，下标 H<sub>2</sub>O。',
+	'',
+	'文字后紧跟图片：![示例图 | lg | center](/uploads/example.png)',
 	'',
 	'$$',
 	String.raw`\mathcal{L} = -\sum_{i=1}^{n} y_i \log \hat{y}_i`,
@@ -59,6 +62,9 @@ const checks = {
 	displayMath: code.includes('<span class="katex-display">'),
 	superscript: code.includes('x<sup>2</sup>'),
 	subscript: code.includes('H<sub>2</sub>O'),
+	standaloneImage:
+		code.includes('</p>\n<figure class="prose-media prose-media--lg prose-media--center">') &&
+		!code.includes('文字后紧跟图片：<img'),
 	footnote: code.includes('data-footnotes') && code.includes('脚注内容'),
 	mermaid: code.includes('class="language-mermaid"') && code.includes('flowchart LR'),
 	code: code.includes('print') && code.includes('class="astro-code'),
