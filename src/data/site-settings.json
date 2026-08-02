@@ -1,6 +1,6 @@
 {
   "heroImage": "",
-  "descriptionEn": "A long-form personal blog for study notes, research logs, and quiet traces of daily life.",
+  "descriptionEn": "Papers, books, runs, and small pieces of everyday life, slowly gathered here.",
   "author": {
     "contact": [
       {
@@ -102,8 +102,8 @@
     }
   },
   "homeIntro": {
-    "zh": "一座以 Markdown 书写、以时间排序的个人博客。它不追求喧闹，而追求清晰、质感和可以长期维护。",
-    "en": "A Markdown-first personal blog arranged in time, built for clarity, visual calm, and long-term maintenance."
+    "zh": "欢迎来这里坐坐。我会写下读过的论文、正在想明白的问题，也记录书页、跑步和生活里那些不该被忘记的小事。",
+    "en": "Come in and stay a while. I write about papers I am reading, questions I am working through, and small moments worth keeping."
   },
   "motto": {
     "zh": "把复杂的事写清楚，把普通的日子认真留下。",
@@ -350,6 +350,6 @@
       }
     }
   },
-  "description": "一个面向长期记录的个人博客，用来安放学习内容、科研过程与生活片段。",
+  "description": "论文、读书、跑步和生活中的小事，都在这里慢慢积累。",
   "brandSubtitle": "Even ordinary days deserve to dance"
 }

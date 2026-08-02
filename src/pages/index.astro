@@ -4,13 +4,19 @@ import PostCard from '../components/PostCard.astro';
 import TaxonomyPanel from '../components/TaxonomyPanel.astro';
 import { siteConfig } from '../data/site';
 import SiteLayout from '../layouts/SiteLayout.astro';
-import { getAllPosts, getFeaturedPosts, getSectionSummary } from '../lib/content';
+import { formatDate, getAllPosts, getFeaturedPosts, getPostSlug, getSectionSummary } from '../lib/content';
 
 const posts = await getAllPosts();
 const featuredPosts = await getFeaturedPosts();
 const featuredIds = new Set(featuredPosts.map((post) => post.id));
 const streamPosts = posts.filter((post) => !featuredIds.has(post.id));
 const sectionSummary = getSectionSummary(posts);
+const latestPost = posts[0];
+const latestPostSlug = latestPost ? getPostSlug(latestPost) : '';
+const publicationYears = [...new Set(posts.map((post) => post.data.publishDate.getFullYear()))];
+const publicationYearLabel = publicationYears.length > 1
+	? `${Math.min(...publicationYears)}—${Math.max(...publicationYears)}`
+	: String(publicationYears[0] ?? new Date().getFullYear());
 ---
 
 <SiteLayout pathname="/" showOpening>
@@ -27,8 +33,12 @@ const sectionSummary = getSectionSummary(posts);
 					data-en={siteConfig.homeIntro.en}
 				/>
 				<div class="hero-actions">
-					<a class="button-primary" href="/search/" data-copy="nav.search" />
-					<a class="text-action" href="/about/" data-copy="nav.about" />
+					{
+						latestPost && (
+							<a class="button-primary" href={`/posts/${latestPostSlug}/`} data-copy="home.startReading" />
+						)
+					}
+					<a class="text-action" href="/search/" data-copy="nav.search" />
 				</div>
 				<blockquote
 					data-bilingual="text"
@@ -39,8 +49,8 @@ const sectionSummary = getSectionSummary(posts);
 
 			<aside class="publication-index" aria-label="博客索引">
 				<header>
-					<h2>Index</h2>
-					<span>2026</span>
+					<h2 data-bilingual="text" data-zh="内容索引" data-en="Contents" />
+					<span>{publicationYearLabel}</span>
 				</header>
 				<a class="index-row" href="/search/">
 					<span data-copy="home.statsPosts">全部文章</span>
@@ -58,6 +68,17 @@ const sectionSummary = getSectionSummary(posts);
 					<span data-copy="nav.checkins">每日打卡</span>
 					<span data-copy="home.viewCheckins">查看记录</span>
 				</a>
+				{
+					latestPost && (
+						<a class="latest-update" href={`/posts/${latestPostSlug}/`}>
+							<span data-copy="home.latestUpdated" />
+							<strong>{latestPost.data.title}</strong>
+							<time datetime={latestPost.data.publishDate.toISOString()}>
+								{formatDate(latestPost.data.publishDate)}
+							</time>
+						</a>
+					)
+				}
 			</aside>
 		</div>
 	</section>
@@ -75,13 +96,18 @@ const sectionSummary = getSectionSummary(posts);
 		)
 	}
 
-	<section class="container home-stream" aria-labelledby="latest-title">
+	<section class="container home-stream" id="latest" aria-labelledby="latest-title">
 		<header class="section-head stream-head">
 			<div>
 				<h2 id="latest-title" data-copy="home.latestTitle" />
 				<p data-copy="home.latestIntro" />
 			</div>
-			<span class="stream-count">{streamPosts.length} entries</span>
+			<span
+				class="stream-count"
+				data-bilingual="text"
+				data-zh={`${streamPosts.length} 篇`}
+				data-en={`${streamPosts.length} entries`}
+			/>
 		</header>
 
 		<div class="stream-layout">
@@ -101,14 +127,14 @@ const sectionSummary = getSectionSummary(posts);
 
 <style>
 	.home-hero {
-		padding: clamp(3.5rem, 8vw, 7rem) 0 2rem;
+		padding: clamp(2.5rem, 5vw, 4.75rem) 0 2rem;
 	}
 
 	.hero-grid {
 		display: grid;
 		grid-template-columns: minmax(0, 1.45fr) minmax(17rem, 0.65fr);
-		gap: clamp(2rem, 6vw, 5.5rem);
-		padding: clamp(2rem, 5vw, 4.5rem) 0;
+		gap: clamp(2.5rem, 6vw, 5.5rem);
+		padding: clamp(2.5rem, 5vw, 4.25rem) 0;
 		border-top: 1px solid var(--line);
 		border-bottom: 1px solid var(--line);
 	}
@@ -124,10 +150,11 @@ const sectionSummary = getSectionSummary(posts);
 	}
 
 	.hero-text {
-		max-width: 43rem;
+		max-width: 40rem;
 		margin: 1.4rem 0 0;
 		color: var(--text-soft);
 		font-size: clamp(1rem, 1.4vw, 1.12rem);
+		line-height: 1.9;
 	}
 
 	.hero-actions {
@@ -135,6 +162,38 @@ const sectionSummary = getSectionSummary(posts);
 		align-items: center;
 		gap: 1.1rem;
 		margin-top: 1.8rem;
+	}
+
+	.hero-actions .button-primary {
+		position: relative;
+		padding-right: 3rem;
+		background: var(--accent);
+		box-shadow: 0 14px 30px color-mix(in srgb, var(--accent) 22%, transparent);
+	}
+
+	.hero-actions .button-primary::after {
+		content: '';
+		position: absolute;
+		right: 1.25rem;
+		width: 0.5rem;
+		height: 0.5rem;
+		border-top: 1px solid currentColor;
+		border-right: 1px solid currentColor;
+		transform: rotate(45deg);
+		transition: transform var(--transition);
+	}
+
+	.hero-actions .button-primary:hover {
+		transform: translateY(-2px);
+		box-shadow: 0 18px 36px color-mix(in srgb, var(--accent) 28%, transparent);
+	}
+
+	.hero-actions .button-primary:hover::after {
+		transform: translateX(0.2rem) rotate(45deg);
+	}
+
+	.hero-actions .button-primary:active {
+		transform: translateY(0) scale(0.98);
 	}
 
 	.text-action {
@@ -160,7 +219,8 @@ const sectionSummary = getSectionSummary(posts);
 		border-top: 1px solid var(--line);
 		color: var(--text-soft);
 		font-family: var(--font-serif);
-		font-size: 1rem;
+		font-size: 1.03rem;
+		font-style: italic;
 	}
 
 	.hero-copy blockquote::before {
@@ -232,9 +292,79 @@ const sectionSummary = getSectionSummary(posts);
 		font-size: 0.78rem;
 	}
 
+	.latest-update {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr) auto;
+		gap: 0.3rem 1rem;
+		margin-top: 0.75rem;
+		padding: 1rem 0 0 1rem;
+		border-top: 1px solid var(--line);
+		border-left: 1px solid var(--accent);
+		color: var(--text-soft);
+	}
+
+	.latest-update > span {
+		font-size: 0.78rem;
+		letter-spacing: 0.06em;
+	}
+
+	.latest-update strong {
+		grid-column: 1 / -1;
+		color: var(--text);
+		font-family: var(--font-serif);
+		font-size: 1rem;
+		font-weight: 600;
+		line-height: 1.35;
+	}
+
+	.latest-update time {
+		grid-column: 2;
+		grid-row: 1;
+		font-size: 0.78rem;
+		font-variant-numeric: tabular-nums;
+	}
+
+	.latest-update:hover strong {
+		color: var(--accent);
+	}
+
 	.featured-section,
 	.home-stream {
-		padding: 2.5rem 0;
+		padding: clamp(2.75rem, 5vw, 4.5rem) 0;
+	}
+
+	.featured-list {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		column-gap: clamp(2rem, 5vw, 4rem);
+	}
+
+	.featured-list :global(.post-card:first-child) {
+		grid-column: 1 / -1;
+		padding-block: 2rem;
+	}
+
+	.featured-list :global(.post-card:not(:first-child)) {
+		grid-template-columns: 1fr auto;
+		gap: 0.75rem 1rem;
+		align-content: start;
+		padding-block: 1.6rem;
+	}
+
+	.featured-list :global(.post-card:not(:first-child) .post-rail),
+	.featured-list :global(.post-card:not(:first-child) .post-content) {
+		grid-column: 1 / -1;
+	}
+
+	.featured-list :global(.post-card:not(:first-child) .post-rail) {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
+
+	.featured-list :global(.post-card:not(:first-child) .read-link) {
+		grid-column: 1;
+		justify-self: start;
 	}
 
 	.section-head {
@@ -281,8 +411,19 @@ const sectionSummary = getSectionSummary(posts);
 	}
 
 	.margin-note {
-		padding-top: 1rem;
+		position: relative;
+		padding: 1.2rem 0 0 1rem;
 		border-top: 1px solid var(--line);
+	}
+
+	.margin-note::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 0;
+		width: 3rem;
+		height: 1px;
+		background: var(--accent);
 	}
 
 	.margin-note h2 {
@@ -321,11 +462,59 @@ const sectionSummary = getSectionSummary(posts);
 		.stream-sidebar { padding-top: 0; }
 	}
 
+	@media (max-width: 760px) {
+		.featured-list {
+			grid-template-columns: 1fr;
+		}
+
+		.featured-list :global(.post-card:first-child) {
+			grid-column: auto;
+		}
+	}
+
 	@media (max-width: 640px) {
-		.home-hero { padding-top: 2.5rem; }
-		.hero-grid { padding-block: 2rem; }
+		.home-hero { padding-top: 1.6rem; }
+		.hero-grid {
+			gap: 1.4rem;
+			padding-block: 2rem 1.5rem;
+		}
 		.hero-copy h1 { font-size: clamp(2.65rem, 13vw, 4.25rem); }
 		.hero-actions { flex-wrap: wrap; }
+		.hero-copy blockquote { margin-top: 1.5rem; }
+
+		.publication-index {
+			display: grid;
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+			padding-top: 1rem;
+		}
+
+		.publication-index header,
+		.index-checkins {
+			grid-column: 1 / -1;
+		}
+
+		.publication-index header {
+			padding-bottom: 0.45rem;
+		}
+
+		.index-row {
+			min-height: 2.75rem;
+			padding-right: 0.65rem;
+		}
+
+		.index-row:nth-of-type(even) {
+			padding-left: 0.65rem;
+			padding-right: 0;
+			border-left: 1px solid var(--line);
+		}
+
+		.index-checkins {
+			min-height: 3rem;
+			margin-top: 0.25rem;
+			padding-top: 0.25rem;
+		}
+
+		.latest-update { display: none; }
 		.section-head { align-items: start; }
 		.stream-count { display: none; }
 	}
