@@ -35,7 +35,13 @@ const publicationYearLabel = publicationYears.length > 1
 				<div class="hero-actions">
 					{
 						latestPost && (
-							<a class="button-primary" href={`/posts/${latestPostSlug}/`} data-copy="home.startReading" />
+							<a
+								class="button-primary"
+								href={`/posts/${latestPostSlug}/`}
+								data-bilingual="text"
+								data-zh={siteConfig.homePage.startReading.zh}
+								data-en={siteConfig.homePage.startReading.en}
+							/>
 						)
 					}
 					<a class="text-action" href="/search/" data-copy="nav.search" />
@@ -49,11 +55,19 @@ const publicationYearLabel = publicationYears.length > 1
 
 			<aside class="publication-index" aria-label="博客索引">
 				<header>
-					<h2 data-bilingual="text" data-zh="内容索引" data-en="Contents" />
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.contentIndexTitle.zh}
+						data-en={siteConfig.homePage.contentIndexTitle.en}
+					/>
 					<span>{publicationYearLabel}</span>
 				</header>
 				<a class="index-row" href="/search/">
-					<span data-copy="home.statsPosts">全部文章</span>
+					<span
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.allPostsLabel.zh}
+						data-en={siteConfig.homePage.allPostsLabel.en}
+					/>
 					<strong>{posts.length}</strong>
 				</a>
 				{
@@ -65,13 +79,25 @@ const publicationYearLabel = publicationYears.length > 1
 					))
 				}
 				<a class="index-checkins" href="/checkins/">
-					<span data-copy="nav.checkins">每日打卡</span>
-					<span data-copy="home.viewCheckins">查看记录</span>
+					<span
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.checkinsLabel.zh}
+						data-en={siteConfig.homePage.checkinsLabel.en}
+					/>
+					<span
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.viewCheckinsLabel.zh}
+						data-en={siteConfig.homePage.viewCheckinsLabel.en}
+					/>
 				</a>
 				{
 					latestPost && (
 						<a class="latest-update" href={`/posts/${latestPostSlug}/`}>
-							<span data-copy="home.latestUpdated" />
+							<span
+								data-bilingual="text"
+								data-zh={siteConfig.homePage.latestUpdated.zh}
+								data-en={siteConfig.homePage.latestUpdated.en}
+							/>
 							<strong>{latestPost.data.title}</strong>
 							<time datetime={latestPost.data.publishDate.toISOString()}>
 								{formatDate(latestPost.data.publishDate)}
@@ -87,7 +113,12 @@ const publicationYearLabel = publicationYears.length > 1
 		featuredPosts.length > 0 && (
 			<section class="container featured-section" aria-labelledby="featured-title">
 				<header class="section-head">
-					<h2 id="featured-title" data-copy="home.featured" />
+					<h2
+						id="featured-title"
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.featuredTitle.zh}
+						data-en={siteConfig.homePage.featuredTitle.en}
+					/>
 				</header>
 				<div class="featured-list">
 					{featuredPosts.map((post) => <PostCard post={post} headingLevel="h3" />)}
@@ -99,8 +130,17 @@ const publicationYearLabel = publicationYears.length > 1
 	<section class="container home-stream" id="latest" aria-labelledby="latest-title">
 		<header class="section-head stream-head">
 			<div>
-				<h2 id="latest-title" data-copy="home.latestTitle" />
-				<p data-copy="home.latestIntro" />
+				<h2
+					id="latest-title"
+					data-bilingual="text"
+					data-zh={siteConfig.homePage.latestTitle.zh}
+					data-en={siteConfig.homePage.latestTitle.en}
+				/>
+				<p
+					data-bilingual="text"
+					data-zh={siteConfig.homePage.latestIntro.zh}
+					data-en={siteConfig.homePage.latestIntro.en}
+				/>
 			</div>
 			<span
 				class="stream-count"
@@ -116,8 +156,16 @@ const publicationYearLabel = publicationYears.length > 1
 			</div>
 			<aside class="stream-sidebar">
 				<div class="margin-note">
-					<h2 data-copy="home.sidebarTitle" />
-					<p data-copy="home.sidebarBody" />
+					<h2
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.sidebarTitle.zh}
+						data-en={siteConfig.homePage.sidebarTitle.en}
+					/>
+					<p
+						data-bilingual="text"
+						data-zh={siteConfig.homePage.sidebarBody.zh}
+						data-en={siteConfig.homePage.sidebarBody.en}
+					/>
 				</div>
 				<TaxonomyPanel posts={posts} />
 			</aside>

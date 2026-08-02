@@ -105,6 +105,52 @@
     "zh": "欢迎来这里坐坐。我会写下读过的论文、正在想明白的问题，也记录书页、跑步和生活里那些不该被忘记的小事。",
     "en": "Come in and stay a while. I write about papers I am reading, questions I am working through, and small moments worth keeping."
   },
+  "homePage": {
+    "contentIndexTitle": {
+      "zh": "内容索引",
+      "en": "Contents"
+    },
+    "allPostsLabel": {
+      "zh": "全部文章",
+      "en": "All Posts"
+    },
+    "checkinsLabel": {
+      "zh": "每日打卡",
+      "en": "Check-in"
+    },
+    "viewCheckinsLabel": {
+      "zh": "查看记录",
+      "en": "View entries"
+    },
+    "startReading": {
+      "zh": "读最新一篇",
+      "en": "Read the Latest"
+    },
+    "latestUpdated": {
+      "zh": "最近更新",
+      "en": "Latest update"
+    },
+    "featuredTitle": {
+      "zh": "想先与你分享",
+      "en": "A Few Notes to Begin With"
+    },
+    "latestTitle": {
+      "zh": "沿着时间，继续往下读",
+      "en": "Keep Reading Through Time"
+    },
+    "latestIntro": {
+      "zh": "最近读过的论文、想明白的问题，以及认真生活过的痕迹，都从这里慢慢展开。",
+      "en": "Recent papers, questions worked through, and traces of a life lived with attention unfold from here."
+    },
+    "sidebarTitle": {
+      "zh": "写在路上",
+      "en": "Notes Along the Way"
+    },
+    "sidebarBody": {
+      "zh": "有些答案来自论文，有些来自一次跑步、一页书，或一个普通的晚上。我想把它们放在一起。",
+      "en": "Some answers come from papers; others from a run, a page, or an ordinary evening. I want to keep them together."
+    }
+  },
   "motto": {
     "zh": "把复杂的事写清楚，把普通的日子认真留下。",
     "en": "Write complex things clearly, and keep ordinary days with care."

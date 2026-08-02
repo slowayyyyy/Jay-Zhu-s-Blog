@@ -107,7 +107,7 @@ collections:
       - label: 正文
         name: body
         widget: richtext
-        hint: 支持 LaTeX：行内公式写 $E=mc^2$，独立公式可从工具栏“+”插入；Mermaid、脚注 [^1]、论文引用 [@引用键] 和代码复制也已启用。插图仍可使用“说明 | sm | center”等控制指令。
+        hint: 支持 LaTeX：行内公式写 $E=mc^2$，独立公式可从工具栏“+”插入；上标、下标也可从“+”菜单选择；Mermaid、脚注 [^1]、论文引用 [@引用键] 和代码复制均已启用。插图仍可使用“说明 | sm | center”等控制指令。
 
   - name: checkins
     label: 每日打卡
@@ -253,6 +253,78 @@ collections:
             fields:
               - { label: 中文, name: zh, widget: text }
               - { label: 英文, name: en, widget: text }
+          - label: 第二版首页文案
+            name: homePage
+            widget: object
+            collapsed: false
+            hint: 管理首页内容索引、阅读入口、置顶区、文章时间线和右侧随笔中的全部文案；修改后会随网站设置一起发布。
+            fields:
+              - label: 内容索引标题
+                name: contentIndexTitle
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 全部文章文字
+                name: allPostsLabel
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 每日打卡文字
+                name: checkinsLabel
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 查看打卡记录文字
+                name: viewCheckinsLabel
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 阅读最新文章按钮
+                name: startReading
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 最近更新提示
+                name: latestUpdated
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 置顶阅读区标题
+                name: featuredTitle
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 时间线标题
+                name: latestTitle
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 时间线介绍
+                name: latestIntro
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: text }
+                  - { label: 英文, name: en, widget: text }
+              - label: 右侧随笔标题
+                name: sidebarTitle
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: string }
+                  - { label: 英文, name: en, widget: string }
+              - label: 右侧随笔正文
+                name: sidebarBody
+                widget: object
+                fields:
+                  - { label: 中文, name: zh, widget: text }
+                  - { label: 英文, name: en, widget: text }
           - label: 首页座右铭
             name: motto
             widget: object

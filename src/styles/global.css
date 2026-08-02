@@ -443,6 +443,21 @@ html[data-intro-seen='seen'] .opening-overlay {
 	text-decoration: none;
 }
 
+.prose :where(sup, sub) {
+	position: relative;
+	font-size: 0.72em;
+	line-height: 0;
+	vertical-align: baseline;
+}
+
+.prose :where(sup) {
+	top: -0.48em;
+}
+
+.prose :where(sub) {
+	bottom: -0.18em;
+}
+
 .prose :where(figure.prose-media) {
 	margin: 1.6rem 0;
 }

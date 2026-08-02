@@ -19,6 +19,8 @@ const processor = await createMarkdownProcessor({
 const markdown = [
 	String.raw`行内公式 $E = mc^2$，论文结论 [@vaswani2017, p. 3]。`,
 	'',
+	'上标 x<sup>2</sup>，下标 H<sub>2</sub>O。',
+	'',
 	'$$',
 	String.raw`\mathcal{L} = -\sum_{i=1}^{n} y_i \log \hat{y}_i`,
 	'$$',
@@ -55,6 +57,8 @@ const { code } = await processor.render(markdown, {
 const checks = {
 	inlineMath: code.includes('<span class="katex">'),
 	displayMath: code.includes('<span class="katex-display">'),
+	superscript: code.includes('x<sup>2</sup>'),
+	subscript: code.includes('H<sub>2</sub>O'),
 	footnote: code.includes('data-footnotes') && code.includes('脚注内容'),
 	mermaid: code.includes('class="language-mermaid"') && code.includes('flowchart LR'),
 	code: code.includes('print') && code.includes('class="astro-code'),
@@ -71,4 +75,6 @@ if (failures.length > 0) {
 	throw new Error(`Academic Markdown verification failed: ${failures.join(', ')}`);
 }
 
-console.log('Academic Markdown verification passed: math, Mermaid, footnotes, code, and citations.');
+console.log(
+	'Academic Markdown verification passed: math, superscript, subscript, Mermaid, footnotes, code, and citations.',
+);
