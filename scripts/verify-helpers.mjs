@@ -162,7 +162,7 @@ export async function loadTagIds() {
 
 export function extractSearchResults(html) {
 	const results = [];
-	for (const match of html.matchAll(/<div\s+data-result\b([^>]*)>/g)) {
+	for (const match of html.matchAll(/<div\s+data-result\b((?:"[^"]*"|'[^']*'|[^>])*)>/g)) {
 		const attrs = match[1];
 		const readAttr = (name) => attrs.match(new RegExp(`${name}="([^"]*)"`, 'i'))?.[1] ?? '';
 		results.push({

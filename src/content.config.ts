@@ -9,7 +9,10 @@ const posts = defineCollection({
 		description: z.string(),
 		excerpt: z.string(),
 		publishDate: z.coerce.date(),
-		updatedDate: z.coerce.date().optional(),
+		updatedDate: z.preprocess(
+			(value) => (value === '' || value == null ? undefined : value),
+			z.coerce.date().optional(),
+		),
 		sortOrder: z.coerce.number().int().default(0),
 		section: z.enum(['study', 'research', 'life']),
 		tags: z.array(z.string()).default([]),
