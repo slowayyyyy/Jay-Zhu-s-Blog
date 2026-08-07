@@ -106,6 +106,15 @@ const otherHabit: HabitConfig = {
 const getHabit = (habitId: string) => habitMap.get(habitId) ?? otherHabit;
 const getMetric = (summary: HabitDaySummary, habitId: string): HabitMetric =>
 	summary[habitId] ?? { count: 0, minutes: 0 };
+const generatedQuickCheckinId = /^\d{4}-\d{2}-\d{2}-\d{4}-[a-z0-9-]+-[a-z0-9]{8}(?:\.md)?$/i;
+const isQuickCheckin = (checkin: CollectionEntry<'checkins'>) =>
+	checkin.data.entryType === 'quick' || (
+		checkin.data.entryType !== 'standard' &&
+		generatedQuickCheckinId.test(checkin.id) &&
+		checkin.data.duration > 0 &&
+		Boolean(checkin.data.activity.trim()) &&
+		checkin.data.items.length === 0
+	);
 
 const defaults = {
 	pageKicker: 'LIGHT THE DAY',
@@ -713,6 +722,8 @@ const dashboardState = JSON.stringify({
 			{
 				enrichedCheckins.map(({ checkin, dayKey, habitId }) => {
 					const habit = getHabit(habitId);
+					const quick = isQuickCheckin(checkin);
+					const renderedBody = renderedBodies.get(checkin.id);
 					return (
 					<article
 						class="checkin-entry"
@@ -734,21 +745,42 @@ const dashboardState = JSON.stringify({
 									{habit.name.zh}
 								</span>
 							</div>
-							{checkin.data.summary && <p class="checkin-summary">{checkin.data.summary}</p>}
-							{checkin.data.duration > 0 && (
-								<dl class="checkin-details quick-record-details">
-									<div>
-										<dt data-bilingual="text" data-zh="记录项目" data-en="Activity">记录项目</dt>
-										<dd>{checkin.data.activity || habit.name.zh}</dd>
+							{quick ? (
+								<div class="quick-record" style={`--habit-color: ${habit.color}`}>
+									<div class="quick-record-overview">
+										<span class="quick-record-lamp" aria-hidden="true" />
+										<strong class="quick-record-activity">{checkin.data.activity}</strong>
+										<span class="quick-record-duration">
+											<strong>{checkin.data.duration}</strong>
+											<span data-bilingual="text" data-zh="分钟" data-en="min">分钟</span>
+										</span>
 									</div>
-									<div>
-										<dt data-bilingual="text" data-zh="完成时长" data-en="Duration">完成时长</dt>
-										<dd>{checkin.data.duration} 分钟</dd>
-									</div>
-								</dl>
-							)}
-							{renderedBodies.get(checkin.id) && (
-								<div class="checkin-body prose prose-compact" set:html={renderedBodies.get(checkin.id)} />
+									{renderedBody && (
+										<div class="quick-record-note">
+											<span class="quick-record-note-rule" aria-hidden="true" />
+											<div class="quick-record-note-copy prose prose-compact" set:html={renderedBody} />
+										</div>
+									)}
+								</div>
+							) : (
+								<>
+									{checkin.data.summary && <p class="checkin-summary">{checkin.data.summary}</p>}
+									{checkin.data.duration > 0 && (
+										<dl class="checkin-details quick-record-details">
+											<div>
+												<dt data-bilingual="text" data-zh="记录项目" data-en="Activity">记录项目</dt>
+												<dd>{checkin.data.activity || habit.name.zh}</dd>
+											</div>
+											<div>
+												<dt data-bilingual="text" data-zh="完成时长" data-en="Duration">完成时长</dt>
+												<dd>{checkin.data.duration} 分钟</dd>
+											</div>
+										</dl>
+									)}
+									{renderedBody && (
+										<div class="checkin-body prose prose-compact" set:html={renderedBody} />
+									)}
+								</>
 							)}
 							{checkin.data.items.length > 0 && (
 								<dl class="checkin-details">
@@ -1952,6 +1984,88 @@ const dashboardState = JSON.stringify({
 		background: color-mix(in srgb, var(--bg-panel) 72%, transparent);
 	}
 
+	.quick-record {
+		margin-top: 0.85rem;
+		border-top: 1px solid color-mix(in srgb, var(--habit-color) 34%, var(--line));
+		border-bottom: 1px solid var(--line);
+	}
+
+	.quick-record-overview {
+		display: grid;
+		grid-template-columns: auto minmax(0, 1fr) auto;
+		align-items: center;
+		gap: 0.75rem;
+		min-height: 3.6rem;
+		padding: 0.62rem 0.15rem;
+	}
+
+	.quick-record-lamp {
+		width: 0.55rem;
+		height: 0.78rem;
+		border-radius: 70% 30% 65% 35%;
+		background: var(--habit-color);
+		box-shadow: 0 0 0 0.22rem color-mix(in srgb, var(--habit-color) 12%, transparent);
+		transform: rotate(5deg);
+	}
+
+	.quick-record-activity {
+		min-width: 0;
+		font-size: 0.98rem;
+		font-weight: 600;
+	}
+
+	.quick-record-duration {
+		display: inline-flex;
+		align-items: baseline;
+		gap: 0.35rem;
+		color: var(--text-soft);
+		font-size: 0.76rem;
+		white-space: nowrap;
+	}
+
+	.quick-record-duration strong {
+		color: color-mix(in srgb, var(--habit-color) 80%, var(--text));
+		font-family: var(--font-serif);
+		font-size: 1.35rem;
+		font-variant-numeric: tabular-nums;
+		font-weight: 650;
+		line-height: 1;
+	}
+
+	.quick-record-note {
+		display: grid;
+		grid-template-columns: 1.5rem minmax(0, 1fr);
+		align-items: start;
+		gap: 0.7rem;
+		padding: 0.82rem 0.15rem 0.95rem;
+		border-top: 1px solid var(--line);
+	}
+
+	.quick-record-note-rule {
+		width: 1.5rem;
+		height: 1px;
+		margin-top: 0.82rem;
+		background: color-mix(in srgb, var(--habit-color) 68%, var(--line));
+	}
+
+	.quick-record-note-copy {
+		margin: 0;
+		color: var(--text);
+		font-family: var(--font-serif);
+		font-size: 1rem;
+		line-height: 1.72;
+	}
+
+	.quick-record-note-copy :global(:where(p, ul, ol, blockquote)) {
+		width: auto;
+		margin-top: 0;
+		margin-bottom: 0.45rem;
+	}
+
+	.quick-record-note-copy :global(:where(p, ul, ol, blockquote):last-child) {
+		margin-bottom: 0;
+	}
+
 	.checkin-body {
 		margin-top: 0.85rem;
 	}
@@ -2099,6 +2213,15 @@ const dashboardState = JSON.stringify({
 
 		.checkin-details > div {
 			grid-template-columns: 4.8rem minmax(0, 1fr);
+		}
+
+		.quick-record-note {
+			grid-template-columns: 1rem minmax(0, 1fr);
+			gap: 0.55rem;
+		}
+
+		.quick-record-note-rule {
+			width: 1rem;
 		}
 	}
 </style>

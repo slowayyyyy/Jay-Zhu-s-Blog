@@ -221,6 +221,7 @@ date: ${yamlString(displayDateTime)}
 day: ${yamlString(day)}
 title: ${yamlString(title)}
 summary: ${yamlString(summary)}
+entryType: quick
 habit: ${yamlString(habit.id)}
 category: ${legacyCategory}
 duration: ${duration}

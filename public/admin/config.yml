@@ -130,6 +130,7 @@ collections:
         date_format: YYYY-MM-DD
         time_format: HH:mm
       - { label: 记录日期, name: day, widget: hidden, required: false }
+      - { label: 记录来源, name: entryType, widget: hidden, required: false }
       - label: 打卡模块
         name: habit
         widget: habit-select

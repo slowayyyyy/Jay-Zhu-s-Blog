@@ -41,6 +41,7 @@ const checkins = defineCollection({
 		day: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(),
 		title: z.string(),
 		summary: z.string().default(''),
+		entryType: z.enum(['quick', 'standard']).optional(),
 		habit: z.string().default(''),
 		category: z.enum(['english', 'exercise', 'other']).default('other'),
 		duration: z.coerce.number().int().min(0).default(0),
