@@ -6,6 +6,7 @@ import {
 	extractSearchResults,
 	fileExists,
 	listFiles,
+	loadHiddenPosts,
 	loadPublishedCheckins,
 	loadPublishedPosts,
 	loadTagIds,
@@ -14,6 +15,7 @@ import {
 } from './verify-helpers.mjs';
 
 const posts = await loadPublishedPosts();
+const hiddenPosts = await loadHiddenPosts();
 const checkins = await loadPublishedCheckins();
 const tagIds = new Set(await loadTagIds());
 const settings = JSON.parse(await readFile(join(root, 'src', 'data', 'site-settings.json'), 'utf8'));
@@ -61,6 +63,25 @@ for (const post of posts) {
 		if (!(await fileExists(tagPage))) {
 			errors.push(`Tag page is missing: ${tag}`);
 		}
+	}
+}
+
+for (const post of hiddenPosts) {
+	const publicSurfaces = [
+		['home page', home],
+		['search page', search],
+		['life page', life],
+		['RSS feed', rss],
+	];
+	for (const [surface, html] of publicSurfaces) {
+		if (appearsIn(html, post.title)) {
+			errors.push(`Hidden post appears on ${surface}: ${post.title}`);
+		}
+	}
+
+	const articlePage = join(root, 'dist', 'posts', post.slug, 'index.html');
+	if (await fileExists(articlePage)) {
+		errors.push(`Hidden post still has a public article page: ${post.title}`);
 	}
 }
 
@@ -150,5 +171,5 @@ if (errors.length > 0) {
 }
 
 console.log(
-	`Content verification passed: ${posts.length} published post(s), ${checkins.length} check-in(s).`,
+	`Content verification passed: ${posts.length} published post(s), ${hiddenPosts.length} hidden post(s), ${checkins.length} check-in(s).`,
 );

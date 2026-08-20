@@ -124,6 +124,27 @@ export async function loadPublishedPosts() {
 	);
 }
 
+export async function loadHiddenPosts() {
+	const postFiles = await listFiles(join(root, 'src', 'content', 'posts'), '.md');
+	const posts = [];
+
+	for (const file of postFiles) {
+		const source = await readFile(file, 'utf8');
+		const frontmatter = readFrontmatter(source, file);
+		if (readScalar(frontmatter, 'draft').toLowerCase() !== 'true') continue;
+
+		const title = readScalar(frontmatter, 'title');
+		if (!title) throw new Error(`Missing title: ${file}`);
+		posts.push({
+			file,
+			title,
+			slug: basename(file, '.md'),
+		});
+	}
+
+	return posts;
+}
+
 export async function loadPublishedCheckins() {
 	const checkinFiles = await listFiles(join(root, 'src', 'content', 'checkins'), '.md');
 	const checkins = [];

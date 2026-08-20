@@ -36,7 +36,7 @@ collections:
     slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
     sortable_fields: [sortOrder, publishDate, title, section, draft]
     view_filters:
-      - { label: 草稿, field: draft, pattern: true }
+      - { label: 暂时隐藏, field: draft, pattern: true }
       - { label: 学习笔记, field: section, pattern: study }
       - { label: 科研记录, field: section, pattern: research }
       - { label: 生活手账, field: section, pattern: life }
@@ -103,7 +103,12 @@ collections:
           - { label: DOI, name: doi, widget: string, required: false, hint: 可填写 10.xxxx/xxxxx 或完整 DOI 链接。 }
           - { label: 原文链接, name: url, widget: string, required: false }
       - { label: 首页置顶, name: featured, widget: boolean, default: false, required: false }
-      - { label: 保存为草稿, name: draft, widget: boolean, default: false, required: false, hint: 草稿不会显示在博客前台。 }
+      - label: 暂时隐藏文章
+        name: draft
+        widget: boolean
+        default: false
+        required: false
+        hint: 开启后，文章仍保留在后台并可继续编辑，但不会出现在首页、搜索、分区、标签、归档、RSS和相关文章中，原文章链接也会暂时失效。关闭后会随下一次部署重新公开。
       - label: 正文
         name: body
         widget: richtext
