@@ -208,6 +208,15 @@ const localDateTimeValue = (date = new Date()) => {
 
 const yamlString = (value) => JSON.stringify(String(value ?? ''));
 
+export const MAX_QUICK_CHECKIN_MINUTES = 1440;
+
+export const parseQuickCheckinDuration = (value) => {
+	const duration = Number(value);
+	return Number.isInteger(duration) && duration >= 1 && duration <= MAX_QUICK_CHECKIN_MINUTES
+		? duration
+		: null;
+};
+
 export const createCheckinMarkdown = ({ habit, duration, activity, note, dateTime }) => {
 	const day = dateTime.slice(0, 10);
 	const displayDateTime = dateTime.replace('T', ' ');
@@ -440,8 +449,16 @@ export function setupQuickCheckin({
 
 		.quick-checkin-duration-list {
 			display: flex;
+			flex: 1 1 19rem;
 			flex-wrap: wrap;
 			gap: 8px;
+		}
+
+		.quick-checkin-duration-options {
+			display: flex;
+			align-items: center;
+			gap: 10px;
+			flex-wrap: wrap;
 		}
 
 		.quick-checkin-duration {
@@ -454,6 +471,48 @@ export function setupQuickCheckin({
 			border-color: var(--quick-habit-color, #3f6f78);
 			background: var(--quick-habit-color, #3f6f78);
 			color: #fff;
+		}
+
+		.quick-checkin-custom-duration {
+			display: inline-flex;
+			align-items: center;
+			gap: 8px;
+			min-height: 42px;
+			padding: 4px 5px 4px 11px;
+			border: 1px solid rgba(23, 35, 41, 0.12);
+			border-radius: 999px;
+			background: rgba(255, 255, 255, 0.76);
+			color: #61747b;
+			font-size: 12px;
+			font-weight: 700;
+			transition: border-color 180ms ease, background 180ms ease, box-shadow 180ms ease;
+		}
+
+		.quick-checkin-custom-duration.is-active,
+		.quick-checkin-custom-duration:focus-within {
+			border-color: color-mix(in srgb, var(--quick-habit-color, #3f6f78) 68%, transparent);
+			background: color-mix(in srgb, var(--quick-habit-color, #3f6f78) 9%, white);
+			box-shadow: 0 0 0 3px color-mix(in srgb, var(--quick-habit-color, #3f6f78) 10%, transparent);
+		}
+
+		.quick-checkin-card .quick-checkin-custom-duration input {
+			width: 5.25rem;
+			min-height: 32px;
+			padding: 5px 7px;
+			border: 0;
+			border-radius: 999px;
+			background: #fff;
+			font-variant-numeric: tabular-nums;
+			text-align: center;
+		}
+
+		.quick-checkin-card .quick-checkin-custom-duration input:focus {
+			box-shadow: none;
+		}
+
+		.quick-checkin-custom-duration-unit {
+			padding-right: 5px;
+			font-weight: 500;
 		}
 
 		.quick-checkin-card :is(input, select, textarea) {
@@ -537,6 +596,16 @@ export function setupQuickCheckin({
 			.quick-checkin-row {
 				grid-template-columns: 1fr;
 			}
+
+			.quick-checkin-duration-options,
+			.quick-checkin-custom-duration {
+				width: 100%;
+			}
+
+			.quick-checkin-card .quick-checkin-custom-duration input {
+				flex: 1;
+				width: auto;
+			}
 		}
 	`;
 	document.head.append(style);
@@ -562,10 +631,17 @@ export function setupQuickCheckin({
 			<form data-quick-checkin-form>
 				<div class="quick-checkin-label">选择今天完成的事情</div>
 				<div class="quick-checkin-types" data-habit-list></div>
-				<label class="quick-checkin-field">
+				<div class="quick-checkin-field">
 					<span>完成时长</span>
-					<div class="quick-checkin-duration-list" data-duration-list></div>
-				</label>
+					<div class="quick-checkin-duration-options">
+						<div class="quick-checkin-duration-list" data-duration-list></div>
+						<label class="quick-checkin-custom-duration" data-custom-duration-shell>
+							<span>自定义</span>
+							<input name="customDuration" type="number" min="1" max="${MAX_QUICK_CHECKIN_MINUTES}" step="1" inputmode="numeric" placeholder="例如 25" aria-label="自定义完成时长（分钟）" />
+							<span class="quick-checkin-custom-duration-unit">分钟</span>
+						</label>
+					</div>
+				</div>
 				<div class="quick-checkin-row">
 					<label class="quick-checkin-field">
 						<span>具体活动</span>
@@ -591,16 +667,32 @@ export function setupQuickCheckin({
 	const feedback = modal.querySelector('[data-quick-checkin-feedback]');
 	const habitList = modal.querySelector('[data-habit-list]');
 	const durationList = modal.querySelector('[data-duration-list]');
+	const customDurationShell = modal.querySelector('[data-custom-duration-shell]');
+	const customDurationInput = form.elements.customDuration;
 	const activitySelect = form.elements.activity;
 	const dateTimeInput = form.elements.dateTime;
 	const submitButton = form.querySelector('.quick-checkin-submit');
 	let habits = normalizeQuickCheckinHabits();
 	let selectedHabitId = habits[0].id;
 	let selectedDuration = habits[0].minimumMinutes;
+	let usingCustomDuration = false;
 
 	const setFeedback = (message = '', tone = 'info') => {
 		feedback.textContent = message;
 		feedback.dataset.tone = tone;
+	};
+
+	const updateDurationSelection = () => {
+		for (const button of durationList.querySelectorAll('[data-duration]')) {
+			button.classList.toggle(
+				'is-active',
+				!usingCustomDuration && Number(button.dataset.duration) === selectedDuration,
+			);
+		}
+		customDurationShell.classList.toggle(
+			'is-active',
+			usingCustomDuration && parseQuickCheckinDuration(customDurationInput.value) !== null,
+		);
 	};
 
 	const renderHabitOptions = () => {
@@ -643,12 +735,12 @@ export function setupQuickCheckin({
 				const button = document.createElement('button');
 				button.type = 'button';
 				button.className = 'quick-checkin-duration';
-				button.classList.toggle('is-active', duration === selectedDuration);
 				button.dataset.duration = String(duration);
 				button.textContent = `${duration} 分钟`;
 				return button;
 			}),
 		);
+		updateDurationSelection();
 	};
 
 	const openModal = async (requestedHabitId = '') => {
@@ -672,6 +764,8 @@ export function setupQuickCheckin({
 			? requestedHabitId
 			: habits[0].id;
 		selectedDuration = habits.find(({ id }) => id === selectedHabitId)?.minimumMinutes ?? 5;
+		usingCustomDuration = false;
+		customDurationInput.value = '';
 		dateTimeInput.value = localDateTimeValue();
 		setFeedback(
 			isLocalPreview
@@ -704,6 +798,8 @@ export function setupQuickCheckin({
 		selectedHabitId = button.dataset.habitId;
 		selectedDuration =
 			habits.find(({ id }) => id === selectedHabitId)?.minimumMinutes ?? selectedDuration;
+		usingCustomDuration = false;
+		customDurationInput.value = '';
 		renderHabitOptions();
 	});
 
@@ -711,7 +807,15 @@ export function setupQuickCheckin({
 		const button = event.target.closest('[data-duration]');
 		if (!button) return;
 		selectedDuration = Number(button.dataset.duration);
-		renderHabitOptions();
+		usingCustomDuration = false;
+		customDurationInput.value = '';
+		updateDurationSelection();
+	});
+
+	customDurationInput.addEventListener('input', () => {
+		usingCustomDuration = customDurationInput.value.trim() !== '';
+		selectedDuration = parseQuickCheckinDuration(customDurationInput.value) ?? 0;
+		updateDurationSelection();
 	});
 
 	form.addEventListener('submit', async (event) => {
@@ -729,6 +833,11 @@ export function setupQuickCheckin({
 		const activity = String(activitySelect.value || '').trim();
 		const note = String(form.elements.note.value || '');
 		const selectedHabit = habits.find(({ id }) => id === selectedHabitId);
+		if (usingCustomDuration && parseQuickCheckinDuration(customDurationInput.value) === null) {
+			setFeedback(`自定义时长请输入 1 到 ${MAX_QUICK_CHECKIN_MINUTES} 的整数分钟。`, 'error');
+			customDurationInput.focus();
+			return;
+		}
 		if (!dateTime || !activity || selectedDuration <= 0 || !selectedHabit) {
 			setFeedback('请补全打卡类型、时长和完成时间。', 'error');
 			return;

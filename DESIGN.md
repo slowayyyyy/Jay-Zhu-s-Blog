@@ -227,6 +227,7 @@ Radii are functional exceptions: 12–16px for disclosed panels and technical me
 - Daily practice is represented by ruled weekly, time, calendar, and chronological ledger structures with tabular values.
 - Lit states use asymmetric flame marks in the habit color with a restrained halo; unlit states recede into the rule color without failure styling.
 - Quick check-ins use one compact ruled record: the activity and duration share the first line, while an optional personal note continues inside the same object rather than floating below it. Long-form legacy records retain their authored Markdown layout.
+- The CMS quick check-in keeps habit-configured duration presets as the fastest path and places a directly editable minute field beside them. Preset and custom duration are mutually exclusive states, with integer validation before publishing.
 - Author tools and reflective metrics use line-built plus/minus disclosure marks. Public records remain primary and non-gamified.
 
 ### Music Player
