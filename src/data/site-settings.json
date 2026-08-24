@@ -354,6 +354,28 @@
           300,
           360
         ]
+      },
+      {
+        "enabled": true,
+        "color": "#28ca0b",
+        "name": {
+          "zh": "代码",
+          "en": "Coding"
+        },
+        "code": "CODE",
+        "activities": [
+          "力扣刷题"
+        ],
+        "minimumMinutes": 20,
+        "weeklyGoal": 3,
+        "id": "coding",
+        "durations": [
+          20,
+          30,
+          40,
+          50,
+          60
+        ]
       }
     ]
   },
