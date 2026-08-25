@@ -364,7 +364,8 @@
         },
         "code": "CODE",
         "activities": [
-          "力扣刷题"
+          "力扣刷题",
+          "科研代码"
         ],
         "minimumMinutes": 20,
         "weeklyGoal": 3,
