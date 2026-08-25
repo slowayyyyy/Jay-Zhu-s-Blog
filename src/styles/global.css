@@ -486,26 +486,47 @@ html[data-intro-seen='seen'] .opening-overlay {
 	margin-inline: auto;
 }
 
+.prose :where(figure.prose-media > figcaption.prose-caption) {
+	width: min(100%, var(--prose-media-width, 42rem));
+	max-width: 100%;
+	margin: 0.72rem auto 0;
+	color: var(--text-soft);
+	font-size: 0.78rem;
+	font-style: normal;
+	line-height: 1.65;
+	text-align: center;
+	overflow-wrap: anywhere;
+}
+
+:root[data-theme='dark'] .prose :where(figure.prose-media > figcaption.prose-caption) {
+	color: rgba(24, 33, 43, 0.68);
+}
+
+.prose :where(figure.prose-media--xs),
 .prose :where(figure.prose-media--xs > img.prose-image),
 .prose :where(img.prose-image--xs) {
 	--prose-media-width: 15rem;
 }
 
+.prose :where(figure.prose-media--sm),
 .prose :where(figure.prose-media--sm > img.prose-image),
 .prose :where(img.prose-image--sm) {
 	--prose-media-width: 22rem;
 }
 
+.prose :where(figure.prose-media--md),
 .prose :where(figure.prose-media--md > img.prose-image),
 .prose :where(img.prose-image--md) {
 	--prose-media-width: 32rem;
 }
 
+.prose :where(figure.prose-media--lg),
 .prose :where(figure.prose-media--lg > img.prose-image),
 .prose :where(img.prose-image--lg) {
 	--prose-media-width: 48rem;
 }
 
+.prose :where(figure.prose-media--full),
 .prose :where(figure.prose-media--full > img.prose-image),
 .prose :where(img.prose-image--full) {
 	--prose-media-width: 100%;
@@ -517,13 +538,27 @@ html[data-intro-seen='seen'] .opening-overlay {
 	margin-right: auto;
 }
 
+.prose :where(figure.prose-media--left > figcaption.prose-caption) {
+	margin-left: 0;
+	margin-right: auto;
+}
+
 .prose :where(figure.prose-media--center > img.prose-image),
 .prose :where(img.prose-image--center) {
 	margin-inline: auto;
 }
 
+.prose :where(figure.prose-media--center > figcaption.prose-caption) {
+	margin-inline: auto;
+}
+
 .prose :where(figure.prose-media--right > img.prose-image),
 .prose :where(img.prose-image--right) {
+	margin-left: auto;
+	margin-right: 0;
+}
+
+.prose :where(figure.prose-media--right > figcaption.prose-caption) {
 	margin-left: auto;
 	margin-right: 0;
 }

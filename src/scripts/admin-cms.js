@@ -34,7 +34,7 @@ const DATA_IMAGE_SOURCE_PATTERN = /^data:image\//iu;
 const LOCAL_IMAGE_REFERENCE_PATTERN = /^(file:|[a-z]:\\)/iu;
 const FETCHABLE_IMAGE_SOURCE_PATTERN = /^(https?:\/\/|blob:|\/)/iu;
 const MARKDOWN_DATA_IMAGE_PATTERN =
-	/!\[([^\]]*)\]\(\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\r\n]+)\s*(?:"[^"]*")?\)/giu;
+	/!\[([^\]]*)\]\(\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\r\n]+)\s*(?:"((?:\\.|[^"])*)")?\s*\)/giu;
 const MARKDOWN_TRANSIENT_IMAGE_PATTERN =
 	/!\[[^\]]*\]\(\s*(?:blob:|file:|[a-z]:\\)[^)]+\)/iu;
 const LARGE_CLIPBOARD_IMAGE_BYTES = 900 * 1024;
@@ -94,6 +94,25 @@ const blobToBase64 = (blob) =>
 		reader.readAsDataURL(blob);
 	});
 
+const IMAGE_FIELD_LABELS = new Map([
+	['ALT TEXT', '替代文字'],
+	['TITLE', '图片说明（选填）'],
+]);
+
+export const localizeImageCaptionFields = (root = document) => {
+	const candidates = [];
+	if (root instanceof HTMLElement && root.matches('label, span, div')) {
+		candidates.push(root);
+	}
+	root.querySelectorAll?.('label, span, div').forEach((element) => candidates.push(element));
+
+	for (const element of candidates) {
+		if (element.childElementCount > 0) continue;
+		const replacement = IMAGE_FIELD_LABELS.get(element.textContent?.trim().toUpperCase());
+		if (replacement) element.textContent = replacement;
+	}
+};
+
 export function setupAdminCms() {
 	if (!window.CMS || window.__jayCmsSetup) return;
 	window.__jayCmsSetup = true;
@@ -102,7 +121,7 @@ export function setupAdminCms() {
 	window.CMS.registerRemarkPlugin(remarkImagePresentation);
 	window.CMS.registerPreviewStyle(katexStylesUrl);
 	window.CMS.registerPreviewStyle(
-		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}.jay-inline-script-preview{font-size:1rem;line-height:1.6}',
+		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}.jay-inline-script-preview{font-size:1rem;line-height:1.6}figure.prose-media>figcaption.prose-caption{width:min(100%,var(--prose-media-width,42rem));max-width:100%;margin:.72rem auto 0;color:rgba(24,33,43,.68);font:400 .78rem/1.65 "Segoe UI","PingFang SC","Noto Sans SC",sans-serif;text-align:center;overflow-wrap:anywhere}',
 		{ raw: true },
 	);
 	window.CMS.registerEditorComponent({
@@ -186,6 +205,7 @@ export function setupAdminCms() {
 			for (const node of mutation.addedNodes) {
 				if (!(node instanceof HTMLElement)) continue;
 				hydratePreviewImages(node);
+				localizeImageCaptionFields(node);
 			}
 		}
 	});
@@ -672,7 +692,7 @@ export function setupAdminCms() {
 		let cursor = 0;
 
 		for (const [index, match] of matches.entries()) {
-			const [rawMarkdown, rawAlt, dataUrl] = match;
+			const [rawMarkdown, rawAlt, dataUrl, rawCaption] = match;
 			const start = match.index ?? 0;
 			const end = start + rawMarkdown.length;
 			const alt = rawAlt?.trim() || `粘贴图片 ${index + 1} | lg | center`;
@@ -690,7 +710,7 @@ export function setupAdminCms() {
 				uploadedByDataUrl.set(dataUrl, uploadedUrl);
 			}
 
-			normalizedBody += `![${alt}](${uploadedUrl})`;
+			normalizedBody += `![${alt}](${uploadedUrl}${rawCaption ? ` "${rawCaption}"` : ''})`;
 			cursor = end;
 		}
 
@@ -1220,26 +1240,41 @@ export function setupAdminCms() {
 					box-shadow: 0 16px 38px rgba(45, 67, 87, 0.14);
 				}
 
+				figure.prose-media > figcaption.prose-caption {
+					width: min(100%, var(--prose-media-width, 42rem));
+					max-width: 100%;
+					margin: 0.72rem auto 0;
+					color: rgba(24, 33, 43, 0.68);
+					font: 400 0.78rem/1.65 "Segoe UI", "PingFang SC", "Noto Sans SC", sans-serif;
+					text-align: center;
+					overflow-wrap: anywhere;
+				}
+
+				figure.prose-media--xs,
 				figure.prose-media--xs > img.prose-image,
 				img.prose-image--xs {
 					--prose-media-width: 15rem;
 				}
 
+				figure.prose-media--sm,
 				figure.prose-media--sm > img.prose-image,
 				img.prose-image--sm {
 					--prose-media-width: 22rem;
 				}
 
+				figure.prose-media--md,
 				figure.prose-media--md > img.prose-image,
 				img.prose-image--md {
 					--prose-media-width: 32rem;
 				}
 
+				figure.prose-media--lg,
 				figure.prose-media--lg > img.prose-image,
 				img.prose-image--lg {
-					--prose-media-width: 42rem;
+					--prose-media-width: 48rem;
 				}
 
+				figure.prose-media--full,
 				figure.prose-media--full > img.prose-image,
 				img.prose-image--full {
 					--prose-media-width: 100%;
@@ -1251,6 +1286,11 @@ export function setupAdminCms() {
 					margin-right: auto;
 				}
 
+				figure.prose-media--left > figcaption.prose-caption {
+					margin-left: 0;
+					margin-right: auto;
+				}
+
 				figure.prose-media--center > img.prose-image,
 				img.prose-image--center {
 					margin-inline: auto;
@@ -1258,6 +1298,11 @@ export function setupAdminCms() {
 
 				figure.prose-media--right > img.prose-image,
 				img.prose-image--right {
+					margin-left: auto;
+					margin-right: 0;
+				}
+
+				figure.prose-media--right > figcaption.prose-caption {
 					margin-left: auto;
 					margin-right: 0;
 				}
@@ -1428,6 +1473,7 @@ export function setupAdminCms() {
 
 	idleTimer = window.setTimeout(() => showIdleStatus(), 280);
 	hydratePreviewImages();
+	localizeImageCaptionFields();
 	previewObserver.observe(document.body, {
 		childList: true,
 		subtree: true,

@@ -212,6 +212,17 @@ const applyFigurePresentation = (node, presentation) => {
 	};
 };
 
+const createFigureCaption = (value) => ({
+	type: 'paragraph',
+	data: {
+		hName: 'figcaption',
+		hProperties: {
+			className: ['prose-caption'],
+		},
+	},
+	children: [{ type: 'text', value }],
+});
+
 const hasVisibleContent = (children) =>
 	children.some((child) => child.type !== 'text' || child.value.trim().length > 0);
 
@@ -233,8 +244,13 @@ const splitParagraphAroundImages = (paragraph) => {
 		}
 
 		flushInlineChildren();
+		const caption = typeof child.title === 'string' ? child.title.trim() : '';
+		if (caption) child.title = null;
 		const presentation = applyImagePresentation(child);
-		const figure = { ...paragraph, children: [child] };
+		const figure = {
+			...paragraph,
+			children: caption ? [child, createFigureCaption(caption)] : [child],
+		};
 		applyFigurePresentation(figure, presentation);
 		segments.push(figure);
 	}

@@ -24,6 +24,8 @@ const markdown = [
 	'',
 	'文字后紧跟图片：![示例图 | lg | center](/uploads/example.png)',
 	'',
+	'![模型结构 | md | center](/uploads/model.png "图 1 · 模型整体结构")',
+	'',
 	'$$',
 	String.raw`\mathcal{L} = -\sum_{i=1}^{n} y_i \log \hat{y}_i`,
 	'$$',
@@ -65,6 +67,10 @@ const checks = {
 	standaloneImage:
 		code.includes('</p>\n<figure class="prose-media prose-media--lg prose-media--center">') &&
 		!code.includes('文字后紧跟图片：<img'),
+	imageCaption:
+		code.includes('<figcaption class="prose-caption">图 1 · 模型整体结构</figcaption>') &&
+		!code.includes('title="图 1 · 模型整体结构"') &&
+		(code.match(/<figcaption\b/gu) ?? []).length === 1,
 	footnote: code.includes('data-footnotes') && code.includes('脚注内容'),
 	mermaid: code.includes('class="language-mermaid"') && code.includes('flowchart LR'),
 	code: code.includes('print') && code.includes('class="astro-code'),
@@ -82,5 +88,5 @@ if (failures.length > 0) {
 }
 
 console.log(
-	'Academic Markdown verification passed: math, superscript, subscript, Mermaid, footnotes, code, and citations.',
+	'Academic Markdown verification passed: math, image captions, superscript, subscript, Mermaid, footnotes, code, and citations.',
 );
