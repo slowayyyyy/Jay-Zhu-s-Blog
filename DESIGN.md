@@ -221,6 +221,7 @@ Radii are functional exceptions: 12–16px for disclosed panels and technical me
 - The article opening is one ruled sequence of provenance, title, summary, metadata, and tags.
 - Tags are underlined text links rather than floating chips. Prose, references, footnotes, code, formulas, figures, and captions share the reading rhythm.
 - An optional image title authored in the CMS becomes a centered semantic figure caption, constrained to the same width and alignment as its image. Empty titles produce no caption or reserved space.
+- Pasted images pause at one compact confirmation sheet after upload: captions are optional per image, Enter confirms, and Escape preserves the original fast path by inserting without captions.
 - Bright figures in dark mode receive a neutral light surround without altering the source image.
 
 ### Check-in Ledger

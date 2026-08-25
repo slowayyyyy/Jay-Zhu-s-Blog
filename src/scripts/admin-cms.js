@@ -2,6 +2,10 @@ import katex from 'katex';
 import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
+import {
+	createPastedImageMarkup,
+	requestPastedImageCaptions,
+} from './admin-image-caption.js';
 import { setupHabitSelectWidget, setupQuickCheckin } from './admin-quick-checkin.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 
@@ -894,13 +898,6 @@ export function setupAdminCms() {
 		target instanceof HTMLInputElement ||
 		(target instanceof HTMLElement && Boolean(target.closest('[contenteditable="true"]')));
 
-	const escapeHtmlAttribute = (value) =>
-		String(value)
-			.replaceAll('&', '&amp;')
-			.replaceAll('"', '&quot;')
-			.replaceAll('<', '&lt;')
-			.replaceAll('>', '&gt;');
-
 	const captureRichEditorSelection = (target) => {
 		if (!(target instanceof HTMLElement)) return null;
 		const editor = target.closest('[contenteditable="true"][data-slate-editor="true"]');
@@ -919,19 +916,11 @@ export function setupAdminCms() {
 		selection?.addRange(range);
 	};
 
-	const insertImagesIntoRichEditor = async (selectionSnapshot, urls) => {
+	const insertImagesIntoRichEditor = async (selectionSnapshot, urls, captions) => {
 		if (!selectionSnapshot?.editor?.isConnected) return false;
 		restoreRichEditorSelection(selectionSnapshot);
 
-		const html = urls
-			.map(
-				(url, index) =>
-					`<p><img src="${escapeHtmlAttribute(url)}" alt="粘贴图片 ${index + 1} | lg | center"></p>`,
-			)
-			.join('');
-		const markdown = urls
-			.map((url, index) => `![粘贴图片 ${index + 1} | lg | center](${url})`)
-			.join('\n\n');
+		const { html, markdown } = createPastedImageMarkup(urls, captions);
 		const clipboard = new DataTransfer();
 		clipboard.setData('text/html', html);
 		clipboard.setData('text/plain', markdown);
@@ -990,9 +979,10 @@ export function setupAdminCms() {
 				urls.push(await uploadImageToGithub(preparedFile, index));
 			}
 
-			const markdown = urls
-				.map((url, index) => `![粘贴图片 ${index + 1} | lg | center](${url})`)
-				.join('\n\n');
+			const captions = await requestPastedImageCaptions(urls, {
+				hydratePreviewImage: rewritePreviewImage,
+			});
+			const { markdown } = createPastedImageMarkup(urls, captions);
 			const textarea = event.target instanceof HTMLTextAreaElement ? event.target : null;
 
 			if (textarea) {
@@ -1001,7 +991,10 @@ export function setupAdminCms() {
 				return;
 			}
 
-			if (richEditorSelection && (await insertImagesIntoRichEditor(richEditorSelection, urls))) {
+			if (
+				richEditorSelection &&
+				(await insertImagesIntoRichEditor(richEditorSelection, urls, captions))
+			) {
 				showStatus(`已上传并插入 ${urls.length} 张图片。`, 'success', 5200);
 				return;
 			}

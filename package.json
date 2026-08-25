@@ -16,6 +16,7 @@
     "verify:content": "node scripts/verify-content.mjs",
     "verify:checkins": "node scripts/verify-checkin-associations.mjs",
     "verify:quick-checkin-ui": "node scripts/verify-quick-checkin-ui.cjs",
+    "verify:image-caption-ui": "node scripts/verify-image-caption-ui.cjs",
     "verify:academic": "node scripts/verify-academic-markdown.mjs",
     "verify:live": "node scripts/verify-live.mjs",
     "preview": "astro preview",
