@@ -2,16 +2,16 @@ import type { DynamicConfig } from "@/types/dynamicConfig";
 
 export const dynamicConfig: DynamicConfig = {
 	// 页面标题，如果留空则使用 i18n 中的翻译
-	title: "",
+	title: "说说",
 
 	// 页面描述文本，如果留空则使用 i18n 中的翻译
-	description: "",
+	description: "研究间隙、阅读片段，以及那些还不必写成长文的日常。",
 
 	// 动态头像和名称的跳转地址，支持站内路径或完整 URL
 	profileUrl: "/about/",
 
 	// 是否为每条动态启用评论，需要先在 commentConfig.ts 启用评论系统
-	showComment: true,
+	showComment: false,
 
 	// 每页显示的动态数量
 	itemsPerPage: 20,

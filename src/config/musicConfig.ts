@@ -18,7 +18,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	playMode: "list",
 
 	// 是否显启用歌词
-	showLyrics: false,
+	showLyrics: true,
 
 	// Meting API 配置
 	meting: {
@@ -47,13 +47,15 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	// lrc: "[00:00.00]歌词内容...",
 	local: {
 		playlist: [
-			{
-				name: "使一颗心免于哀伤",
-				artist: "知更鸟 / HOYO-MiX / Chevy",
-				url: "/assets/music/使一颗心免于哀伤-哼唱.mp3",
-				cover: "/assets/music/cover/109951169585655912.webp",
-				lrc: "",
-			},
+			{ name: "旅人の唄", artist: "大原ゆい子", url: "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3", cover: "", lrc: "" },
+			{ name: "芽吹の唄", artist: "大原ゆい子", url: "/media/audio/20260901150655-70964cdb-大原ゆい子-芽吹の唄.mp3", cover: "", lrc: "" },
+			{ name: "spiral", artist: "LONGMAN", url: "/media/audio/20260901150725-b5f79610-LONGMAN-spiral-kgg-dec.mp3", cover: "", lrc: "" },
+			{ name: "祈り、終われば", artist: "中島美嘉", url: "/media/audio/20260901150746-fa7cac8a-中島美嘉-祈り-終われば.mp3", cover: "", lrc: "" },
+			{ name: "かげくらべの唄", artist: "大原ゆい子", url: "/media/audio/20260901150807-3aa83d0f-大原ゆい子-かげくらべの唄-与你身影作比之歌.mp3", cover: "", lrc: "" },
+			{ name: "ムスビメ (联结)", artist: "大原ゆい子", url: "/media/audio/20260901150825-4a04356cdb-大原ゆい子-ムスビメ-联结.mp3", cover: "", lrc: "" },
+			{ name: "守りたいもの（想要守护之物）", artist: "大原ゆい子", url: "/media/audio/20260901150858-8b47d5a7-大原ゆい子-守りたいもの-想要守护之物.mp3", cover: "", lrc: "" },
+			{ name: "決意の唄", artist: "大原ゆい子", url: "/media/audio/20260901150919-a124278c-大原ゆい子-決意の唄.mp3", cover: "", lrc: "" },
+			{ name: "風と行く道 (随风而行的路)", artist: "大原ゆい子", url: "/media/audio/20260901150938-8b1f8086-大原ゆい子-風と行く道-随风而行的路.mp3", cover: "", lrc: "" },
 		],
 	},
 };

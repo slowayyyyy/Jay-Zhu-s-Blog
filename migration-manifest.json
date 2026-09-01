@@ -1,0 +1,155 @@
+{
+  "generatedAt": "2026-09-01T18:20:09.217Z",
+  "sourceCommit": "7ed7a1bc5651883f1570f4c46fcb96c16ab4bcf6",
+  "sourceDirty": true,
+  "target": "Firefly 6.16.6",
+  "postCount": 10,
+  "uploadReferenceCount": 45,
+  "uploadFileCount": 60,
+  "uploadBytes": 9612578,
+  "imageDirectivesConverted": 44,
+  "posts": [
+    {
+      "file": "2026-06-23-我的第一篇博客.md",
+      "title": "我的第一篇博客",
+      "published": "2026-06-24",
+      "category": "学习笔记",
+      "tags": [
+        "Markdown",
+        "第一次"
+      ],
+      "imageDirectivesConverted": 0,
+      "bodyHashBefore": "9db2687f5f4e2305ed3c08be9a430970044a42ee3bd4791935a74fff5ed4be9c",
+      "bodyHashAfter": "9db2687f5f4e2305ed3c08be9a430970044a42ee3bd4791935a74fff5ed4be9c",
+      "warnings": []
+    },
+    {
+      "file": "2026-06-24-《被讨厌的勇气》读书笔记.md",
+      "title": "《被讨厌的勇气》读书笔记",
+      "published": "2026-06-25",
+      "category": "生活手账",
+      "tags": [
+        "阅读"
+      ],
+      "imageDirectivesConverted": 0,
+      "bodyHashBefore": "15df353f1040a43cebcfbebf450e66d7b076d6c2075c3b9b8821c4e98e0cf680",
+      "bodyHashAfter": "15df353f1040a43cebcfbebf450e66d7b076d6c2075c3b9b8821c4e98e0cf680",
+      "warnings": []
+    },
+    {
+      "file": "2026-06-25-以职业方向为目标发展自己.md",
+      "title": "以职业方向为目标发展自己",
+      "published": "2026-06-26",
+      "category": "学习笔记",
+      "tags": [
+        "未来规划",
+        "求职"
+      ],
+      "imageDirectivesConverted": 0,
+      "bodyHashBefore": "81e805a24d6427203d6dda6081b25f2b75d53f8e12e2e3779dffbb99f6dc5f62",
+      "bodyHashAfter": "81e805a24d6427203d6dda6081b25f2b75d53f8e12e2e3779dffbb99f6dc5f62",
+      "warnings": []
+    },
+    {
+      "file": "2026-07-01-食谱记录.md",
+      "title": "食谱记录",
+      "published": "2026-07-02",
+      "category": "生活手账",
+      "tags": [
+        "生活",
+        "食物",
+        "吃饭",
+        "健康"
+      ],
+      "imageDirectivesConverted": 0,
+      "bodyHashBefore": "8176361a97b528197f101231d90fd128f6fe4e4788c02584eae18835579a8a4a",
+      "bodyHashAfter": "8176361a97b528197f101231d90fd128f6fe4e4788c02584eae18835579a8a4a",
+      "warnings": []
+    },
+    {
+      "file": "2026-07-05-moment-detr模型-论文阅读.md",
+      "title": "Moment-DETR模型-论文阅读",
+      "published": "2026-07-06",
+      "category": "科研记录",
+      "tags": [
+        "科研",
+        "论文阅读",
+        "tsgv"
+      ],
+      "imageDirectivesConverted": 13,
+      "bodyHashBefore": "b1099fb7ce91f431dcd2f3f6052cc38e5d0fcd1d97ed016a1cf501b00b3aa25a",
+      "bodyHashAfter": "e6c00eae0deb60c3cf851809e093fb33175ad7a9c4ec3e960cb294ec1a7ac7b2",
+      "warnings": []
+    },
+    {
+      "file": "2026-07-15-tfvtg模型-论文阅读.md",
+      "title": "TFVTG模型-论文阅读",
+      "published": "2026-07-16",
+      "category": "科研记录",
+      "tags": [
+        "tsgv",
+        "科研"
+      ],
+      "imageDirectivesConverted": 10,
+      "bodyHashBefore": "d2b5fc015efa29c1fc2af42385e20f1a8d6eebdc21a3a84476f7ec1dcb948892",
+      "bodyHashAfter": "a50982ba38d9cc79f6489f273b9ec983ce1cc29c0a4384f5beeeed909833b55c",
+      "warnings": []
+    },
+    {
+      "file": "2026-07-25-vtimellm模型-论文阅读.md",
+      "title": "VTimeLLM模型-论文阅读",
+      "published": "2026-07-26",
+      "category": "科研记录",
+      "tags": [
+        "tsgv",
+        "科研"
+      ],
+      "imageDirectivesConverted": 7,
+      "bodyHashBefore": "2bae9493f1dd5f59b24e1535d27a9f92b3e681adb130bfef7aff583c0d9a894b",
+      "bodyHashAfter": "4e998e652a0f7583e72e2095aed4e80340689810e4d0964911c3a62a7b458b20",
+      "warnings": []
+    },
+    {
+      "file": "2026-08-01-vtg-llm模型-论文阅读.md",
+      "title": "VTG-LLM模型-论文阅读",
+      "published": "2026-08-02",
+      "category": "科研记录",
+      "tags": [
+        "tsgv",
+        "科研"
+      ],
+      "imageDirectivesConverted": 5,
+      "bodyHashBefore": "0fb61bff0c7d170a7b9020652a55af7a106b6e9378f5b21d7c1aaa9baaf30b2a",
+      "bodyHashAfter": "c09b9c3df668a4c4d6f5f79b267b206cd61901f729798a2afd2b9368ed76af12",
+      "warnings": []
+    },
+    {
+      "file": "2026-08-19-time-r1模型-论文阅读.md",
+      "title": "Time-R1模型-论文阅读",
+      "published": "2026-08-20",
+      "category": "科研记录",
+      "tags": [
+        "tsgv",
+        "科研"
+      ],
+      "imageDirectivesConverted": 1,
+      "bodyHashBefore": "4d0bc7802a605cc4140fa5f6fb1529a7b619a9111b60114c9abfe0fe30ad0a91",
+      "bodyHashAfter": "b20e35115f2ee6db5dbce50aa09ca2f2994e261924493e0ca8ebcccb64fcc5ea",
+      "warnings": []
+    },
+    {
+      "file": "2026-08-24-timelens模型-论文阅读.md",
+      "title": "TimeLens模型-论文阅读",
+      "published": "2026-08-25",
+      "category": "科研记录",
+      "tags": [
+        "tsgv",
+        "科研"
+      ],
+      "imageDirectivesConverted": 8,
+      "bodyHashBefore": "143c2b47d4afe1c94b7b3a368fda6c59d7d6f7bf8de18a0245eed50c648e2ae5",
+      "bodyHashAfter": "37fc3aee3ea7e3137f17efc27badbf7714ddb3869d6ae3bb39e32fe75c57f5e8",
+      "warnings": []
+    }
+  ]
+}
