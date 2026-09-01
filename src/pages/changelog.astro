@@ -1,0 +1,95 @@
+---
+import { Icon } from "astro-icon/components";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+
+const entries = [
+	{
+		date: "2026-09-02",
+		title: "Aemeath · Roxy Edition",
+		description: "以 Aemeath 为完整界面基线重构苍蓝回廊，并迁移原有文章、图片、资料、媒体与后台能力。",
+		tags: ["完整重构", "内容迁移", "洛琪希"],
+		icon: "material-symbols:auto-awesome-rounded",
+		accent: "#60a5fa",
+		changes: [
+			"加入 Aemeath 的首页组合式开场、欢迎提示、时间问候、每日一言与日程进度。",
+			"加入壁纸切换、更新日志、工具页、朋友圈、追番页、友链漫游舱与文章工作台。",
+			"使用自有洛琪希图片、动图与开场视频建立统一的苍蓝水系视觉。",
+			"原有文章与上传图片按新内容模型接入，不兼容资料保留在恢复分支和离线备份中。",
+		],
+	},
+	{
+		date: "2026-06-23",
+		title: "苍蓝回廊启程",
+		description: "个人博客开始记录论文阅读、技术学习、书与日常。",
+		tags: ["博客", "写作"],
+		icon: "material-symbols:water-drop-rounded",
+		accent: "#22d3ee",
+		changes: ["建立文章归档、分类与标签。", "整理个人资料、图片和媒体资源。"],
+	},
+];
+---
+
+<MainGridLayout title="更新日志" description="苍蓝回廊的每一次生长">
+	<section class="log-shell card-base z-10 px-7 py-7 relative w-full onload-animation">
+		<header class="log-hero">
+			<div class="log-hero__icon"><Icon is:inline name="material-symbols:history-rounded" /></div>
+			<div>
+				<p class="log-kicker">CHANGELOG / AZURE CORRIDOR</p>
+				<h1>更新日志</h1>
+				<p>记录站点结构、内容模型与视觉体验的主要变化。</p>
+			</div>
+			<span class="log-count">{entries.length} 次里程碑</span>
+		</header>
+
+		<div class="log-timeline">
+			{entries.map((entry, index) => (
+				<article class="log-entry" style={`--entry-accent:${entry.accent}`}>
+					<div class="log-rail" aria-hidden="true">
+						<span class="log-dot"><Icon is:inline name={entry.icon} /></span>
+						{index < entries.length - 1 && <i />}
+					</div>
+					<div class="log-card">
+						<div class="log-card__top">
+							<time datetime={entry.date}>{entry.date}</time>
+							<div class="log-tags">{entry.tags.map((tag) => <span>{tag}</span>)}</div>
+						</div>
+						<h2>{entry.title}</h2>
+						<p>{entry.description}</p>
+						<ul>
+							{entry.changes.map((change) => (
+								<li><Icon is:inline name="material-symbols:check-circle-rounded" /><span>{change}</span></li>
+							))}
+						</ul>
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+</MainGridLayout>
+
+<style>
+	.log-shell { overflow: hidden; }
+	.log-hero { display: grid; grid-template-columns: auto 1fr auto; gap: 1rem; align-items: center; padding: 0.4rem 0 1.5rem; border-bottom: 1px solid var(--line-divider); }
+	.log-hero__icon { width: 3.4rem; height: 3.4rem; display: grid; place-items: center; border-radius: 1.1rem; color: white; font-size: 1.55rem; background: linear-gradient(135deg,#2563eb,#22d3ee); box-shadow: 0 .8rem 1.8rem rgb(37 99 235 / .22); }
+	.log-kicker { margin: 0 0 .2rem; color: var(--primary); font-size: .68rem; font-weight: 850; letter-spacing: .13em; }
+	.log-hero h1 { margin: 0; color: var(--content-regular); font-size: clamp(1.5rem,3vw,2rem); }
+	.log-hero p:last-child { margin: .3rem 0 0; color: var(--content-meta); font-size: .88rem; }
+	.log-count { padding: .45rem .7rem; border: 1px solid color-mix(in srgb,var(--primary) 24%,transparent); border-radius: 999px; color: var(--primary); background: color-mix(in srgb,var(--primary) 8%,transparent); font-size: .72rem; font-weight: 800; }
+	.log-timeline { padding-top: 1.7rem; }
+	.log-entry { display: grid; grid-template-columns: 3rem 1fr; gap: .7rem; }
+	.log-rail { display: flex; flex-direction: column; align-items: center; }
+	.log-dot { width: 2.25rem; height: 2.25rem; display: grid; place-items: center; flex: none; border: 1px solid color-mix(in srgb,var(--entry-accent) 55%,transparent); border-radius: 50%; color: var(--entry-accent); background: color-mix(in srgb,var(--entry-accent) 12%,var(--card-bg)); }
+	.log-rail i { width: 1px; min-height: 3rem; flex: 1; margin: .45rem 0; background: linear-gradient(var(--entry-accent),var(--line-divider)); opacity: .45; }
+	.log-card { margin-bottom: 1.4rem; padding: 1.15rem 1.25rem; border: 1px solid var(--line-divider); border-radius: 1.15rem; background: color-mix(in srgb,var(--card-bg) 94%,var(--entry-accent) 6%); transition: transform .25s ease,border-color .25s ease; }
+	.log-card:hover { transform: translateY(-2px); border-color: color-mix(in srgb,var(--entry-accent) 42%,var(--line-divider)); }
+	.log-card__top { display: flex; flex-wrap: wrap; justify-content: space-between; gap: .7rem; }
+	.log-card time { color: var(--entry-accent); font-size: .74rem; font-weight: 850; letter-spacing: .08em; }
+	.log-tags { display: flex; flex-wrap: wrap; gap: .35rem; }
+	.log-tags span { padding: .22rem .48rem; border-radius: 999px; color: var(--content-meta); background: var(--btn-regular-bg); font-size: .65rem; font-weight: 750; }
+	.log-card h2 { margin: .65rem 0 .35rem; color: var(--content-regular); font-size: 1.2rem; }
+	.log-card > p { margin: 0; color: var(--content-meta); font-size: .88rem; line-height: 1.7; }
+	.log-card ul { display: grid; gap: .5rem; margin: .9rem 0 0; padding: .8rem 0 0; border-top: 1px dashed var(--line-divider); list-style: none; }
+	.log-card li { display: grid; grid-template-columns: auto 1fr; gap: .5rem; color: var(--content-regular); font-size: .82rem; line-height: 1.65; }
+	.log-card li svg { margin-top: .22rem; color: var(--entry-accent); }
+	@media(max-width:640px){ .log-shell{padding:1.15rem}.log-hero{grid-template-columns:auto 1fr}.log-count{display:none}.log-entry{grid-template-columns:2.35rem 1fr}.log-card{padding:1rem}.log-hero__icon{width:3rem;height:3rem} }
+</style>

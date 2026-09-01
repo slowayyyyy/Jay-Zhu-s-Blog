@@ -1,11 +1,29 @@
 import type { BackgroundWallpaperConfig } from "@/types/backgroundWallpaper";
-import azureContent from "@/data/azure-content.json";
+
+const desktopWallpaperImages = [
+	"/assets/images/roxy/water-magic.jpg",
+	"/assets/images/roxy/night-flight.jpg",
+	"/assets/images/roxy/portrait-magic.jpg",
+	"/assets/images/roxy/field-journey.jpg",
+	"/assets/images/roxy/magic-preview.jpg",
+];
+
+const mobileWallpaperImages = [
+	"/assets/images/roxy/night-flight.jpg",
+	"/assets/images/roxy/field-journey.jpg",
+	"/assets/images/roxy/sweater.jpg",
+	"/assets/images/roxy/portrait-magic.jpg",
+];
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
-	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 覆盖透明，"none" 纯色背景无壁纸
+	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
 	mode: "banner",
+	// 是否允许用户通过导航栏切换壁纸模式
+	// 且同时维护多种壁纸模式过于复杂（已经屎山代码），在切换时有时候可能会出现一些奇怪的过渡效果或者bug
+	// 推荐只选择自己喜欢的模式并关闭切换功能
+	switchable: true,
 	// 是否启用背景视频播放，配置后将在导航栏显示视频播放按钮
-	playerEnable: false,
+	playerEnable: true,
 	/**
 	 * 背景图片配置
 	 * 图片路径支持三种格式：
@@ -20,66 +38,64 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	 *
 	 * 如果只使用一张图片或者使用随机图API，推荐直接使用字符串格式：
 	 * desktop: "https://t.alcy.cc/pc",   // 随机图API
-	 * desktop: "assets/images/DesktopWallpaper/d1.avif", // 单张图片
+	 * desktop: "assets/images/DesktopWallpaper/d1.webp", // 单张图片
 	 *
 	 * mobile: "https://t.alcy.cc/mp", // 随机图API
-	 * mobile: "assets/images/MobileWallpaper/m1.avif", // 单张图片
+	 * mobile: "assets/images/MobileWallpaper/m1.webp", // 单张图片
 	 *
 	 * 支持配置多张图片（数组），每次刷新页面随机显示一张：
 	 * desktop: [
-	 * "assets/images/DesktopWallpaper/d1.avif",
-	 * "assets/images/DesktopWallpaper/d2.avif",
+	 * "assets/images/DesktopWallpaper/d1.webp",
+	 * "assets/images/DesktopWallpaper/d2.webp",
 	 * ],
 	 *
 	 * mobile:[
-	 *   "assets/images/MobileWallpaper/m1.avif",
-	 *   "assets/images/MobileWallpaper/m2.avif",
+	 *   "assets/images/MobileWallpaper/m1.webp",
+	 *   "assets/images/MobileWallpaper/m2.webp",
 	 * ],
 	 */
 	src: {
 		// 桌面背景图片（支持单张或多张随机）
-		// desktop: "assets/images/DesktopWallpaper/d1.avif",
-		desktop: [
-			"assets/images/azure/roxy-water-magic.jpg",
-			"assets/images/azure/roxy-study.jpg",
-			"assets/images/azure/roxy-field.jpg",
-		],
+		// desktop: "assets/images/DesktopWallpaper/d1.webp",
+		desktop: desktopWallpaperImages,
 		// 移动背景图片（支持单张或多张随机）
-		// mobile: "assets/images/MobileWallpaper/m1.avif",
-		mobile: [
-			"assets/images/azure/roxy-night-magic.jpg",
-			"assets/images/azure/roxy-portrait-light.jpg",
-			"assets/images/azure/roxy-field.jpg",
-		],
+		// mobile: "assets/images/MobileWallpaper/m1.webp",
+		mobile: mobileWallpaperImages,
 		// 背景视频播放地址
-		// 支持单个视频路径（字符串）或多个视频循环（数组，参考上面壁纸配置）
+		// 支持单个视频路径（字符串）或多个视频循环（数组）
 		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
 		// playerUrl: "/assets/videos/firefly.mp4",
-		playerUrl: "",
+		playerUrl: "/media/opening-roxy-720p.mp4",
 	},
 	// 横幅壁纸和全屏壁纸共享配置
 	common: {
 		// 壁纸遮罩暗度，让横幅文字显示更清晰，0-1之间，值越大越暗
-		dimOpacity: 0.38,
+		dimOpacity: 0.2,
 		// 多视频播放模式："order" 顺序循环，"random" 随机切换（仅当 playerUrl 为数组时生效）
 		playerMode: "random",
 		// 主页横幅文字
 		homeText: {
 			// 是否启用主页横幅文字
 			enable: true,
+			// 是否允许用户通过控制面板切换横幅标题显示
+			switchable: true,
 			// 主页横幅主标题
-			title: azureContent.hero.title,
+			title: "苍蓝回廊",
 			// 主页横幅主标题字体大小
-			titleSize: "clamp(3.7rem, 7vw, 7rem)",
+			titleSize: "3.8rem",
 			// 主页横幅副标题
-			subtitle: azureContent.hero.subtitle,
+			subtitle: [
+				"论文、读书与日常，沿着水纹慢慢汇流。",
+				"把尚未想明白的问题，交给下一页和下一次出发。",
+				"愿每一次认真，都在时间里留下清澈的回声。",
+			],
 			// 主页横幅副标题字体大小
-			subtitleSize: "1.15rem",
+			subtitleSize: "1.5rem",
 			typewriter: {
 				// 是否启用打字机效果
 				// 打字机开启 → 循环显示所有副标题
 				// 打字机关闭 → 每次刷新随机显示一条副标题
-				enable: false,
+				enable: true,
 				// 打字速度（毫秒）
 				speed: 100,
 				// 删除速度（毫秒）
@@ -87,54 +103,17 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				// 完全显示后的暂停时间（毫秒）
 				pauseTime: 2000,
 			},
-			// 是否显示标题下方的链接图标
-			linksEnable: true,
-			// 首页横幅标题下方的链接图标（可选，支持 showName 显示文字）
-			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
-			links: [
-				{
-					name: azureContent.hero.primaryCta,
-					icon: "material-symbols:arrow-downward-rounded",
-					url: "#recent-notes",
-					showName: true,
-				},
-				{
-					name: azureContent.hero.secondaryCta,
-					icon: "material-symbols:arrow-outward-rounded",
-					url: "/about/",
-					showName: true,
-				},
-			],
-		},
-		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
-		carousel: {
-			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
-			enable: true,
-			// 轮播切换间隔（毫秒）
-			interval: 9000,
-			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
-			transitionEffect: "kenburns",
-		},
-	},
-	// Banner模式特有配置
-	banner: {
-		// 图片位置
-		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
-		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
-		position: "center 36%",
-		// 文章横幅信息："description" 显示描述，"meta" 显示日期、字数和阅读时长
-		postInfo: {
-			mode: "description",
 		},
 		// 导航栏配置
 		navbar: {
-			// 导航栏透明模式："semi" 半透明，"semifull" 动态透明，"none" 纯色不透明
+			// 导航栏透明模式："semi" 半透明，"full" 完全透明，"semifull" 动态透明
 			transparentMode: "semifull",
-			// 毛玻璃模糊度，0 即关闭导航栏的毛玻璃
-			// 注意：导航栏子菜单与浮动面板始终保留毛玻璃，模糊度跟随此项但有最小值
-			blur: 12,
+			// 是否开启毛玻璃模糊效果，开启可能会影响页面性能，如果不开启则是半透明，请根据自己的喜好开启
+			enableBlur: true,
+			// 毛玻璃模糊度
+			blur: 5,
 		},
-		// 水波纹动画效果配置，开启会影响页面性能，增加内存占用，请根据自己的喜好开启
+		// 水波纹动画效果配置，开启会影响页面性能，请根据自己的喜好开启
 		waves: {
 			enable: {
 				// 桌面端是否启用水波纹动画效果
@@ -142,6 +121,8 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 				// 移动端是否启用水波纹动画效果
 				mobile: true,
 			},
+			// 是否允许用户通过控制面板切换水波纹动画
+			switchable: true,
 		},
 		// 渐变过渡效果配置，当水波纹关闭时自动启用，提供壁纸底部到背景色的平滑过渡
 		gradient: {
@@ -153,10 +134,36 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			},
 			// 渐变高度
 			height: "10%",
+			// 是否允许用户通过控制面板切换渐变过渡
+			switchable: true,
+		},
+		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
+		carousel: {
+			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
+			enable: true,
+			// 轮播切换间隔（毫秒）
+			interval: 5000,
+			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
+			transitionEffect: "zoom",
+			// 是否允许用户通过控制面板切换壁纸轮播
+			switchable: true,
 		},
 	},
-	// 覆盖透明覆盖模式特有配置
+	// Banner模式特有配置
+	banner: {
+		// 图片位置
+		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
+		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
+		position: "center 38%",
+	},
+	// 全屏透明覆盖模式特有配置
 	overlay: {
+		// 是否允许用户通过控制面板调整全屏透明模式参数
+		switchable: {
+			opacity: true,
+			blur: true,
+			cardOpacity: true,
+		},
 		// 层级，确保壁纸在背景层
 		zIndex: -1,
 		// 壁纸透明度
@@ -164,31 +171,11 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 背景模糊度
 		blur: 10,
 		// 卡片透明度，0-1之间，值越小越透明
-		cardOpacity: 0.6,
+		cardOpacity: 0.5,
 	},
 	// 全屏壁纸模式特有配置
-	// 全屏模式下壁纸固定全屏显示，首屏居中标题，内容区在首屏之下、下滑时覆盖壁纸
-	// 壁纸模糊度(blur)、卡片透明度(cardOpacity)、层级(zIndex) 复用上方 overlay 模式的配置；
-	// 背景透明度(opacity)不适用（全屏壁纸不透明）；导航栏透明模式由 fullscreen.navbar.transparentMode 控制，脱离 banner 的 navbar 配置
 	fullscreen: {
 		// 图片位置
 		position: "center",
-		// 全屏壁纸模式的导航栏配置
-		navbar: {
-			// 导航栏透明模式："semi" 半透明，"semifull" 动态透明（仅首页顶部透明、下滑玻璃化；非首页均跟卡片半透明）
-			transparentMode: "semifull",
-			// 导航栏毛玻璃模糊度，0 即关闭（玻璃态生效）
-			blur: 12,
-		},
-		// 首页下滑时壁纸模糊渐变开关（从 0 渐变为 overlay.blur 的最大模糊）
-		// 关闭后该设备上全屏壁纸保持清晰（首页与非首页都不模糊），设置面板的模糊度滑块也会隐藏
-		blurRamp: {
-			enable: {
-				// 桌面端是否启用模糊渐变
-				desktop: true,
-				// 移动端是否启用模糊渐变
-				mobile: true,
-			},
-		},
 	},
 };

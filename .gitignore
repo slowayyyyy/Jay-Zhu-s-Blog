@@ -1,11 +1,9 @@
 # build output
 dist/
 
-# generated vndb covers
-public/vndb-covers/
-
 # generated types
 .astro/
+.astro-build-check/
 
 # dependencies
 node_modules/
@@ -15,10 +13,32 @@ npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
+*.log
+*.pid
+*.jobid
+__pycache__/
+*.py[cod]
+
+# local package-manager caches and deployment archives
+.npm-cache/
+.pnpm-store/
+firefly-dist-*.tgz
 
 # environment variables
 .env
 .env.production
+ops/waline-ai-reviewer/.env*
+!ops/waline-ai-reviewer/.env.example
+ops/waline-ai-reviewer/config.json
+ops/waline-ai-reviewer/runtime.json
+ops/waline-ai-reviewer/smtp.json
+ops/waline-ai-reviewer/admin-password.json
+ops/waline-ai-reviewer/admin-sessions.json
+ops/waline-ai-reviewer/*.key
+ops/waline-ai-reviewer/*.db
+ops/waline-ai-reviewer/*.sqlite*
+waline/.env.local
+waline/smtp.json
 
 # macOS-specific files
 .DS_Store
@@ -32,18 +52,15 @@ yarn.lock
 # ide
 .idea
 *.iml
+.claude
 
 # docs
 Firefly-docs/
-
-# lite 版本
-Firefly-Lite/
+Rainzt博客部署指南.md
 
 cache/
 package/
 .obsidian/
 
-# vibe coding
-.codex*
-.claude
-.mimocode
+# accidental nested copy
+Firefly-master/

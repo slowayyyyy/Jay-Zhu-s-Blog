@@ -2,7 +2,6 @@ import { loadRenderers } from "astro:container";
 import { render } from "astro:content";
 import { getContainerRenderer as getMDXRenderer } from "@astrojs/mdx/container-renderer";
 import rss, { type RSSFeedItem } from "@astrojs/rss";
-import { getContainerRenderer as getSvelteRenderer } from "@astrojs/svelte/container-renderer";
 import I18nKey from "@i18n/i18nKey";
 import { i18n } from "@i18n/translation";
 import { getSortedPosts } from "@utils/content-utils";
@@ -24,10 +23,7 @@ function stripInvalidXmlChars(str: string): string {
 
 export async function GET(context: APIContext): Promise<Response> {
 	const blog = await getSortedPosts();
-	const renderers = await loadRenderers([
-		getMDXRenderer(),
-		getSvelteRenderer(),
-	]);
+	const renderers = await loadRenderers([getMDXRenderer()]);
 	const container = await AstroContainer.create({ renderers });
 	const feedItems: RSSFeedItem[] = [];
 	for (const post of blog) {
@@ -58,9 +54,9 @@ export async function GET(context: APIContext): Promise<Response> {
 		title: siteConfig.title,
 		description: siteConfig.subtitle || "No description",
 		site: context.site ?? "https://jay-zhu-s-blog.pages.dev",
-		customData: `<templateTheme>Firefly</templateTheme>
+		customData: `<templateTheme>Aemeath</templateTheme>
 		<templateThemeVersion>${pkg.version}</templateThemeVersion>
-		<templateThemeUrl>https://github.com/CuteLeaf/Firefly</templateThemeUrl>
+		<templateThemeUrl>https://github.com/Jarvis0227/Aemeath</templateThemeUrl>
 		<lastBuildDate>${formatDateI18nWithTime(new Date())}</lastBuildDate>`,
 		items: feedItems,
 	});

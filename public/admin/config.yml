@@ -15,7 +15,7 @@ public_folder: /uploads
 
 site_url: https://jay-zhu-s-blog.pages.dev
 display_url: https://jay-zhu-s-blog.pages.dev
-logo_url: /favicon.svg
+logo_url: /favicon/azure-corridor.svg
 
 slug:
   encoding: unicode

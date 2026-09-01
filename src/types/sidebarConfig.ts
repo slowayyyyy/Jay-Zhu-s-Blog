@@ -10,7 +10,9 @@ export type WidgetComponentType =
 	| "calendar"
 	| "music"
 	| "siteInfo"
-	| "dynamic";
+	| "timeGreeting"
+	| "quoteOfTheDay"
+	| "scheduleProgress";
 
 export type WidgetComponentConfig = {
 	type: WidgetComponentType; // 组件类型
@@ -40,16 +42,12 @@ export type WidgetSpecificConfig = {
 	calendar?: CalendarConfig; // 日历组件专用配置
 	ad?: AdConfig; // 广告组件专用配置
 	siteInfo?: SiteInfoConfig; // 站点信息组件专用配置
-	dynamic?: DynamicWidgetConfig; // 最新动态组件专用配置
-};
-
-export type DynamicWidgetConfig = {
-	limit?: number; // 显示的最新动态数量，默认 3
 };
 
 // 站点信息组件专用配置
 export type SiteInfoConfig = {
-	unknownBuildPlatform?: string; // 未识别的构建平台显示文本，默认 "Unknown CI"
+	buildPlatform?: string; // 站点实际部署平台显示文本
+	unknownBuildPlatform?: string; // 未识别的构建平台显示文本
 };
 
 // 日历组件专用配置

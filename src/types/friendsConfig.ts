@@ -4,7 +4,11 @@ export type FriendLink = {
 	imgurl: string; // 头像图片URL
 	desc: string; // 友链描述
 	siteurl: string; // 友链地址
+	rss?: string | string[]; // RSS/Atom 地址，可留空并由朋友圈页面自动探测
+	screenshot?: string; // 站点截图 URL（供后续友链展示或维护使用）
 	tags?: string[]; // 标签数组
+	recommended?: boolean; // 是否使用推荐友链样式
+	temporarilyUnavailable?: boolean; // 手动显示暂时失联状态
 	weight: number; // 权重，数字越大排序越靠前
 	enabled: boolean; // 是否启用
 };

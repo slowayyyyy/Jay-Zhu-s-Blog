@@ -1,7 +1,7 @@
 import { defineCollection } from "astro:content";
 import type { CollectionConfig } from "astro/content/config";
 import { glob } from "astro/loaders";
-import { type ZodType, z } from "astro/zod";
+import { z } from "astro/zod";
 
 type PostData = {
 	title: string;
@@ -9,6 +9,7 @@ type PostData = {
 	updated?: Date;
 	draft: boolean;
 	description: string;
+	aiSummary: string;
 	image: string;
 	tags: string[];
 	category: string | null;
@@ -21,8 +22,6 @@ type PostData = {
 	comment: boolean;
 	password: string;
 	passwordHint: string;
-	series: string;
-	seriesOrder?: number;
 	prevTitle: string;
 	prevSlug: string;
 	nextTitle: string;
@@ -35,20 +34,11 @@ type DynamicData = {
 	location: string;
 };
 
-type SpecData = {
-	heroTitle?: string;
-	heroSubtitle?: string;
-	quote?: string;
-	closingTitle?: string;
-	closingText?: string;
-};
+type PostsCollection = CollectionConfig<z.ZodType<PostData>>;
+type SpecCollection = CollectionConfig<z.ZodType<Record<string, never>>>;
+type DynamicCollection = CollectionConfig<z.ZodType<DynamicData>>;
 
-type ContentCollection<T> = CollectionConfig<
-	ZodType<T>,
-	ReturnType<typeof glob>
->;
-
-const postsCollection: ContentCollection<PostData> = defineCollection({
+const postsCollection: PostsCollection = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/posts" }),
 	schema: z.object({
 		title: z.string(),
@@ -56,6 +46,7 @@ const postsCollection: ContentCollection<PostData> = defineCollection({
 		updated: z.date().optional(),
 		draft: z.boolean().optional().default(false),
 		description: z.string().optional().default(""),
+		aiSummary: z.string().optional().default(""),
 		image: z.string().optional().default(""),
 		tags: z.array(z.string()).optional().default([]),
 		category: z.string().optional().nullable().default(""),
@@ -68,8 +59,6 @@ const postsCollection: ContentCollection<PostData> = defineCollection({
 		comment: z.boolean().optional().default(true),
 		password: z.string().optional().default(""),
 		passwordHint: z.string().optional().default(""),
-		series: z.string().optional().default(""),
-		seriesOrder: z.number().optional(),
 
 		/* For internal use */
 		prevTitle: z.string().default(""),
@@ -79,18 +68,12 @@ const postsCollection: ContentCollection<PostData> = defineCollection({
 	}),
 });
 
-const specCollection: ContentCollection<SpecData> = defineCollection({
+const specCollection: SpecCollection = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
-	schema: z.object({
-		heroTitle: z.string().optional(),
-		heroSubtitle: z.string().optional(),
-		quote: z.string().optional(),
-		closingTitle: z.string().optional(),
-		closingText: z.string().optional(),
-	}),
+	schema: z.object({}),
 });
 
-const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
+const dynamicCollection: DynamicCollection = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/dynamic" }),
 	schema: z.object({
 		published: z.date(),

@@ -10,16 +10,84 @@ import {
 // NavBar Configuration - Dynamically generate navigation bar links based on order
 // ============================================================================
 const getDynamicNavBarConfig = (): NavBarConfig => {
+	// 基础导航栏链接
 	const links: NavBarLink[] = [
+		// 主页
 		LinkPresets.Home,
-		LinkPresets.Archive,
 		LinkPresets.Dynamic,
-		LinkPresets.Gallery,
 		LinkPresets.Music,
-		LinkPresets.Anime,
-		LinkPresets.Friends,
-		LinkPresets.About,
 	];
+
+	// 文章及其子菜单
+	links.push({
+		name: "文章",
+		url: "#",
+		icon: "material-symbols:article",
+		children: [
+			// 归档
+			LinkPresets.Archive,
+
+			// 分类
+			LinkPresets.Categories,
+
+			// 标签
+			LinkPresets.Tags,
+		],
+	});
+
+	// 更新日志
+	links.push(LinkPresets.Changelog);
+
+	// 友链
+	links.push(LinkPresets.Friends);
+
+	// 朋友圈
+	links.push(LinkPresets.Moments);
+
+	// 留言板
+	links.push(LinkPresets.Guestbook);
+
+	// 我的及其子菜单
+	links.push({
+		name: "我的",
+		url: "#",
+		icon: "material-symbols:person",
+		children: [
+			// 相册
+			LinkPresets.Gallery,
+
+			// 追番
+			LinkPresets.Anime,
+
+			// 番组计划
+			LinkPresets.Bangumi,
+
+			// 工具
+			LinkPresets.Tools,
+		],
+	});
+
+	// 关于及其子菜单
+	links.push({
+		name: "关于",
+		url: "#",
+		icon: "material-symbols:info",
+		children: [
+			// 打赏
+			LinkPresets.Sponsor,
+
+			// 关于页面
+			LinkPresets.About,
+		],
+	});
+
+	// 文档链接
+	// links.push({
+	// 	name: "文档",
+	// 	url: "https://example.com/docs",
+	// 	external: true,
+	// 	icon: "material-symbols:docs",
+	// });
 
 	return { links } as NavBarConfig;
 };
@@ -54,75 +122,36 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/tags/",
 		icon: "material-symbols:tag-rounded",
 	},
-	Series: {
-		name: "系列",
-		url: "/series/",
-		icon: "material-symbols:layers",
-	},
-	Friends: {
-		name: "友链",
-		url: "/friends/",
-		icon: "material-symbols:link-2-rounded",
-		pageKey: "friends",
-	},
-	Guestbook: {
-		name: "留言",
-		url: "/guestbook/",
-		icon: "material-symbols:chat",
-		pageKey: "guestbook",
+	Tools: {
+		name: "工具",
+		url: "/tools/",
+		icon: "material-symbols:construction-rounded",
 	},
 	Dynamic: {
 		name: "说说",
 		url: "/dynamic/",
 		icon: "material-symbols:forum-rounded",
-		pageKey: "dynamic",
-	},
-	Gallery: {
-		name: "画廊",
-		url: "/gallery/",
-		icon: "material-symbols:photo-library",
-		pageKey: "gallery",
 	},
 	Music: {
 		name: "乐境",
 		url: "/music/",
 		icon: "material-symbols:headphones-rounded",
 	},
-	Anime: {
-		name: "追番",
-		url: "/bilibili/",
-		icon: "material-symbols:movie-outline-rounded",
-		pageKey: "bilibili",
+	Changelog: {
+		name: "更新日志",
+		url: "/changelog/",
+		icon: "material-symbols:history-edu-rounded",
 	},
-	Booknav: {
-		name: "书签导航",
-		url: "/booknav/",
-		icon: "material-symbols:bookmarks",
-		pageKey: "booknav",
+	Friends: {
+		name: "友链",
+		url: "/friends/",
+		icon: "material-symbols:group",
+		pageKey: "friends",
 	},
-	Bilibili: {
-		name: "哔哩哔哩",
-		url: "/bilibili/",
-		icon: "fa7-brands:bilibili",
-		pageKey: "bilibili",
-	},
-	Bangumi: {
-		name: "番组计划",
-		url: "/bangumi/",
-		icon: "material-symbols:movie",
-		pageKey: "bangumi",
-	},
-	VNDB: {
-		name: "VNDB",
-		url: "/vndb/",
-		icon: "material-symbols:chrome-reader-mode-rounded",
-		pageKey: "vndb",
-	},
-	MAL: {
-		name: "AnimeList",
-		url: "/myanimelist/",
-		icon: "material-symbols:menu-book",
-		pageKey: "mal",
+	Moments: {
+		name: "朋友圈",
+		url: "/moments/",
+		icon: "material-symbols:rss-feed-rounded",
 	},
 	Sponsor: {
 		name: "打赏",
@@ -130,10 +159,34 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		icon: "material-symbols:favorite",
 		pageKey: "sponsor",
 	},
+	Guestbook: {
+		name: "留言",
+		url: "/guestbook/",
+		icon: "material-symbols:chat",
+		pageKey: "guestbook",
+	},
 	About: {
-		name: "关于",
+		name: "关于我",
 		url: "/about/",
 		icon: "material-symbols:person",
+	},
+	Bangumi: {
+		name: "番组计划",
+		url: "/bangumi/",
+		icon: "material-symbols:movie",
+		pageKey: "bangumi",
+	},
+	Gallery: {
+		name: "相册",
+		url: "/gallery/",
+		icon: "material-symbols:photo-library",
+		pageKey: "gallery",
+	},
+	Anime: {
+		name: "追番",
+		url: "/anime/",
+		icon: "material-symbols:live-tv",
+		pageKey: "anime",
 	},
 };
 

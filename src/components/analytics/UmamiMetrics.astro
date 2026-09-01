@@ -1,0 +1,244 @@
+---
+interface Props {
+	shareId: string;
+	shareApiBase: string;
+	historicalVisitors?: number;
+	historicalPageviews?: number;
+}
+
+const {
+	shareId,
+	shareApiBase,
+	historicalVisitors = 0,
+	historicalPageviews = 0,
+} = Astro.props;
+---
+
+<script is:inline define:vars={{ shareId, shareApiBase, historicalVisitors, historicalPageviews }}>
+	(() => {
+		const namespace = "__azureCorridorUmamiMetrics";
+		const shareCacheKey = "azure-corridor:umami:share";
+		const metricsCacheKey = "azure-corridor:umami:metrics";
+		const statsCacheKey = "azure-corridor:umami:stats";
+		const shareCacheTtl = 24 * 60 * 60 * 1000;
+		const metricsCacheTtl = 60 * 1000;
+		const apiBase = String(shareApiBase || "").replace(/\/+$/, "");
+		const historicalVisitorCount = Math.max(0, Math.floor(Number(historicalVisitors) || 0));
+		const historicalPageviewCount = Math.max(0, Math.floor(Number(historicalPageviews) || 0));
+
+		if (!shareId || !apiBase) return;
+
+		function readCache(key, tag, ttl) {
+			try {
+				const raw = localStorage.getItem(key);
+				if (!raw) return null;
+				const cached = JSON.parse(raw);
+				if (
+					cached?.tag === tag &&
+					typeof cached.timestamp === "number" &&
+					Date.now() - cached.timestamp < ttl
+				) {
+					return cached.value;
+				}
+			} catch {
+				// 本地缓存不可用时直接请求 Umami，不影响页面阅读。
+			}
+			return null;
+		}
+
+		function writeCache(key, tag, value) {
+			try {
+				localStorage.setItem(
+					key,
+					JSON.stringify({ tag, timestamp: Date.now(), value }),
+				);
+			} catch {
+				// Safari 无痕等场景可能禁用本地缓存，无需额外提示。
+			}
+		}
+
+		function normalizePath(value) {
+			const path = String(value || "").split(/[?#]/, 1)[0].replace(/\/+$/, "");
+			return (path || "/").toLowerCase();
+		}
+
+		function formatNumber(value) {
+			return new Intl.NumberFormat("zh-CN").format(Number(value) || 0);
+		}
+
+		async function getShare() {
+			const cached = readCache(shareCacheKey, shareId, shareCacheTtl);
+			if (cached) return cached;
+
+			const response = await fetch(`${apiBase}/api/share/${encodeURIComponent(shareId)}`);
+			if (!response.ok) throw new Error(`share ${response.status}`);
+			const result = await response.json();
+			if (!result?.websiteId || !result?.token) throw new Error("invalid share response");
+			writeCache(shareCacheKey, shareId, result);
+			return result;
+		}
+
+		async function getMetrics(share, forceRefresh = false) {
+			const cached = forceRefresh
+				? null
+				: readCache(metricsCacheKey, share.websiteId, metricsCacheTtl);
+			if (cached) return cached;
+
+			const url = new URL(`${apiBase}/api/websites/${share.websiteId}/metrics`);
+			url.searchParams.set("startAt", "0");
+			url.searchParams.set("endAt", String(Date.now()));
+			url.searchParams.set("type", "path");
+			url.searchParams.set("limit", "1000");
+
+			const response = await fetch(url, {
+				headers: {
+					"x-umami-share-token": share.token,
+					"x-umami-share-context": "1",
+				},
+			});
+			if (!response.ok) throw new Error(`metrics ${response.status}`);
+			const result = await response.json();
+			writeCache(metricsCacheKey, share.websiteId, result);
+			return result;
+		}
+
+		async function getStats(share, startAt, endAt, cacheScope, forceRefresh = false) {
+			const cacheKey = `${statsCacheKey}:${cacheScope}`;
+			const cached = forceRefresh
+				? null
+				: readCache(cacheKey, share.websiteId, metricsCacheTtl);
+			if (cached) return cached;
+
+			const url = new URL(`${apiBase}/api/websites/${share.websiteId}/stats`);
+			url.searchParams.set("startAt", String(startAt));
+			url.searchParams.set("endAt", String(endAt));
+
+			const response = await fetch(url, {
+				headers: {
+					"x-umami-share-token": share.token,
+					"x-umami-share-context": "1",
+				},
+			});
+			if (!response.ok) throw new Error(`stats ${response.status}`);
+			const result = await response.json();
+			writeCache(cacheKey, share.websiteId, result);
+			return result;
+		}
+
+		function getLocalDayStart(timestamp = Date.now()) {
+			const date = new Date(timestamp);
+			date.setHours(0, 0, 0, 0);
+			return date.getTime();
+		}
+
+		function renderPageViews(metrics) {
+			const rows = Array.isArray(metrics) ? metrics : metrics?.data || [];
+			const viewsByPath = new Map();
+			for (const row of rows) {
+				const path = normalizePath(row?.x);
+				viewsByPath.set(path, (viewsByPath.get(path) || 0) + (Number(row?.y) || 0));
+			}
+
+			document.querySelectorAll("[data-umami-pageviews]").forEach((element) => {
+				const value = viewsByPath.get(normalizePath(element.getAttribute("data-umami-pageviews"))) || 0;
+				element.textContent = formatNumber(value);
+			});
+		}
+
+		function renderSiteStats(stats, todayStats) {
+			document.querySelectorAll('[data-umami-stat="todayVisitors"]').forEach((element) => {
+				element.textContent = todayStats ? formatNumber(todayStats.visitors) : "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="todayPageviews"]').forEach((element) => {
+				element.textContent = todayStats ? formatNumber(todayStats.pageviews) : "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="visitors"]').forEach((element) => {
+				element.textContent = stats
+					? formatNumber((Number(stats.visitors) || 0) + historicalVisitorCount)
+					: "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="pageviews"]').forEach((element) => {
+				element.textContent = stats
+					? formatNumber((Number(stats.pageviews) || 0) + historicalPageviewCount)
+					: "加载中";
+			});
+		}
+
+		function markUnavailable() {
+			document.querySelectorAll("[data-umami-pageviews]").forEach((element) => {
+				element.textContent = "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="visitors"]').forEach((element) => {
+				element.textContent = "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="pageviews"]').forEach((element) => {
+				element.textContent = "加载中";
+			});
+			document.querySelectorAll('[data-umami-stat="todayVisitors"], [data-umami-stat="todayPageviews"]').forEach((element) => {
+				element.textContent = "加载中";
+			});
+		}
+
+		async function refresh(forceRefresh = false) {
+			const needsViews = Boolean(document.querySelector("[data-umami-pageviews]"));
+			const statElements = [...document.querySelectorAll("[data-umami-stat]")];
+			const needsStats = statElements.length > 0;
+			const needsTodayStats = statElements.some((element) =>
+				["todayVisitors", "todayPageviews"].includes(element.getAttribute("data-umami-stat")),
+			);
+			if (!needsViews && !needsStats) return;
+
+			try {
+				const share = await getShare();
+				const now = Date.now();
+				const dayStart = getLocalDayStart(now);
+				const tasks = await Promise.allSettled([
+					needsViews ? getMetrics(share, forceRefresh) : Promise.resolve(null),
+					needsStats ? getStats(share, 0, now, "all", forceRefresh) : Promise.resolve(null),
+					needsTodayStats
+						? getStats(share, dayStart, now, `today:${dayStart}`, forceRefresh)
+						: Promise.resolve(null),
+				]);
+				const metrics = tasks[0].status === "fulfilled" ? tasks[0].value : null;
+				const stats = tasks[1].status === "fulfilled" ? tasks[1].value : null;
+				const todayStats = tasks[2].status === "fulfilled" ? tasks[2].value : null;
+				if (metrics) renderPageViews(metrics);
+				if (needsStats) renderSiteStats(stats, todayStats);
+				if (!metrics && needsViews) {
+					document.querySelectorAll("[data-umami-pageviews]").forEach((element) => {
+						element.textContent = "加载中";
+					});
+				}
+			} catch {
+				markUnavailable();
+			}
+		}
+
+		if (window[namespace]) {
+			window[namespace]();
+			return;
+		}
+
+		let scheduled = false;
+		let delayedRefreshTimer;
+		const scheduleRefresh = () => {
+			if (scheduled) return;
+			scheduled = true;
+			requestAnimationFrame(() => {
+				scheduled = false;
+				refresh();
+			});
+			if (delayedRefreshTimer) window.clearTimeout(delayedRefreshTimer);
+			delayedRefreshTimer = window.setTimeout(() => refresh(true), 4000);
+		};
+
+		window[namespace] = scheduleRefresh;
+		document.addEventListener("astro:page-load", scheduleRefresh);
+		document.addEventListener("swup:contentReplaced", scheduleRefresh);
+		if (document.readyState === "loading") {
+			document.addEventListener("DOMContentLoaded", scheduleRefresh, { once: true });
+		} else {
+			scheduleRefresh();
+		}
+	})();
+</script>

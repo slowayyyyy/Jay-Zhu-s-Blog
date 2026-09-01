@@ -4,13 +4,15 @@ import Advertisement from "@/components/widget/Advertisement.astro";
 import Announcement from "@/components/widget/Announcement.astro";
 import Calendar from "@/components/widget/Calendar.astro";
 import Categories from "@/components/widget/Categories.astro";
-import Dynamic from "@/components/widget/Dynamic.astro";
 import Music from "@/components/widget/Music.astro";
 import Profile from "@/components/widget/Profile.astro";
+import QuoteOfTheDay from "@/components/widget/QuoteOfTheDay.astro";
+import ScheduleProgress from "@/components/widget/ScheduleProgress.astro";
 import SidebarTOC from "@/components/widget/SidebarTOC.astro";
 import SiteInfo from "@/components/widget/SiteInfo.astro";
 import SiteStats from "@/components/widget/SiteStats.astro";
 import Tags from "@/components/widget/Tags.astro";
+import TimeGreeting from "@/components/widget/TimeGreeting.astro";
 import { sidebarLayoutConfig } from "@/config";
 import type {
 	MobileBottomComponentConfig,
@@ -20,7 +22,6 @@ import type {
 interface Props {
 	class?: string;
 	headings?: MarkdownHeading[];
-	encrypted?: boolean;
 	side?: "left" | "right" | "bottom";
 }
 
@@ -52,7 +53,9 @@ const componentMap = {
 	calendar: Calendar,
 	music: Music,
 	siteInfo: SiteInfo,
-	dynamic: Dynamic,
+	timeGreeting: TimeGreeting,
+	quoteOfTheDay: QuoteOfTheDay,
+	scheduleProgress: ScheduleProgress,
 };
 
 // 获取侧边栏位置
@@ -154,11 +157,7 @@ const getComponentProps = (
 
 	// 特殊处理 SidebarTOC 组件
 	if (config.type === "sidebarToc") {
-		return {
-			...baseProps,
-			headings: Astro.props.headings || [],
-			encrypted: Astro.props.encrypted || false,
-		};
+		return { ...baseProps, headings: Astro.props.headings || [] };
 	}
 
 	return baseProps;

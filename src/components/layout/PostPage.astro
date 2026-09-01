@@ -23,15 +23,11 @@ const initialLayoutClass =
 	defaultLayout === "grid"
 		? "post-grid-auto grid-mode"
 		: "flex flex-col gap-4 md:gap-4 list-mode";
-
-// 列表模式封面位置，只有 left 需要额外样式，right 是默认布局
-const coverPositionClass =
-	siteConfig.postListLayout.coverPosition === "left" ? " cover-left" : "";
 ---
 
 <div
   id="post-list-container"
-  class={`transition-all duration-500 ease-in-out mb-4 ${initialLayoutClass}${coverPositionClass}`}
+  class={`transition-all duration-500 ease-in-out mb-4 ${initialLayoutClass}`}
   data-default-layout={defaultLayout}
   data-mobile-default-layout={mobileDefaultLayout}
   data-masonry-enabled={masonryEnabled}
@@ -261,74 +257,69 @@ const coverPositionClass =
     container.style.height = `${Math.max(...colHeights)}px`;
   }
 
-  // 防止 Swup 切页重跑脚本时重复注册监听器（initLayout 由下方一次性监听器在切页时触发）
-  if (!window.__postPageInit) {
-    window.__postPageInit = true;
+  // 页面加载时初始化布局
+  document.addEventListener("DOMContentLoaded", function () {
+    // 延迟一点确保DOM完全加载
+    setTimeout(initLayout, 50);
 
-    // 页面加载时初始化布局
-    document.addEventListener("DOMContentLoaded", function () {
-      // 延迟一点确保DOM完全加载
-      setTimeout(initLayout, 50);
-
-      // 监听图片加载以重新计算布局
-      const imgs = document.querySelectorAll('#post-list-container img');
-      imgs.forEach(img => {
-          // @ts-ignore
-          if(img.complete) return;
-          img.addEventListener('load', () => {
-              applyMasonryLayout();
-          });
-      });
+    // 监听图片加载以重新计算布局
+    const imgs = document.querySelectorAll('#post-list-container img');
+    imgs.forEach(img => {
+        // @ts-ignore
+        if(img.complete) return;
+        img.addEventListener('load', () => {
+            applyMasonryLayout();
+        });
     });
+  });
 
-    // 页面显示时也初始化布局（处理页面切换）
-    document.addEventListener("visibilitychange", function () {
-      if (!document.hidden) {
-        setTimeout(initLayout, 100);
-      }
+  // 页面显示时也初始化布局（处理页面切换）
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) {
+      setTimeout(initLayout, 100);
+    }
+  });
+
+  // 监听布局变化事件
+  window.addEventListener("layoutChange", function (event) {
+    // @ts-ignore
+    const newLayout = event.detail.layout;
+    const postListContainer = document.getElementById("post-list-container");
+    if (!postListContainer) return;
+
+    updatePostListLayout(newLayout);
+  });
+
+  // 监听窗口大小变化
+  let resizeTimeout: any;
+  window.addEventListener("resize", function () {
+    clearTimeout(resizeTimeout);
+    resizeTimeout = setTimeout(function () {
+      initLayout();
+    }, 250);
+  });
+
+  // 监听页面导航事件（Astro的客户端路由）
+  document.addEventListener("astro:page-load", function () {
+    setTimeout(initLayout, 50);
+
+    // 监听图片加载
+    const imgs = document.querySelectorAll('#post-list-container img');
+    imgs.forEach(img => {
+        // @ts-ignore
+        if(img.complete) return;
+        img.addEventListener('load', () => {
+            applyMasonryLayout();
+        });
     });
+  });
 
-    // 监听布局变化事件
-    window.addEventListener("layoutChange", function (event) {
-      // @ts-ignore
-      const newLayout = event.detail.layout;
-      const postListContainer = document.getElementById("post-list-container");
-      if (!postListContainer) return;
+  document.addEventListener("astro:after-swap", function () {
+    setTimeout(initLayout, 50);
+  });
 
-      updatePostListLayout(newLayout);
-    });
-
-    // 监听窗口大小变化
-    let resizeTimeout: any;
-    window.addEventListener("resize", function () {
-      clearTimeout(resizeTimeout);
-      resizeTimeout = setTimeout(function () {
-        initLayout();
-      }, 250);
-    });
-
-    // 监听页面导航事件（Astro的客户端路由）
-    document.addEventListener("astro:page-load", function () {
-      setTimeout(initLayout, 50);
-
-      // 监听图片加载
-      const imgs = document.querySelectorAll('#post-list-container img');
-      imgs.forEach(img => {
-          // @ts-ignore
-          if(img.complete) return;
-          img.addEventListener('load', () => {
-              applyMasonryLayout();
-          });
-      });
-    });
-
-    document.addEventListener("astro:after-swap", function () {
-      setTimeout(initLayout, 50);
-    });
-
-    // 立即执行一次（处理页面刷新）
-    setTimeout(initLayout, 0);
-  }
+  // 立即执行一次（处理页面刷新）
+  setTimeout(initLayout, 0);
 </script>
 
 <style is:global>
@@ -386,15 +377,21 @@ const coverPositionClass =
   /* Grid Mode Customization */
   #post-list-container.grid-mode :global(.post-card-wrapper) {
     flex-direction: column-reverse !important;
-    /* 网格模式卡片内边距，封面非贴边时的内缩量也取这个值，改这里两边一起变 */
-    --grid-card-padding: 1rem;
   }
 
-  /* 网格模式封面的定位、宽度和圆角统一在 PostCard.astro 里维护（含 grid.coverFullWidth 贴边开关），此处不再重复覆盖 */
+  #post-list-container.grid-mode :global(.post-card-image) {
+    width: 100% !important;
+    position: relative !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: auto !important;
+    border-radius: var(--radius-large) var(--radius-large) 0 0 !important;
+    /*aspect-ratio: 16/9 !important;*/
+  }
 
   #post-list-container.grid-mode :global(.post-card-content) {
     width: 100% !important;
-    padding: var(--grid-card-padding, 1rem) !important;
+    padding: 0.9rem !important;
   }
 
   #post-list-container.grid-mode :global(.no-cover .post-card-content) {
@@ -402,9 +399,9 @@ const coverPositionClass =
   }
 
   #post-list-container.grid-mode :global(.post-card-title) {
-    font-size: 1.35rem !important;
-    line-height: 1.75rem !important;
-    margin-bottom: 0.5rem !important;
+    font-size: 1.08rem !important;
+    line-height: 1.5rem !important;
+    margin-bottom: 0.4rem !important;
   }
 
   #post-list-container.grid-mode :global(.post-card-title::before) {
@@ -412,8 +409,8 @@ const coverPositionClass =
   }
 
   #post-list-container.grid-mode :global(.post-meta) {
-    margin-bottom: 0.5rem !important;
-    gap: 0.5rem !important;
+    margin-bottom: 0.4rem !important;
+    gap: 0.35rem !important;
   }
 
   #post-list-container.grid-mode :global(.post-meta .text-xl) {
@@ -428,8 +425,33 @@ const coverPositionClass =
   }
 
   #post-list-container.grid-mode :global(.post-meta .text-sm) {
-    font-size: 0.75rem !important;
+    font-size: 0.7rem !important;
     line-height: 1rem !important;
+  }
+
+  #post-list-container.grid-mode :global(.description) {
+    font-size: 0.82rem !important;
+    line-height: 1.45rem !important;
+  }
+
+  #post-list-container.grid-mode :global(.post-card-image),
+  #post-list-container.grid-mode :global(.cover-image-container),
+  #post-list-container.grid-mode :global(.cover-image-container picture),
+  #post-list-container.grid-mode :global(.cover-image-container img) {
+    width: 100% !important;
+  }
+
+  #post-list-container.grid-mode :global(.cover-image-container img) {
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center !important;
+  }
+
+  /* Hand-designed 2:1 covers keep their source ratio and avoid hover
+     cropping, so small labels stay readable in generated previews. */
+  #post-list-container.grid-mode :global(.post-card-wrapper.post-card-full-preview .cover-image-container img) {
+    object-fit: contain !important;
+    object-position: center !important;
   }
 
   #post-list-container.grid-mode :global(.card-header-meta .text-sm) {

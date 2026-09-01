@@ -97,10 +97,10 @@ const managerConfigStr = JSON.stringify({
     // ── Audio element (persistent, attached to body) ────────
     var audio = document.createElement('audio');
     audio.crossOrigin = 'anonymous';
+    audio.preload = 'none';
+    audio.pause();
     audio.style.display = 'none';
-    audio.preload = 'none'; // 阻止浏览器预加载和自动恢复播放
     document.body.appendChild(audio);
-    audio.pause(); // 确保不自动播放
 
     // ── State ────────────────────────────────────────────────
     var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
@@ -117,6 +117,7 @@ const managerConfigStr = JSON.stringify({
         currentLrcIndex: -1,
         initialized: false,
         initializing: false,
+        isLoading: false,
         error: null
     };
 
@@ -128,6 +129,15 @@ const managerConfigStr = JSON.stringify({
     // ── Event helpers ────────────────────────────────────────
     function emit(name, detail) {
         window.dispatchEvent(new CustomEvent(name, { detail: detail || {} }));
+    }
+
+    function emitPlayState() {
+        emit('fm:play-state', { isPlaying: state.isPlaying });
+    }
+
+    function setLoading(isLoading) {
+        state.isLoading = isLoading;
+        emit('fm:loading', { isLoading: isLoading });
     }
 
     // ── Meting fetch ─────────────────────────────────────────
@@ -202,32 +212,6 @@ const managerConfigStr = JSON.stringify({
         }
     }
 
-    var currentTrackUrls = [];
-    var currentTrackUrlIndex = 0;
-    var errorSkipTimeout = null;
-
-    function tryPlayCurrentTrackUrl(autoPlay, ver) {
-        if (ver !== loadVersion) return;
-        var playUrl = currentTrackUrls[currentTrackUrlIndex];
-        audio.src = playUrl;
-
-        if (autoPlay) {
-            audio.play().then(function () {
-                if (ver !== loadVersion) return; // stale, discard
-                state.isPlaying = true;
-                state.error = null;
-                emit('fm:play-state', { isPlaying: true });
-            }).catch(function (e) {
-                if (ver !== loadVersion) return; // stale, discard
-                if (e.name === 'AbortError') return; // interrupted by new load
-                console.warn('Autoplay blocked:', e);
-            });
-        } else {
-            state.isPlaying = false;
-            emit('fm:play-state', { isPlaying: false });
-        }
-    }
-
     // ── Track loading ────────────────────────────────────────
     function loadTrack(index, autoPlay) {
         if (index < 0 || index >= state.playlist.length) return;
@@ -235,55 +219,73 @@ const managerConfigStr = JSON.stringify({
         var track = state.playlist[index];
         var ver = ++loadVersion;
 
-        if (errorSkipTimeout) {
-            clearTimeout(errorSkipTimeout);
-            errorSkipTimeout = null;
-        }
-
-        currentTrackUrls = [track.url];
-        currentTrackUrlIndex = 0;
-
-        var matchId = track.url.match(/[?&]id=([^&]+)/);
-        var matchServer = track.url.match(/[?&]server=([^&]+)/);
-        if (matchId && matchServer && config.meting && config.meting.fallbackApis) {
-            config.meting.fallbackApis.forEach(function (fallback) {
-                var fallbackUrl = fallback
-                    .replace(':server', matchServer[1])
-                    .replace(':type', 'url')
-                    .replace(':id', matchId[1]);
-                if (currentTrackUrls.indexOf(fallbackUrl) === -1) {
-                    currentTrackUrls.push(fallbackUrl);
-                }
-            });
-        }
+        audio.src = track.url;
 
         loadLyrics(track);
 
         emit('fm:track', { index: index, track: track, autoPlay: !!autoPlay });
 
-        tryPlayCurrentTrackUrl(autoPlay, ver);
+        if (autoPlay) {
+            setLoading(true);
+            audio.play().then(function () {
+                if (ver !== loadVersion) return; // stale, discard
+                setLoading(false);
+                state.isPlaying = true;
+                emitPlayState();
+            }).catch(function (e) {
+                if (ver !== loadVersion) return; // stale, discard
+                setLoading(false);
+                state.isPlaying = false;
+                emitPlayState();
+                if (e.name === 'AbortError') return; // interrupted by new load
+                console.warn('Autoplay blocked:', e);
+            });
+        } else {
+            setLoading(false);
+            state.isPlaying = false;
+            emitPlayState();
+        }
     }
 
     // ── Playback controls ────────────────────────────────────
     function togglePlay() {
+        if (state.isPlaying || state.isLoading) {
+            loadVersion++;
+            audio.pause();
+            setLoading(false);
+            state.isPlaying = false;
+            emitPlayState();
+            return;
+        }
+
         if (audio.paused) {
+            var ver = ++loadVersion;
+            setLoading(true);
             audio.play().then(function () {
+                if (ver !== loadVersion) return;
+                setLoading(false);
                 state.isPlaying = true;
-                emit('fm:play-state', { isPlaying: true });
+                emitPlayState();
             }).catch(function (e) {
-                if (e.name === 'AbortError') return;
-                console.warn('Playback failed:', e);
+                if (ver !== loadVersion) return;
+                setLoading(false);
+                state.isPlaying = false;
+                emitPlayState();
+                if (e.name !== 'AbortError') console.warn('Playback failed:', e);
             });
         } else {
+            loadVersion++;
             audio.pause();
+            setLoading(false);
             state.isPlaying = false;
-            emit('fm:play-state', { isPlaying: false });
+            emitPlayState();
         }
     }
 
     function playNext(auto) {
         if (state.playMode === 1 && auto) {
             audio.currentTime = 0;
+            setLoading(true);
             audio.play();
             return;
         }
@@ -379,26 +381,33 @@ const managerConfigStr = JSON.stringify({
     });
 
     audio.addEventListener('ended', function () {
+        setLoading(false);
+        state.isPlaying = false;
         playNext(true);
     });
 
     audio.addEventListener('error', function () {
-        var ver = loadVersion;
-        if (currentTrackUrlIndex < currentTrackUrls.length - 1) {
-            currentTrackUrlIndex++;
-            console.warn('Playback failed, trying fallback URL: ' + currentTrackUrls[currentTrackUrlIndex]);
-            tryPlayCurrentTrackUrl(true, ver);
-        } else {
-            state.error = 'Audio playback error';
-            emit('fm:error', { message: '播放失败，即将自动跳过...' });
+        setLoading(false);
+        state.isPlaying = false;
+        state.error = 'Audio playback error';
+        emitPlayState();
+        emit('fm:error', { message: state.error });
+    });
 
-            if (errorSkipTimeout) clearTimeout(errorSkipTimeout);
-            errorSkipTimeout = setTimeout(function () {
-                if (ver === loadVersion) {
-                    playNext(true);
-                }
-            }, 2000);
-        }
+    audio.addEventListener('waiting', function () {
+        if (state.isPlaying) setLoading(true);
+    });
+
+    audio.addEventListener('playing', function () {
+        setLoading(false);
+        state.isPlaying = true;
+        emitPlayState();
+    });
+
+    audio.addEventListener('pause', function () {
+        if (state.isLoading) return;
+        state.isPlaying = false;
+        emitPlayState();
     });
 
     // ── Init (idempotent) ────────────────────────────────────
@@ -478,6 +487,7 @@ const managerConfigStr = JSON.stringify({
                 lyrics: state.lyrics,
                 currentLrcIndex: state.currentLrcIndex,
                 initialized: state.initialized,
+                isLoading: state.isLoading,
                 error: state.error,
                 config: config
             };

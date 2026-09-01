@@ -9,7 +9,6 @@
     "strictNullChecks": true,
     "allowJs": false,
     "declaration": true,
-    "noUncheckedSideEffectImports": false,
     "plugins": [
       {
         "name": "@astrojs/ts-plugin"
@@ -41,8 +40,7 @@
   },
   "include": [
     ".astro/types.d.ts",
-    "src/**/*",
-    "scripts/**/*"
+    "src/**/*"
   ],
   "exclude": [
     "dist"

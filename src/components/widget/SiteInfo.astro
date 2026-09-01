@@ -1,5 +1,4 @@
 ---
-import { readFileSync } from "node:fs";
 import { createRequire } from "node:module";
 import { Icon } from "astro-icon/components";
 import ci from "ci-info";
@@ -23,14 +22,8 @@ const showTitle = widgetConfig?.showTitle !== false;
 
 // ---- 构建时收集版本和环境信息 ----
 
-// 博客版本（从 package.json 读取）
-let blogVersion = "unknown";
-try {
-	const pkg = JSON.parse(
-		readFileSync(new URL("../../../package.json", import.meta.url), "utf-8"),
-	);
-	blogVersion = pkg.version || "Firefly unknown";
-} catch {}
+const themeVersion = siteConfig.themeVersion || "V1.1.1";
+const blogVersionLabel = `Aemeath ${themeVersion}`;
 
 // Astro 版本（从已安装的 astro 包读取）
 let astroVersion = "unknown";
@@ -55,15 +48,20 @@ if (pnpmMatch) {
 const buildTime = formatDateI18nWithTime(new Date());
 
 // 构建平台检测（使用 ci-info 自动识别 CI 环境）
+const configuredBuildPlatform =
+	widgetConfig?.specificConfig?.siteInfo?.buildPlatform?.trim();
 const unknownBuildPlatform =
-	widgetConfig?.specificConfig?.siteInfo?.unknownBuildPlatform || "Unknown CI";
-const buildPlatform = detectBuildPlatform({
-	env: process.env,
-	isCI: ci.isCI,
-	ciName: ci.name,
-	isDev: import.meta.env.DEV,
-	unknownBuildPlatform,
-});
+	widgetConfig?.specificConfig?.siteInfo?.unknownBuildPlatform ||
+	"Cloudflare Pages · Astro 静态构建";
+const buildPlatform =
+	configuredBuildPlatform ||
+	detectBuildPlatform({
+		env: process.env,
+		isCI: ci.isCI,
+		ciName: ci.name,
+		isDev: import.meta.env.DEV,
+		unknownBuildPlatform,
+	});
 
 // 系统信息（平台 + 架构）
 const platformMap: Record<string, string> = {
@@ -80,7 +78,9 @@ const archMap: Record<string, string> = {
 };
 const osName = platformMap[process.platform] || process.platform;
 const archName = archMap[process.arch] || process.arch;
-const systemInfo = `${osName} / ${archName}`;
+const systemInfo = import.meta.env.PROD
+	? "Cloudflare Pages / Global Edge"
+	: `${osName} / ${archName}`;
 
 // 站点域名（去掉协议前缀）
 const siteDomain = siteConfig.site_url
@@ -101,8 +101,7 @@ const mainItems = [
 	{
 		icon: "mdi:clover",
 		label: i18n(I18nKey.siteInfoBlogVersion),
-		value: `Firefly v${blogVersion}`,
-		href: "https://github.com/CuteLeaf/Firefly",
+		value: blogVersionLabel,
 	},
 	{
 		icon: "material-symbols:copyright-outline",
@@ -127,8 +126,8 @@ const detailItems: {
 	},
 	{
 		icon: "mdi:clover",
-		label: "Firefly",
-		value: `v${blogVersion}`,
+		label: "Aemeath",
+		value: themeVersion,
 	},
 	{
 		icon: "material-symbols:rocket-launch-outline",
@@ -172,10 +171,10 @@ const detailItems: {
     <div class="flex flex-col gap-2">
       {
         mainItems.map((item: { icon: string; label: string; value: string; href?: string }) => (
-          <div class="flex items-center justify-between px-3 py-2 rounded-lg">
+          <div class="flex items-center justify-between px-3 py-2 rounded-lg bg-neutral-100/60 dark:bg-neutral-800/50">
             <div class="flex items-center gap-2.5">
               <div class="text-(--primary) text-lg">
-                <Icon name={item.icon} />
+                <Icon is:inline name={item.icon} />
               </div>
               <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm">
                 {item.label}
@@ -219,7 +218,7 @@ const detailItems: {
                   { "col-span-2": item.fullWidth }
                 ]}>
                   <div class="text-(--primary) text-lg">
-                    <Icon name={item.icon} />
+                    <Icon is:inline name={item.icon} />
                   </div>
                   <span class="text-xs text-neutral-500 dark:text-neutral-400">
                     {item.label}
@@ -243,7 +242,7 @@ const detailItems: {
         class="site-info-toggle-btn btn-plain rounded-lg w-full h-8 flex items-center justify-center gap-1.5 mt-1 text-(--primary) text-sm cursor-pointer"
       >
         <Icon
-          name="material-symbols:keyboard-arrow-down-rounded"
+          name="material-symbols:keyboard-arrow-down-rounded" is:inline
           class="site-info-toggle-icon w-6 h-6 transition-transform duration-200"
         />
         <span class="site-info-toggle-text"></span>

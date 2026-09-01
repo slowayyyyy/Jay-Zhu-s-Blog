@@ -53,24 +53,20 @@ function formatNumber(num: number): string {
 	return num.toLocaleString();
 }
 
-// 获取「最后活动」时间：取每篇文章 published 与 updated 中较新的那个，再从全站所有文章里取最大值。这样新发文章和修改老文章都会刷新该字段。
-const getActivityDate = (post: (typeof posts)[number]): Date => {
-	const { published, updated } = post.data;
-	if (updated && updated > published) return updated;
-	return published;
-};
-
-const lastActivityDate = posts.reduce<Date | null>((latest, post) => {
-	const current = getActivityDate(post);
-	if (!latest || current > latest) return current;
-	return latest;
-}, null);
-
-const lastPostDate = lastActivityDate ? lastActivityDate.toISOString() : null;
+const lastPostDate = new Date().toISOString();
 
 const todayText = i18n(I18nKey.today);
+type SiteStat = {
+	icon: string;
+	label: string;
+	value: number | string;
+	formatted?: boolean;
+	suffix?: string;
+	dynamic?: boolean;
+	id?: string;
+};
 
-const stats = [
+const stats: SiteStat[] = [
 	{
 		icon: "material-symbols:article-outline",
 		label: i18n(I18nKey.siteStatsPostCount),
@@ -117,21 +113,21 @@ const stats = [
       <div class="flex items-center justify-between px-3 py-1.5">
         <div class="flex items-center gap-2.5">
           <div class="text-(--primary) text-xl">
-            <Icon name={stat.icon} />
+            <Icon is:inline name={stat.icon} />
           </div>
           <span class="text-neutral-700 dark:text-neutral-300 font-medium text-sm">
             {stat.label}
           </span>
         </div>
         <div class="flex items-center">
-          <span
+          <span 
             class="text-base font-bold text-neutral-900 dark:text-neutral-100"
             data-stat-id={stat.id}
           >
-            {stat.formatted ? formatNumber(stat.value) : stat.value}
+			{stat.formatted ? formatNumber(Number(stat.value)) : stat.value}
           </span>
           {stat.suffix && (
-            <span class="ml-1 text-sm text-neutral-500 dark:text-neutral-400">
+            <span class="text-sm text-neutral-500 dark:text-neutral-400 ml-1">
               {stat.suffix}
             </span>
           )}
@@ -181,12 +177,8 @@ const stats = [
   // 页面加载时更新
   updateDynamicStats();
 
-  // 防止 Swup 切页重跑脚本时重复注册监听器
-  if (!window.__siteStatsInit) {
-    window.__siteStatsInit = true;
-    // 页面切换时重新更新
-    document.addEventListener("swup:contentReplaced", () => {
-      setTimeout(updateDynamicStats, 100);
-    });
-  }
+  // 页面切换时重新更新
+  document.addEventListener("swup:contentReplaced", () => {
+    setTimeout(updateDynamicStats, 100);
+  });
 </script>

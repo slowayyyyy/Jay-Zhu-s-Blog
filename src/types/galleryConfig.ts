@@ -7,15 +7,12 @@ export type GalleryAlbum = {
 	location?: string; // 拍摄地点
 	tags?: string[]; // 标签（用于首页筛选）
 	cover?: string; // 手动指定封面（可选，省略则自动取 cover.* 或第一张）
-	photos?: string[]; // 后台上传的照片；留空时继续扫描 public/gallery/<id>
 	password?: string; // 加密密码（非空时启用加密）
 	passwordHint?: string; // 密码提示
 };
 
 // 相册配置
 export type GalleryConfig = {
-	title?: string;
-	description?: string;
 	albums: GalleryAlbum[];
 	columnWidth?: number; // 瀑布流最小列宽(px)，默认 240，浏览器根据容器宽度自动计算列数
 };

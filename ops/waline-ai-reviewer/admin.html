@@ -1,0 +1,137 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<title>小爱客服 · AI 回复管理</title>
+	<style>
+		:root { color-scheme: light; --blue: #246bdb; --blue-deep: #173f84; --blue-soft: #eaf3ff; --yellow: #fff3be; --ink: #17304f; --muted: #607591; --line: #dce7f5; --paper: #f8fbff; --white: #fff; --danger: #b83b46; --success: #1d7657; }
+		* { box-sizing: border-box; }
+		html { scroll-behavior: smooth; }
+		body { margin: 0; min-height: 100vh; color: var(--ink); background: var(--paper); font-family: "Microsoft YaHei UI", "PingFang SC", system-ui, sans-serif; line-height: 1.55; }
+		::selection { color: var(--blue-deep); background: #ffe790; }
+		button, input, select { font: inherit; }
+		button, input, select { accent-color: var(--blue); }
+		button:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #9bc3ff; outline-offset: 2px; }
+		.shell { min-height: 100vh; display: grid; grid-template-columns: minmax(250px, 29vw) 1fr; }
+		.identity { position: sticky; top: 0; height: 100vh; overflow: hidden; padding: clamp(28px, 5vw, 72px); color: white; background: #1f65cd; display: flex; flex-direction: column; justify-content: space-between; }
+		.identity::after { content: ""; position: absolute; width: 390px; height: 390px; right: -210px; bottom: -120px; border: 74px solid rgba(255,255,255,.12); border-radius: 50%; }
+		.brand { position: relative; z-index: 1; }
+		.brand img { width: clamp(96px, 12vw, 154px); aspect-ratio: 1; object-fit: cover; border-radius: 34px; background: var(--yellow); box-shadow: 0 24px 60px rgba(0,0,0,.28); }
+		.brand h1 { margin: 28px 0 8px; max-width: 8ch; font-size: clamp(2rem, 4vw, 4.5rem); line-height: .98; letter-spacing: -.035em; }
+		.brand p { margin: 0; max-width: 28ch; color: #dceaff; }
+		.identity-foot { position: relative; z-index: 1; display: flex; align-items: center; gap: 10px; color: #e8f2ff; font-size: .88rem; }
+		.pulse { width: 9px; height: 9px; border-radius: 50%; background: #ffe078; box-shadow: 0 0 0 7px rgba(255,224,120,.17); }
+		.workspace { width: min(980px, 100%); margin: 0 auto; padding: clamp(28px, 5vw, 72px) clamp(20px, 5vw, 74px) 70px; }
+		.topline { display: flex; align-items: flex-start; justify-content: space-between; gap: 24px; padding-bottom: 34px; }
+		.topline h2 { margin: 0 0 7px; font-size: clamp(1.65rem, 3vw, 2.55rem); line-height: 1.1; letter-spacing: -.025em; }
+		.topline p { margin: 0; color: var(--muted); }
+		.logout { border: 0; background: transparent; color: var(--blue-deep); padding: 9px 0; font-weight: 700; text-decoration: underline; text-decoration-color: #a8c8f3; text-underline-offset: 5px; cursor: pointer; }
+		.notice { margin: 0 0 28px; padding: 13px 16px; color: #574b1c; background: var(--yellow); border-radius: 14px; font-weight: 650; }
+		.notice.error { color: #7d2730; background: #ffe6e8; }
+		.section { display: grid; grid-template-columns: minmax(160px, .62fr) minmax(0, 1.38fr); gap: clamp(24px, 6vw, 74px); padding: 40px 0; border-top: 1px solid var(--line); }
+		.section-copy h3 { margin: 0 0 8px; font-size: 1.15rem; }
+		.section-copy p { margin: 0; color: var(--muted); font-size: .92rem; }
+		.form { display: grid; gap: 19px; }
+		.fields-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+		label { display: grid; gap: 7px; color: var(--blue-deep); font-weight: 700; font-size: .91rem; }
+		input[type="password"], input[type="number"], select, textarea { width: 100%; min-height: 46px; border: 1px solid #bdd0e8; border-radius: 12px; padding: 10px 13px; color: var(--ink); background: var(--white); transition: border-color .18s ease-out, box-shadow .18s ease-out; }
+		textarea { min-height: 132px; resize: vertical; line-height: 1.65; }
+		input:hover, select:hover, textarea:hover { border-color: #7ca8e4; }
+		input:focus, select:focus, textarea:focus { border-color: var(--blue); box-shadow: 0 0 0 4px var(--blue-soft); outline: none; }
+		.toggle { display: flex; align-items: center; gap: 11px; min-height: 46px; color: var(--ink); }
+		.toggle input { width: 20px; height: 20px; }
+		.hint { margin: -8px 0 0; color: var(--muted); font-size: .82rem; }
+		.status-line { display: flex; align-items: center; gap: 10px; min-height: 46px; color: var(--muted); }
+		.status-line strong { color: var(--success); }
+		.actions { display: flex; flex-wrap: wrap; gap: 11px; align-items: center; }
+		.button { min-height: 44px; border: 0; border-radius: 12px; padding: 10px 18px; color: white; background: var(--blue); font-weight: 750; cursor: pointer; box-shadow: 0 10px 24px rgba(0,0,0,.14); transition: transform .18s cubic-bezier(.2,.8,.2,1), background .18s ease-out; }
+		.button:hover { background: #1859bd; transform: translateY(-1px); }
+		.button:active { transform: translateY(0); }
+		.button.secondary { color: var(--blue-deep); background: var(--blue-soft); box-shadow: none; }
+		.security-note { margin-top: 26px; padding: 18px 20px; background: #eef6ff; border-radius: 14px; color: #45617f; font-size: .86rem; }
+		.reply-note { margin: 0; padding: 13px 15px; border: 1px solid #d7e6f6; border-radius: 12px; background: #f5faff; color: #45617f; font-size: .84rem; line-height: 1.65; }
+		@media (max-width: 780px) { .shell { display: block; } .identity { position: relative; height: auto; min-height: 290px; padding: 28px 24px; } .brand { display: grid; grid-template-columns: 84px 1fr; gap: 20px; align-items: center; } .brand img { width: 84px; border-radius: 24px; } .brand h1 { margin: 0 0 7px; max-width: none; font-size: 2.25rem; } .brand p { grid-column: 1 / -1; } .identity-foot { margin-top: 34px; } .workspace { padding-top: 34px; } .section { grid-template-columns: 1fr; gap: 20px; padding: 32px 0; } }
+		@media (max-width: 520px) { .fields-2 { grid-template-columns: 1fr; } .topline { align-items: center; } .topline p { max-width: 22ch; } .brand h1 { font-size: 1.85rem; } }
+		@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { transition-duration: .01ms !important; } }
+	</style>
+</head>
+<body>
+			<!--
+	THESIS: A focused service desk, not a generic metric-card dashboard.
+	OWN-WORLD: Clear blue operations rail, white work surface, pale-yellow human notes, rounded practical controls.
+		STORY: See whether Xiaoai is answering, tune the bounded runtime, send a deliberate reply when needed, rotate its credential, and leave safely.
+	FIRST VIEWPORT: Xiaoai anchors the blue rail while current controls begin immediately on the white canvas.
+	FORM: Operate mode, code-led fixed split console for a precisely specified admin surface.
+	FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+	-->
+	<div class="shell">
+		<aside class="identity">
+			<div class="brand">
+				<img src="/ai-comment-admin/assets/ai-xiaoai-avatar.png" alt="小爱客服头像" width="154" height="154">
+				<div><h1>小爱客服</h1><p>给博客评论区留一点温柔，也给每次自动回复留一道人工把关。</p></div>
+			</div>
+			<div class="identity-foot"><span class="pulse" aria-hidden="true"></span>本机安全控制台 · 127.0.0.1:8371</div>
+		</aside>
+		<main class="workspace">
+			<header class="topline">
+				<div><h2>AI 回复管理</h2><p>设置会在下一轮评论处理时生效。</p></div>
+				<form method="post" action="/ai-comment-admin/logout"><input type="hidden" name="csrf" value="$csrf"><button class="logout" type="submit">安全退出</button></form>
+			</header>
+			$notice_html
+			<section class="section">
+				<div class="section-copy"><h3>回复策略</h3><p>控制小爱是否工作，以及生成回复时使用的固定模型参数。</p></div>
+				<form class="form" method="post" action="/ai-comment-admin/settings">
+					<input type="hidden" name="csrf" value="$csrf">
+					<label class="toggle"><input type="checkbox" name="enabled" value="1" $enabled_checked> 启用自动回复</label>
+					<label>模型<select name="model" required>$model_options</select></label>
+					<div class="fields-2">
+						<label class="toggle"><input type="checkbox" name="thinking" value="1" $thinking_checked> 开启思考模式</label>
+						<label>温度<input type="number" name="temperature" value="$temperature" min="0" max="1.5" step="0.05" required></label>
+					</div>
+					<p class="hint">温度范围 0–1.5。模型只能从服务端允许清单选择。</p>
+					<div class="actions"><button class="button" type="submit">保存回复设置</button></div>
+				</form>
+			</section>
+			<section class="section">
+				<div class="section-copy"><h3>手动回复</h3><p>选择一条已审核评论，手动以小爱客服身份发布；公开显示会与自动回复使用相同的头像、标签和说明。</p></div>
+				<form class="form" method="post" action="/ai-comment-admin/reply">
+					<input type="hidden" name="csrf" value="$csrf">
+					<label>目标评论 ID<input type="number" name="comment_id" min="1" max="9223372036854775807" list="waline-comment-ids" inputmode="numeric" placeholder="例如 123" required></label>
+					<datalist id="waline-comment-ids">$comment_options</datalist>
+					<p class="hint">$comment_feed_notice</p>
+					<label>回复内容<textarea name="reply" maxlength="$manual_reply_max_chars" placeholder="输入你想让小爱客服回复的内容" required></textarea></label>
+					<p class="hint">最多 $manual_reply_max_chars 个字符，系统会自动保留统一的 AI 身份说明；不会修改原评论。</p>
+					<p class="reply-note">发布后会作为目标评论的子评论出现在对应页面，页面上仍显示“小爱客服 · AI 回复”。请先确认评论 ID 与回复内容，再点击发布。</p>
+					<div class="actions"><button class="button" type="submit">以小爱客服身份回复</button></div>
+				</form>
+			</section>
+			<section class="section">
+				<div class="section-copy"><h3>SiliconFlow 密钥</h3><p>新密钥会原子替换旧文件；页面和响应永远不会显示已有密钥。</p></div>
+				<div class="form">
+					<div class="status-line">当前状态：<strong>$key_state</strong></div>
+					<form class="form" method="post" action="/ai-comment-admin/key">
+						<input type="hidden" name="csrf" value="$csrf">
+						<label>新 API Key<input type="password" name="api_key" minlength="12" maxlength="512" autocomplete="new-password" required></label>
+						<div class="actions"><button class="button" type="submit">替换密钥</button></div>
+					</form>
+					<form method="post" action="/ai-comment-admin/test"><input type="hidden" name="csrf" value="$csrf"><button class="button secondary" type="submit">显式测试 SiliconFlow</button></form>
+				</div>
+			</section>
+			<section class="section">
+				<div class="section-copy"><h3>登录密码</h3><p>修改后会注销所有后台会话，需要使用新密码重新登录。</p></div>
+				<form class="form" method="post" action="/ai-comment-admin/password">
+					<input type="hidden" name="csrf" value="$csrf">
+					<label>当前密码<input type="password" name="current_password" autocomplete="current-password" required></label>
+					<div class="fields-2">
+						<label>新密码<input type="password" name="new_password" minlength="12" maxlength="1024" autocomplete="new-password" required></label>
+						<label>确认新密码<input type="password" name="confirm_password" minlength="12" maxlength="1024" autocomplete="new-password" required></label>
+					</div>
+					<div class="actions"><button class="button" type="submit">修改并退出</button></div>
+				</form>
+			</section>
+			<p class="security-note">控制台只监听本机地址。请通过启用 HTTPS 的反向代理访问；会话 Cookie 固定使用 HttpOnly、Secure 与 SameSite=Strict。</p>
+		</main>
+	</div>
+</body>
+</html>

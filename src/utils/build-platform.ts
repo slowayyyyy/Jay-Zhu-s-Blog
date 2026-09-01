@@ -7,6 +7,7 @@ type DetectBuildPlatformOptions = {
 };
 //“FIREFLY_BUILD_PLATFORM”环境变量自定义命名构建平台
 const BUILD_PLATFORM_OVERRIDE_KEY = "FIREFLY_BUILD_PLATFORM";
+const DEFAULT_BUILD_PLATFORM = "Cloudflare Pages · Astro 静态构建";
 
 function hasNonEmptyEnv(
 	env: Record<string, string | undefined>,
@@ -39,7 +40,7 @@ export function detectBuildPlatform({
 	isCI,
 	ciName,
 	isDev = false,
-	unknownBuildPlatform = "Unknown CI",
+	unknownBuildPlatform = DEFAULT_BUILD_PLATFORM,
 }: DetectBuildPlatformOptions): string {
 	const overrideValue = env[BUILD_PLATFORM_OVERRIDE_KEY];
 	if (typeof overrideValue === "string" && overrideValue.trim() !== "") {
@@ -54,6 +55,9 @@ export function detectBuildPlatform({
 	if (hasNonEmptyEnv(env, "EDGEONE_PROJECT_ID")) {
 		return "EdgeOne Pages";
 	}
+	if (hasNonEmptyEnv(env, "CF_PAGES")) {
+		return "Cloudflare Pages";
+	}
 
 	if (envUrlHostEquals(env, "er_address", "build-script.esa.ialicdn.com")) {
 		return "ESA Pages";
@@ -63,5 +67,5 @@ export function detectBuildPlatform({
 		return unknownBuildPlatform;
 	}
 
-	return isDev ? "Local Dev" : "Local";
+	return isDev ? "Astro 本地预览" : DEFAULT_BUILD_PLATFORM;
 }

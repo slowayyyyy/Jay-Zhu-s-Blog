@@ -1,87 +1,54 @@
 ---
+import { getCollection, render } from "astro:content";
 import { Icon } from "astro-icon/components";
-import DynamicFeed from "@/components/pages/dynamic/DynamicFeed.svelte";
-import DynamicItemTemplate from "@/components/pages/dynamic/DynamicItemTemplate.astro";
-import { commentConfig, dynamicConfig, siteConfig } from "@/config";
-import I18nKey from "@/i18n/i18nKey";
-import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
-import "@/styles/dynamic.css";
-import { url } from "@/utils/url-utils";
 
-if (!siteConfig.pages.dynamic) {
-	return Astro.redirect("/404/");
-}
-
-const title = dynamicConfig.title || i18n(I18nKey.dynamic);
-const description =
-	dynamicConfig.description || i18n(I18nKey.dynamicDescription);
-const itemsPerPage = Math.max(1, dynamicConfig.itemsPerPage ?? 10);
-const showInlineComments = Boolean(
-	dynamicConfig.showComment !== false &&
-		commentConfig.type &&
-		commentConfig.type !== "none",
+const entries = (await getCollection("dynamic")).sort(
+	(a, b) => Number(b.data.pinned) - Number(a.data.pinned) || b.data.published.getTime() - a.data.published.getTime(),
 );
-const dataUrl = dynamicConfig.apiUrl?.startsWith("http")
-	? dynamicConfig.apiUrl
-	: url(dynamicConfig.apiUrl || "/api/dynamic.json");
-const memos = dynamicConfig.memos;
+const moments = await Promise.all(entries.map(async (entry) => ({
+	entry,
+	Content: (await render(entry)).Content,
+})));
+const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
 ---
 
-<MainGridLayout title={title} description={description}>
-	<section class="dynamic-page" aria-labelledby="dynamic-page-title">
-		<div>
-			<header class="dynamic-page-header card-base">
-				<div class="dynamic-page-heading">
-					<div class="dynamic-page-icon" aria-hidden="true">
-						<Icon name="material-symbols:forum-rounded" />
-					</div>
-					<div>
-						<h2 id="dynamic-page-title">{title}</h2>
-						{description && <p>{description}</p>}
-					</div>
-				</div>
-				<div
-					class="dynamic-count"
-					aria-label={i18n(I18nKey.dynamic)}
-				>
-					<Icon name="material-symbols:dynamic-feed-rounded" />
-					<strong data-dynamic-page-count>0</strong>
-					<span>{i18n(I18nKey.dynamic)}</span>
-				</div>
-				<div class="dynamic-filter">
-					<label class="dynamic-search">
-						<Icon name="material-symbols:search-rounded" />
-						<input
-							type="search"
-							data-dynamic-search
-							placeholder={i18n(I18nKey.dynamicSearch)}
-						/>
-					</label>
-					<label class="dynamic-year-select">
-						<Icon name="material-symbols:calendar-month-rounded" />
-						<select data-year-select aria-label={i18n(I18nKey.year)}>
-							<option value="all">{i18n(I18nKey.dynamicAllYears)}</option>
-						</select>
-						<Icon name="material-symbols:arrow-drop-down-rounded" />
-					</label>
-				</div>
-			</header>
-
-			<DynamicFeed
-				client:load
-				source={dataUrl}
-				{itemsPerPage}
-				showComments={showInlineComments}
-				emptyText={i18n(I18nKey.dynamicEmpty)}
-				noResultsText={i18n(I18nKey.dynamicNoResults)}
-				loadingText={i18n(I18nKey.dynamicLoading)}
-				allYearsText={i18n(I18nKey.dynamicAllYears)}
-				timezone={siteConfig.timezone || "UTC"}
-				{memos}
-			/>
-
-			<DynamicItemTemplate />
-		</div>
+<MainGridLayout title="动态" description="短一点的想法，和正在发生的日常">
+	<section class="dynamic-shell card-base z-10 px-7 py-7 relative w-full onload-animation">
+		<header class="dynamic-hero">
+			<div class="dynamic-icon"><Icon is:inline name="material-symbols:water-drop-rounded" /></div>
+			<div><p>DYNAMIC / JAY ZHU</p><h1>沿途水纹</h1><span>不必展开成文章，也值得被认真记住。</span></div>
+			<strong>{moments.length}</strong>
+		</header>
+		{moments.length ? (
+			<div class="dynamic-list">
+				{moments.map(({ entry, Content }) => (
+					<article class:list={["dynamic-item", entry.data.pinned && "is-pinned"]}>
+						<div class="dynamic-meta">
+							<time datetime={entry.data.published.toISOString()}>{formatter.format(entry.data.published)}</time>
+							{entry.data.location && <span><Icon is:inline name="material-symbols:location-on-outline-rounded" />{entry.data.location}</span>}
+							{entry.data.pinned && <span class="pin"><Icon is:inline name="material-symbols:keep-rounded" />置顶</span>}
+						</div>
+						<div class="dynamic-content prose"><Content /></div>
+					</article>
+				))}
+			</div>
+		) : (
+			<div class="dynamic-empty">
+				<Icon is:inline name="material-symbols:ink-pen-outline-rounded" />
+				<h2>这里正等着第一圈水纹</h2>
+				<p>原有动态目录已经完整保留。以后从后台写下的短句会按时间出现在这里。</p>
+			</div>
+		)}
 	</section>
 </MainGridLayout>
+
+<style>
+	.dynamic-shell{overflow:hidden}.dynamic-hero{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;padding:.25rem 0 1.4rem;border-bottom:1px solid var(--line-divider)}
+	.dynamic-icon{width:3.4rem;height:3.4rem;display:grid;place-items:center;border-radius:1.2rem;color:white;font-size:1.5rem;background:linear-gradient(145deg,#2563eb,#22d3ee);box-shadow:0 .8rem 1.8rem rgb(37 99 235/.2)}
+	.dynamic-hero p{margin:0 0 .15rem;color:var(--primary);font-size:.65rem;font-weight:850;letter-spacing:.14em}.dynamic-hero h1{margin:0;color:var(--content-regular);font-size:1.55rem}.dynamic-hero span{display:block;margin-top:.25rem;color:var(--content-meta);font-size:.8rem}.dynamic-hero>strong{color:var(--primary);font-size:1.7rem;opacity:.65}
+	.dynamic-list{position:relative;display:grid;gap:1rem;padding:1.5rem 0 0}.dynamic-item{position:relative;padding:1.05rem 1.15rem 1.1rem 1.35rem;border:1px solid var(--line-divider);border-radius:1.05rem;background:color-mix(in srgb,var(--card-bg) 96%,var(--primary) 4%)}.dynamic-item::before{content:"";position:absolute;left:0;top:1rem;bottom:1rem;width:3px;border-radius:0 4px 4px 0;background:linear-gradient(#60a5fa,#22d3ee)}.dynamic-item.is-pinned{border-color:color-mix(in srgb,var(--primary) 38%,var(--line-divider))}
+	.dynamic-meta{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:.65rem;color:var(--content-meta);font-size:.7rem}.dynamic-meta span{display:inline-flex;align-items:center;gap:.2rem}.dynamic-meta .pin{color:var(--primary);font-weight:800}
+	.dynamic-content{color:var(--content-regular);font-size:.9rem;line-height:1.8}.dynamic-content :global(p:first-child){margin-top:0}.dynamic-content :global(p:last-child){margin-bottom:0}.dynamic-empty{display:grid;place-items:center;padding:4rem 1rem;text-align:center}.dynamic-empty>svg{color:var(--primary);font-size:2.3rem}.dynamic-empty h2{margin:.8rem 0 .25rem;color:var(--content-regular);font-size:1.1rem}.dynamic-empty p{max-width:28rem;margin:0;color:var(--content-meta);font-size:.8rem;line-height:1.7}
+	@media(max-width:640px){.dynamic-shell{padding:1.15rem}.dynamic-hero{grid-template-columns:auto 1fr}.dynamic-hero>strong{display:none}.dynamic-icon{width:3rem;height:3rem}.dynamic-item{padding:1rem 1rem 1rem 1.2rem}}
+</style>
