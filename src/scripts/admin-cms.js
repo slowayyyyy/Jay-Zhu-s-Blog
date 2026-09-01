@@ -34,6 +34,19 @@ const IMAGE_EXTENSION_BY_TYPE = new Map([
 	['image/x-icon', 'ico'],
 ]);
 const IMAGE_FILE_EXTENSION_PATTERN = /\.(avif|bmp|gif|ico|jpe?g|png|svg|tiff?|webp)$/iu;
+const IMAGE_TYPE_BY_EXTENSION = new Map([
+	['avif', 'image/avif'],
+	['bmp', 'image/bmp'],
+	['gif', 'image/gif'],
+	['ico', 'image/x-icon'],
+	['jpeg', 'image/jpeg'],
+	['jpg', 'image/jpeg'],
+	['png', 'image/png'],
+	['svg', 'image/svg+xml'],
+	['tif', 'image/tiff'],
+	['tiff', 'image/tiff'],
+	['webp', 'image/webp'],
+]);
 const DATA_IMAGE_SOURCE_PATTERN = /^data:image\//iu;
 const LOCAL_IMAGE_REFERENCE_PATTERN = /^(file:|[a-z]:\\)/iu;
 const FETCHABLE_IMAGE_SOURCE_PATTERN = /^(https?:\/\/|blob:|\/)/iu;
@@ -1057,25 +1070,30 @@ export function setupAdminCms() {
 			sourceKey: decodedPathname,
 			apiUrl: apiUrl.toString(),
 			rawUrl,
+			publishedUrl: new URL(decodedPathname, window.location.origin).toString(),
 		};
 	};
 
-	const loadPreviewImage = async (image, { sourceKey, apiUrl, rawUrl }) => {
+	const inferUploadImageType = (sourceKey) => {
+		const extension = sourceKey.match(/\.([a-z0-9]+)$/iu)?.[1]?.toLowerCase();
+		return IMAGE_TYPE_BY_EXTENSION.get(extension) || 'image/png';
+	};
+
+	const loadPreviewImage = async (
+		image,
+		{ sourceKey, apiUrl, rawUrl, publishedUrl },
+	) => {
 		const currentKey = sourceKey;
 		image.dataset.jayCmsPreviewKey = currentKey;
 
 		const githubToken = getGithubAccessToken();
-		if (!githubToken) {
-			image.src = rawUrl;
-			return;
-		}
 
 		try {
+			const headers = { Accept: 'application/vnd.github.raw' };
+			if (githubToken) headers.Authorization = `token ${githubToken}`;
+
 			const response = await fetch(apiUrl, {
-				headers: {
-					Authorization: `token ${githubToken}`,
-					Accept: 'application/vnd.github.raw',
-				},
+				headers,
 				cache: 'no-store',
 			});
 
@@ -1083,8 +1101,13 @@ export function setupAdminCms() {
 				throw new Error(`preview fetch failed: ${response.status}`);
 			}
 
-			const blob = await response.blob();
+			const responseBlob = await response.blob();
 			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
+			const blob = responseBlob.type.startsWith('image/')
+				? responseBlob
+				: new Blob([await responseBlob.arrayBuffer()], {
+						type: inferUploadImageType(sourceKey),
+					});
 
 			const lastObjectUrl = image.dataset.jayCmsObjectUrl;
 			if (lastObjectUrl) {
@@ -1093,20 +1116,33 @@ export function setupAdminCms() {
 
 			const objectUrl = URL.createObjectURL(blob);
 			image.dataset.jayCmsObjectUrl = objectUrl;
+			image.addEventListener(
+				'error',
+				() => {
+					if (image.dataset.jayCmsPreviewKey !== currentKey) return;
+					image.src = isLocalPreview ? rawUrl : publishedUrl;
+				},
+				{ once: true },
+			);
 			image.src = objectUrl;
 		} catch (error) {
-			console.warn('[Jay CMS] image preview fallback to raw GitHub URL.', error);
+			console.warn('[Jay CMS] image preview fallback to a direct URL.', error);
 			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
-			image.src = rawUrl;
+			image.src = isLocalPreview ? rawUrl : publishedUrl;
 		}
 	};
 
 	const rewritePreviewImage = (image) => {
 		const source = image.getAttribute('src');
 		const previewSources = buildUploadPreviewSources(source);
-		if (!previewSources || image.dataset.jayCmsPreviewSource === previewSources.sourceKey) return;
+		if (!previewSources || image.dataset.jayCmsPreviewLoading === previewSources.sourceKey) return;
 		image.dataset.jayCmsPreviewSource = previewSources.sourceKey;
-		void loadPreviewImage(image, previewSources);
+		image.dataset.jayCmsPreviewLoading = previewSources.sourceKey;
+		void loadPreviewImage(image, previewSources).finally(() => {
+			if (image.dataset.jayCmsPreviewLoading === previewSources.sourceKey) {
+				delete image.dataset.jayCmsPreviewLoading;
+			}
+		});
 	};
 
 	const hydratePreviewImages = (root = document) => {
