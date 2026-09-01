@@ -382,24 +382,49 @@
   },
   "playlist": [
     {
-      "title": "180°",
-      "artist": "孙燕姿",
-      "src": "/media/audio/孙燕姿-180度.mp3"
+      "title": "旅人の唄",
+      "artist": "大原ゆい子",
+      "src": "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3"
     },
     {
-      "src": "/media/audio/entoy、suru-blue-mood.mp3",
-      "title": "Blue mood",
-      "artist": "entoy,suru"
+      "title": "芽吹の唄",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150655-70964cdb-大原ゆい子-芽吹の唄.mp3"
     },
     {
-      "title": "太聪明",
-      "artist": "陈绮贞",
-      "src": "/media/audio/陈绮贞-太聪明.mp3"
+      "title": "spiral",
+      "artist": "LONGMAN",
+      "src": "/media/audio/20260901150725-b5f79610-LONGMAN-spiral-kgg-dec.mp3"
     },
     {
-      "title": "旅行的意义",
-      "artist": "陈绮贞",
-      "src": "/media/audio/陈绮贞-旅行的意义.mp3"
+      "title": "祈り、終われば",
+      "artist": "中島美嘉 ",
+      "src": "/media/audio/20260901150746-fa7cac8a-中島美嘉-祈り-終われば.mp3"
+    },
+    {
+      "title": "かげくらべの唄",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150807-3aa83d0f-大原ゆい子-かげくらべの唄-与你身影作比之歌.mp3"
+    },
+    {
+      "title": "ムスビメ (联结)",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150825-4a04356c-大原ゆい子-ムスビメ-联结.mp3"
+    },
+    {
+      "title": "守りたいもの（想要守护之物）",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150858-8b47d5a7-大原ゆい子-守りたいもの-想要守护之物.mp3"
+    },
+    {
+      "title": "決意の唄",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150919-a124278c-大原ゆい子-決意の唄.mp3"
+    },
+    {
+      "title": "風と行く道 (随风而行的路)",
+      "artist": "大原ゆい子 ",
+      "src": "/media/audio/20260901150938-8b1f8086-大原ゆい子-風と行く道-随风而行的路.mp3"
     }
   ],
   "opening": {
