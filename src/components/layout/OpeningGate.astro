@@ -28,7 +28,6 @@ const config = azureContent.opening;
       />
       {config.videoUrl && (
         <video
-          src={config.videoUrl}
           poster={openingPoster.src}
           muted
           autoplay
@@ -36,7 +35,10 @@ const config = azureContent.opening;
           playsinline
           preload="metadata"
           data-opening-video
-        />
+        >
+          <source src={config.videoUrl} type="video/mp4" />
+          <source src="/media/opening-roxy-720p.mp4" type="video/mp4" />
+        </video>
       )}
     </div>
 
