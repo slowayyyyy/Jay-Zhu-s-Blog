@@ -1,4 +1,5 @@
 import type { MusicPlayerConfig } from "../types/musicConfig";
+import azureContent from "../data/azure-content.json";
 
 // 音乐播放器配置
 export const musicPlayerConfig: MusicPlayerConfig = {
@@ -46,16 +47,12 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 	// 2. 或者直接填入歌词字符串内容
 	// lrc: "[00:00.00]歌词内容...",
 	local: {
-		playlist: [
-			{ name: "旅人の唄", artist: "大原ゆい子", url: "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3", cover: "", lrc: "" },
-			{ name: "芽吹の唄", artist: "大原ゆい子", url: "/media/audio/20260901150655-70964cdb-大原ゆい子-芽吹の唄.mp3", cover: "", lrc: "" },
-			{ name: "spiral", artist: "LONGMAN", url: "/media/audio/20260901150725-b5f79610-LONGMAN-spiral-kgg-dec.mp3", cover: "", lrc: "" },
-			{ name: "祈り、終われば", artist: "中島美嘉", url: "/media/audio/20260901150746-fa7cac8a-中島美嘉-祈り-終われば.mp3", cover: "", lrc: "" },
-			{ name: "かげくらべの唄", artist: "大原ゆい子", url: "/media/audio/20260901150807-3aa83d0f-大原ゆい子-かげくらべの唄-与你身影作比之歌.mp3", cover: "", lrc: "" },
-			{ name: "ムスビメ (联结)", artist: "大原ゆい子", url: "/media/audio/20260901150825-4a04356cdb-大原ゆい子-ムスビメ-联结.mp3", cover: "", lrc: "" },
-			{ name: "守りたいもの（想要守护之物）", artist: "大原ゆい子", url: "/media/audio/20260901150858-8b47d5a7-大原ゆい子-守りたいもの-想要守护之物.mp3", cover: "", lrc: "" },
-			{ name: "決意の唄", artist: "大原ゆい子", url: "/media/audio/20260901150919-a124278c-大原ゆい子-決意の唄.mp3", cover: "", lrc: "" },
-			{ name: "風と行く道 (随风而行的路)", artist: "大原ゆい子", url: "/media/audio/20260901150938-8b1f8086-大原ゆい子-風と行く道-随风而行的路.mp3", cover: "", lrc: "" },
-		],
+		playlist: azureContent.playlist.map((track) => ({
+			name: track.name,
+			artist: track.artist,
+			url: track.src,
+			cover: track.cover,
+			lrc: track.lrc,
+		})),
 	},
 };

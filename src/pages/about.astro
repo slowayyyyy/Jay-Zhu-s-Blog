@@ -1,7 +1,11 @@
 ---
-
+import { Image } from "astro:assets";
 import { getEntry, render } from "astro:content";
+import { Icon } from "astro-icon/components";
 import Markdown from "@components/common/Markdown.astro";
+import roxyField from "@/assets/images/azure/roxy-field.jpg";
+import roxyNightMagic from "@/assets/images/azure/roxy-night-magic.jpg";
+import roxyStudy from "@/assets/images/azure/roxy-study.jpg";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
 import I18nKey from "@/i18n/i18nKey";
@@ -17,6 +21,13 @@ if (!aboutPost) {
 }
 
 const { Content } = await render(aboutPost);
+const {
+	heroTitle = "你好，我是 Jay Zhu。",
+	heroSubtitle = profileConfig.bio,
+	quote = "把寻找答案的过程认真留下。",
+	closingTitle = "回廊还在继续延伸",
+	closingText = "欢迎通过下面的入口找到我。",
+} = aboutPost.data;
 
 const avatarUrl = await getAuthorAvatarUrl();
 const jsonLd = buildProfilePage({
@@ -27,13 +38,94 @@ const jsonLd = buildProfilePage({
 	description: profileConfig.bio,
 });
 ---
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
-    <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
-    <div class="flex w-full rounded-(--radius-large) overflow-hidden relative min-h-32">
-        <div class="card-base z-10 px-9 py-6 relative w-full ">
-            <Markdown class="mt-2">
-                <Content />
-            </Markdown>
+
+<MainGridLayout title={i18n(I18nKey.about)} description={heroSubtitle}>
+  <script is:inline slot="head" type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
+  <div class="azure-about">
+    <section class="azure-about-hero" aria-labelledby="about-hero-title">
+      <div class="azure-about-hero-copy">
+        <div class="azure-about-identity">
+          {profileConfig.avatar && (
+            <img
+              src={profileConfig.avatar}
+              alt={`${profileConfig.name} 的头像`}
+              width="64"
+              height="64"
+              loading="eager"
+            />
+          )}
+          <span>
+            <small>CURATOR OF THE CORRIDOR</small>
+            <strong>{profileConfig.name}</strong>
+          </span>
         </div>
-    </div>
+        <h1 id="about-hero-title">{heroTitle}</h1>
+        <p>{heroSubtitle}</p>
+        <blockquote>{quote}</blockquote>
+        <a href="#about-story" class="azure-about-continue">
+          继续认识我
+          <Icon name="material-symbols:arrow-downward-rounded" />
+        </a>
+      </div>
+
+      <div class="azure-about-hero-image" aria-hidden="true">
+        <Image
+          src={roxyNightMagic}
+          alt=""
+          widths={[520, 760, 980]}
+          sizes="(max-width: 768px) 100vw, 46vw"
+          loading="eager"
+          fetchpriority="high"
+        />
+        <span class="azure-about-orbit azure-about-orbit-one"></span>
+        <span class="azure-about-orbit azure-about-orbit-two"></span>
+      </div>
+    </section>
+
+    <section class="azure-about-story" id="about-story">
+      <div class="azure-about-document">
+        <Markdown class="azure-about-markdown">
+          <Content />
+        </Markdown>
+      </div>
+
+      <figure class="azure-about-study">
+        <div class="azure-about-study-frame">
+          <Image
+            src={roxyStudy}
+            alt="洛琪希在书房中阅读的画面"
+            widths={[420, 620, 820]}
+            sizes="(max-width: 900px) 100vw, 31vw"
+            loading="lazy"
+          />
+        </div>
+        <figcaption>在书页、模型与尚未回答的问题之间。</figcaption>
+      </figure>
+    </section>
+
+    <section class="azure-about-closing">
+      <div class="azure-about-closing-image" aria-hidden="true">
+        <Image
+          src={roxyField}
+          alt=""
+          widths={[720, 1080, 1440]}
+          sizes="100vw"
+          loading="lazy"
+        />
+      </div>
+      <div class="azure-about-closing-copy">
+        <h2>{closingTitle}</h2>
+        <p>{closingText}</p>
+        <nav aria-label="联系入口">
+          {profileConfig.links.map((link) => (
+            <a href={link.url} target={link.url.startsWith("http") ? "_blank" : undefined} rel={link.url.startsWith("http") ? "noreferrer" : undefined}>
+              <Icon name={link.icon} />
+              {link.name}
+            </a>
+          ))}
+        </nav>
+      </div>
+    </section>
+  </div>
 </MainGridLayout>

@@ -21,49 +21,45 @@ export const displaySettingsConfig: DisplaySettingsConfig =
 		// 无需改动本文件：PUBLIC_DISPLAY_SETTINGS=true
 		// 环境变量优先级更高，未设置或取值无法识别时使用这里的值
 		// 生产环境建议默认关闭，只在开发调试环境开启用来预览效果
-		enable: false,
+		enable: true,
 
 		// ── 外观 (Appearance) ──────────────────────────────────
 
 		// 主题色选择器开关
-		themeColorSwitchable: true,
+		themeColorSwitchable: false,
 
 		// 文章列表布局切换开关
-		layoutSwitchable: true,
+		layoutSwitchable: false,
 
 		// 卡片边框和阴影开关
-		cardBorderSwitchable: true,
+		cardBorderSwitchable: false,
 
 		// 卡片风格跟随主题色开关
-		cardFollowThemeSwitchable: true,
+		cardFollowThemeSwitchable: false,
 
 		// ── 壁纸 (Wallpaper) ──────────────────────────────────
 
 		// 壁纸模式切换开关
-		wallpaperModeSwitchable: true,
+		wallpaperModeSwitchable: false,
 
 		// 水波纹动画开关
-		wavesSwitchable: true,
+		wavesSwitchable: false,
 
 		// 渐变过渡效果开关
-		gradientSwitchable: true,
+		gradientSwitchable: false,
 
 		// 横幅标题显示开关
-		bannerTitleSwitchable: true,
+		bannerTitleSwitchable: false,
 
 		// 壁纸轮播开关
 		bannerCarouselSwitchable: true,
 
 		// 全屏壁纸/透明覆盖模式参数调节开关
 		// 设为 false 关闭所有滑块，或用对象形式单独控制每个滑块
-		overlaySwitchable: {
-			opacity: true,
-			blur: true,
-			cardOpacity: true,
-		},
+		overlaySwitchable: false,
 
 		// ── 特效 (Effects) ────────────────────────────────────
 
 		// 樱花特效开关
-		sakuraSwitchable: true,
+		sakuraSwitchable: false,
 	});

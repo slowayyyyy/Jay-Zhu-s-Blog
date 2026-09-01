@@ -1,8 +1,9 @@
 import type { CollectionEntry } from "astro:content";
 import { getCollection } from "astro:content";
 import * as fs from "node:fs";
+import * as path from "node:path";
 import type { APIContext, GetStaticPaths } from "astro";
-import { googleFonts } from "takumi-js/helpers";
+import type { FontDetails } from "takumi-js";
 import { ImageResponse } from "takumi-js/response";
 import { profileConfig } from "@/config/profileConfig";
 import { siteConfig } from "@/config/siteConfig";
@@ -28,7 +29,40 @@ export const getStaticPaths: GetStaticPaths = async () => {
 	});
 };
 
-const fontCache = new Map<string, Promise<string>>(); //new Map();
+let localFontCache: Promise<FontDetails[]> | null = null;
+
+function loadLocalNotoSansSc(): Promise<FontDetails[]> {
+	if (localFontCache) return localFontCache;
+
+	localFontCache = Promise.resolve().then(() => {
+		const fontDirectory = path.resolve(
+			"node_modules/@fontsource-variable/noto-sans-sc/files",
+		);
+		const files = fs
+			.readdirSync(fontDirectory)
+			.filter((file) => /^noto-sans-sc-\d+-wght-normal\.woff2$/u.test(file))
+			.sort((a, b) => {
+				const aIndex = Number(a.match(/-(\d+)-/u)?.[1] ?? 0);
+				const bIndex = Number(b.match(/-(\d+)-/u)?.[1] ?? 0);
+				return aIndex - bIndex;
+			});
+
+		if (files.length === 0) {
+			throw new Error("Local Noto Sans SC font subsets were not found.");
+		}
+
+		return files.map((file, index) => ({
+			name: `Noto Sans SC subset ${index}`,
+			subsetOf: "Noto Sans SC",
+			subsetRank: index,
+			style: "normal" as const,
+			generic: "sans-serif" as const,
+			data: fs.readFileSync(path.join(fontDirectory, file)),
+		}));
+	});
+
+	return localFontCache;
+}
 
 // Detect image format from magic bytes, returns mime type or null if unknown
 const detectImageFormat = (buffer: Buffer): string | null => {
@@ -417,16 +451,7 @@ export async function GET({
 					},
 				],
 			},
-			fonts: googleFonts({
-				families: [
-					{
-						name: "Noto Sans SC",
-						weight: "100..900",
-						style: "normal",
-					},
-				],
-				cache: fontCache,
-			}),
+			fonts: loadLocalNotoSansSc(),
 			headers: {
 				"Content-Type": "image/png",
 				"Cache-Control": "public, max-age=31536000, immutable",

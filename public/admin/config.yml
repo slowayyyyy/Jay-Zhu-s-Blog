@@ -1,0 +1,349 @@
+backend:
+  name: github
+  repo: slowayyyyy/Jay-Zhu-s-Blog
+  branch: main
+  base_url: https://jay-zhu-s-blog.pages.dev
+  auth_endpoint: api/auth
+  api_root: https://api.github.com
+
+local_backend: true
+locale: zh_Hans
+publish_mode: simple
+
+media_folder: public/uploads
+public_folder: /uploads
+
+site_url: https://jay-zhu-s-blog.pages.dev
+display_url: https://jay-zhu-s-blog.pages.dev
+logo_url: /favicon.svg
+
+slug:
+  encoding: unicode
+  clean_accents: false
+  sanitize_replacement: "-"
+
+collections:
+  - name: posts
+    label: 归档文章
+    label_singular: 文章
+    description: 发布论文阅读、学习笔记与生活记录；保存后由 Cloudflare 自动构建。
+    folder: src/content/posts
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    identifier_field: title
+    summary: "{{published}} · {{title}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{slug}}"
+    sortable_fields: [published, updated, title, category, pinned, draft]
+    view_filters:
+      - { label: 暂时隐藏, field: draft, pattern: true }
+      - { label: 首页置顶, field: pinned, pattern: true }
+      - { label: 学习笔记, field: category, pattern: 学习笔记 }
+      - { label: 科研记录, field: category, pattern: 科研记录 }
+      - { label: 生活手账, field: category, pattern: 生活手账 }
+    fields:
+      - { label: 标题, name: title, widget: string }
+      - { label: 页面描述, name: description, widget: text, hint: 用于首页摘要、搜索结果和分享预览，建议 30 至 100 字。 }
+      - label: 发布时间
+        name: published
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+      - label: 更新时间
+        name: updated
+        widget: datetime
+        format: YYYY-MM-DD
+        date_format: YYYY-MM-DD
+        time_format: false
+        required: false
+      - label: 分区
+        name: category
+        widget: relation
+        collection: category_settings
+        search_fields: [name, description]
+        display_fields: [name]
+        value_field: name
+        options_length: 100
+        hint: 在“分区管理”中新建并发布分区后，即可在这里搜索选择。
+      - label: 标签
+        name: tags
+        widget: relation
+        collection: tag_settings
+        search_fields: [name, description]
+        display_fields: [name]
+        value_field: "{{slug}}"
+        multiple: true
+        options_length: 200
+        required: false
+        hint: 在“标签管理”中新建并发布标签后，即可在这里搜索选择。
+      - { label: 文章头图, name: image, widget: image, required: false, hint: 留空则使用纯文字文章头部。 }
+      - { label: 首页置顶, name: pinned, widget: boolean, default: false, required: false }
+      - { label: 暂时隐藏, name: draft, widget: boolean, default: false, required: false, hint: 开启后文章仍可在后台编辑，但不会构建到前台。 }
+      - label: 系列文章
+        name: series
+        widget: string
+        required: false
+        hint: 同一系列填写完全相同的名称，文章页会自动显示系列导航。
+      - label: 系列顺序
+        name: seriesOrder
+        widget: number
+        value_type: int
+        min: 1
+        required: false
+        hint: 仅在填写“系列文章”时使用，数字越小越靠前。
+      - label: 作者署名
+        name: author
+        widget: string
+        required: false
+        hint: 留空时使用网站默认作者。
+      - label: 原文或资料来源
+        name: sourceLink
+        widget: string
+        required: false
+        hint: 可填写论文、项目或原始文章的完整网址。
+      - label: 版权协议名称
+        name: licenseName
+        widget: string
+        required: false
+        hint: 例如 CC BY-NC-SA 4.0；留空时使用网站默认设置。
+      - label: 版权协议地址
+        name: licenseUrl
+        widget: string
+        required: false
+      - label: 阅读密码
+        name: password
+        widget: string
+        required: false
+        hint: 留空表示公开阅读；设置后文章正文需要输入密码。
+      - label: 密码提示
+        name: passwordHint
+        widget: string
+        required: false
+      - label: 文章语言
+        name: lang
+        widget: select
+        options:
+          - { label: 中文, value: zh_CN }
+          - { label: English, value: en }
+          - { label: 日本語, value: ja }
+        default: zh_CN
+        required: false
+      - { label: 启用评论, name: comment, widget: hidden, default: false }
+      - label: 正文
+        name: body
+        widget: richtext
+        hint: 支持图片粘贴、图片说明、LaTeX、Mermaid、脚注、代码块、上标和下标。
+
+  - name: dynamic
+    label: 说说
+    label_singular: 一条说说
+    description: 记录比文章更短的念头和生活片段。
+    folder: src/content/dynamic
+    create: true
+    delete: true
+    extension: md
+    format: frontmatter
+    summary: "{{published}} · {{body}}"
+    slug: "{{year}}-{{month}}-{{day}}-{{hour}}{{minute}}{{second}}"
+    sortable_fields: [published, pinned]
+    fields:
+      - label: 发布时间
+        name: published
+        widget: datetime
+        format: YYYY-MM-DD HH:mm:ss
+        date_format: YYYY-MM-DD
+        time_format: HH:mm:ss
+      - { label: 置顶, name: pinned, widget: boolean, default: false, required: false }
+      - { label: 地点, name: location, widget: string, required: false }
+      - { label: 内容, name: body, widget: markdown }
+
+  - name: tag_settings
+    label: 标签管理
+    label_singular: 标签
+    description: 先在这里维护标签，再在文章中搜索选择。
+    folder: src/content/tags
+    create: true
+    delete: true
+    extension: json
+    format: json
+    identifier_field: name
+    summary: "{{name}}"
+    slug: "{{slug}}"
+    fields:
+      - { label: 标签名称, name: name, widget: string }
+      - { label: 标签说明, name: description, widget: text, required: false }
+
+  - name: category_settings
+    label: 分区管理
+    label_singular: 分区
+    description: 管理文章所属分区。已有文章正在使用的分区不要直接删除，应先修改对应文章。
+    folder: src/content/categories
+    create: true
+    delete: true
+    extension: json
+    format: json
+    identifier_field: name
+    summary: "{{name}}"
+    slug: "{{slug}}"
+    fields:
+      - { label: 分区名称, name: name, widget: string }
+      - { label: 分区说明, name: description, widget: text, required: false }
+
+  - name: about_settings
+    label: 关于页面
+    files:
+      - label: 关于我
+        name: about
+        file: src/content/spec/about.md
+        format: frontmatter
+        fields:
+          - { label: 主标题, name: heroTitle, widget: string }
+          - { label: 一句话介绍, name: heroSubtitle, widget: text }
+          - { label: 引言, name: quote, widget: text }
+          - { label: 结尾标题, name: closingTitle, widget: string }
+          - { label: 结尾说明, name: closingText, widget: text }
+          - { label: 详细介绍, name: body, widget: richtext }
+
+  - name: site_settings
+    label: 苍蓝回廊设置
+    description: 修改首页文案、音乐页文案、外部服务、个人资料和 R2 歌单。
+    files:
+      - label: 全部前台文案与歌单
+        name: azure
+        file: src/data/azure-content.json
+        format: json
+        fields:
+          - label: 开场页面
+            name: opening
+            widget: object
+            fields:
+              - { label: 启用开场, name: enabled, widget: boolean, default: true }
+              - { label: 英文眉题, name: kicker, widget: string }
+              - { label: 开场标题, name: title, widget: string }
+              - { label: 开场说明, name: subtitle, widget: text }
+              - { label: 进入按钮, name: enterLabel, widget: string }
+              - { label: 按钮下提示, name: hint, widget: string }
+              - { label: 开场视频地址, name: videoUrl, widget: string, required: false, hint: 默认使用受保护的 /media/opening；留空或加载失败时自动显示洛琪希静态封面。 }
+          - label: 开场与首页首屏
+            name: hero
+            widget: object
+            fields:
+              - { label: 博客名, name: title, widget: string }
+              - { label: 作者介绍, name: subtitle, widget: text }
+              - { label: 座右铭, name: note, widget: string }
+              - { label: 主按钮, name: primaryCta, widget: string }
+              - { label: 次按钮, name: secondaryCta, widget: string }
+          - label: 首页下半部
+            name: home
+            widget: object
+            fields:
+              - { label: 最近文章标题, name: recentTitle, widget: string }
+              - { label: 最近文章介绍, name: recentIntro, widget: text }
+              - { label: 分支英文眉题, name: branchesKicker, widget: string }
+              - { label: 分支标题, name: branchesTitle, widget: string }
+              - { label: 分支介绍, name: branchesIntro, widget: text }
+              - { label: 乐境入口标题, name: musicTitle, widget: string }
+              - { label: 乐境入口说明, name: musicDescription, widget: string }
+              - { label: 画廊入口标题, name: galleryTitle, widget: string }
+              - { label: 说说入口文案, name: dynamicQuote, widget: text }
+              - { label: 追番入口标题, name: animeTitle, widget: string }
+              - { label: 追番入口状态, name: animeStatus, widget: string }
+              - { label: 关于入口标题, name: aboutTitle, widget: string }
+              - label: 回廊时刻短句池
+                name: momentQuotes
+                widget: list
+                min: 1
+                field: { label: 短句, name: quote, widget: string }
+          - label: 乐境页面文案
+            name: musicPage
+            widget: object
+            fields:
+              - { label: 页面标题, name: title, widget: string }
+              - { label: 页面介绍, name: intro, widget: text }
+              - { label: 无歌词提示, name: emptyLyrics, widget: string }
+          - label: 外部服务
+            name: integrations
+            widget: object
+            hint: Bilibili UID 和 Umami Website ID 均可稍后填写；留空不会影响其他页面。
+            fields:
+              - { label: Bilibili UID, name: bilibiliUid, widget: string, required: false, hint: 填写个人空间数字 UID，追番页将使用 Firefly 原生数据组件。 }
+              - { label: Umami Website ID, name: umamiWebsiteId, widget: string, required: false }
+              - { label: Umami 脚本地址, name: umamiScriptUrl, widget: string, default: https://cloud.umami.is/script.js }
+          - label: 音乐歌单
+            name: playlist
+            widget: list
+            summary: "{{fields.name}} · {{fields.artist}}"
+            fields:
+              - { label: 歌名, name: name, widget: string }
+              - { label: 歌手, name: artist, widget: string }
+              - { label: 音乐文件, name: src, widget: r2-audio }
+              - { label: 封面, name: cover, widget: image, required: false }
+              - { label: LRC 歌词或歌词地址, name: lrc, widget: text, required: false, hint: 可粘贴完整 LRC，也可以填写以 / 开头的歌词文件地址。 }
+      - label: 个人资料与联系入口
+        name: profile
+        file: src/data/profile.json
+        format: json
+        fields:
+          - { label: 头像, name: avatar, widget: image, hint: 首页资料组件和“关于”页共用此头像；上传后保存即可同步更新。 }
+          - { label: 显示名称, name: name, widget: string }
+          - { label: 一句话介绍, name: bio, widget: text }
+          - label: 联系入口
+            name: links
+            widget: list
+            summary: "{{fields.name}} · {{fields.url}}"
+            fields:
+              - { label: 名称, name: name, widget: string }
+              - { label: Iconify 图标名, name: icon, widget: string, hint: 例如 fa7-brands:github 或 fa7-solid:envelope。 }
+              - { label: 地址, name: url, widget: string }
+              - { label: 在个人卡片显示文字, name: showName, widget: boolean, default: false, required: false }
+      - label: 图库与相册
+        name: gallery
+        file: src/data/gallery.json
+        format: json
+        fields:
+          - { label: 页面标题, name: title, widget: string }
+          - { label: 页面介绍, name: description, widget: text }
+          - { label: 瀑布流最小列宽, name: columnWidth, widget: number, value_type: int, min: 180, max: 420, default: 240 }
+          - label: 相册
+            name: albums
+            widget: list
+            summary: "{{fields.name}} · {{fields.id}}"
+            fields:
+              - { label: 相册标识, name: id, widget: string, hint: 只使用英文、数字和短横线，例如 campus-2026；发布后不要随意修改。 }
+              - { label: 相册名称, name: name, widget: string }
+              - { label: 相册说明, name: description, widget: text, required: false }
+              - { label: 日期, name: date, widget: string, required: false, hint: 可填写 2026-09 或“研一秋季”。 }
+              - { label: 地点, name: location, widget: string, required: false }
+              - { label: 标签, name: tags, widget: list, required: false, field: { label: 标签, name: tag, widget: string } }
+              - { label: 封面, name: cover, widget: image, required: false }
+              - label: 相册照片
+                name: photos
+                widget: list
+                required: false
+                field: { label: 照片, name: photo, widget: image }
+              - { label: 访问密码, name: password, widget: string, required: false }
+              - { label: 密码提示, name: passwordHint, widget: string, required: false }
+      - label: 友链页面
+        name: friends
+        file: src/data/friends.json
+        format: json
+        fields:
+          - { label: 页面标题, name: title, widget: string }
+          - { label: 页面介绍, name: description, widget: text }
+          - { label: 显示补充正文, name: showCustomContent, widget: boolean, default: false }
+          - { label: 显示评论, name: showComment, widget: hidden, default: false }
+          - { label: 随机排序, name: randomizeSort, widget: boolean, default: false }
+          - label: 友链列表
+            name: items
+            widget: list
+            summary: "{{fields.title}} · {{fields.siteurl}}"
+            fields:
+              - { label: 名称, name: title, widget: string }
+              - { label: 头像, name: imgurl, widget: image }
+              - { label: 简介, name: desc, widget: text }
+              - { label: 网址, name: siteurl, widget: string }
+              - { label: 标签, name: tags, widget: list, required: false, field: { label: 标签, name: tag, widget: string } }
+              - { label: 排序权重, name: weight, widget: number, value_type: int, default: 0 }
+              - { label: 启用, name: enabled, widget: boolean, default: true }

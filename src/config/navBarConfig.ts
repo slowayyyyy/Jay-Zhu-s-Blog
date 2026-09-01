@@ -15,6 +15,9 @@ const getDynamicNavBarConfig = (): NavBarConfig => {
 		LinkPresets.Archive,
 		LinkPresets.Dynamic,
 		LinkPresets.Gallery,
+		LinkPresets.Music,
+		LinkPresets.Anime,
+		LinkPresets.Friends,
 		LinkPresets.About,
 	];
 
@@ -79,6 +82,17 @@ export const LinkPresets: Record<string, NavBarLink> = {
 		url: "/gallery/",
 		icon: "material-symbols:photo-library",
 		pageKey: "gallery",
+	},
+	Music: {
+		name: "乐境",
+		url: "/music/",
+		icon: "material-symbols:headphones-rounded",
+	},
+	Anime: {
+		name: "追番",
+		url: "/bilibili/",
+		icon: "material-symbols:movie-outline-rounded",
+		pageKey: "bilibili",
 	},
 	Booknav: {
 		name: "书签导航",

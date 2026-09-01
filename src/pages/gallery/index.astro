@@ -12,12 +12,12 @@ if (!siteConfig.pages.gallery) {
 	return Astro.redirect("/404/");
 }
 
-const title = i18n(I18nKey.gallery);
-const description = i18n(I18nKey.galleryDescription);
+const title = galleryConfig.title || i18n(I18nKey.gallery);
+const description = galleryConfig.description || i18n(I18nKey.galleryDescription);
 
 // 构建相册数据（扫描照片、获取封面）
 const albums = galleryConfig.albums.map((album) => {
-	const photos = scanAlbumPhotos(album.id);
+	const photos = scanAlbumPhotos(album.id, album.photos);
 	const cover = getAlbumCover(album, photos);
 	return { ...album, cover, photoCount: photos.length };
 });

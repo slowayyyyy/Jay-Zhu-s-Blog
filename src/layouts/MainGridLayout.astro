@@ -133,7 +133,7 @@ const {
                     data-current-post-category={postCategory || ""}
                 >
                 {/* 为每个页面提供一个隐藏的h1标题，用于SEO和可访问性 */}
-                <h1 class="sr-only">{title}</h1>
+                {title && <h1 class="sr-only">{title}</h1>}
                 <div id="content-wrapper" class="onload-animation transition-leaving">
                     <slot></slot>
                 </div>

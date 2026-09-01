@@ -35,6 +35,14 @@ type DynamicData = {
 	location: string;
 };
 
+type SpecData = {
+	heroTitle?: string;
+	heroSubtitle?: string;
+	quote?: string;
+	closingTitle?: string;
+	closingText?: string;
+};
+
 type ContentCollection<T> = CollectionConfig<
 	ZodType<T>,
 	ReturnType<typeof glob>
@@ -71,11 +79,16 @@ const postsCollection: ContentCollection<PostData> = defineCollection({
 	}),
 });
 
-const specCollection: ContentCollection<Record<string, never>> =
-	defineCollection({
-		loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
-		schema: z.object({}),
-	});
+const specCollection: ContentCollection<SpecData> = defineCollection({
+	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
+	schema: z.object({
+		heroTitle: z.string().optional(),
+		heroSubtitle: z.string().optional(),
+		quote: z.string().optional(),
+		closingTitle: z.string().optional(),
+		closingText: z.string().optional(),
+	}),
+});
 
 const dynamicCollection: ContentCollection<DynamicData> = defineCollection({
 	loader: glob({ pattern: "**/*.md", base: "./src/content/dynamic" }),

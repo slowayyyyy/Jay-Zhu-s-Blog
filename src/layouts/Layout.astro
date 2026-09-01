@@ -12,6 +12,7 @@ import MusicPlayerView from "@components/features/MusicPlayerView.astro";
 import SakuraEffect from "@components/features/SakuraEffect.astro";
 import WavesEffect from "@components/features/WavesEffect.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
+import OpeningGate from "@components/layout/OpeningGate.astro";
 
 import {
 	analyticsConfig,
@@ -39,6 +40,7 @@ import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
 import "@/styles/variables.styl";
+import "@/styles/azure-corridor.css";
 import "@rehype-callouts-theme";
 
 interface Props {
@@ -447,6 +449,15 @@ const siteLogo = await getSiteLogo();
       },
     ]}
   >
+    <!--
+      AZURE-CORRIDOR-D5B127F1
+      THESIS: A continuous water-memory ribbon carries research and ordinary life; reject the default sidebar dashboard and generic blue anime portal.
+      OWN-WORLD: Moon-white and deep-sea surfaces, ink-blue type, one glacial accent, open article rows, refracted imagery, and a recurring waterline.
+      STORY: Meet Jay through one atmospheric threshold, follow the latest writing, then branch into moments, images, music, anime, and a more personal about page.
+      FIRST VIEWPORT: A Roxy water-magic scene fills the banner; an asymmetric left text block and a restrained animated sigil lead to recent writing below.
+      FORM: Water-memory provenance ribbon, grounded direction 4, seed d5b127f1.
+      FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+    -->
     <!-- 首帧前按运行时壁纸模式翻转卡片透明类（布局已由 data-wallpaper-mode 属性规则接管） -->
     <script is:inline>
       (function () {
@@ -483,6 +494,7 @@ const siteLogo = await getSiteLogo();
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}
     <ConfigCarrier />
     <MusicManager />
+    {isHomePageCheck && <OpeningGate />}
     <slot />
 
     <!-- 播放器视图脚本：必须在 <slot /> 之后（解析到它时所有 widget 的 DOM 要已存在），

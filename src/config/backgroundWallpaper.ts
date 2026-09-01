@@ -1,4 +1,5 @@
 import type { BackgroundWallpaperConfig } from "@/types/backgroundWallpaper";
+import azureContent from "@/data/azure-content.json";
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 覆盖透明，"none" 纯色背景无壁纸
@@ -38,10 +39,18 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	src: {
 		// 桌面背景图片（支持单张或多张随机）
 		// desktop: "assets/images/DesktopWallpaper/d1.avif",
-		desktop: "assets/images/azure/roxy-water-magic.jpg",
+		desktop: [
+			"assets/images/azure/roxy-water-magic.jpg",
+			"assets/images/azure/roxy-study.jpg",
+			"assets/images/azure/roxy-field.jpg",
+		],
 		// 移动背景图片（支持单张或多张随机）
 		// mobile: "assets/images/MobileWallpaper/m1.avif",
-		mobile: "assets/images/azure/roxy-portrait-light.jpg",
+		mobile: [
+			"assets/images/azure/roxy-night-magic.jpg",
+			"assets/images/azure/roxy-portrait-light.jpg",
+			"assets/images/azure/roxy-field.jpg",
+		],
 		// 背景视频播放地址
 		// 支持单个视频路径（字符串）或多个视频循环（数组，参考上面壁纸配置）
 		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
@@ -59,22 +68,18 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否启用主页横幅文字
 			enable: true,
 			// 主页横幅主标题
-			title: "苍蓝回廊",
+			title: azureContent.hero.title,
 			// 主页横幅主标题字体大小
-			titleSize: "4.25rem",
+			titleSize: "clamp(3.7rem, 7vw, 7rem)",
 			// 主页横幅副标题
-			subtitle: [
-				"沿着水纹，收集研究、阅读与日常的微光。",
-				"把问题写清楚，也把普通的日子认真留下。",
-				"Between papers and quiet days, the corridor goes on.",
-			],
+			subtitle: azureContent.hero.subtitle,
 			// 主页横幅副标题字体大小
-			subtitleSize: "1.5rem",
+			subtitleSize: "1.15rem",
 			typewriter: {
 				// 是否启用打字机效果
 				// 打字机开启 → 循环显示所有副标题
 				// 打字机关闭 → 每次刷新随机显示一条副标题
-				enable: true,
+				enable: false,
 				// 打字速度（毫秒）
 				speed: 100,
 				// 删除速度（毫秒）
@@ -88,31 +93,27 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 图标支持 Iconify 格式：fa7-brands:github、fa7-solid:envelope、mdi:rss 等
 			links: [
 				{
-					name: "GitHub",
-					icon: "fa7-brands:github",
-					url: "https://github.com/slowayyyyy",
+					name: azureContent.hero.primaryCta,
+					icon: "material-symbols:arrow-downward-rounded",
+					url: "#recent-notes",
 					showName: true,
 				},
 				{
-					name: "Email",
-					icon: "fa7-solid:envelope",
-					url: "mailto:zhuyongtao777@gmail.com",
-				},
-				{
-					name: "RSS",
-					icon: "fa7-solid:rss",
-					url: "/rss/",
+					name: azureContent.hero.secondaryCta,
+					icon: "material-symbols:arrow-outward-rounded",
+					url: "/about/",
+					showName: true,
 				},
 			],
 		},
 		// 壁纸轮播配置，横幅壁纸和全屏壁纸共享，仅在配置多张图片时生效
 		carousel: {
 			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
-			enable: false,
+			enable: true,
 			// 轮播切换间隔（毫秒）
-			interval: 5000,
+			interval: 9000,
 			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
-			transitionEffect: "zoom",
+			transitionEffect: "kenburns",
 		},
 	},
 	// Banner模式特有配置
@@ -120,7 +121,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 图片位置
 		// 支持所有CSS object-position值，如: 'top', 'center', 'bottom', 'left top', 'right bottom', '25% 75%', '10px 20px'..
 		// 如果不知道怎么配置百分百之类的配置，推荐直接使用：'center'居中，'top'顶部居中，'bottom' 底部居中，'left'左侧居中，'right'右侧居中
-		position: "0% 20%",
+		position: "center 36%",
 		// 文章横幅信息："description" 显示描述，"meta" 显示日期、字数和阅读时长
 		postInfo: {
 			mode: "description",
@@ -128,7 +129,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 导航栏配置
 		navbar: {
 			// 导航栏透明模式："semi" 半透明，"semifull" 动态透明，"none" 纯色不透明
-			transparentMode: "semi",
+			transparentMode: "semifull",
 			// 毛玻璃模糊度，0 即关闭导航栏的毛玻璃
 			// 注意：导航栏子菜单与浮动面板始终保留毛玻璃，模糊度跟随此项但有最小值
 			blur: 12,

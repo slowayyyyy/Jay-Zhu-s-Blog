@@ -69,6 +69,8 @@ declare global {
 			playTrackByIndex: (index: number) => void;
 			loadTrack: (index: number, autoPlay: boolean) => void;
 		};
+		/** 乐境页面重复挂载时，用于清理上一组事件监听器。 */
+		__azureMusicPageController?: AbortController;
 		/** 樱花特效管理器,Worker 模式与主线程回退模式均实现该接口 */
 		sakuraManager?: SakuraManagerLike;
 		/** 樱花特效初始化守卫,确保只初始化一次(Swup 切页重跑脚本时复用) */

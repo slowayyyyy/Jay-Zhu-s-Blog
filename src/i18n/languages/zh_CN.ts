@@ -213,11 +213,11 @@ export const zh_CN: Translation = {
 	[Key.vndbLengthVeryLong]: "极长",
 
 	// 追番 - Bilibili
-	[Key.bilibili]: "哔哩哔哩",
-	[Key.bilibiliSubtitle]: "我的哔哩哔哩追番与追剧列表",
+	[Key.bilibili]: "追番",
+	[Key.bilibiliSubtitle]: "从 Bilibili 汇入的番剧观看档案",
 	[Key.bilibiliNotConfigured]: "未配置哔哩哔哩数据源",
 	[Key.bilibiliNotConfiguredDesc]:
-		"请在 src/config/siteConfig.ts 中配置 bilibili.uid",
+		"请在内容管理后台的“苍蓝回廊设置 → 外部服务”中填写 Bilibili UID",
 
 	// 追番 - 公共组件
 	[Key.animeTotal]: "总追番",

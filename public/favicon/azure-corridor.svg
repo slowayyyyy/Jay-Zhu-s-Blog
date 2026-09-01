@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" role="img" aria-label="Azure Corridor">
+  <defs>
+    <linearGradient id="water" x1="64" y1="40" x2="190" y2="214" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c8f4f4"/>
+      <stop offset="0.5" stop-color="#55bed0"/>
+      <stop offset="1" stop-color="#176a88"/>
+    </linearGradient>
+    <radialGradient id="depth" cx="0" cy="0" r="1" gradientTransform="translate(91 76) rotate(48) scale(178)" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1d566d"/>
+      <stop offset="1" stop-color="#071c2b"/>
+    </radialGradient>
+  </defs>
+  <circle cx="128" cy="128" r="116" fill="url(#depth)"/>
+  <circle cx="128" cy="128" r="94" fill="none" stroke="#c8f4f4" stroke-opacity="0.34" stroke-width="2" stroke-dasharray="5 12"/>
+  <path d="M128 45C104 78 77 107 77 145c0 31 23 57 51 57s51-26 51-57c0-38-27-67-51-100Z" fill="url(#water)"/>
+  <path d="M102 150c4 16 14 25 30 29" fill="none" stroke="#efffff" stroke-linecap="round" stroke-opacity="0.72" stroke-width="8"/>
+  <circle cx="128" cy="128" r="109" fill="none" stroke="#b9edf1" stroke-opacity="0.7" stroke-width="3"/>
+</svg>

@@ -1,6 +1,8 @@
 ---
 import type { GetStaticPaths } from "astro";
 import Pagination from "@/components/common/Pagination.astro";
+import HomeBranches from "@/components/layout/HomeBranches.astro";
+import HomeLead from "@/components/layout/HomeLead.astro";
 import PostPage from "@/components/layout/PostPage.astro";
 import { siteConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -19,7 +21,9 @@ const len = page.data.length;
 ---
 
 <MainGridLayout>
+  {page.currentPage === 1 && <HomeLead postCount={page.total} />}
   <PostPage page={page} />
+  {page.currentPage === 1 && <HomeBranches />}
   {
     page.total > page.size && (
       <Pagination

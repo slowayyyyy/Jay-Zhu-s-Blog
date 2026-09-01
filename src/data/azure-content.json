@@ -1,0 +1,59 @@
+{
+  "opening": {
+    "enabled": true,
+    "kicker": "AZURE CORRIDOR · PROLOGUE",
+    "title": "苍蓝回廊",
+    "subtitle": "让水纹推开门扉，去往文字、旋律与尚未抵达的远方。",
+    "enterLabel": "步入回廊",
+    "hint": "点击进入并开启音乐",
+    "videoUrl": "/media/opening"
+  },
+  "hero": {
+    "title": "苍蓝回廊",
+    "subtitle": "我是 Jay Zhu。论文、读书与日常，沿着水纹在这里慢慢汇流。",
+    "note": "水会记得经过它的一切。",
+    "primaryCta": "阅读近作",
+    "secondaryCta": "认识我"
+  },
+  "home": {
+    "recentTitle": "最近写下",
+    "recentIntro": "这里放着我最近读过的论文、想明白的问题，也有读书、吃饭和日常生活留下的小小回声。",
+    "branchesKicker": "BEYOND THE NOTES",
+    "branchesTitle": "回廊深处",
+    "branchesIntro": "文字之外，还有旋律、光影和偶尔浮上水面的日常。它们从不同方向汇进同一段私人记忆。",
+    "musicTitle": "让旋律陪文字继续走一段",
+    "musicDescription": "进入完整播放器，查看歌词与歌单。",
+    "galleryTitle": "光影留下的水纹",
+    "dynamicQuote": "短一些的念头，也值得拥有自己的停靠处。",
+    "animeTitle": "故事世界的观影手记",
+    "animeStatus": "档案正在生长",
+    "aboutTitle": "认识文字背后的人",
+    "momentQuotes": [
+      "愿每一次认真，都在时间里留下清澈的回声。",
+      "把尚未想明白的问题，交给下一页和下一次出发。",
+      "世界很大，先把眼前这一小段路走得明亮。",
+      "安静地积累，也是一种坚定的前行。"
+    ]
+  },
+  "musicPage": {
+    "title": "乐境",
+    "intro": "有些旋律适合陪着写作，有些旋律会把人带回某一段时间。",
+    "emptyLyrics": "这首歌暂时没有歌词，旋律仍会继续。"
+  },
+  "integrations": {
+    "bilibiliUid": "",
+    "umamiWebsiteId": "",
+    "umamiScriptUrl": "https://cloud.umami.is/script.js"
+  },
+  "playlist": [
+    { "name": "旅人の唄", "artist": "大原ゆい子", "src": "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3", "cover": "", "lrc": "" },
+    { "name": "芽吹の唄", "artist": "大原ゆい子", "src": "/media/audio/20260901150655-70964cdb-大原ゆい子-芽吹の唄.mp3", "cover": "", "lrc": "" },
+    { "name": "spiral", "artist": "LONGMAN", "src": "/media/audio/20260901150725-b5f79610-LONGMAN-spiral-kgg-dec.mp3", "cover": "", "lrc": "" },
+    { "name": "祈り、終われば", "artist": "中島美嘉", "src": "/media/audio/20260901150746-fa7cac8a-中島美嘉-祈り-終われば.mp3", "cover": "", "lrc": "" },
+    { "name": "かげくらべの唄", "artist": "大原ゆい子", "src": "/media/audio/20260901150807-3aa83d0f-大原ゆい子-かげくらべの唄-与你身影作比之歌.mp3", "cover": "", "lrc": "" },
+    { "name": "ムスビメ (联结)", "artist": "大原ゆい子", "src": "/media/audio/20260901150825-4a04356cdb-大原ゆい子-ムスビメ-联结.mp3", "cover": "", "lrc": "" },
+    { "name": "守りたいもの（想要守护之物）", "artist": "大原ゆい子", "src": "/media/audio/20260901150858-8b47d5a7-大原ゆい子-守りたいもの-想要守护之物.mp3", "cover": "", "lrc": "" },
+    { "name": "決意の唄", "artist": "大原ゆい子", "src": "/media/audio/20260901150919-a124278c-大原ゆい子-決意の唄.mp3", "cover": "", "lrc": "" },
+    { "name": "風と行く道 (随风而行的路)", "artist": "大原ゆい子", "src": "/media/audio/20260901150938-8b1f8086-大原ゆい子-風と行く道-随风而行的路.mp3", "cover": "", "lrc": "" }
+  ]
+}

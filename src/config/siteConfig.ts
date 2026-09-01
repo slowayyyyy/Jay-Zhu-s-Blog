@@ -1,6 +1,7 @@
 import type { SiteConfig } from "@/types/siteConfig";
 import { resolvePageToggles } from "../utils/page-toggle-utils";
 import { resolveSiteLang } from "../utils/site-config-utils";
+import azureContent from "../data/azure-content.json";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru', 'ko'。
@@ -11,7 +12,7 @@ const pages = resolvePageToggles({
 	// ── 社交 (Social) ──────────────────────────────────
 
 	// 友链页面开关
-	friends: false,
+	friends: true,
 	// 留言板页面开关，需要配置评论系统
 	guestbook: false,
 
@@ -24,7 +25,7 @@ const pages = resolvePageToggles({
 	// 书签导航页面开关
 	booknav: false,
 	// 哔哩哔哩追番页面开关
-	bilibili: false,
+	bilibili: true,
 	// 番组计划页面开关
 	bangumi: false,
 	// VNDB页面开关
@@ -40,7 +41,7 @@ const pages = resolvePageToggles({
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "苍蓝回廊",
+	title: azureContent.hero.title,
 
 	// 站点副标题
 	subtitle: "Azure Reverie",
@@ -49,10 +50,17 @@ export const siteConfig: SiteConfig = {
 	site_url: "https://jay-zhu-s-blog.pages.dev",
 
 	// 站点描述
-	description: "论文、读书、跑步和生活中的小事，都在这条苍蓝回廊里慢慢积累。",
+	description: azureContent.hero.subtitle,
 
 	// 站点关键词
-	keywords: ["苍蓝回廊", "Jay Zhu", "个人博客", "科研记录", "论文阅读", "计算机科学"],
+	keywords: [
+		"苍蓝回廊",
+		"Jay Zhu",
+		"个人博客",
+		"科研记录",
+		"论文阅读",
+		"计算机科学",
+	],
 
 	// 主题色
 	themeColor: {
@@ -65,26 +73,26 @@ export const siteConfig: SiteConfig = {
 	// 页面整体宽度（单位：rem）
 	// 数值越大可以让页面内容区域更宽
 	// 在使用单侧栏边栏时，建议调低一些宽度以获得更好的视觉效果。
-	pageWidth: 108,
+	pageWidth: 88,
 
 	// 网站Card样式配置
 	card: {
 		// 是否开启卡片边框和阴影，开启后让网站更有立体感
-		border: true,
+		border: false,
 		// 是否让卡片风格跟随主题色相
-		followTheme: true,
+		followTheme: false,
 	},
 
 	// Favicon 配置
 	// 如果启用了OpenGraph图片功能，数组中需要包含png格式的favicon图标
 	favicon: [
 		{
-			// 图标文件路径
-			src: "/favicon/firefly-32.png",
-			// 可选，指定主题 'light' | 'dark'
-			// theme: "light",
-			// 可选，图标大小
-			// sizes: "32x32",
+			src: "/favicon/azure-corridor-32.png",
+			sizes: "32x32",
+		},
+		{
+			src: "/favicon/azure-corridor-192.png",
+			sizes: "192x192",
 		},
 	],
 
@@ -128,18 +136,18 @@ export const siteConfig: SiteConfig = {
 	// 页面开关配置 - 控制特定页面的访问权限，设为false会返回404并自动隐藏对应的导航栏菜单项
 
 	// 分类导航栏开关，在首页和归档页顶部显示分类快捷导航
-	categoryBar: true,
+	categoryBar: false,
 
 	// 分类导航栏按钮样式
 	// "pill"：胶囊，主题色浅底圆角
 	// "rectangle"：矩形，配色同胶囊，仅圆角更小
-	categoryStyle: "rectangle",
+	categoryStyle: "pill",
 
 	// 标签样式，作用于文章列表底部标签、标签页和侧边栏标签
 	// "pill"：胶囊，主题色底圆角
 	// "pill-gray"：胶囊，中性灰底圆角
 	// "rectangle"：矩形，主题色底小圆角
-	tagStyle: "pill",
+	tagStyle: "pill-gray",
 
 	// 归档页是否折叠非最新年份文章，禁用后默认展开全部年份
 	foldArticle: true,
@@ -149,14 +157,14 @@ export const siteConfig: SiteConfig = {
 		// 默认布局模式："list" 列表模式（单列布局），"grid" 网格模式（多列布局）
 		defaultMode: "list",
 		// 移动端默认布局模式，不设置则跟随 defaultMode
-		mobileDefaultMode: "grid",
+		mobileDefaultMode: "list",
 		// 列表模式下封面图显示在哪一侧："right" 右侧，"left" 左侧
 		// 网格模式的封面固定在卡片顶部，不受此项影响
 		coverPosition: "right",
 		// 文章简介显示行数，设为 0 则不截断
 		descriptionLines: 2,
 		// 文章卡片底部统计和发布日期是否显示图标
-		showStatsIcons: true,
+		showStatsIcons: false,
 		// 标签显示位置
 		// 设置为"meta"：显示在文章标题下的元数据
 		// 设置为"bottom"：顶替stats在底部显示
@@ -164,7 +172,7 @@ export const siteConfig: SiteConfig = {
 		// 底部标签样式，仅在 tagsPosition 为 "bottom" 时生效
 		// "chip"：按钮样式，形状跟随上方的 tagStyle 配置
 		// "text"：无底色，只有文字
-		tagsBottomStyle: "chip",
+		tagsBottomStyle: "text",
 		// PostMeta 元数据显示控制
 		meta: {
 			// 是否显示发布日期
@@ -232,7 +240,7 @@ export const siteConfig: SiteConfig = {
 	// ── Bilibili配置 ──────────────────────────────────
 	bilibili: {
 		// 你的 Bilibili 用户 UID
-		uid: "",
+		uid: azureContent.integrations.bilibiliUid,
 	},
 
 	// ── 番组计划bangumi配置 ──────────────────────────────────

@@ -1,3 +1,5 @@
+@import '@fontsource-variable/noto-sans-sc/index.css';
+@import '@fontsource-variable/noto-serif-sc/index.css';
 @import 'tailwindcss';
 @import './layout-styles.css';
 @import './navbar.css';
