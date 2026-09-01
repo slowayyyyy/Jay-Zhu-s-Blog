@@ -1,6 +1,6 @@
 {
   "opening": {
-    "enabled": true,
+    "enabled": false,
     "kicker": "AZURE CORRIDOR · PROLOGUE",
     "title": "苍蓝回廊",
     "subtitle": "让水纹推开门扉，去往文字、旋律与尚未抵达的远方。",
@@ -38,7 +38,10 @@
   "musicPage": {
     "title": "乐境",
     "intro": "有些旋律适合陪着写作，有些旋律会把人带回某一段时间。",
-    "emptyLyrics": "这首歌暂时没有歌词，旋律仍会继续。"
+    "emptyLyrics": "这首歌暂时没有歌词，旋律仍会继续。",
+    "referenceTitle": "第一段乐境：旅人の唄",
+    "referenceText": "适合在安静写作或整理思绪时播放。它像一段不急着抵达终点的旅途，让文字和心情都慢下来。",
+    "referenceMeta": "参考内容 · 以后可以替换成你的真实听歌记录"
   },
   "integrations": {
     "bilibiliUid": "",

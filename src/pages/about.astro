@@ -1,5 +1,5 @@
 ---
-import { getEntry, render } from "astro:content";
+import { getCollection, getEntry, render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Markdown from "@components/common/Markdown.astro";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
@@ -16,6 +16,7 @@ if (!aboutPost) {
 
 const { Content } = await render(aboutPost);
 const friendCount = getEnabledFriends().length;
+const publicPostCount = (await getCollection("posts", ({ data }) => !data.draft)).length;
 
 const changelogEntries = [
 	{
@@ -28,7 +29,7 @@ const changelogEntries = [
 	},
 	{
 		title: "洛琪希视觉系统",
-		description: "将开屏、壁纸、角色选择与站点色彩统一为洛琪希主题。",
+		description: "将壁纸、图像、动效与站点色彩统一为洛琪希主题。",
 		href: "/changelog/",
 		tags: ["Aemeath V1.1.1", "维护"],
 		tone: "mint",
@@ -113,32 +114,32 @@ const stack = ["Python", "PyTorch", "Computer Vision", "LLM", "Astro", "TypeScri
 const serverStatusEndpoint = "/api/server-status.json";
 const serverStats = [
 	{
-		key: "cpu",
-		label: "处理器",
-		value: "静态站点",
-		detail: "Astro 预渲染",
-		icon: "material-symbols:memory-rounded",
+		key: "service",
+		label: "页面服务",
+		value: "检查中",
+		detail: "Cloudflare Pages",
+		icon: "material-symbols:cloud-outline",
 	},
 	{
-		key: "memory",
-		label: "内存",
-		value: "Cloudflare",
-		detail: "Pages 全球边缘网络",
-		icon: "material-symbols:memory-alt-rounded",
+		key: "deployment",
+		label: "当前部署",
+		value: "main",
+		detail: "GitHub 自动部署",
+		icon: "material-symbols:sync-rounded",
 	},
 	{
-		key: "disk",
-		label: "存储",
+		key: "content",
+		label: "公开文章",
+		value: String(publicPostCount),
+		detail: "Astro 静态生成",
+		icon: "material-symbols:article-outline",
+	},
+	{
+		key: "repository",
+		label: "代码托管",
 		value: "GitHub",
-		detail: "内容与版本历史",
-		icon: "material-symbols:database",
-	},
-	{
-		key: "system",
-		label: "系统",
-		value: "在线",
-		detail: "自动部署",
-		icon: "material-symbols:dns",
+		detail: "main 分支 · 版本可恢复",
+		icon: "fa7-brands:github",
 	},
 ];
 ---
@@ -340,7 +341,7 @@ const serverStats = [
 				<section class="profile-panel profile-side-panel profile-server-panel card-base" aria-labelledby="server-title" data-server-metrics data-server-endpoint={serverStatusEndpoint}>
 					<header class="profile-side-heading profile-server-heading">
 						<Icon is:inline name="material-symbols:cloud-outline" aria-hidden="true" />
-						<h2 id="server-title">服务器状态</h2>
+						<h2 id="server-title">站点状态</h2>
 						<span class="server-status" data-server-status><span aria-hidden="true"></span><span data-server-status-text>连接中</span></span>
 					</header>
 					<div class="server-stat-list">
@@ -352,11 +353,10 @@ const serverStats = [
 									<small data-server-detail>{stat.detail}</small>
 								</span>
 								<strong class="server-stat__value" data-server-value>{stat.value}</strong>
-								<span class="server-stat__meter" aria-hidden="true"><span data-server-meter></span></span>
 							</div>
 						))}
 					</div>
-					<p class="profile-side-note server-note" data-server-note>实时刷新 · 每 1 秒更新一次</p>
+					<p class="profile-side-note server-note" data-server-note>读取公开部署信息 · 每 60 秒检查一次</p>
 				</section>
 			</aside>
 		</div>
@@ -391,20 +391,6 @@ const serverStats = [
 			runtime.activeRoot = null;
 		};
 
-		const clampPercent = (value) => Math.min(100, Math.max(0, Number(value) || 0));
-		const formatBytes = (bytes) => {
-			const value = Number(bytes);
-			if (!Number.isFinite(value) || value <= 0) return "--";
-			const units = ["B", "KiB", "MiB", "GiB", "TiB"];
-			let size = value;
-			let unit = 0;
-			while (size >= 1024 && unit < units.length - 1) {
-				size /= 1024;
-				unit += 1;
-			}
-			return `${size.toFixed(unit === 0 ? 0 : 1)} ${units[unit]}`;
-		};
-
 		const setupServerMetrics = () => {
 			const root = document.querySelector("[data-server-metrics]");
 			if (!root) {
@@ -416,7 +402,7 @@ const serverStats = [
 			clearActiveRuntime();
 			runtime.activeRoot = root;
 
-			const endpoint = root.dataset.serverEndpoint || "/api/server-status.php";
+			const endpoint = root.dataset.serverEndpoint || "/api/server-status.json";
 			const status = root.querySelector("[data-server-status]");
 			const statusText = root.querySelector("[data-server-status-text]");
 			const note = root.querySelector("[data-server-note]");
@@ -435,56 +421,29 @@ const serverStats = [
 				if (statusText) statusText.textContent = text;
 			};
 
-			const setMetric = (key, value, detail, percent) => {
+			const setMetric = (key, value, detail) => {
 				const item = root.querySelector(`[data-server-stat="${key}"]`);
 				if (!item) return;
 				const valueElement = item.querySelector("[data-server-value]");
 				const detailElement = item.querySelector("[data-server-detail]");
-				const meter = item.querySelector("[data-server-meter]");
 				if (valueElement) valueElement.textContent = value;
 				if (detailElement) detailElement.textContent = detail;
-				if (meter && percent !== null) meter.style.setProperty("--meter-scale", String(clampPercent(percent) / 100));
 			};
 
 			const applyMetrics = (data) => {
-				const cpu = data.cpu || {};
-				const memory = data.memory || {};
-				const disk = data.disk || {};
-				const system = data.system || {};
-				const cpuUsage = Number(cpu.usage);
-				const memoryUsage = Number(memory.usage);
-				const diskUsage = Number(disk.usage);
-				const load = Number(cpu.load1);
-				const cores = Number(cpu.cores);
+				const service = data.service || {};
+				const deployment = data.deployment || {};
+				const content = data.content || {};
+				const repository = data.repository || {};
 
-				setMetric(
-					"cpu",
-					Number.isFinite(cpuUsage) ? `${cpuUsage.toFixed(1)}%` : "--",
-					`${Number.isFinite(cores) ? `${cores} vCPU` : "CPU"} · ${cpu.model || ""} · 负载 ${Number.isFinite(load) ? load.toFixed(2) : "--"}`,
-					cpuUsage,
-				);
-				setMetric(
-					"memory",
-					Number.isFinite(memoryUsage) ? `${memoryUsage.toFixed(1)}%` : "--",
-					`${formatBytes(memory.usedBytes)} / ${formatBytes(memory.totalBytes)} · 可用 ${formatBytes(memory.availableBytes)}`,
-					memoryUsage,
-				);
-				setMetric(
-					"disk",
-					Number.isFinite(diskUsage) ? `${diskUsage.toFixed(1)}%` : "--",
-					`${formatBytes(disk.usedBytes)} / ${formatBytes(disk.totalBytes)} · 可用 ${formatBytes(disk.availableBytes)}`,
-					diskUsage,
-				);
-				setMetric(
-					"system",
-					system.name || "Linux",
-					`${system.kernel || ""}${system.arch ? ` · ${system.arch}` : ""}`,
-					null,
-				);
+				setMetric("service", service.status === "online" ? "在线" : "未知", `${service.name || "Cloudflare Pages"} · ${service.network || "全球边缘网络"}`);
+				setMetric("deployment", deployment.branch || "main", `${deployment.mode || "GitHub 自动部署"} · ${deployment.commit || "main"}`);
+				setMetric("content", String(content.posts ?? "--"), content.mode || "Astro 静态生成");
+				setMetric("repository", repository.provider || "GitHub", `${repository.branch || "main"} 分支 · ${repository.history || "版本可恢复"}`);
 
 				if (note) {
 					const stamp = data.timestamp ? new Date(data.timestamp).toLocaleTimeString("zh-CN", { hour: "2-digit", minute: "2-digit", second: "2-digit" }) : "刚刚";
-					note.textContent = `实时刷新 · 最近更新 ${stamp} · 每 1 秒检查一次`;
+					note.textContent = `部署信息生成于 ${stamp} · 每 60 秒检查一次`;
 				}
 			};
 
@@ -517,7 +476,7 @@ const serverStats = [
 			};
 
 			refresh();
-			timer = window.setInterval(refresh, 1_000);
+			timer = window.setInterval(refresh, 60_000);
 			cleanups.push(() => {
 				window.clearInterval(timer);
 				requestController?.abort();

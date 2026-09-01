@@ -215,11 +215,11 @@ collections:
         file: src/data/azure-content.json
         format: json
         fields:
-          - label: 开场页面
+          - label: 开场页面（暂未启用）
             name: opening
             widget: object
             fields:
-              - { label: 启用开场, name: enabled, widget: boolean, default: true }
+              - { label: 启用开场, name: enabled, widget: boolean, default: false, hint: 当前前端已移除开场动画；未来恢复组件后再启用。 }
               - { label: 英文眉题, name: kicker, widget: string }
               - { label: 开场标题, name: title, widget: string }
               - { label: 开场说明, name: subtitle, widget: text }
@@ -263,6 +263,9 @@ collections:
               - { label: 页面标题, name: title, widget: string }
               - { label: 页面介绍, name: intro, widget: text }
               - { label: 无歌词提示, name: emptyLyrics, widget: string }
+              - { label: 参考内容标题, name: referenceTitle, widget: string }
+              - { label: 参考内容正文, name: referenceText, widget: text }
+              - { label: 参考内容标记, name: referenceMeta, widget: string }
           - label: 外部服务
             name: integrations
             widget: object

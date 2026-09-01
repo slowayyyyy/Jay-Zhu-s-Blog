@@ -1,4 +1,5 @@
 import type { SiteConfig } from "@/types/siteConfig";
+import azureContent from "../data/azure-content.json";
 
 // 定义站点语言
 // 语言代码，例如：'zh_CN', 'zh_TW', 'en', 'ja', 'ru'。
@@ -77,7 +78,7 @@ export const siteConfig: SiteConfig = {
 		stickyNavbar: true,
 	},
 
-	// 站点开始日期，用于统计运行天数
+	// 原博客已使用的起算日期（第一篇博客文件创建日），不是 Aemeath 模板默认值
 	siteStartDate: "2026-06-23",
 
 	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
@@ -173,8 +174,8 @@ export const siteConfig: SiteConfig = {
 	anime: {
 		// Bilibili 配置
 		bilibili: {
-			// 你的 Bilibili 用户 UID
-			uid: "",
+			// 只需要公开的数字 UID，无需 API Key；可在后台“外部服务”中维护
+			uid: azureContent.integrations.bilibiliUid,
 		},
 		// TMDB 配置（可选，需要翻墙）
 		// tmdb: {

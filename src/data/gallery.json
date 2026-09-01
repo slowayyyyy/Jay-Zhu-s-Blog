@@ -2,5 +2,16 @@
   "title": "画廊",
   "description": "把文字没有写下的光影，收进回廊的另一侧。",
   "columnWidth": 240,
-  "albums": []
+  "albums": [
+    {
+      "id": "azure-sample",
+      "name": "回廊里的三束光",
+      "description": "参考相册：用现有洛琪希素材测试画廊排版，之后可以替换成真实照片与说明。",
+      "date": "2026-09-02",
+      "location": "苍蓝回廊",
+      "tags": ["参考内容", "洛琪希", "光影"],
+      "cover": "/assets/images/roxy/sunset-rest.jpg",
+      "photos": []
+    }
+  ]
 }

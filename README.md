@@ -13,7 +13,7 @@ Jay Zhu 的个人博客，记录论文阅读、技术学习、读书与日常。
 - 说说：`src/content/dynamic/`
 - 上传图片：`public/uploads/`
 - 个人资料与歌单：`src/data/`
-- 开场媒体：`public/media/`
+- 可选背景媒体：`public/media/`
 - 内容后台：`/admin/`
 
 重构前内容的保护方式、恢复点和迁移结果见

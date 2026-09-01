@@ -1,0 +1,3 @@
+/assets/images/roxy/sunset-rest.jpg
+/assets/images/roxy/field-journey.jpg
+/assets/images/roxy/night-flight.jpg

@@ -27,10 +27,10 @@ frontmatter 字段。
 ## 新增素材
 
 桌面“洛琪希素材”中的 12 张图片或 GIF 已复制到
-`public/assets/images/roxy/`，并用于开场、壁纸、时间卡片和音乐页。
+`public/assets/images/roxy/`，并用于壁纸、时间卡片、音乐页和参考相册。
 
 素材目录中的三个源视频单个均超过 GitHub 100 MB 限制，未写入仓库。它们仍保留
-在原桌面素材目录；线上背景视频使用已受保护且可部署的
+在原桌面素材目录；线上可选背景视频使用已受保护且可部署的
 `public/media/opening-roxy-720p.mp4`。
 
 ## 额外恢复点
