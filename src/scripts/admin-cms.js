@@ -2,19 +2,12 @@ import katex from 'katex';
 import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
-import {
-	createPastedImageMarkup,
-	requestPastedImageCaptions,
-} from './admin-image-caption.js';
+import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
 const DEFAULT_GITHUB_BRANCH = 'main';
-const SITE_SETTINGS_REPO_PATH = 'src/data/azure-content.json';
-const MANAGED_AUDIO_PUBLIC_PREFIX = '/audio/';
-const MANAGED_AUDIO_REPO_PREFIX = 'public/audio/';
-const MANAGED_R2_AUDIO_PUBLIC_PREFIX = '/media/audio/';
 const GITHUB_TOKEN_PATTERN =
 	/(gho_[A-Za-z0-9_]+|ghu_[A-Za-z0-9_]+|ghs_[A-Za-z0-9_]+|ghr_[A-Za-z0-9_]+|github_pat_[A-Za-z0-9_]+)/;
 const IMAGE_EXTENSION_BY_TYPE = new Map([
@@ -51,8 +44,7 @@ const LOCAL_IMAGE_REFERENCE_PATTERN = /^(file:|[a-z]:\\)/iu;
 const FETCHABLE_IMAGE_SOURCE_PATTERN = /^(https?:\/\/|blob:|\/)/iu;
 const MARKDOWN_DATA_IMAGE_PATTERN =
 	/!\[([^\]]*)\]\(\s*(data:image\/[a-z0-9.+-]+;base64,[a-z0-9+/=\r\n]+)\s*(?:"((?:\\.|[^"])*)")?\s*\)/giu;
-const MARKDOWN_TRANSIENT_IMAGE_PATTERN =
-	/!\[[^\]]*\]\(\s*(?:blob:|file:|[a-z]:\\)[^)]+\)/iu;
+const MARKDOWN_TRANSIENT_IMAGE_PATTERN = /!\[[^\]]*\]\(\s*(?:blob:|file:|[a-z]:\\)[^)]+\)/iu;
 const LARGE_CLIPBOARD_IMAGE_BYTES = 900 * 1024;
 const MAX_CLIPBOARD_IMAGE_EDGE = 2560;
 
@@ -120,7 +112,9 @@ export const localizeImageCaptionFields = (root = document) => {
 	if (root instanceof HTMLElement && root.matches('label, span, div')) {
 		candidates.push(root);
 	}
-	root.querySelectorAll?.('label, span, div').forEach((element) => candidates.push(element));
+	root.querySelectorAll?.('label, span, div').forEach((element) => {
+		candidates.push(element);
+	});
 
 	for (const element of candidates) {
 		if (element.childElementCount > 0) continue;
@@ -149,7 +143,7 @@ export function setupAdminCms() {
 				name: 'formula',
 				label: 'LaTeX 公式',
 				widget: 'text',
-				default: String.raw`E = mc^2`,
+				default: 'E = mc^2',
 				hint: String.raw`只填写公式内容，不需要输入 $$。例如：\frac{1}{n}\sum_{i=1}^{n}x_i`,
 			},
 		],
@@ -206,7 +200,6 @@ export function setupAdminCms() {
 	let statusTimer;
 	let reloadTimer;
 	let idleTimer;
-	let pendingRemovedAudioFiles = [];
 	const replayedPasteEvents = new WeakSet();
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
@@ -283,9 +276,7 @@ export function setupAdminCms() {
 				const parsedValue = JSON.parse(rawValue);
 				const parsedToken = findGithubToken(parsedValue);
 				if (parsedToken) return parsedToken;
-			} catch {
-				continue;
-			}
+			} catch {}
 		}
 
 		return null;
@@ -303,13 +294,9 @@ export function setupAdminCms() {
 	const createUploadFilename = (file, index = 0) => {
 		const extension = getImageExtension(file);
 		const basename = sanitizeFilenamePart(file.name || `pasted-image-${index + 1}`);
-		const stamp = new Date()
-			.toISOString()
-			.replace(/\D/gu, '')
-			.slice(0, 14);
+		const stamp = new Date().toISOString().replace(/\D/gu, '').slice(0, 14);
 		const suffix =
-			globalThis.crypto?.randomUUID?.().slice(0, 8) ||
-			Math.random().toString(36).slice(2, 10);
+			globalThis.crypto?.randomUUID?.().slice(0, 8) || Math.random().toString(36).slice(2, 10);
 		return `${stamp}-${basename}-${suffix}.${extension}`;
 	};
 
@@ -327,18 +314,13 @@ export function setupAdminCms() {
 
 		const type = file.type.toLowerCase();
 		const shouldKeepOriginal =
-			file.size <= LARGE_CLIPBOARD_IMAGE_BYTES ||
-			type === 'image/gif' ||
-			type === 'image/svg+xml';
+			file.size <= LARGE_CLIPBOARD_IMAGE_BYTES || type === 'image/gif' || type === 'image/svg+xml';
 		if (shouldKeepOriginal) return file;
 
 		let bitmap;
 		try {
 			bitmap = await createImageBitmap(file);
-			const scale = Math.min(
-				1,
-				MAX_CLIPBOARD_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height),
-			);
+			const scale = Math.min(1, MAX_CLIPBOARD_IMAGE_EDGE / Math.max(bitmap.width, bitmap.height));
 			const canvas = document.createElement('canvas');
 			canvas.width = Math.max(1, Math.round(bitmap.width * scale));
 			canvas.height = Math.max(1, Math.round(bitmap.height * scale));
@@ -377,95 +359,6 @@ export function setupAdminCms() {
 			error.status = response.status;
 			throw error;
 		}
-	};
-
-	const githubApiRequest = async (apiPath, options = {}) => {
-		const githubToken = getGithubAccessToken();
-		if (!githubToken) throw new Error('missing_github_token');
-
-		const headers = {
-			Authorization: `token ${githubToken}`,
-			Accept: 'application/vnd.github+json',
-			'X-GitHub-Api-Version': '2022-11-28',
-			...options.headers,
-		};
-		const requestOptions = { ...options, headers };
-
-		try {
-			return await fetch(`https://api.github.com/${apiPath}`, requestOptions);
-		} catch (error) {
-			console.warn('[Jay CMS] direct GitHub request failed; retrying through site proxy.', error);
-			return fetch(`/api/github/${apiPath}`, requestOptions);
-		}
-	};
-
-	const readGithubJsonFile = async (repoFilePath) => {
-		const { repo, branch } = getGithubRepoInfo();
-		const apiPath = encodePathPreservingSlashes(`repos/${repo}/contents/${repoFilePath}`);
-		const response = await githubApiRequest(`${apiPath}?ref=${encodeURIComponent(branch)}`, {
-			method: 'GET',
-			cache: 'no-store',
-		});
-		if (!response.ok) {
-			throw new Error(`github_file_read_failed:${response.status}`);
-		}
-
-		const payload = await response.json();
-		const binary = window.atob(String(payload.content || '').replace(/\s/gu, ''));
-		const bytes = Uint8Array.from(binary, (character) => character.charCodeAt(0));
-		return JSON.parse(new TextDecoder().decode(bytes));
-	};
-
-	const deleteGithubFile = async (repoFilePath) => {
-		const { repo, branch } = getGithubRepoInfo();
-		const apiPath = encodePathPreservingSlashes(`repos/${repo}/contents/${repoFilePath}`);
-		const fileResponse = await githubApiRequest(
-			`${apiPath}?ref=${encodeURIComponent(branch)}`,
-			{
-				method: 'GET',
-				cache: 'no-store',
-			},
-		);
-
-		if (fileResponse.status === 404) return false;
-		if (!fileResponse.ok) {
-			throw new Error(`audio_file_read_failed:${fileResponse.status}`);
-		}
-
-		const file = await fileResponse.json();
-		const deleteResponse = await githubApiRequest(apiPath, {
-			method: 'DELETE',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({
-				message: `Delete removed audio ${repoFilePath.slice(MANAGED_AUDIO_REPO_PREFIX.length)}`,
-				sha: file.sha,
-				branch,
-			}),
-		});
-		if (!deleteResponse.ok) {
-			const body = await deleteResponse.json().catch(() => ({}));
-			throw new Error(body.message || `audio_file_delete_failed:${deleteResponse.status}`);
-		}
-		return true;
-	};
-
-	const deleteR2Audio = async (path) => {
-		const githubToken = getGithubAccessToken();
-		if (!githubToken) throw new Error('missing_github_token');
-		const response = await fetch(
-			`/api/media/audio/${encodePathPreservingSlashes(path)}`,
-			{
-				method: 'DELETE',
-				headers: {
-					Authorization: `Bearer ${githubToken}`,
-				},
-			},
-		);
-		const body = await response.json().catch(() => ({}));
-		if (!response.ok) {
-			throw new Error(body.error || `r2_audio_delete_failed:${response.status}`);
-		}
-		return body.deleted === true;
 	};
 
 	const uploadImageToGithub = async (file, index = 0) => {
@@ -581,8 +474,8 @@ export function setupAdminCms() {
 	const isProbableImageFile = (file) =>
 		Boolean(
 			file &&
-				(file.type?.toLowerCase?.().startsWith('image/') ||
-					IMAGE_FILE_EXTENSION_PATTERN.test(file.name || '')),
+			(file.type?.toLowerCase?.().startsWith('image/') ||
+				IMAGE_FILE_EXTENSION_PATTERN.test(file.name || '')),
 		);
 
 	const sniffImageType = async (file) => {
@@ -718,10 +611,7 @@ export function setupAdminCms() {
 			let uploadedUrl = uploadedByDataUrl.get(dataUrl);
 			if (!uploadedUrl) {
 				const extension = dataUrl.split(';')[0].split('/').pop() || 'png';
-				const file = await fileFromDataUrl(
-					dataUrl,
-					`${sanitizeFilenamePart(alt)}.${extension}`,
-				);
+				const file = await fileFromDataUrl(dataUrl, `${sanitizeFilenamePart(alt)}.${extension}`);
 				uploadedUrl = await uploadImageToGithub(file, index);
 				uploadedByDataUrl.set(dataUrl, uploadedUrl);
 			}
@@ -748,101 +638,6 @@ export function setupAdminCms() {
 		return { ...data, [field]: value };
 	};
 
-	const toPlainValue = (value) =>
-		typeof value?.toJS === 'function' ? value.toJS() : value;
-
-	const managedAudioReference = (source) => {
-		if (typeof source !== 'string') return null;
-		const trimmedSource = source.trim();
-		const isR2Audio = trimmedSource.startsWith(MANAGED_R2_AUDIO_PUBLIC_PREFIX);
-		const isGithubAudio = trimmedSource.startsWith(MANAGED_AUDIO_PUBLIC_PREFIX);
-		if (!isR2Audio && !isGithubAudio) return null;
-		const publicPrefix = isR2Audio
-			? MANAGED_R2_AUDIO_PUBLIC_PREFIX
-			: MANAGED_AUDIO_PUBLIC_PREFIX;
-
-		let relativePath;
-		try {
-			relativePath = decodeURIComponent(trimmedSource.slice(publicPrefix.length));
-		} catch {
-			return null;
-		}
-
-		const segments = relativePath.split('/');
-		if (
-			segments.length === 0 ||
-			segments.some((segment) => !segment || segment === '.' || segment === '..')
-		) {
-			return null;
-		}
-		const path = segments.join('/');
-		return isR2Audio
-			? { key: `r2:${path}`, kind: 'r2', path }
-			: {
-					key: `github:${MANAGED_AUDIO_REPO_PREFIX}${path}`,
-					kind: 'github',
-					path: `${MANAGED_AUDIO_REPO_PREFIX}${path}`,
-				};
-	};
-
-	const playlistAudioReferences = (settings) => {
-		const playlist = toPlainValue(readEntryDataField(settings, 'playlist'));
-		if (!Array.isArray(playlist)) return new Map();
-
-		return new Map(
-			playlist
-				.map((track) => managedAudioReference(readEntryDataField(track, 'src')))
-				.filter(Boolean)
-				.map((reference) => [reference.key, reference]),
-		);
-	};
-
-	const captureRemovedAudioBeforeSave = async ({ entry }) => {
-		const data = getEntryData(entry);
-		if (entry?.get?.('collection') !== 'site_settings' || isLocalPreview) return data;
-
-		try {
-			const savedSettings = await readGithubJsonFile(SITE_SETTINGS_REPO_PATH);
-			const savedAudioFiles = playlistAudioReferences(savedSettings);
-			const nextAudioFiles = playlistAudioReferences(data);
-			pendingRemovedAudioFiles = [...savedAudioFiles.entries()]
-				.filter(([key]) => !nextAudioFiles.has(key))
-				.map(([, reference]) => reference);
-		} catch (error) {
-			pendingRemovedAudioFiles = [];
-			console.error('[Jay CMS] could not compare the saved audio playlist.', error);
-			showStatus(
-				'网站设置仍会保存，但暂时无法核对已发布歌单，因此本次不会自动删除音乐文件。',
-				'error',
-				7600,
-			);
-		}
-
-		return data;
-	};
-
-	const deleteRemovedAudioAfterSave = async (entry) => {
-		if (
-			entry?.get?.('collection') !== 'site_settings' ||
-			isLocalPreview ||
-			pendingRemovedAudioFiles.length === 0
-		) {
-			return 0;
-		}
-
-		const filesToDelete = pendingRemovedAudioFiles;
-		pendingRemovedAudioFiles = [];
-		let deletedCount = 0;
-		for (const file of filesToDelete) {
-			const deleted =
-				file.kind === 'r2'
-					? await deleteR2Audio(file.path)
-					: await deleteGithubFile(file.path);
-			if (deleted) deletedCount += 1;
-		}
-		return deletedCount;
-	};
-
 	const normalizeEmbeddedImagesBeforeSave = async ({ entry }) => {
 		const data = getEntryData(entry);
 		const body = readEntryDataField(data, 'body');
@@ -863,7 +658,9 @@ export function setupAdminCms() {
 
 	const normalizeCheckinModuleBeforeSave = (entry, data) => {
 		if (entry?.get?.('collection') !== 'checkins') return data;
-		const habit = String(readEntryDataField(data, 'habit') || '').trim().toLowerCase();
+		const habit = String(readEntryDataField(data, 'habit') || '')
+			.trim()
+			.toLowerCase();
 		if (!habit) {
 			showStatus('请选择打卡模块后再保存。', 'error', 7600);
 			throw new Error('missing_checkin_habit');
@@ -875,7 +672,6 @@ export function setupAdminCms() {
 	};
 
 	const prepareEntryBeforeSave = async (payload) => {
-		await captureRemovedAudioBeforeSave(payload);
 		const normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
 		return normalizeCheckinModuleBeforeSave(payload.entry, normalizedData);
 	};
@@ -900,7 +696,11 @@ export function setupAdminCms() {
 		const end = textarea.selectionEnd ?? start;
 		textarea.setRangeText(value, start, end, 'end');
 		textarea.dispatchEvent(
-			new InputEvent('input', { bubbles: true, inputType: 'insertText', data: value }),
+			new InputEvent('input', {
+				bubbles: true,
+				inputType: 'insertText',
+				data: value,
+			}),
 		);
 		textarea.dispatchEvent(new Event('change', { bubbles: true }));
 	};
@@ -1078,10 +878,7 @@ export function setupAdminCms() {
 		return IMAGE_TYPE_BY_EXTENSION.get(extension) || 'image/png';
 	};
 
-	const loadPreviewImage = async (
-		image,
-		{ sourceKey, apiUrl, rawUrl, publishedUrl },
-	) => {
+	const loadPreviewImage = async (image, { sourceKey, apiUrl, rawUrl, publishedUrl }) => {
 		const currentKey = sourceKey;
 		image.dataset.jayCmsPreviewKey = currentKey;
 
@@ -1151,16 +948,14 @@ export function setupAdminCms() {
 		}
 
 		if (typeof root.querySelectorAll !== 'function') return;
-		root.querySelectorAll('img[src]').forEach((image) => rewritePreviewImage(image));
+		root.querySelectorAll('img[src]').forEach((image) => {
+			rewritePreviewImage(image);
+		});
 	};
 
 	const handleNetworkFailure = (reason) => {
 		const message =
-			typeof reason === 'string'
-				? reason
-				: reason instanceof Error
-					? reason.message
-					: '';
+			typeof reason === 'string' ? reason : reason instanceof Error ? reason.message : '';
 
 		if (!/failed to fetch/i.test(message)) return;
 
@@ -1417,34 +1212,19 @@ export function setupAdminCms() {
 	const shouldReloadAdminOptions = (collection) => collection === 'tag_settings';
 
 	const collectionLabel = (collection) =>
-		(
-			{
-				posts: '文章',
-				checkins: '每日打卡',
-				tag_settings: '标签',
-				site_settings: '站点设置',
-			}[collection] ?? '内容'
-		);
+		({
+			posts: '文章',
+			checkins: '每日打卡',
+			tag_settings: '标签',
+			site_settings: '站点设置',
+		})[collection] ?? '内容';
 
 	const handleContentUpdate = async ({ entry }) => {
 		const collection = entry?.get?.('collection') || 'unknown';
 		const label = collectionLabel(collection);
 		const reloadAdminOptions = shouldReloadAdminOptions(collection);
-		let deletedAudioCount = 0;
-		let audioCleanupError = null;
-
 		window.clearTimeout(syncTimer);
 		showStatus(`正在保存${label}...`, 'pending', 1600);
-
-		try {
-			if (pendingRemovedAudioFiles.length > 0) {
-				showStatus('网站设置已保存，正在同步删除音乐存储中的文件...', 'pending');
-				deletedAudioCount = await deleteRemovedAudioAfterSave(entry);
-			}
-		} catch (error) {
-			audioCleanupError = error;
-			console.error('[Jay CMS] removed audio cleanup failed.', error);
-		}
 
 		syncTimer = window.setTimeout(async () => {
 			try {
@@ -1470,19 +1250,8 @@ export function setupAdminCms() {
 					return;
 				}
 
-				if (audioCleanupError) {
-					showStatus(
-						`${label}已保存，但音乐文件未能从存储中删除：${audioCleanupError.message || '未知错误'}。请刷新后台后重试。`,
-						'error',
-						9000,
-					);
-					return;
-				}
-
 				showStatus(
-					deletedAudioCount > 0
-						? `${label}已提交到 GitHub，并已从音乐存储删除 ${deletedAudioCount} 个文件。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`
-						: `${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
+					`${label}已提交到 GitHub。Cloudflare Pages 通常会在 1 到 3 分钟内更新前台。`,
 					'info',
 					6400,
 				);
@@ -1535,5 +1304,4 @@ export function setupAdminCms() {
 		isLocalPreview,
 		showStatus,
 	});
-
 }

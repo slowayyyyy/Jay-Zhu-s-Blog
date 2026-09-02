@@ -17,9 +17,17 @@ const sanitizeAudioFilename = (file) => {
 
 const filenameFromPath = (value) => {
 	try {
-		return decodeURIComponent(String(value || '').split('/').at(-1) || '');
+		return decodeURIComponent(
+			String(value || '')
+				.split('/')
+				.at(-1) || '',
+		);
 	} catch {
-		return String(value || '').split('/').at(-1) || '';
+		return (
+			String(value || '')
+				.split('/')
+				.at(-1) || ''
+		);
 	}
 };
 
@@ -43,7 +51,9 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 			event.target.value = '';
 			if (!file) return;
 			if (!AUDIO_EXTENSION_PATTERN.test(file.name || '')) {
-				this.setState({ error: '支持 MP3、M4A、AAC、OGG、OPUS、WAV 和 FLAC。' });
+				this.setState({
+					error: '支持 MP3、M4A、AAC、OGG、OPUS、WAV 和 FLAC。',
+				});
 				return;
 			}
 			if (file.size <= 0 || file.size > MAX_AUDIO_BYTES) {
@@ -93,11 +103,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 					uploading: false,
 					error: error?.message || 'R2 音乐上传失败，请稍后重试。',
 				});
-				showStatus(
-					`音乐上传失败：${error?.message || '未知错误'}`,
-					'error',
-					9000,
-				);
+				showStatus(`音乐上传失败：${error?.message || '未知错误'}`, 'error', 9000);
 			}
 		},
 
@@ -112,7 +118,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 			const helperText = this.state.uploading
 				? '正在上传到 Cloudflare R2...'
 				: managedByR2
-					? '已由 R2 托管。替换或清除后保存，旧文件会自动删除。'
+					? '已由 R2 托管。替换或移出歌单不会自动删除原文件，避免其他设置保存时误删音乐。'
 					: value
 						? '这是旧版 GitHub 音乐地址，建议重新上传迁移到 R2。'
 						: '选择音乐后会先上传到 R2，再保存歌单设置。';
@@ -133,7 +139,13 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 							{ style: { marginBottom: '12px' } },
 							h(
 								'strong',
-								{ style: { display: 'block', marginBottom: '8px', color: '#172329' } },
+								{
+									style: {
+										display: 'block',
+										marginBottom: '8px',
+										color: '#172329',
+									},
+								},
 								filenameFromPath(value),
 							),
 							h('audio', {
@@ -186,7 +198,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 										cursor: 'pointer',
 									},
 								},
-								'清除音乐',
+								'移出歌单',
 							)
 						: null,
 				),

@@ -38,10 +38,7 @@ const getPath = (params) => {
 	} catch {
 		return null;
 	}
-	if (
-		segments.length === 0 ||
-		segments.some((segment) => segment === '.' || segment === '..')
-	) {
+	if (segments.length === 0 || segments.some((segment) => segment === '.' || segment === '..')) {
 		return null;
 	}
 	return segments.join('/');
@@ -72,7 +69,11 @@ const authorizeOwner = async (request, env) => {
 	const profile = await response.json();
 	const expectedLogin = (env.CMS_GITHUB_LOGIN || DEFAULT_OWNER_LOGIN).trim().toLowerCase();
 	if (String(profile.login || '').toLowerCase() !== expectedLogin) {
-		return { ok: false, status: 403, message: 'Only the blog owner can manage audio' };
+		return {
+			ok: false,
+			status: 403,
+			message: 'Only the blog owner can manage audio',
+		};
 	}
 	return { ok: true };
 };
@@ -85,8 +86,8 @@ const isSameOriginRequest = (request) => {
 export async function onRequest(context) {
 	const { request, env, params } = context;
 	const method = request.method.toUpperCase();
-	if (method !== 'PUT' && method !== 'DELETE') {
-		return jsonResponse({ error: 'Method not allowed' }, 405, { allow: 'PUT, DELETE' });
+	if (method !== 'PUT') {
+		return jsonResponse({ error: 'Method not allowed' }, 405, { allow: 'PUT' });
 	}
 	if (!isSameOriginRequest(request)) {
 		return jsonResponse({ error: 'Cross-origin request blocked' }, 403);
@@ -106,13 +107,6 @@ export async function onRequest(context) {
 	}
 	const objectKey = `${AUDIO_OBJECT_PREFIX}${path}`;
 
-	if (method === 'DELETE') {
-		const object = await env.BLOG_MEDIA.head(objectKey);
-		if (!object) return jsonResponse({ deleted: false, path: `/media/audio/${path}` });
-		await env.BLOG_MEDIA.delete(objectKey);
-		return jsonResponse({ deleted: true, path: `/media/audio/${path}` });
-	}
-
 	const contentLength = Number(request.headers.get('content-length') || 0);
 	if (contentLength <= 0 || contentLength > MAX_AUDIO_BYTES) {
 		return jsonResponse({ error: 'Audio file must be between 1 byte and 50 MB' }, 413);
@@ -128,9 +122,7 @@ export async function onRequest(context) {
 
 	let originalName = path.split('/').at(-1) || path;
 	try {
-		originalName = decodeURIComponent(
-			request.headers.get('x-original-filename') || originalName,
-		);
+		originalName = decodeURIComponent(request.headers.get('x-original-filename') || originalName);
 	} catch {
 		// Keep the sanitized URL filename when the optional display name is malformed.
 	}
