@@ -21,9 +21,16 @@ function withBase(assetPath: string): string {
 /**
  * 扫描相册目录中的所有图片文件
  */
-export function scanAlbumPhotos(albumId: string): string[] {
+export function scanAlbumPhotos(
+	album: Pick<GalleryAlbum, "id" | "photos"> | string,
+): string[] {
+	const albumId = typeof album === "string" ? album : album.id;
+	const managedPhotos =
+		typeof album === "string"
+			? []
+			: (album.photos || []).map((photo) => withBase(photo)).filter(Boolean);
 	const dir = path.join(process.cwd(), "public", "gallery", albumId);
-	if (!fs.existsSync(dir)) return [];
+	if (!fs.existsSync(dir)) return managedPhotos;
 	const files = fs
 		.readdirSync(dir)
 		.filter((f) => /\.(jpe?g|png|webp|avif|gif)$/i.test(f))
@@ -44,10 +51,12 @@ export function scanAlbumPhotos(albumId: string): string[] {
 			.readFileSync(urlsFile, "utf-8")
 			.split("\n")
 			.map((line) => line.trim())
-			.filter((line) => line && !line.startsWith("#"));
+			.filter((line) => line && !line.startsWith("#"))
+			.map((line) => withBase(line));
 	}
 
-	return [...localPhotos, ...remotePhotos];
+	// 后台数据是主来源；目录扫描与 urls.txt 继续作为旧相册兼容层。
+	return [...new Set([...managedPhotos, ...localPhotos, ...remotePhotos])];
 }
 
 /**

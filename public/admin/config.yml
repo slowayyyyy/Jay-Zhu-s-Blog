@@ -668,6 +668,7 @@ collections:
                 name: photos
                 widget: list
                 required: false
+                hint: 这里就是前台相册中的照片，可新增、替换、删除和拖动排序；保存发布后前台自动同步。
                 field: { label: 照片, name: photo, widget: image }
               - {
                   label: 访问密码,
@@ -730,3 +731,41 @@ collections:
                   default: 0,
                 }
               - { label: 启用, name: enabled, widget: boolean, default: true }
+
+  - name: media_library
+    label: 视觉素材库
+    description: 统一查看洛琪希图片、动图及其前台用途；素材文件不会因移除索引而被静默删除。
+    files:
+      - label: 网站视觉素材
+        name: site_visual_assets
+        file: src/data/media-library.json
+        format: json
+        fields:
+          - { label: 素材库名称, name: title, widget: string }
+          - { label: 使用说明, name: description, widget: text }
+          - label: 素材列表
+            name: assets
+            widget: list
+            summary: "{{fields.name}} · {{fields.kind}}"
+            fields:
+              - {
+                  label: 素材标识,
+                  name: id,
+                  widget: string,
+                  hint: 建议使用英文、数字和短横线，发布后不要随意修改。,
+                }
+              - { label: 素材名称, name: name, widget: string }
+              - {
+                  label: 类型,
+                  name: kind,
+                  widget: select,
+                  options: [图片, 动图],
+                }
+              - { label: 图片或动图, name: src, widget: image }
+              - { label: 当前用途, name: usage, widget: text }
+              - {
+                  label: 备注,
+                  name: note,
+                  widget: text,
+                  required: false,
+                }

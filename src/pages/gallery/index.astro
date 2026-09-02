@@ -17,7 +17,7 @@ const description = i18n(I18nKey.galleryDescription);
 
 // 构建相册数据（扫描照片、获取封面）
 const albums = galleryConfig.albums.map((album) => {
-	const photos = scanAlbumPhotos(album.id);
+	const photos = scanAlbumPhotos(album);
 	const cover = getAlbumCover(album, photos);
 	return { ...album, cover, photoCount: photos.length };
 });

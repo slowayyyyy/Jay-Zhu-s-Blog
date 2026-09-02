@@ -1,0 +1,97 @@
+{
+	"title": "苍蓝回廊视觉素材",
+	"description": "这里统一索引当前博客使用和保留的洛琪希图片、动图。新增素材后，可在图库与相册、壁纸、时间问候或其他对应模块中选择；替换前请先查看“当前用途”，避免误改多个页面共同使用的素材。",
+	"assets": [
+		{
+			"id": "roxy-field-journey",
+			"name": "原野旅途",
+			"kind": "图片",
+			"src": "/assets/images/roxy/field-journey.jpg",
+			"usage": "首页壁纸、首页横幅、时间问候卡片、参考相册"
+		},
+		{
+			"id": "roxy-icon",
+			"name": "洛琪希头像",
+			"kind": "图片",
+			"src": "/assets/images/roxy/icon-roxy.jpg",
+			"usage": "保留素材，可用于头像、唱片封面或页面图标"
+		},
+		{
+			"id": "roxy-magic-preview",
+			"name": "魔法预览",
+			"kind": "图片",
+			"src": "/assets/images/roxy/magic-preview.jpg",
+			"usage": "桌面壁纸轮播"
+		},
+		{
+			"id": "roxy-night-flight",
+			"name": "夜空魔法",
+			"kind": "图片",
+			"src": "/assets/images/roxy/night-flight.jpg",
+			"usage": "桌面与移动端壁纸、首页横幅、时间问候卡片、参考相册"
+		},
+		{
+			"id": "roxy-portrait-magic",
+			"name": "水之魔术师肖像",
+			"kind": "图片",
+			"src": "/assets/images/roxy/portrait-magic.jpg",
+			"usage": "桌面与移动端壁纸、首页角色与横幅"
+		},
+		{
+			"id": "roxy-portrait-soft",
+			"name": "柔光肖像",
+			"kind": "图片",
+			"src": "/assets/images/roxy/portrait-soft.jpg",
+			"usage": "保留素材，暂未固定到前台模块"
+		},
+		{
+			"id": "roxy-rochelle-preview",
+			"name": "Rochelle 动态工程预览",
+			"kind": "图片",
+			"src": "/assets/images/roxy/rochelle-preview.jpg",
+			"usage": "保留素材，可用于壁纸或内容配图"
+		},
+		{
+			"id": "roxy-motion-loop",
+			"name": "乐境循环动图",
+			"kind": "动图",
+			"src": "/assets/images/roxy/roxy-motion-loop.gif",
+			"usage": "乐境页面顶部视觉；由原始动图处理为可连续循环版本"
+		},
+		{
+			"id": "roxy-motion-original",
+			"name": "洛琪希原始动图",
+			"kind": "动图",
+			"src": "/assets/images/roxy/roxy-motion.gif",
+			"usage": "原始素材备份，保留以便以后重新处理"
+		},
+		{
+			"id": "roxy-study",
+			"name": "书房学习",
+			"kind": "图片",
+			"src": "/assets/images/roxy/study.jpg",
+			"usage": "时间问候卡片、首页角色素材"
+		},
+		{
+			"id": "roxy-sunset-rest",
+			"name": "落日草原",
+			"kind": "图片",
+			"src": "/assets/images/roxy/sunset-rest.jpg",
+			"usage": "首页横幅、时间问候卡片、参考相册封面与照片"
+		},
+		{
+			"id": "roxy-sweater",
+			"name": "毛衣肖像",
+			"kind": "图片",
+			"src": "/assets/images/roxy/sweater.jpg",
+			"usage": "移动端壁纸轮播"
+		},
+		{
+			"id": "roxy-water-magic",
+			"name": "水之魔法",
+			"kind": "图片",
+			"src": "/assets/images/roxy/water-magic.jpg",
+			"usage": "桌面壁纸、时间问候卡片、首页默认角色"
+		}
+	]
+}

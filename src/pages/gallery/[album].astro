@@ -28,7 +28,7 @@ if (!albumMeta) {
 	return Astro.redirect("/404/");
 }
 
-const photos = scanAlbumPhotos(albumMeta.id);
+const photos = scanAlbumPhotos(albumMeta);
 const cover = getAlbumCover(albumMeta, photos);
 const columnWidth = galleryConfig.columnWidth || 240;
 
