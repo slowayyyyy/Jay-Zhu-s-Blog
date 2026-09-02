@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import type { WidgetComponentConfig } from "@/types/config";
+import azureContent from "@/data/azure-content.json";
 
 interface Props {
 	class?: string;
@@ -9,11 +10,13 @@ interface Props {
 }
 
 const { class: className, style } = Astro.props;
+const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 ---
 
 <time-greeting-widget
 	class:list={["time-greeting-card card-base", className]}
 	style={style}
+	data-images={JSON.stringify(timeGreetingImages)}
 >
 	<div class="time-greeting-info">
 		<div class="time-greeting-copy">
@@ -260,20 +263,6 @@ const { class: className, style } = Astro.props;
 		"SATURDAY",
 	];
 
-	const roxyImages = [
-		"/assets/images/roxy/field-journey.jpg",
-		"/assets/images/roxy/sunset-rest.jpg",
-		"/assets/images/roxy/night-flight.jpg",
-		"/assets/images/roxy/study.jpg",
-		"/assets/images/roxy/water-magic.jpg",
-	];
-
-	function getRandomRoxyImage(): string {
-		return roxyImages[
-			Math.floor(Math.random() * roxyImages.length)
-		];
-	}
-
 	function getGreetingPeriod(hour: number): GreetingPeriod {
 		if (hour < 6) return greetingPeriods[0];
 		if (hour < 9) return greetingPeriods[1];
@@ -314,13 +303,19 @@ const { class: className, style } = Astro.props;
 			if (this.imageInitialized) return;
 			this.imageInitialized = true;
 
-			const imageUrl = getRandomRoxyImage();
+			let images: string[] = [];
+			try {
+				images = JSON.parse(this.dataset.images || "[]");
+			} catch {
+				images = [];
+			}
+			const fallback = "/assets/images/roxy/field-journey.jpg";
+			const imageUrl = images.length > 0
+				? images[Math.floor(Math.random() * images.length)]
+				: fallback;
 			const image = new Image();
 			image.onload = () => this.setLandscapeImage(imageUrl);
-			image.onerror = () =>
-				this.setLandscapeImage(
-					"/assets/images/roxy/field-journey.jpg",
-				);
+			image.onerror = () => this.setLandscapeImage(fallback);
 			image.src = imageUrl;
 		}
 

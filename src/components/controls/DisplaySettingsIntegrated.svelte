@@ -1286,47 +1286,6 @@ $effect(() => {
             content-visibility auto
             contain-intrinsic-size 48px
 
-        .intro-character-picker-item
-            contain layout paint
-            background var(--btn-regular-bg)
-            box-shadow 0 5px 12px -10px rgba(15, 23, 42, 0.8)
-
-            img
-                display block
-                transition transform 220ms cubic-bezier(0.22, 1, 0.36, 1)
-
-            &:hover img
-                transform scale(1.045)
-
-        .intro-banner-picker-item
-            contain layout paint
-            position relative
-            z-index 3
-            min-width 0
-            min-height 4.25rem
-            background var(--btn-regular-bg)
-            box-shadow 0 5px 12px -10px rgba(15, 23, 42, 0.8)
-            cursor pointer
-            user-select none
-            -webkit-user-select none
-            -webkit-tap-highlight-color transparent
-            touch-action manipulation
-            pointer-events auto
-
-            img
-                display block
-                transition transform 220ms cubic-bezier(0.22, 1, 0.36, 1)
-
-            &:hover img
-                transform scale(1.045)
-
-        .intro-banner-picker
-            position relative
-            z-index 3
-            touch-action pan-y
-            user-select none
-            -webkit-user-select none
-
         @media (max-width: 779px)
             position fixed !important
             top: unquote("calc(4.75rem + env(safe-area-inset-top, 0px))") !important
@@ -1380,10 +1339,6 @@ $effect(() => {
 
             .mobile-settings-section-hidden
                 display none
-
-            /* 手机端固定使用默认上下横幅，不显示电脑端的横幅切换控件。 */
-            .intro-banner-selection
-                display none !important
 
             .wallpaper-picker-scroll
                 max-height none !important

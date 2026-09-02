@@ -1,43 +1,19 @@
 ---
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import changelogContent from "@/data/changelog.json";
 
-const entries = [
-	{
-		date: "2026-09-02",
-		title: "苍蓝回廊完整重构与首轮校准",
-		description: "以 Aemeath 为完整界面基线重构并上线苍蓝回廊，完成个人内容迁移、洛琪希视觉统一和首轮使用反馈调整。",
-		tags: ["完整重构", "正式上线", "内容保护", "洛琪希"],
-		icon: "material-symbols:auto-awesome-rounded",
-		accent: "#60a5fa",
-		changes: [
-			"以 Aemeath / Firefly 为基线替换旧前端，并保留文章、上传图片、个人资料、说说数据、媒体和后台能力。",
-			"加入壁纸轮播、欢迎提示、时间问候、每日一言、日程进度、乐境、画廊、追番、工具页与文章工作台。",
-			"使用自有洛琪希图片和动图统一苍蓝水系视觉；根据首轮体验反馈撤下首页开场动画，进入站点更加直接。",
-			"为说说、乐境和画廊加入可替换的参考内容，并将误导性的服务器占用率改为真实站点部署状态。",
-			"完成 Cloudflare Pages 自动部署修复；重构前内容保存在恢复分支、标签和离线备份中。",
-		],
-	},
-	{
-		date: "2026-06-23",
-		title: "苍蓝回廊启程",
-		description: "个人博客开始记录论文阅读、技术学习、书与日常。",
-		tags: ["博客", "写作"],
-		icon: "material-symbols:water-drop-rounded",
-		accent: "#22d3ee",
-		changes: ["建立文章归档、分类与标签。", "整理个人资料、图片和媒体资源。"],
-	},
-];
+const { title, description, kicker, entries } = changelogContent;
 ---
 
-<MainGridLayout title="更新日志" description="苍蓝回廊的每一次生长">
+<MainGridLayout title={title} description={description}>
 	<section class="log-shell card-base z-10 px-7 py-7 relative w-full onload-animation">
 		<header class="log-hero">
 			<div class="log-hero__icon"><Icon is:inline name="material-symbols:history-rounded" /></div>
 			<div>
-				<p class="log-kicker">CHANGELOG / AZURE CORRIDOR</p>
-				<h1>更新日志</h1>
-				<p>记录站点结构、内容模型与视觉体验的主要变化。</p>
+				<p class="log-kicker">{kicker}</p>
+				<h1>{title}</h1>
+				<p>{description}</p>
 			</div>
 			<span class="log-count">{entries.length} 次里程碑</span>
 		</header>

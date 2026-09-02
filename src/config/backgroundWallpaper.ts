@@ -1,19 +1,8 @@
 import type { BackgroundWallpaperConfig } from "@/types/backgroundWallpaper";
+import azureContent from "../data/azure-content.json";
 
-const desktopWallpaperImages = [
-	"/assets/images/roxy/water-magic.jpg",
-	"/assets/images/roxy/night-flight.jpg",
-	"/assets/images/roxy/portrait-magic.jpg",
-	"/assets/images/roxy/field-journey.jpg",
-	"/assets/images/roxy/magic-preview.jpg",
-];
-
-const mobileWallpaperImages = [
-	"/assets/images/roxy/night-flight.jpg",
-	"/assets/images/roxy/field-journey.jpg",
-	"/assets/images/roxy/sweater.jpg",
-	"/assets/images/roxy/portrait-magic.jpg",
-];
+const desktopWallpaperImages = azureContent.visuals.desktopWallpapers;
+const mobileWallpaperImages = azureContent.visuals.mobileWallpapers;
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
@@ -65,7 +54,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		// 支持单个视频路径（字符串）或多个视频循环（数组）
 		// 支持远程视频URL，本地视频请放在 public/assets/videos/ 目录下
 		// playerUrl: "/assets/videos/firefly.mp4",
-		playerUrl: "/media/opening-roxy-720p.mp4",
+		playerUrl: azureContent.visuals.backgroundVideo,
 	},
 	// 横幅壁纸和全屏壁纸共享配置
 	common: {

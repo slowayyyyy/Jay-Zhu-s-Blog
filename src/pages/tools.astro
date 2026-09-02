@@ -1,41 +1,20 @@
 ---
 import { Icon } from "astro-icon/components";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import toolsContent from "@/data/tools.json";
 
-const sections = [
-	{
-		title: "站内工具",
-		description: "围绕阅读、检索与内容维护的快捷入口。",
-		items: [
-			{ name: "全文搜索", description: "使用 Pagefind 在全部文章中快速定位关键词。", icon: "material-symbols:search-rounded", url: "/search/", tags: ["Pagefind", "站内"], accent: "#38bdf8" },
-			{ name: "文章归档", description: "按年份浏览苍蓝回廊中已经发布的全部文章。", icon: "material-symbols:inventory-2-rounded", url: "/archive/", tags: ["文章", "时间线"], accent: "#818cf8" },
-			{ name: "内容后台", description: "通过安全认证后编辑文章、动态与站点资料。", icon: "material-symbols:edit-document-rounded", url: "/admin/", tags: ["Decap CMS", "维护"], accent: "#2dd4bf" },
-			{ name: "RSS 订阅", description: "在你喜欢的阅读器中持续接收博客更新。", icon: "material-symbols:rss-feed-rounded", url: "/rss.xml", tags: ["RSS", "订阅"], accent: "#fb923c" },
-		],
-	},
-	{
-		title: "研究与写作",
-		description: "我常用的论文阅读、知识管理与开发工具。",
-		items: [
-			{ name: "arXiv", description: "开放获取的预印本平台，用于追踪计算机视觉与人工智能论文。", icon: "material-symbols:article", url: "https://arxiv.org/", tags: ["论文", "Research"], accent: "#ef4444" },
-			{ name: "Papers with Code", description: "连接论文、代码与基准结果，便于复现实验和比较方法。", icon: "material-symbols:data-object-rounded", url: "https://paperswithcode.com/", tags: ["代码", "Benchmark"], accent: "#22c55e" },
-			{ name: "Obsidian", description: "用本地 Markdown 组织论文笔记、概念关系与长期写作素材。", icon: "material-symbols:book-2-rounded", url: "https://obsidian.md/", tags: ["笔记", "Markdown"], accent: "#a855f7" },
-			{ name: "Visual Studio Code", description: "用于代码、实验配置与博客内容维护的主要编辑器。", icon: "material-symbols:code-blocks-rounded", url: "https://code.visualstudio.com/", tags: ["开发", "编辑器"], accent: "#3b82f6" },
-			{ name: "GitHub", description: "托管苍蓝回廊源码，也记录公开项目与学习过程。", icon: "simple-icons:github", url: "https://github.com/slowayyyyy", tags: ["开源", "Git"], accent: "#64748b" },
-		],
-	},
-];
+const { title, description, kicker, sections } = toolsContent;
 
 const count = sections.reduce((total, section) => total + section.items.length, 0);
 ---
 
-<MainGridLayout title="工具" description="阅读、研究与写作的常用入口">
+<MainGridLayout title={title} description={description}>
 	<section class="tools-shell card-base z-10 px-7 py-7 relative w-full onload-animation">
 		<header class="tools-hero">
 			<div>
-				<p class="tools-kicker">TOOLBOX / JAY ZHU</p>
-				<h1>工具箱</h1>
-				<p>把常用入口放在顺手的位置，让注意力留给阅读、实验和写作。</p>
+				<p class="tools-kicker">{kicker}</p>
+				<h1>{title}</h1>
+				<p>{description}</p>
 			</div>
 			<div class="tools-stat"><strong>{count}</strong><span>个入口</span></div>
 		</header>

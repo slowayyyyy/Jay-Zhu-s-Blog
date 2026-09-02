@@ -61,7 +61,10 @@ Cloudflare Pages 监听 `main`。不要强制推送。
 
 - `GITHUB_OAUTH_CLIENT_ID`
 - `GITHUB_OAUTH_CLIENT_SECRET`
-- R2 绑定与访问凭据
+- R2 访问凭据
+
+R2 桶绑定不含密钥，已在 `wrangler.jsonc` 中声明为
+`BLOG_MEDIA -> jay-blog-media`，必须随 Pages 部署保持生效。
 
 若后台登录或 R2 上传要求重新授权，应由站长本人完成登录。
 
@@ -75,3 +78,16 @@ Cloudflare Pages 监听 `main`。不要强制推送。
 不参与前端渲染，便于以后需要时重新设计和启用。
 
 未提供外部账号数据时，对应页面保持空状态，不填入模板作者的数据。
+
+## 后台数据源约定
+
+前台个人与站点内容应只从后台管理的数据文件读取，禁止再复制一份硬编码资料：
+
+- `src/data/azure-content.json`：站点信息、公告、每日一言、壁纸、首页、音乐和外部服务。
+- `src/data/profile.json`：个人资料、联系入口、兴趣、技术栈和关于页项目。
+- `src/data/changelog.json`：更新日志。
+- `src/data/tools.json`：工具页。
+- `src/data/gallery.json`、`friends.json`：相册和友链。
+
+音乐每条记录同时保存 `src`、`cover` 与 `lrc`，以歌单条目为配对单位。LRC 支持
+直接文本或站内文件地址。每日一言按访客本地日期自动轮换，无需每日发布。

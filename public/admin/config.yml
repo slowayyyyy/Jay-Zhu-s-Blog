@@ -44,7 +44,12 @@ collections:
       - { label: 生活手账, field: category, pattern: 生活手账 }
     fields:
       - { label: 标题, name: title, widget: string }
-      - { label: 页面描述, name: description, widget: text, hint: 用于首页摘要、搜索结果和分享预览，建议 30 至 100 字。 }
+      - {
+          label: 页面描述,
+          name: description,
+          widget: text,
+          hint: 用于首页摘要、搜索结果和分享预览，建议 30 至 100 字。,
+        }
       - label: 发布时间
         name: published
         widget: datetime
@@ -78,9 +83,28 @@ collections:
         options_length: 200
         required: false
         hint: 在“标签管理”中新建并发布标签后，即可在这里搜索选择。
-      - { label: 文章头图, name: image, widget: image, required: false, hint: 留空则使用纯文字文章头部。 }
-      - { label: 首页置顶, name: pinned, widget: boolean, default: false, required: false }
-      - { label: 暂时隐藏, name: draft, widget: boolean, default: false, required: false, hint: 开启后文章仍可在后台编辑，但不会构建到前台。 }
+      - {
+          label: 文章头图,
+          name: image,
+          widget: image,
+          required: false,
+          hint: 留空则使用纯文字文章头部。,
+        }
+      - {
+          label: 首页置顶,
+          name: pinned,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
+      - {
+          label: 暂时隐藏,
+          name: draft,
+          widget: boolean,
+          default: false,
+          required: false,
+          hint: 开启后文章仍可在后台编辑，但不会构建到前台。,
+        }
       - label: 系列文章
         name: series
         widget: string
@@ -155,7 +179,13 @@ collections:
         format: YYYY-MM-DD HH:mm:ss
         date_format: YYYY-MM-DD
         time_format: HH:mm:ss
-      - { label: 置顶, name: pinned, widget: boolean, default: false, required: false }
+      - {
+          label: 置顶,
+          name: pinned,
+          widget: boolean,
+          default: false,
+          required: false,
+        }
       - { label: 地点, name: location, widget: string, required: false }
       - { label: 内容, name: body, widget: markdown }
 
@@ -215,17 +245,121 @@ collections:
         file: src/data/azure-content.json
         format: json
         fields:
+          - label: 站点基础信息
+            name: site
+            widget: object
+            fields:
+              - { label: 站点名称, name: title, widget: string }
+              - { label: 站点副标题, name: subtitle, widget: string }
+              - { label: SEO 描述, name: description, widget: text }
+              - {
+                  label: SEO 关键词,
+                  name: keywords,
+                  widget: list,
+                  field: { label: 关键词, name: keyword, widget: string },
+                }
+              - {
+                  label: 运行起算日期,
+                  name: startDate,
+                  widget: datetime,
+                  format: YYYY-MM-DD,
+                  date_format: YYYY-MM-DD,
+                  time_format: false,
+                  hint: 当前为第一篇博客文件创建日 2026-06-23。,
+                }
+          - label: 侧栏公告
+            name: announcement
+            widget: object
+            fields:
+              - { label: 公告标题, name: title, widget: string }
+              - { label: 公告正文, name: content, widget: text }
+              - {
+                  label: 允许访客关闭,
+                  name: closable,
+                  widget: boolean,
+                  default: true,
+                }
+              - label: 公告链接
+                name: link
+                widget: object
+                fields:
+                  - {
+                      label: 显示链接,
+                      name: enable,
+                      widget: boolean,
+                      default: true,
+                    }
+                  - { label: 链接文字, name: text, widget: string }
+                  - { label: 链接地址, name: url, widget: string }
+                  - {
+                      label: 外部链接,
+                      name: external,
+                      widget: boolean,
+                      default: false,
+                    }
+          - label: 今日一言词句池
+            name: dailyQuotes
+            widget: list
+            min: 1
+            summary: "{{fields.text}} · {{fields.author}}"
+            hint: 前台按访客本地日期自动轮换，每天午夜自动换下一条，无需每天手工发布。
+            fields:
+              - { label: 句子, name: text, widget: string }
+              - { label: 作者或出处, name: author, widget: string }
+          - label: 壁纸与背景媒体
+            name: visuals
+            widget: object
+            fields:
+              - {
+                  label: 桌面轮播图片,
+                  name: desktopWallpapers,
+                  widget: list,
+                  min: 1,
+                  field: { label: 图片, name: image, widget: image },
+                }
+              - {
+                  label: 手机轮播图片,
+                  name: mobileWallpapers,
+                  widget: list,
+                  min: 1,
+                  field: { label: 图片, name: image, widget: image },
+                }
+              - {
+                  label: 时间卡片图片,
+                  name: timeGreetingImages,
+                  widget: list,
+                  min: 1,
+                  field: { label: 图片, name: image, widget: image },
+                }
+              - {
+                  label: 可选背景视频地址,
+                  name: backgroundVideo,
+                  widget: string,
+                  required: false,
+                }
           - label: 开场页面（暂未启用）
             name: opening
             widget: object
             fields:
-              - { label: 启用开场, name: enabled, widget: boolean, default: false, hint: 当前前端已移除开场动画；未来恢复组件后再启用。 }
+              - {
+                  label: 启用开场,
+                  name: enabled,
+                  widget: boolean,
+                  default: false,
+                  hint: 当前前端已移除开场动画；未来恢复组件后再启用。,
+                }
               - { label: 英文眉题, name: kicker, widget: string }
               - { label: 开场标题, name: title, widget: string }
               - { label: 开场说明, name: subtitle, widget: text }
               - { label: 进入按钮, name: enterLabel, widget: string }
               - { label: 按钮下提示, name: hint, widget: string }
-              - { label: 开场视频地址, name: videoUrl, widget: string, required: false, hint: 默认使用受保护的 /media/opening；留空或加载失败时自动显示洛琪希静态封面。 }
+              - {
+                  label: 开场视频地址,
+                  name: videoUrl,
+                  widget: string,
+                  required: false,
+                  hint: 默认使用受保护的 /media/opening；留空或加载失败时自动显示洛琪希静态封面。,
+                }
           - label: 开场与首页首屏
             name: hero
             widget: object
@@ -271,9 +405,32 @@ collections:
             widget: object
             hint: Bilibili UID 和 Umami Website ID 均可稍后填写；留空不会影响其他页面。
             fields:
-              - { label: Bilibili UID, name: bilibiliUid, widget: string, required: false, hint: 填写个人空间数字 UID，追番页将使用 Firefly 原生数据组件。 }
-              - { label: Umami Website ID, name: umamiWebsiteId, widget: string, required: false }
-              - { label: Umami 脚本地址, name: umamiScriptUrl, widget: string, default: https://cloud.umami.is/script.js }
+              - {
+                  label: Bilibili UID,
+                  name: bilibiliUid,
+                  widget: string,
+                  required: false,
+                  hint: 填写个人空间数字 UID，追番页将使用 Firefly 原生数据组件。,
+                }
+              - {
+                  label: Bangumi 用户 ID,
+                  name: bangumiUserId,
+                  widget: string,
+                  required: false,
+                  hint: 仅用于“番组计划”页面；与 Bilibili 追番是两套独立数据源。,
+                }
+              - {
+                  label: Umami Website ID,
+                  name: umamiWebsiteId,
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  label: Umami 脚本地址,
+                  name: umamiScriptUrl,
+                  widget: string,
+                  default: https://cloud.umami.is/script.js,
+                }
           - label: 音乐歌单
             name: playlist
             widget: list
@@ -281,15 +438,37 @@ collections:
             fields:
               - { label: 歌名, name: name, widget: string }
               - { label: 歌手, name: artist, widget: string }
-              - { label: 音乐文件, name: src, widget: r2-audio }
-              - { label: 封面, name: cover, widget: image, required: false }
-              - { label: LRC 歌词或歌词地址, name: lrc, widget: text, required: false, hint: 可粘贴完整 LRC，也可以填写以 / 开头的歌词文件地址。 }
+              - {
+                  label: 音乐文件,
+                  name: src,
+                  widget: r2-audio,
+                  hint: 上传后该文件只属于当前这一条曲目。,
+                }
+              - {
+                  label: 唱片封面,
+                  name: cover,
+                  widget: image,
+                  required: false,
+                  hint: "在同一条曲目内上传，播放器会自动与该音乐对应。建议使用 1:1 正方形图片。",
+                }
+              - {
+                  label: LRC 歌词或歌词地址,
+                  name: lrc,
+                  widget: text,
+                  required: false,
+                  hint: "在同一条曲目内粘贴完整 LRC，或填写以 / 开头的 .lrc/.txt 文件地址。时间标签如 [00:12.50] 会自动与歌曲进度同步。",
+                }
       - label: 个人资料与联系入口
         name: profile
         file: src/data/profile.json
         format: json
         fields:
-          - { label: 头像, name: avatar, widget: image, hint: 首页资料组件和“关于”页共用此头像；上传后保存即可同步更新。 }
+          - {
+              label: 头像,
+              name: avatar,
+              widget: image,
+              hint: 首页资料组件和“关于”页共用此头像；上传后保存即可同步更新。,
+            }
           - { label: 显示名称, name: name, widget: string }
           - { label: 一句话介绍, name: bio, widget: text }
           - label: 联系入口
@@ -298,9 +477,138 @@ collections:
             summary: "{{fields.name}} · {{fields.url}}"
             fields:
               - { label: 名称, name: name, widget: string }
-              - { label: Iconify 图标名, name: icon, widget: string, hint: 例如 fa7-brands:github 或 fa7-solid:envelope。 }
+              - {
+                  label: Iconify 图标名,
+                  name: icon,
+                  widget: string,
+                  hint: 例如 fa7-brands:github 或 fa7-solid:envelope。,
+                }
               - { label: 地址, name: url, widget: string }
-              - { label: 在个人卡片显示文字, name: showName, widget: boolean, default: false, required: false }
+              - {
+                  label: 在个人卡片显示文字,
+                  name: showName,
+                  widget: boolean,
+                  default: false,
+                  required: false,
+                }
+          - {
+              label: 兴趣方向,
+              name: interests,
+              widget: list,
+              field: { label: 兴趣, name: interest, widget: string },
+            }
+          - {
+              label: 技术栈,
+              name: stack,
+              widget: list,
+              field: { label: 技术, name: technology, widget: string },
+            }
+          - label: 关于页项目卡片
+            name: projects
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: 标题, name: title, widget: string }
+              - { label: 说明, name: description, widget: text }
+              - {
+                  label: 标签,
+                  name: tags,
+                  widget: list,
+                  field: { label: 标签, name: tag, widget: string },
+                }
+              - {
+                  label: 配色,
+                  name: tone,
+                  widget: select,
+                  options: [blue, mint, gold, violet],
+                }
+              - { label: Iconify 图标名, name: icon, widget: string }
+          - label: 最近动态入口
+            name: recentActivity
+            widget: list
+            summary: "{{fields.kind}} · {{fields.title}}"
+            fields:
+              - { label: 类型, name: kind, widget: string }
+              - { label: 标题, name: title, widget: string }
+              - { label: 链接, name: href, widget: string }
+      - label: 更新日志
+        name: changelog
+        file: src/data/changelog.json
+        format: json
+        fields:
+          - { label: 页面标题, name: title, widget: string }
+          - { label: 页面介绍, name: description, widget: text }
+          - { label: 英文眉题, name: kicker, widget: string }
+          - label: 日志条目
+            name: entries
+            widget: list
+            summary: "{{fields.date}} · {{fields.title}}"
+            fields:
+              - {
+                  label: 日期,
+                  name: date,
+                  widget: datetime,
+                  format: YYYY-MM-DD,
+                  date_format: YYYY-MM-DD,
+                  time_format: false,
+                }
+              - { label: 标题, name: title, widget: string }
+              - { label: 摘要, name: description, widget: text }
+              - {
+                  label: 标签,
+                  name: tags,
+                  widget: list,
+                  field: { label: 标签, name: tag, widget: string },
+                }
+              - { label: Iconify 图标名, name: icon, widget: string }
+              - {
+                  label: 强调色,
+                  name: accent,
+                  widget: string,
+                  hint: "例如 #60a5fa。",
+                }
+              - {
+                  label: 变更内容,
+                  name: changes,
+                  widget: list,
+                  field: { label: 变更, name: change, widget: string },
+                }
+      - label: 工具页
+        name: tools
+        file: src/data/tools.json
+        format: json
+        fields:
+          - { label: 页面标题, name: title, widget: string }
+          - { label: 页面介绍, name: description, widget: text }
+          - { label: 英文眉题, name: kicker, widget: string }
+          - label: 工具分组
+            name: sections
+            widget: list
+            summary: "{{fields.title}}"
+            fields:
+              - { label: 分组标题, name: title, widget: string }
+              - { label: 分组说明, name: description, widget: text }
+              - label: 工具
+                name: items
+                widget: list
+                summary: "{{fields.name}}"
+                fields:
+                  - { label: 名称, name: name, widget: string }
+                  - { label: 说明, name: description, widget: text }
+                  - { label: Iconify 图标名, name: icon, widget: string }
+                  - { label: 链接, name: url, widget: string }
+                  - {
+                      label: 标签,
+                      name: tags,
+                      widget: list,
+                      field: { label: 标签, name: tag, widget: string },
+                    }
+                  - {
+                      label: 强调色,
+                      name: accent,
+                      widget: string,
+                      hint: "例如 #38bdf8。",
+                    }
       - label: 图库与相册
         name: gallery
         file: src/data/gallery.json
@@ -308,26 +616,66 @@ collections:
         fields:
           - { label: 页面标题, name: title, widget: string }
           - { label: 页面介绍, name: description, widget: text }
-          - { label: 瀑布流最小列宽, name: columnWidth, widget: number, value_type: int, min: 180, max: 420, default: 240 }
+          - {
+              label: 瀑布流最小列宽,
+              name: columnWidth,
+              widget: number,
+              value_type: int,
+              min: 180,
+              max: 420,
+              default: 240,
+            }
           - label: 相册
             name: albums
             widget: list
             summary: "{{fields.name}} · {{fields.id}}"
             fields:
-              - { label: 相册标识, name: id, widget: string, hint: 只使用英文、数字和短横线，例如 campus-2026；发布后不要随意修改。 }
+              - {
+                  label: 相册标识,
+                  name: id,
+                  widget: string,
+                  hint: 只使用英文、数字和短横线，例如 campus-2026；发布后不要随意修改。,
+                }
               - { label: 相册名称, name: name, widget: string }
-              - { label: 相册说明, name: description, widget: text, required: false }
-              - { label: 日期, name: date, widget: string, required: false, hint: 可填写 2026-09 或“研一秋季”。 }
+              - {
+                  label: 相册说明,
+                  name: description,
+                  widget: text,
+                  required: false,
+                }
+              - {
+                  label: 日期,
+                  name: date,
+                  widget: string,
+                  required: false,
+                  hint: 可填写 2026-09 或“研一秋季”。,
+                }
               - { label: 地点, name: location, widget: string, required: false }
-              - { label: 标签, name: tags, widget: list, required: false, field: { label: 标签, name: tag, widget: string } }
+              - {
+                  label: 标签,
+                  name: tags,
+                  widget: list,
+                  required: false,
+                  field: { label: 标签, name: tag, widget: string },
+                }
               - { label: 封面, name: cover, widget: image, required: false }
               - label: 相册照片
                 name: photos
                 widget: list
                 required: false
                 field: { label: 照片, name: photo, widget: image }
-              - { label: 访问密码, name: password, widget: string, required: false }
-              - { label: 密码提示, name: passwordHint, widget: string, required: false }
+              - {
+                  label: 访问密码,
+                  name: password,
+                  widget: string,
+                  required: false,
+                }
+              - {
+                  label: 密码提示,
+                  name: passwordHint,
+                  widget: string,
+                  required: false,
+                }
       - label: 友链页面
         name: friends
         file: src/data/friends.json
@@ -335,9 +683,24 @@ collections:
         fields:
           - { label: 页面标题, name: title, widget: string }
           - { label: 页面介绍, name: description, widget: text }
-          - { label: 显示补充正文, name: showCustomContent, widget: boolean, default: false }
-          - { label: 显示评论, name: showComment, widget: hidden, default: false }
-          - { label: 随机排序, name: randomizeSort, widget: boolean, default: false }
+          - {
+              label: 显示补充正文,
+              name: showCustomContent,
+              widget: boolean,
+              default: false,
+            }
+          - {
+              label: 显示评论,
+              name: showComment,
+              widget: hidden,
+              default: false,
+            }
+          - {
+              label: 随机排序,
+              name: randomizeSort,
+              widget: boolean,
+              default: false,
+            }
           - label: 友链列表
             name: items
             widget: list
@@ -347,6 +710,18 @@ collections:
               - { label: 头像, name: imgurl, widget: image }
               - { label: 简介, name: desc, widget: text }
               - { label: 网址, name: siteurl, widget: string }
-              - { label: 标签, name: tags, widget: list, required: false, field: { label: 标签, name: tag, widget: string } }
-              - { label: 排序权重, name: weight, widget: number, value_type: int, default: 0 }
+              - {
+                  label: 标签,
+                  name: tags,
+                  widget: list,
+                  required: false,
+                  field: { label: 标签, name: tag, widget: string },
+                }
+              - {
+                  label: 排序权重,
+                  name: weight,
+                  widget: number,
+                  value_type: int,
+                  default: 0,
+                }
               - { label: 启用, name: enabled, widget: boolean, default: true }

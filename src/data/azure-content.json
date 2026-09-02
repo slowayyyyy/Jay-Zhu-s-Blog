@@ -1,4 +1,57 @@
 {
+  "site": {
+    "title": "苍蓝回廊",
+    "subtitle": "论文、读书与日常，沿着水纹慢慢汇流",
+    "description": "Jay Zhu 的个人博客，记录视频时序定位研究、论文阅读、读书笔记与日常生活。",
+    "keywords": ["Jay Zhu", "视频时序定位", "论文阅读", "读书笔记", "个人博客", "Astro"],
+    "startDate": "2026-06-23"
+  },
+  "announcement": {
+    "title": "欢迎来到苍蓝回廊",
+    "content": "我是 Jay Zhu。这里记录论文阅读、读书笔记、技术探索与普通生活，也收藏一些洛琪希与旋律。",
+    "closable": true,
+    "link": {
+      "enable": true,
+      "text": "了解更多",
+      "url": "/about/",
+      "external": false
+    }
+  },
+  "dailyQuotes": [
+    { "text": "千里之行，始于足下。", "author": "《道德经》" },
+    { "text": "知人者智，自知者明。", "author": "《道德经》" },
+    { "text": "慎终如始，则无败事。", "author": "《道德经》" },
+    { "text": "学而不思则罔，思而不学则殆。", "author": "《论语》" },
+    { "text": "知者不惑，仁者不忧，勇者不惧。", "author": "《论语》" },
+    { "text": "不患人之不己知，患不知人也。", "author": "《论语》" },
+    { "text": "不积跬步，无以至千里。", "author": "《荀子·劝学》" },
+    { "text": "锲而不舍，金石可镂。", "author": "《荀子·劝学》" },
+    { "text": "纸上得来终觉浅，绝知此事要躬行。", "author": "陆游" },
+    { "text": "路漫漫其修远兮，吾将上下而求索。", "author": "屈原" }
+  ],
+  "visuals": {
+    "desktopWallpapers": [
+      "/assets/images/roxy/water-magic.jpg",
+      "/assets/images/roxy/night-flight.jpg",
+      "/assets/images/roxy/portrait-magic.jpg",
+      "/assets/images/roxy/field-journey.jpg",
+      "/assets/images/roxy/magic-preview.jpg"
+    ],
+    "mobileWallpapers": [
+      "/assets/images/roxy/night-flight.jpg",
+      "/assets/images/roxy/field-journey.jpg",
+      "/assets/images/roxy/sweater.jpg",
+      "/assets/images/roxy/portrait-magic.jpg"
+    ],
+    "timeGreetingImages": [
+      "/assets/images/roxy/field-journey.jpg",
+      "/assets/images/roxy/sunset-rest.jpg",
+      "/assets/images/roxy/night-flight.jpg",
+      "/assets/images/roxy/study.jpg",
+      "/assets/images/roxy/water-magic.jpg"
+    ],
+    "backgroundVideo": "/media/opening-roxy-720p.mp4"
+  },
   "opening": {
     "enabled": false,
     "kicker": "AZURE CORRIDOR · PROLOGUE",
@@ -44,7 +97,8 @@
     "referenceMeta": "参考内容 · 以后可以替换成你的真实听歌记录"
   },
   "integrations": {
-    "bilibiliUid": "",
+    "bilibiliUid": "398487766",
+    "bangumiUserId": "",
     "umamiWebsiteId": "",
     "umamiScriptUrl": "https://cloud.umami.is/script.js"
   },

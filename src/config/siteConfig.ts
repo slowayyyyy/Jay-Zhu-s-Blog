@@ -7,10 +7,10 @@ const SITE_LANG = "zh_CN";
 
 export const siteConfig: SiteConfig = {
 	// 站点标题
-	title: "苍蓝回廊",
+	title: azureContent.site.title,
 
 	// 站点副标题
-	subtitle: "论文、读书与日常，沿着水纹慢慢汇流",
+	subtitle: azureContent.site.subtitle,
 
 	// Aemeath 主题版本
 	themeVersion: "Roxy Edition",
@@ -19,11 +19,10 @@ export const siteConfig: SiteConfig = {
 	site_url: "https://jay-zhu-s-blog.pages.dev",
 
 	// 站点描述
-	description:
-		"Jay Zhu 的个人博客，记录视频时序定位研究、论文阅读、读书笔记与日常生活。",
+	description: azureContent.site.description,
 
 	// 站点关键词
-	keywords: ["Jay Zhu", "视频时序定位", "论文阅读", "读书笔记", "个人博客", "Astro"],
+	keywords: azureContent.site.keywords,
 
 	// 主题色
 	themeColor: {
@@ -67,7 +66,7 @@ export const siteConfig: SiteConfig = {
 			value: "material-symbols:water-drop-outline-rounded",
 		},
 		// 导航栏标题
-		title: "苍蓝回廊",
+		title: azureContent.site.title,
 		// 全宽导航栏，导航栏是否占满屏幕宽度
 		widthFull: false,
 		// 导航菜单对齐方式，left：左对齐，center：居中
@@ -79,7 +78,7 @@ export const siteConfig: SiteConfig = {
 	},
 
 	// 原博客已使用的起算日期（第一篇博客文件创建日），不是 Aemeath 模板默认值
-	siteStartDate: "2026-06-23",
+	siteStartDate: azureContent.site.startDate,
 
 	// 站点时区（IANA 时区字符串），用于格式化bangumi、rss里的构建日期时间等等..
 	// 示例："Asia/Shanghai", "UTC", 如果为空，则按照构建服务器的时区进行时区转换
@@ -155,7 +154,7 @@ export const siteConfig: SiteConfig = {
 	// bangumi配置
 	bangumi: {
 		// Bangumi用户ID
-		userId: "",
+		userId: azureContent.integrations.bangumiUserId,
 		// 数据模式：static=构建时获取，dynamic=客户端实时获取
 		// static 模式在构建时获取数据并静态渲染，部署后数据不更新
 		// dynamic 模式在浏览器中实时请求 API，始终显示最新数据

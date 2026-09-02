@@ -1,6 +1,7 @@
 ---
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import type { WidgetComponentConfig } from "@/types/config";
+import azureContent from "@/data/azure-content.json";
 
 interface Props {
 	class?: string;
@@ -9,6 +10,9 @@ interface Props {
 }
 
 const { class: className, style } = Astro.props;
+const dailyQuotes = azureContent.dailyQuotes.length > 0
+	? azureContent.dailyQuotes
+	: [{ text: "慢一点，也是在向前走。", author: "Jay Zhu" }];
 ---
 
 <WidgetLayout
@@ -17,13 +21,13 @@ const { class: className, style } = Astro.props;
 	class={className}
 	style={style}
 >
-	<daily-quote>
+	<daily-quote data-quotes={JSON.stringify(dailyQuotes)}>
 		<blockquote>
 			<span class="quote-mark" aria-hidden="true">“</span>
-			<span class="quote-text">慢一点，也是在向前走。</span>
+			<span class="quote-text">{dailyQuotes[0].text}</span>
 			<span class="quote-mark" aria-hidden="true">”</span>
 		</blockquote>
-		<cite class="quote-author">—— Jay Zhu</cite>
+		<cite class="quote-author">—— {dailyQuotes[0].author}</cite>
 	</daily-quote>
 </WidgetLayout>
 
@@ -68,23 +72,16 @@ const { class: className, style } = Astro.props;
 </style>
 
 <script>
-	const quotes = [
-		["千里之行，始于足下。", "《道德经》"],
-		["知人者智，自知者明。", "《道德经》"],
-		["慎终如始，则无败事。", "《道德经》"],
-		["学而不思则罔，思而不学则殆。", "《论语》"],
-		["知者不惑，仁者不忧，勇者不惧。", "《论语》"],
-		["不患人之不己知，患不知人也。", "《论语》"],
-		["不积跬步，无以至千里。", "《荀子·劝学》"],
-		["锲而不舍，金石可镂。", "《荀子·劝学》"],
-		["纸上得来终觉浅，绝知此事要躬行。", "陆游"],
-		["路漫漫其修远兮，吾将上下而求索。", "屈原"],
-	] as const;
-
 	class DailyQuote extends HTMLElement {
 		private midnightTimer?: number;
+		private quotes: Array<{ text: string; author: string }> = [];
 
 		connectedCallback() {
+			try {
+				this.quotes = JSON.parse(this.dataset.quotes || "[]");
+			} catch {
+				this.quotes = [];
+			}
 			this.showTodayQuote();
 			this.scheduleMidnightRefresh();
 		}
@@ -94,13 +91,14 @@ const { class: className, style } = Astro.props;
 		}
 
 		private showTodayQuote() {
+			if (this.quotes.length === 0) return;
 			const now = new Date();
 			const dayNumber = Math.floor(
 				Date.UTC(now.getFullYear(), now.getMonth(), now.getDate()) /
 					86_400_000,
 			);
-			const quoteIndex = dayNumber % quotes.length;
-			const [text, author] = quotes[quoteIndex];
+			const quoteIndex = dayNumber % this.quotes.length;
+			const { text, author } = this.quotes[quoteIndex];
 			const textElement = this.querySelector<HTMLElement>(".quote-text");
 			const authorElement =
 				this.querySelector<HTMLElement>(".quote-author");

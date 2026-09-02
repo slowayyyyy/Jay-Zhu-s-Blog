@@ -140,6 +140,14 @@ const managerConfigStr = JSON.stringify({
         emit('fm:loading', { isLoading: isLoading });
     }
 
+	function setPlaybackError(message) {
+		state.error = message || config.i18n.error;
+		setLoading(false);
+		state.isPlaying = false;
+		emitPlayState();
+		emit('fm:error', { message: state.error });
+	}
+
     // ── Meting fetch ─────────────────────────────────────────
     async function fetchMetingData() {
         if (!config.meting) return;
@@ -237,8 +245,9 @@ const managerConfigStr = JSON.stringify({
                 setLoading(false);
                 state.isPlaying = false;
                 emitPlayState();
-                if (e.name === 'AbortError') return; // interrupted by new load
-                console.warn('Autoplay blocked:', e);
+				if (e.name === 'AbortError') return; // interrupted by new load
+				setPlaybackError(config.i18n.error);
+				console.warn('Autoplay blocked:', e);
             });
         } else {
             setLoading(false);
@@ -271,7 +280,10 @@ const managerConfigStr = JSON.stringify({
                 setLoading(false);
                 state.isPlaying = false;
                 emitPlayState();
-                if (e.name !== 'AbortError') console.warn('Playback failed:', e);
+				if (e.name !== 'AbortError') {
+					setPlaybackError(config.i18n.error);
+					console.warn('Playback failed:', e);
+				}
             });
         } else {
             loadVersion++;
@@ -389,9 +401,7 @@ const managerConfigStr = JSON.stringify({
     audio.addEventListener('error', function () {
         setLoading(false);
         state.isPlaying = false;
-        state.error = 'Audio playback error';
-        emitPlayState();
-        emit('fm:error', { message: state.error });
+		setPlaybackError(config.i18n.error);
     });
 
     audio.addEventListener('waiting', function () {

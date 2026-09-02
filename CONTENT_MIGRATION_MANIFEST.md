@@ -22,6 +22,9 @@ frontmatter 字段。
 - `src/data/profile.json` 接入 Aemeath 个人资料组件。
 - `src/data/friends.json`、`gallery.json` 接入友链与相册页面。
 - `src/data/azure-content.json` 的歌单接入 Aemeath 全局播放器与 `/music/` 页面。
+- 个人资料、站点信息、公告、每日一言、壁纸、更新日志和工具页已统一为后台数据源。
+- Bilibili UID 已设置为 `398487766`；追番/追剧公开后即可读取，未保存任何 API 密钥。
+- R2 音乐通过 `BLOG_MEDIA -> jay-blog-media` 非敏感桶绑定提供，凭据未写入仓库。
 - 原后台登录、图片粘贴、R2 音乐上传与内容管理脚本继续使用。
 
 ## 新增素材
