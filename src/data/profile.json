@@ -1,24 +1,116 @@
 {
   "avatar": "/uploads/48061921671960433.jpg",
   "name": "Jay Zhu",
-  "bio": "把简单的日子写成诗，也把研究路上的疑问与答案认真留下。",
+  "bio": "愿你做生活的高手！",
   "links": [
-    { "name": "GitHub", "icon": "fa7-brands:github", "url": "https://github.com/slowayyyyy", "showName": false },
-    { "name": "Email", "icon": "fa7-solid:envelope", "url": "mailto:zhuyongtao777@gmail.com", "showName": false },
-    { "name": "RSS", "icon": "fa7-solid:rss", "url": "/rss/", "showName": false }
+    {
+      "name": "GitHub",
+      "icon": "fa7-brands:github",
+      "url": "https://github.com/slowayyyyy",
+      "showName": false
+    },
+    {
+      "name": "Email",
+      "icon": "fa7-solid:envelope",
+      "url": "mailto:zhuyongtao777@gmail.com",
+      "showName": false
+    },
+    {
+      "name": "RSS",
+      "icon": "fa7-solid:rss",
+      "url": "/rss/",
+      "showName": false
+    }
   ],
-  "interests": ["视频时序定位", "多模态学习", "Video LLM", "论文阅读", "读书", "个人成长"],
-  "stack": ["Python", "PyTorch", "Computer Vision", "LLM", "Astro", "TypeScript", "Markdown"],
+  "interests": [
+    "视频时序定位",
+    "多模态学习",
+    "Video LLM",
+    "论文阅读",
+    "读书",
+    "个人成长"
+  ],
+  "stack": [
+    "Python",
+    "PyTorch",
+    "Computer Vision",
+    "LLM",
+    "Astro",
+    "TypeScript",
+    "Markdown"
+  ],
   "projects": [
-    { "title": "视频时序定位研究", "description": "围绕 TSGV、Video LLM 与多模态学习持续阅读论文、复现思路并记录问题。", "tags": ["TSGV", "Video LLM", "科研"], "tone": "blue", "icon": "material-symbols:auto-awesome-rounded" },
-    { "title": "论文阅读档案", "description": "从 Moment-DETR 到 TimeLens，把模型动机、数据与训练方法整理成可回看的笔记。", "tags": ["论文阅读", "多模态", "学习"], "tone": "mint", "icon": "material-symbols:history-rounded" },
-    { "title": "生活手账", "description": "记录读书、食谱和普通日子，让研究之外的生活也拥有清晰的坐标。", "tags": ["阅读", "食谱", "生活"], "tone": "gold", "icon": "material-symbols:auto-awesome-rounded" },
-    { "title": "个人博客", "description": "用 Astro、Firefly 与 Aemeath 搭建的个人写作空间，保留文章、图片与媒体。", "tags": ["Astro", "写作", "持续更新"], "tone": "violet", "icon": "material-symbols:edit-note-rounded" },
-    { "title": "职业与成长", "description": "把职业规划、学习路径和仍未想清楚的问题诚实地记录下来。", "tags": ["成长", "职业规划", "进行中"], "tone": "gold", "icon": "material-symbols:history-rounded" }
+    {
+      "title": "视频时序定位研究",
+      "description": "围绕 TSGV、Video LLM 与多模态学习持续阅读论文、复现思路并记录问题。",
+      "tags": [
+        "TSGV",
+        "Video LLM",
+        "科研"
+      ],
+      "tone": "blue",
+      "icon": "material-symbols:auto-awesome-rounded"
+    },
+    {
+      "title": "论文阅读档案",
+      "description": "从 Moment-DETR 到 TimeLens，把模型动机、数据与训练方法整理成可回看的笔记。",
+      "tags": [
+        "论文阅读",
+        "多模态",
+        "学习"
+      ],
+      "tone": "mint",
+      "icon": "material-symbols:history-rounded"
+    },
+    {
+      "title": "生活手账",
+      "description": "记录读书、食谱和普通日子，让研究之外的生活也拥有清晰的坐标。",
+      "tags": [
+        "阅读",
+        "食谱",
+        "生活"
+      ],
+      "tone": "gold",
+      "icon": "material-symbols:auto-awesome-rounded"
+    },
+    {
+      "title": "个人博客",
+      "description": "用 Astro、Firefly 与 Aemeath 搭建的个人写作空间，保留文章、图片与媒体。",
+      "tags": [
+        "Astro",
+        "写作",
+        "持续更新"
+      ],
+      "tone": "violet",
+      "icon": "material-symbols:edit-note-rounded"
+    },
+    {
+      "title": "职业与成长",
+      "description": "把职业规划、学习路径和仍未想清楚的问题诚实地记录下来。",
+      "tags": [
+        "成长",
+        "职业规划",
+        "进行中"
+      ],
+      "tone": "gold",
+      "icon": "material-symbols:history-rounded"
+    }
   ],
   "recentActivity": [
-    { "kind": "文章", "title": "TimeLens 模型论文阅读", "href": "/posts/2026-08-24-timelens模型-论文阅读/" },
-    { "kind": "文章", "title": "Time-R1 模型论文阅读", "href": "/posts/2026-08-19-time-r1模型-论文阅读/" },
-    { "kind": "系统", "title": "Aemeath × 洛琪希主题重构", "href": "/changelog/" }
+    {
+      "kind": "文章",
+      "title": "TimeLens 模型论文阅读",
+      "href": "/posts/2026-08-24-timelens模型-论文阅读/"
+    },
+    {
+      "kind": "文章",
+      "title": "Time-R1 模型论文阅读",
+      "href": "/posts/2026-08-19-time-r1模型-论文阅读/"
+    },
+    {
+      "kind": "系统",
+      "title": "Aemeath × 洛琪希主题重构",
+      "href": "/changelog/"
+    }
   ]
 }
