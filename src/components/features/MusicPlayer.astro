@@ -27,6 +27,8 @@ const viewConfigStr = JSON.stringify({
 		pause: i18n(I18nKey.musicPause),
 		noCover: i18n(I18nKey.musicNoCover),
 		music: i18n(I18nKey.music),
+		showTranslation: "显示中文翻译",
+		hideTranslation: "隐藏中文翻译",
 	},
 });
 
@@ -54,11 +56,17 @@ const widgetId =
                     {i18n(I18nKey.music)}
                 </h3>
             </div>
-            <!-- Top Right: Lyric Toggle -->
-            <button class={`btn-lrc-toggle hover:text-(--primary) transition-all duration-300 p-0.5 pr-2 transform active:scale-95 text-neutral-400 shrink-0 ${!config.showLyrics ? 'hidden' : ''}`} title={i18n(I18nKey.musicLyrics)} aria-label={i18n(I18nKey.musicLyrics)}>
-                <Icon is:inline name="material-symbols:subtitles-off-outline-rounded" class="icon-lrc-off text-xl" aria-hidden="true" />
-                <Icon is:inline name="material-symbols:subtitles-outline-rounded" class="icon-lrc-on text-xl hidden" aria-hidden="true" />
-            </button>
+            <div class="flex items-center gap-0.5 shrink-0">
+                <!-- Translation toggle: shown only when the current track has translations -->
+                <button class="btn-translation-toggle hidden hover:text-(--primary) transition-all duration-300 p-0.5 transform active:scale-95 text-neutral-400" title="显示中文翻译" aria-label="显示中文翻译" aria-pressed="false">
+                    <Icon is:inline name="material-symbols:translate-rounded" class="text-lg" aria-hidden="true" />
+                </button>
+                <!-- Lyric Toggle -->
+                <button class={`btn-lrc-toggle hover:text-(--primary) transition-all duration-300 p-0.5 pr-2 transform active:scale-95 text-neutral-400 ${!config.showLyrics ? 'hidden' : ''}`} title={i18n(I18nKey.musicLyrics)} aria-label={i18n(I18nKey.musicLyrics)}>
+                    <Icon is:inline name="material-symbols:subtitles-off-outline-rounded" class="icon-lrc-off text-xl" aria-hidden="true" />
+                    <Icon is:inline name="material-symbols:subtitles-outline-rounded" class="icon-lrc-on text-xl hidden" aria-hidden="true" />
+                </button>
+            </div>
         </div>
 
         <div class="min-w-0 overflow-hidden">
@@ -218,6 +226,7 @@ const widgetId =
         volContainer: widget.querySelector('.vol-container'),
         volBar: widget.querySelector('.vol-bar'),
         btnLrc: widget.querySelector('.btn-lrc-toggle'),
+        btnTranslation: widget.querySelector('.btn-translation-toggle'),
         iconLrcOn: widget.querySelector('.icon-lrc-on'),
         iconLrcOff: widget.querySelector('.icon-lrc-off'),
         lrcDrawer: widget.querySelector('.lrc-drawer'),
@@ -230,7 +239,7 @@ const widgetId =
 
     // Verify critical elements
     var _critical = [ui.btnPlay, ui.btnRepeat, ui.btnMute, ui.volContainer,
-        ui.btnDrawer, ui.btnLrc, ui.lrcDrawer, ui.lrcContainer,
+        ui.btnDrawer, ui.btnLrc, ui.btnTranslation, ui.lrcDrawer, ui.lrcContainer,
         ui.progressContainer, ui.btnNext, ui.btnPrev, ui.loading,
         ui.cover, ui.title, ui.artist, ui.playlistContainer, ui.itemTemplate];
     if (_critical.some(function(el) { return !el; })) return;
@@ -238,10 +247,16 @@ const widgetId =
     // ── Local state (drawers, user scrolling, virtual scroll) ──
     var ITEM_H = 42;
     var OVERSCAN = 8;
+    var translationPreference = false;
+    try {
+        translationPreference = localStorage.getItem('music-player-translation-enabled') === 'true';
+    } catch (_) {}
     var local = {
         isUserScrolling: false,
         scrollTimeout: null,
         currentLrcIndex: -1,
+        translationEnabled: translationPreference,
+        hasTranslations: false,
         vs: {
             playlist: [],
             currentIndex: -1,
@@ -530,9 +545,24 @@ const widgetId =
         }
     }
 
+    function updateTranslationUI() {
+        ui.btnTranslation.classList.toggle('hidden', !local.hasTranslations);
+        var isEnabled = local.hasTranslations && local.translationEnabled;
+        ui.btnTranslation.classList.toggle('text-(--primary)', isEnabled);
+        ui.btnTranslation.classList.toggle('text-neutral-400', !isEnabled);
+        ui.btnTranslation.setAttribute('aria-pressed', isEnabled ? 'true' : 'false');
+        ui.btnTranslation.title = isEnabled ? cfg.i18n.hideTranslation : cfg.i18n.showTranslation;
+        ui.btnTranslation.setAttribute('aria-label', ui.btnTranslation.title);
+        ui.lrcContainer.querySelectorAll('.lrc-translation').forEach(function (translation) {
+            translation.classList.toggle('hidden', !isEnabled);
+        });
+    }
+
     function renderLyricsUI(lyrics, status) {
         local.currentLrcIndex = -1;
+        local.hasTranslations = false;
         ui.lrcContainer.innerHTML = '';
+        updateTranslationUI();
         if (status === 'loading') {
             ui.lrcContainer.innerHTML = '<div class="text-neutral-400 text-sm py-10">' + cfg.i18n.loadingLyrics + '</div>';
             return;
@@ -545,6 +575,7 @@ const widgetId =
             ui.lrcContainer.innerHTML = '<div class="text-neutral-400 text-sm py-10" role="option">' + cfg.i18n.noLyrics + '</div>';
             return;
         }
+        local.hasTranslations = lyrics.some(function (line) { return Boolean(line.translation); });
         lyrics.forEach(function (line, index) {
             var lineEl = document.createElement('div');
             lineEl.className = 'lrc-line transition-all duration-300 text-sm text-neutral-400 py-1 cursor-pointer hover:text-(--primary)';
@@ -552,6 +583,8 @@ const widgetId =
             lineEl.setAttribute('role', 'option');
             lineEl.setAttribute('aria-label', line.text);
             lineEl.setAttribute('aria-selected', 'false');
+            var originalEl = document.createElement('div');
+            originalEl.className = 'lrc-original';
             if (Array.isArray(line.words) && line.words.length > 0) {
                 lineEl.classList.add('karaoke-line');
                 line.words.forEach(function (word) {
@@ -561,16 +594,24 @@ const widgetId =
                     wordEl.dataset.start = String(word.start);
                     wordEl.dataset.duration = String(word.duration);
                     wordEl.style.setProperty('--karaoke-progress', '0%');
-                    lineEl.appendChild(wordEl);
+                    originalEl.appendChild(wordEl);
                 });
             } else {
-                lineEl.innerText = line.text;
+                originalEl.innerText = line.text;
+            }
+            lineEl.appendChild(originalEl);
+            if (line.translation) {
+                var translationEl = document.createElement('div');
+                translationEl.className = 'lrc-translation hidden';
+                translationEl.textContent = line.translation;
+                lineEl.appendChild(translationEl);
             }
             lineEl.onclick = function () {
                 mgr.seekToTime(line.time);
             };
             ui.lrcContainer.appendChild(lineEl);
         });
+        updateTranslationUI();
     }
 
     function updateLrcHighlight(index) {
@@ -729,6 +770,11 @@ const widgetId =
         renderLyricsUI(e.detail.lyrics, e.detail.status);
     });
 
+    on('fm:translation-preference', function (e) {
+        local.translationEnabled = Boolean(e.detail.enabled);
+        updateTranslationUI();
+    });
+
     on('fm:lrc-index', function (e) {
         updateLrcHighlight(e.detail.index);
     });
@@ -747,6 +793,16 @@ const widgetId =
     ui.btnPrev.addEventListener('click', function () { mgr.playPrev(); });
     ui.btnRepeat.addEventListener('click', function () { mgr.cyclePlayMode(); });
     ui.btnMute.addEventListener('click', function () { mgr.toggleMute(); });
+    ui.btnTranslation.addEventListener('click', function () {
+        if (!local.hasTranslations) return;
+        var nextTranslationState = !local.translationEnabled;
+        try {
+            localStorage.setItem('music-player-translation-enabled', nextTranslationState ? 'true' : 'false');
+        } catch (_) {}
+        window.dispatchEvent(new CustomEvent('fm:translation-preference', {
+            detail: { enabled: nextTranslationState }
+        }));
+    });
 
     ui.volContainer.addEventListener('click', function (e) {
         var rect = ui.volContainer.getBoundingClientRect();
@@ -914,6 +970,24 @@ const widgetId =
 
     :global(.karaoke-line) {
         white-space: pre-wrap;
+    }
+
+    :global(.lrc-original) {
+        line-height: 1.45;
+    }
+
+    :global(.lrc-translation) {
+        margin-top: 0.2rem;
+        color: var(--content-meta);
+        font-size: 0.72rem;
+        font-weight: 500;
+        line-height: 1.45;
+        opacity: 0.82;
+    }
+
+    :global(.lrc-line[aria-selected="true"] .lrc-translation) {
+        color: color-mix(in srgb, var(--primary) 72%, var(--content-meta));
+        opacity: 1;
     }
 
     :global(.karaoke-word) {

@@ -44,6 +44,7 @@ export type MusicPlayerConfig = {
 			url: string; // 音乐文件路径（相对于 public 目录）
 			cover?: string; // 封面图片路径（相对于 public 目录）
 			lrc?: string; // 歌词内容，支持 LRC 格式
+			translations?: string[]; // 与歌词逐行对应的中文翻译
 		}>;
 	};
 };

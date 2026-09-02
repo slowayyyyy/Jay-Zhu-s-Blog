@@ -92,6 +92,69 @@
 			"kind": "图片",
 			"src": "/assets/images/roxy/water-magic.jpg",
 			"usage": "桌面壁纸、时间问候卡片、首页默认角色"
+		},
+		{
+			"id": "cover-tabibito-no-uta",
+			"name": "旅人の唄唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/01-tabibito-no-uta.png",
+			"usage": "乐境播放器第 1 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-mebuki-no-uta",
+			"name": "芽吹の唄唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/02-mebuki-no-uta.png",
+			"usage": "乐境播放器第 2 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-spiral",
+			"name": "spiral 唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/03-spiral.png",
+			"usage": "乐境播放器第 3 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-inori-owareba",
+			"name": "祈り、終われば唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/04-inori-owareba.png",
+			"usage": "乐境播放器第 4 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-kagekurabe-no-uta",
+			"name": "かげくらべの唄唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/05-kagekurabe-no-uta.png",
+			"usage": "乐境播放器第 5 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-musubime",
+			"name": "ムスビメ唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/06-musubime.png",
+			"usage": "乐境播放器第 6 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-mamoritai-mono",
+			"name": "守りたいもの唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/07-mamoritai-mono.png",
+			"usage": "乐境播放器第 7 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-ketsui-no-uta",
+			"name": "決意の唄唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/08-ketsui-no-uta.png",
+			"usage": "乐境播放器第 8 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-kaze-to-iku-michi",
+			"name": "風と行く道唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/09-kaze-to-iku-michi.png",
+			"usage": "乐境播放器第 9 首歌曲唱片封面"
 		}
 	]
 }

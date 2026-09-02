@@ -1,5 +1,5 @@
-import type { MusicPlayerConfig } from "../types/musicConfig";
 import azureContent from "../data/azure-content.json";
+import type { MusicPlayerConfig } from "../types/musicConfig";
 
 export const musicPlayerConfig: MusicPlayerConfig = {
 	showInNavbar: true,
@@ -22,6 +22,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 			url: track.src,
 			cover: track.cover,
 			lrc: track.lrc,
+			translations: track.translations,
 		})),
 	},
 };

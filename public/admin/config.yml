@@ -463,6 +463,12 @@ collections:
                   required: false,
                   hint: "在同一条曲目内粘贴完整 LRC，或填写以 / 开头的 .lrc/.txt 文件地址。时间标签如 [00:12.50] 会自动与歌曲进度同步。",
                 }
+              - label: 逐行中文翻译
+                name: translations
+                widget: list
+                required: false
+                hint: 必须与歌词原文逐行对应；第 1 条翻译对应第 1 行歌词。访客可在播放器中自由开关显示。
+                field: { label: 中文翻译, name: translation, widget: string }
       - label: 个人资料与联系入口
         name: profile
         file: src/data/profile.json

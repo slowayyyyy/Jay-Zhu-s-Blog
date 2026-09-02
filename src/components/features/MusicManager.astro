@@ -24,6 +24,7 @@ const localPlaylist =
 							? song.lrc
 							: url(song.lrc)
 						: undefined,
+					translations: song.translations || [],
 				};
 			})
 		: [];
@@ -94,16 +95,18 @@ const managerConfigStr = JSON.stringify({
         return result.sort(function (a, b) { return a.time - b.time; });
     }
 
-    function parseLyricsPayload(payload) {
+    function parseLyricsPayload(payload, translations) {
         if (!payload) return [];
+        var translatedLines = Array.isArray(translations) ? translations : [];
         try {
             var parsed = JSON.parse(payload);
             if (parsed && parsed.format === 'karaoke-v1' && Array.isArray(parsed.lines)) {
-                return parsed.lines.map(function (line) {
+                return parsed.lines.map(function (line, index) {
                     return {
                         time: Number(line.time) || 0,
                         end: Number(line.end) || Number(line.time) || 0,
                         text: String(line.text || ''),
+                        translation: String(translatedLines[index] || line.translation || ''),
                         words: Array.isArray(line.words) ? line.words.map(function (word) {
                             return {
                                 text: String(word.text || ''),
@@ -118,7 +121,10 @@ const managerConfigStr = JSON.stringify({
         } catch (_) {
             // Plain LRC remains supported for user-managed tracks.
         }
-        return parseLRC(payload);
+        return parseLRC(payload).map(function (line, index) {
+            line.translation = String(translatedLines[index] || '');
+            return line;
+        });
     }
 
     // ── Audio element (persistent, attached to body) ────────
@@ -274,7 +280,7 @@ const managerConfigStr = JSON.stringify({
                 })
                 .then(function (text) {
                     if (lyricVer !== lyricsLoadVersion) return;
-                    state.lyrics = parseLyricsPayload(text);
+                    state.lyrics = parseLyricsPayload(text, track.translations);
                     emit('fm:lyrics', { lyrics: state.lyrics, status: 'loaded' });
                     syncLyricsAt(audio.currentTime);
                 })
@@ -284,7 +290,7 @@ const managerConfigStr = JSON.stringify({
                     emit('fm:lyrics', { lyrics: [], status: 'failed' });
                 });
         } else {
-            state.lyrics = parseLyricsPayload(track.lrc);
+            state.lyrics = parseLyricsPayload(track.lrc, track.translations);
             emit('fm:lyrics', { lyrics: state.lyrics, status: state.lyrics.length > 0 ? 'loaded' : 'none' });
             syncLyricsAt(audio.currentTime);
         }
