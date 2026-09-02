@@ -142,9 +142,10 @@ const stats: SiteStat[] = [
     const today = new Date();
 
     // 更新运行天数
-    const startDate = new Date(siteStartDate);
-    const diffTime = Math.abs(today.getTime() - startDate.getTime());
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const [startYear, startMonth, startDay] = siteStartDate.split("-").map(Number);
+    const startDate = new Date(startYear, startMonth - 1, startDay);
+    const diffTime = Math.max(0, today.getTime() - startDate.getTime());
+    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
 
     const runningDaysElements = document.querySelectorAll('[data-stat-id="running-days"]');
     runningDaysElements.forEach((element) => {
