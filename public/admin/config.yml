@@ -50,6 +50,11 @@ collections:
           widget: text,
           hint: 用于首页摘要、搜索结果和分享预览，建议 30 至 100 字。,
         }
+      - label: 文章页摘要
+        name: aiSummary
+        widget: text
+        required: false
+        hint: 文章头部展示的摘要；留空时使用“页面描述”。当前由作者维护，接入 AI 后可在后台生成并确认后保存。
       - label: 发布时间
         name: published
         widget: datetime

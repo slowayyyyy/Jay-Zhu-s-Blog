@@ -3,7 +3,8 @@ import { visit } from "unist-util-visit";
 import { shouldAddNoReferrer } from "../utils/image-utils.ts";
 
 /**
- * 将带有 alt 文本的图片转换为包含 figcaption 的 figure 元素的 rehype 插件
+ * 将文章图片转换为 figure。只有 Markdown 图片 title 会作为可见图注，
+ * alt 始终只用于无障碍与图片加载失败时的替代文本。
  *
  * @returns {Function} A transformer function for the rehype plugin
  */
@@ -34,22 +35,17 @@ export default function rehypeFigure() {
 				imgProps.referrerpolicy = "no-referrer";
 			}
 
-			// 获取 alt 属性
-			const alt = imgProps.alt;
+			const caption =
+				typeof imgProps.title === "string" ? imgProps.title.trim() : "";
+			if (caption) delete imgProps.title;
 
-			// 如果没有 alt 属性或 alt 为空字符串，则只更新属性并保持原样
-			if (!alt || alt.trim() === "") {
-				node.properties = imgProps;
-				return;
-			}
-
-			// 创建 figure 元素，包含处理后的 img 和居中的 figcaption
+			// 保持原有 figure 布局，但默认不输出任何可见文字。
 			const figure = h("figure", [
 				// 使用原始属性的 img 节点
 				h("img", {
 					...imgProps,
 				}),
-				h("figcaption", alt),
+				...(caption ? [h("figcaption", caption)] : []),
 			]);
 
 			// 居中显示
