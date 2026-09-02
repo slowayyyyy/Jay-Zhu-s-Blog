@@ -548,10 +548,24 @@ const widgetId =
         lyrics.forEach(function (line, index) {
             var lineEl = document.createElement('div');
             lineEl.className = 'lrc-line transition-all duration-300 text-sm text-neutral-400 py-1 cursor-pointer hover:text-(--primary)';
-            lineEl.innerText = line.text;
             lineEl.dataset.index = index;
             lineEl.setAttribute('role', 'option');
             lineEl.setAttribute('aria-label', line.text);
+            lineEl.setAttribute('aria-selected', 'false');
+            if (Array.isArray(line.words) && line.words.length > 0) {
+                lineEl.classList.add('karaoke-line');
+                line.words.forEach(function (word) {
+                    var wordEl = document.createElement('span');
+                    wordEl.className = 'karaoke-word';
+                    wordEl.textContent = word.text;
+                    wordEl.dataset.start = String(word.start);
+                    wordEl.dataset.duration = String(word.duration);
+                    wordEl.style.setProperty('--karaoke-progress', '0%');
+                    lineEl.appendChild(wordEl);
+                });
+            } else {
+                lineEl.innerText = line.text;
+            }
             lineEl.onclick = function () {
                 mgr.seekToTime(line.time);
             };
@@ -568,9 +582,14 @@ const widgetId =
             if (i === index) {
                 line.classList.add('text-(--primary)', 'font-bold', 'text-base');
                 line.classList.remove('text-neutral-400', 'text-sm');
+                line.setAttribute('aria-selected', 'true');
             } else {
                 line.classList.remove('text-(--primary)', 'font-bold', 'text-base');
                 line.classList.add('text-neutral-400', 'text-sm');
+                line.setAttribute('aria-selected', 'false');
+                line.querySelectorAll('.karaoke-word').forEach(function (word) {
+                    word.style.setProperty('--karaoke-progress', '0%');
+                });
             }
         });
 
@@ -585,6 +604,25 @@ const widgetId =
                 ui.lrcContainer.scrollTo({ top: targetScroll, behavior: 'smooth' });
             }
         }
+    }
+
+    function updateLrcWordProgress(index, currentTime) {
+        if (index < 0) return;
+        var line = ui.lrcContainer.querySelector('.lrc-line[data-index="' + index + '"]');
+        if (!line) return;
+        line.querySelectorAll('.karaoke-word').forEach(function (word) {
+            var start = Number(word.dataset.start || 0);
+            var duration = Number(word.dataset.duration || 0);
+            var progress = currentTime <= start
+                ? 0
+                : duration <= 0
+                    ? 100
+                    : Math.min(100, Math.max(0, ((currentTime - start) / duration) * 100));
+            var nextProgress = progress.toFixed(2) + '%';
+            if (word.style.getPropertyValue('--karaoke-progress') !== nextProgress) {
+                word.style.setProperty('--karaoke-progress', nextProgress);
+            }
+        });
     }
 
     // ── Full sync from manager state (for late-mount) ────────
@@ -617,7 +655,10 @@ const widgetId =
 
         // Lyrics
         renderLyricsUI(s.lyrics, s.lyrics.length > 0 ? 'loaded' : 'none');
-        if (s.currentLrcIndex >= 0) updateLrcHighlight(s.currentLrcIndex);
+        if (s.currentLrcIndex >= 0) {
+            updateLrcHighlight(s.currentLrcIndex);
+            updateLrcWordProgress(s.currentLrcIndex, s.currentTime);
+        }
 
         // Cover image: if already set, show it
         if (s.track && s.track.pic && ui.cover.src && ui.cover.complete && ui.cover.naturalWidth > 0) {
@@ -690,6 +731,10 @@ const widgetId =
 
     on('fm:lrc-index', function (e) {
         updateLrcHighlight(e.detail.index);
+    });
+
+    on('fm:lrc-progress', function (e) {
+        updateLrcWordProgress(e.detail.index, e.detail.currentTime);
     });
 
     on('fm:error', function (e) {
@@ -865,6 +910,25 @@ const widgetId =
     }
     .animate-spin-slow {
         animation: spin-slow 10s linear infinite;
+    }
+
+    :global(.karaoke-line) {
+        white-space: pre-wrap;
+    }
+
+    :global(.karaoke-word) {
+        --karaoke-progress: 0%;
+        color: transparent;
+        background: linear-gradient(
+            90deg,
+            var(--primary) 0%,
+            var(--primary) var(--karaoke-progress),
+            var(--content-meta) var(--karaoke-progress),
+            var(--content-meta) 100%
+        );
+        background-clip: text;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
     }
 
     /* Now-playing equalizer bars */

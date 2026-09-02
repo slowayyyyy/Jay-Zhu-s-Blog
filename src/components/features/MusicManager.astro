@@ -94,6 +94,33 @@ const managerConfigStr = JSON.stringify({
         return result.sort(function (a, b) { return a.time - b.time; });
     }
 
+    function parseLyricsPayload(payload) {
+        if (!payload) return [];
+        try {
+            var parsed = JSON.parse(payload);
+            if (parsed && parsed.format === 'karaoke-v1' && Array.isArray(parsed.lines)) {
+                return parsed.lines.map(function (line) {
+                    return {
+                        time: Number(line.time) || 0,
+                        end: Number(line.end) || Number(line.time) || 0,
+                        text: String(line.text || ''),
+                        words: Array.isArray(line.words) ? line.words.map(function (word) {
+                            return {
+                                text: String(word.text || ''),
+                                start: Number(word.start) || 0,
+                                duration: Math.max(0, Number(word.duration) || 0)
+                            };
+                        }) : []
+                    };
+                }).filter(function (line) { return line.text; })
+                    .sort(function (a, b) { return a.time - b.time; });
+            }
+        } catch (_) {
+            // Plain LRC remains supported for user-managed tracks.
+        }
+        return parseLRC(payload);
+    }
+
     // ── Audio element (persistent, attached to body) ────────
     var audio = document.createElement('audio');
     audio.crossOrigin = 'anonymous';
@@ -104,6 +131,8 @@ const managerConfigStr = JSON.stringify({
 
     // ── State ────────────────────────────────────────────────
     var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
+    var lyricsLoadVersion = 0;
+    var lyricAnimationFrame = 0;
     var state = {
         playlist: [],
         currentIndex: 0,
@@ -189,7 +218,41 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Lyrics ───────────────────────────────────────────────
+    function syncLyricsAt(currentTime) {
+        if (state.lyrics.length === 0) return;
+        var idx = -1;
+        for (var i = 0; i < state.lyrics.length; i++) {
+            if (currentTime >= state.lyrics[i].time) idx = i;
+            else break;
+        }
+        if (idx !== state.currentLrcIndex) {
+            state.currentLrcIndex = idx;
+            emit('fm:lrc-index', { index: idx });
+        }
+        emit('fm:lrc-progress', { index: idx, currentTime: currentTime });
+    }
+
+    function stopLyricsAnimation() {
+        if (!lyricAnimationFrame) return;
+        cancelAnimationFrame(lyricAnimationFrame);
+        lyricAnimationFrame = 0;
+    }
+
+    function runLyricsAnimation() {
+        stopLyricsAnimation();
+        function frame() {
+            if (audio.paused || audio.ended) {
+                lyricAnimationFrame = 0;
+                return;
+            }
+            syncLyricsAt(audio.currentTime);
+            lyricAnimationFrame = requestAnimationFrame(frame);
+        }
+        lyricAnimationFrame = requestAnimationFrame(frame);
+    }
+
     function loadLyrics(track) {
+        var lyricVer = ++lyricsLoadVersion;
         state.lyrics = [];
         state.currentLrcIndex = -1;
 
@@ -205,18 +268,25 @@ const managerConfigStr = JSON.stringify({
         if (isLrcUrl) {
             emit('fm:lyrics', { lyrics: [], status: 'loading' });
             fetch(track.lrc)
-                .then(function (r) { return r.text(); })
+                .then(function (r) {
+                    if (!r.ok) throw new Error('HTTP ' + r.status);
+                    return r.text();
+                })
                 .then(function (text) {
-                    state.lyrics = parseLRC(text);
+                    if (lyricVer !== lyricsLoadVersion) return;
+                    state.lyrics = parseLyricsPayload(text);
                     emit('fm:lyrics', { lyrics: state.lyrics, status: 'loaded' });
+                    syncLyricsAt(audio.currentTime);
                 })
                 .catch(function () {
+                    if (lyricVer !== lyricsLoadVersion) return;
                     state.lyrics = [];
                     emit('fm:lyrics', { lyrics: [], status: 'failed' });
                 });
         } else {
-            state.lyrics = parseLRC(track.lrc);
+            state.lyrics = parseLyricsPayload(track.lrc);
             emit('fm:lyrics', { lyrics: state.lyrics, status: state.lyrics.length > 0 ? 'loaded' : 'none' });
+            syncLyricsAt(audio.currentTime);
         }
     }
 
@@ -378,21 +448,11 @@ const managerConfigStr = JSON.stringify({
             durationStr: formatTime(dur)
         });
 
-        // Lyrics sync
-        if (state.lyrics.length > 0) {
-            var idx = -1;
-            for (var i = 0; i < state.lyrics.length; i++) {
-                if (ct >= state.lyrics[i].time) idx = i;
-                else break;
-            }
-            if (idx !== state.currentLrcIndex) {
-                state.currentLrcIndex = idx;
-                emit('fm:lrc-index', { index: idx });
-            }
-        }
+        if (!lyricAnimationFrame) syncLyricsAt(ct);
     });
 
     audio.addEventListener('ended', function () {
+        stopLyricsAnimation();
         setLoading(false);
         state.isPlaying = false;
         playNext(true);
@@ -412,12 +472,19 @@ const managerConfigStr = JSON.stringify({
         setLoading(false);
         state.isPlaying = true;
         emitPlayState();
+        runLyricsAnimation();
     });
 
     audio.addEventListener('pause', function () {
+        stopLyricsAnimation();
+        syncLyricsAt(audio.currentTime);
         if (state.isLoading) return;
         state.isPlaying = false;
         emitPlayState();
+    });
+
+    audio.addEventListener('seeked', function () {
+        syncLyricsAt(audio.currentTime);
     });
 
     // ── Init (idempotent) ────────────────────────────────────

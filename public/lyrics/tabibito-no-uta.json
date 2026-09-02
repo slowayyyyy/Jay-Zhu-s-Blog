@@ -1,0 +1,1244 @@
+{
+  "format": "karaoke-v1",
+  "title": "旅人の唄",
+  "artist": "大原ゆい子",
+  "lines": [
+    {
+      "time": 22.886,
+      "end": 32.998,
+      "text": "恐れるなら 山を越えていけ",
+      "words": [
+        {
+          "text": "恐",
+          "start": 22.886,
+          "duration": 0.765
+        },
+        {
+          "text": "れ",
+          "start": 23.827,
+          "duration": 0.329
+        },
+        {
+          "text": "る",
+          "start": 24.572,
+          "duration": 0.232
+        },
+        {
+          "text": "な",
+          "start": 25.045,
+          "duration": 0.766
+        },
+        {
+          "text": "ら",
+          "start": 26.436,
+          "duration": 0.76
+        },
+        {
+          "text": " ",
+          "start": 27.196,
+          "duration": 0
+        },
+        {
+          "text": "山",
+          "start": 27.704,
+          "duration": 0.66
+        },
+        {
+          "text": "を",
+          "start": 28.547,
+          "duration": 0.192
+        },
+        {
+          "text": "越",
+          "start": 28.989,
+          "duration": 0.295
+        },
+        {
+          "text": "え",
+          "start": 29.827,
+          "duration": 0.297
+        },
+        {
+          "text": "て",
+          "start": 30.339,
+          "duration": 0.962
+        },
+        {
+          "text": "い",
+          "start": 31.301,
+          "duration": 0.189
+        },
+        {
+          "text": "け",
+          "start": 31.674,
+          "duration": 0.744
+        }
+      ]
+    },
+    {
+      "time": 32.999,
+      "end": 42.294,
+      "text": "満ち足りぬ 心に",
+      "words": [
+        {
+          "text": "満",
+          "start": 32.999,
+          "duration": 0.4
+        },
+        {
+          "text": "ち",
+          "start": 34.105,
+          "duration": 0.232
+        },
+        {
+          "text": "足",
+          "start": 34.511,
+          "duration": 0.616
+        },
+        {
+          "text": "り",
+          "start": 35.384,
+          "duration": 0.192
+        },
+        {
+          "text": "ぬ",
+          "start": 35.736,
+          "duration": 0.799
+        },
+        {
+          "text": " ",
+          "start": 36.535,
+          "duration": 0
+        },
+        {
+          "text": "心",
+          "start": 38.303,
+          "duration": 2.551
+        },
+        {
+          "text": "に",
+          "start": 41.009,
+          "duration": 1.029
+        }
+      ]
+    },
+    {
+      "time": 42.295,
+      "end": 54.063,
+      "text": "溢れ出す水が癒し与え",
+      "words": [
+        {
+          "text": "溢",
+          "start": 42.295,
+          "duration": 0.728
+        },
+        {
+          "text": "れ",
+          "start": 43.023,
+          "duration": 0.2
+        },
+        {
+          "text": "出",
+          "start": 43.449,
+          "duration": 1.342
+        },
+        {
+          "text": "す",
+          "start": 44.919,
+          "duration": 0.784
+        },
+        {
+          "text": "水",
+          "start": 46.039,
+          "duration": 1.347
+        },
+        {
+          "text": "が",
+          "start": 47.386,
+          "duration": 0.957
+        },
+        {
+          "text": "癒",
+          "start": 48.72,
+          "duration": 2.04
+        },
+        {
+          "text": "し",
+          "start": 50.76,
+          "duration": 0.255
+        },
+        {
+          "text": "与",
+          "start": 51.295,
+          "duration": 1.536
+        },
+        {
+          "text": "え",
+          "start": 52.831,
+          "duration": 0.968
+        }
+      ]
+    },
+    {
+      "time": 54.064,
+      "end": 63.212,
+      "text": "想像の上 誰も立てぬ場所",
+      "words": [
+        {
+          "text": "想",
+          "start": 54.064,
+          "duration": 1.311
+        },
+        {
+          "text": "像",
+          "start": 55.375,
+          "duration": 1.12
+        },
+        {
+          "text": "の",
+          "start": 56.495,
+          "duration": 0.202
+        },
+        {
+          "text": "上",
+          "start": 56.914,
+          "duration": 1.197
+        },
+        {
+          "text": " ",
+          "start": 58.111,
+          "duration": 0
+        },
+        {
+          "text": "誰",
+          "start": 58.383,
+          "duration": 0.528
+        },
+        {
+          "text": "も",
+          "start": 59.176,
+          "duration": 0.833
+        },
+        {
+          "text": "立",
+          "start": 60.247,
+          "duration": 0.247
+        },
+        {
+          "text": "て",
+          "start": 60.494,
+          "duration": 0.624
+        },
+        {
+          "text": "ぬ",
+          "start": 61.327,
+          "duration": 0.216
+        },
+        {
+          "text": "場",
+          "start": 61.718,
+          "duration": 0.168
+        },
+        {
+          "text": "所",
+          "start": 61.886,
+          "duration": 1.095
+        }
+      ]
+    },
+    {
+      "time": 63.213,
+      "end": 71.449,
+      "text": "慈しみ一つ恋しさを持てば",
+      "words": [
+        {
+          "text": "慈",
+          "start": 63.213,
+          "duration": 0.96
+        },
+        {
+          "text": "し",
+          "start": 64.389,
+          "duration": 0.72
+        },
+        {
+          "text": "み",
+          "start": 65.286,
+          "duration": 0.183
+        },
+        {
+          "text": "一",
+          "start": 65.469,
+          "duration": 0.838
+        },
+        {
+          "text": "つ",
+          "start": 66.307,
+          "duration": 0.17
+        },
+        {
+          "text": "恋",
+          "start": 66.669,
+          "duration": 0.536
+        },
+        {
+          "text": "し",
+          "start": 67.453,
+          "duration": 0.193
+        },
+        {
+          "text": "さ",
+          "start": 67.869,
+          "duration": 0.176
+        },
+        {
+          "text": "を",
+          "start": 68.341,
+          "duration": 0.576
+        },
+        {
+          "text": "持",
+          "start": 69.109,
+          "duration": 0.168
+        },
+        {
+          "text": "て",
+          "start": 69.445,
+          "duration": 0.328
+        },
+        {
+          "text": "ば",
+          "start": 69.773,
+          "duration": 1.424
+        }
+      ]
+    },
+    {
+      "time": 71.45,
+      "end": 80.227,
+      "text": "手にする愛",
+      "words": [
+        {
+          "text": "手",
+          "start": 71.45,
+          "duration": 0.304
+        },
+        {
+          "text": "に",
+          "start": 72.174,
+          "duration": 0.18
+        },
+        {
+          "text": "す",
+          "start": 72.538,
+          "duration": 0.633
+        },
+        {
+          "text": "る",
+          "start": 73.85,
+          "duration": 0.576
+        },
+        {
+          "text": "愛",
+          "start": 74.666,
+          "duration": 2.64
+        }
+      ]
+    },
+    {
+      "time": 80.228,
+      "end": 85.369,
+      "text": "静寂を知る 風の声は",
+      "words": [
+        {
+          "text": "静",
+          "start": 80.228,
+          "duration": 0.464
+        },
+        {
+          "text": "寂",
+          "start": 80.692,
+          "duration": 0.424
+        },
+        {
+          "text": "を",
+          "start": 81.26,
+          "duration": 0.162
+        },
+        {
+          "text": "知",
+          "start": 81.422,
+          "duration": 0.206
+        },
+        {
+          "text": "る",
+          "start": 81.628,
+          "duration": 0.793
+        },
+        {
+          "text": " ",
+          "start": 82.421,
+          "duration": 0
+        },
+        {
+          "text": "風",
+          "start": 82.996,
+          "duration": 0.527
+        },
+        {
+          "text": "の",
+          "start": 83.734,
+          "duration": 0.169
+        },
+        {
+          "text": "声",
+          "start": 83.903,
+          "duration": 0.338
+        },
+        {
+          "text": "は",
+          "start": 84.243,
+          "duration": 0.64
+        }
+      ]
+    },
+    {
+      "time": 85.37,
+      "end": 91.206,
+      "text": "止まり木をしならせ",
+      "words": [
+        {
+          "text": "止",
+          "start": 85.37,
+          "duration": 0.266
+        },
+        {
+          "text": "ま",
+          "start": 85.864,
+          "duration": 0.376
+        },
+        {
+          "text": "り",
+          "start": 86.735,
+          "duration": 0.28
+        },
+        {
+          "text": "木",
+          "start": 87.424,
+          "duration": 0.296
+        },
+        {
+          "text": "を",
+          "start": 87.72,
+          "duration": 0.263
+        },
+        {
+          "text": "し",
+          "start": 88.231,
+          "duration": 0.209
+        },
+        {
+          "text": "な",
+          "start": 89.136,
+          "duration": 0.233
+        },
+        {
+          "text": "ら",
+          "start": 89.369,
+          "duration": 0.166
+        },
+        {
+          "text": "せ",
+          "start": 89.535,
+          "duration": 0.664
+        }
+      ]
+    },
+    {
+      "time": 91.207,
+      "end": 101.766,
+      "text": "二度として同じ空 見せぬと歌う",
+      "words": [
+        {
+          "text": "二",
+          "start": 91.207,
+          "duration": 0.401
+        },
+        {
+          "text": "度",
+          "start": 91.608,
+          "duration": 0.208
+        },
+        {
+          "text": "と",
+          "start": 92.155,
+          "duration": 0.276
+        },
+        {
+          "text": "し",
+          "start": 92.681,
+          "duration": 0.27
+        },
+        {
+          "text": "て",
+          "start": 93.107,
+          "duration": 0.252
+        },
+        {
+          "text": "同",
+          "start": 93.568,
+          "duration": 0.415
+        },
+        {
+          "text": "じ",
+          "start": 94.183,
+          "duration": 0.171
+        },
+        {
+          "text": "空",
+          "start": 94.354,
+          "duration": 1.374
+        },
+        {
+          "text": " ",
+          "start": 95.728,
+          "duration": 0
+        },
+        {
+          "text": "見",
+          "start": 95.927,
+          "duration": 0.2
+        },
+        {
+          "text": "せ",
+          "start": 96.127,
+          "duration": 0.409
+        },
+        {
+          "text": "ぬ",
+          "start": 97.167,
+          "duration": 0.17
+        },
+        {
+          "text": "と",
+          "start": 97.479,
+          "duration": 0.457
+        },
+        {
+          "text": "歌",
+          "start": 98.105,
+          "duration": 0.671
+        },
+        {
+          "text": "う",
+          "start": 98.776,
+          "duration": 2.031
+        }
+      ]
+    },
+    {
+      "time": 101.767,
+      "end": 111.674,
+      "text": "微睡の中 続くことを願い",
+      "words": [
+        {
+          "text": "微睡",
+          "start": 101.767,
+          "duration": 1.466
+        },
+        {
+          "text": "の",
+          "start": 103.462,
+          "duration": 0.209
+        },
+        {
+          "text": "中",
+          "start": 103.927,
+          "duration": 1.376
+        },
+        {
+          "text": " ",
+          "start": 105.303,
+          "duration": 0
+        },
+        {
+          "text": "続",
+          "start": 106.071,
+          "duration": 0.547
+        },
+        {
+          "text": "く",
+          "start": 106.618,
+          "duration": 0.461
+        },
+        {
+          "text": "こ",
+          "start": 107.239,
+          "duration": 0.176
+        },
+        {
+          "text": "と",
+          "start": 107.415,
+          "duration": 0.168
+        },
+        {
+          "text": "を",
+          "start": 107.807,
+          "duration": 0.333
+        },
+        {
+          "text": "願",
+          "start": 108.351,
+          "duration": 0.603
+        },
+        {
+          "text": "い",
+          "start": 109.223,
+          "duration": 1.28
+        }
+      ]
+    },
+    {
+      "time": 111.675,
+      "end": 122.443,
+      "text": "夢なら 振り向かずに",
+      "words": [
+        {
+          "text": "夢",
+          "start": 111.675,
+          "duration": 2.281
+        },
+        {
+          "text": "な",
+          "start": 114.46,
+          "duration": 0.665
+        },
+        {
+          "text": "ら",
+          "start": 115.788,
+          "duration": 0.786
+        },
+        {
+          "text": " ",
+          "start": 116.574,
+          "duration": 0
+        },
+        {
+          "text": "振",
+          "start": 117.052,
+          "duration": 0.477
+        },
+        {
+          "text": "り",
+          "start": 118.107,
+          "duration": 0.753
+        },
+        {
+          "text": "向",
+          "start": 119.215,
+          "duration": 0.221
+        },
+        {
+          "text": "か",
+          "start": 119.683,
+          "duration": 0.569
+        },
+        {
+          "text": "ず",
+          "start": 120.668,
+          "duration": 0.879
+        },
+        {
+          "text": "に",
+          "start": 121.547,
+          "duration": 0.685
+        }
+      ]
+    },
+    {
+      "time": 122.444,
+      "end": 131.593,
+      "text": "想像の上 誰も立てぬ場所",
+      "words": [
+        {
+          "text": "想",
+          "start": 122.444,
+          "duration": 1.248
+        },
+        {
+          "text": "像",
+          "start": 123.692,
+          "duration": 1.161
+        },
+        {
+          "text": "の",
+          "start": 124.853,
+          "duration": 0.211
+        },
+        {
+          "text": "上",
+          "start": 125.228,
+          "duration": 1.296
+        },
+        {
+          "text": " ",
+          "start": 126.524,
+          "duration": 0
+        },
+        {
+          "text": "誰",
+          "start": 126.756,
+          "duration": 0.696
+        },
+        {
+          "text": "も",
+          "start": 127.612,
+          "duration": 0.824
+        },
+        {
+          "text": "立",
+          "start": 128.66,
+          "duration": 0.227
+        },
+        {
+          "text": "て",
+          "start": 129.035,
+          "duration": 0.433
+        },
+        {
+          "text": "ぬ",
+          "start": 129.468,
+          "duration": 0.262
+        },
+        {
+          "text": "場",
+          "start": 129.972,
+          "duration": 0.139
+        },
+        {
+          "text": "所",
+          "start": 130.111,
+          "duration": 1.267
+        }
+      ]
+    },
+    {
+      "time": 131.594,
+      "end": 173.865,
+      "text": "指先に一つ交わす約束は 永遠",
+      "words": [
+        {
+          "text": "指",
+          "start": 131.594,
+          "duration": 0.48
+        },
+        {
+          "text": "先",
+          "start": 132.258,
+          "duration": 1.072
+        },
+        {
+          "text": "に",
+          "start": 133.507,
+          "duration": 0.191
+        },
+        {
+          "text": "一",
+          "start": 133.93,
+          "duration": 0.616
+        },
+        {
+          "text": "つ",
+          "start": 134.546,
+          "duration": 0.218
+        },
+        {
+          "text": "交",
+          "start": 135.002,
+          "duration": 0.232
+        },
+        {
+          "text": "わ",
+          "start": 135.421,
+          "duration": 0.215
+        },
+        {
+          "text": "す",
+          "start": 135.851,
+          "duration": 0.223
+        },
+        {
+          "text": "約",
+          "start": 136.266,
+          "duration": 0.824
+        },
+        {
+          "text": "束",
+          "start": 137.284,
+          "duration": 0.526
+        },
+        {
+          "text": "は",
+          "start": 138.058,
+          "duration": 0.76
+        },
+        {
+          "text": " ",
+          "start": 138.818,
+          "duration": 0
+        },
+        {
+          "text": "永",
+          "start": 139.914,
+          "duration": 0.76
+        },
+        {
+          "text": "遠",
+          "start": 140.674,
+          "duration": 2.844
+        }
+      ]
+    },
+    {
+      "time": 173.866,
+      "end": 185.353,
+      "text": "溢れ出す 祈り 癒し与え",
+      "words": [
+        {
+          "text": "溢",
+          "start": 173.866,
+          "duration": 0.566
+        },
+        {
+          "text": "れ",
+          "start": 174.432,
+          "duration": 0.202
+        },
+        {
+          "text": "出",
+          "start": 174.877,
+          "duration": 0.565
+        },
+        {
+          "text": "す",
+          "start": 176.21,
+          "duration": 0.872
+        },
+        {
+          "text": " ",
+          "start": 177.082,
+          "duration": 0
+        },
+        {
+          "text": "祈",
+          "start": 177.386,
+          "duration": 1.336
+        },
+        {
+          "text": "り",
+          "start": 178.722,
+          "duration": 0.628
+        },
+        {
+          "text": " ",
+          "start": 179.35,
+          "duration": 0
+        },
+        {
+          "text": "癒",
+          "start": 180.044,
+          "duration": 1.831
+        },
+        {
+          "text": "し",
+          "start": 182.194,
+          "duration": 0.186
+        },
+        {
+          "text": "与",
+          "start": 182.714,
+          "duration": 0.84
+        },
+        {
+          "text": "え",
+          "start": 184.146,
+          "duration": 0.68
+        }
+      ]
+    },
+    {
+      "time": 185.354,
+      "end": 190.559,
+      "text": "さようなら さようなら",
+      "words": [
+        {
+          "text": "さ",
+          "start": 185.354,
+          "duration": 0.537
+        },
+        {
+          "text": "よ",
+          "start": 186.074,
+          "duration": 0.232
+        },
+        {
+          "text": "う",
+          "start": 186.306,
+          "duration": 0.232
+        },
+        {
+          "text": "な",
+          "start": 186.538,
+          "duration": 0.201
+        },
+        {
+          "text": "ら",
+          "start": 186.739,
+          "duration": 0.751
+        },
+        {
+          "text": " ",
+          "start": 187.49,
+          "duration": 0
+        },
+        {
+          "text": "さ",
+          "start": 187.898,
+          "duration": 0.265
+        },
+        {
+          "text": "よ",
+          "start": 188.416,
+          "duration": 0.233
+        },
+        {
+          "text": "う",
+          "start": 188.649,
+          "duration": 0.233
+        },
+        {
+          "text": "な",
+          "start": 188.882,
+          "duration": 0.192
+        },
+        {
+          "text": "ら",
+          "start": 189.25,
+          "duration": 0.849
+        }
+      ]
+    },
+    {
+      "time": 190.56,
+      "end": 196.014,
+      "text": "過ぐる日の私よ",
+      "words": [
+        {
+          "text": "過",
+          "start": 190.56,
+          "duration": 0.226
+        },
+        {
+          "text": "ぐ",
+          "start": 190.958,
+          "duration": 0.164
+        },
+        {
+          "text": "る",
+          "start": 191.368,
+          "duration": 0.208
+        },
+        {
+          "text": "日",
+          "start": 191.904,
+          "duration": 0.616
+        },
+        {
+          "text": "の",
+          "start": 192.904,
+          "duration": 0.263
+        },
+        {
+          "text": "私",
+          "start": 193.351,
+          "duration": 1.065
+        },
+        {
+          "text": "よ",
+          "start": 194.583,
+          "duration": 1.152
+        }
+      ]
+    },
+    {
+      "time": 196.015,
+      "end": 201.089,
+      "text": "さようなら さようなら",
+      "words": [
+        {
+          "text": "さ",
+          "start": 196.015,
+          "duration": 0.177
+        },
+        {
+          "text": "よ",
+          "start": 196.391,
+          "duration": 0.152
+        },
+        {
+          "text": "う",
+          "start": 196.543,
+          "duration": 0.152
+        },
+        {
+          "text": "な",
+          "start": 196.695,
+          "duration": 0.21
+        },
+        {
+          "text": "ら",
+          "start": 197.111,
+          "duration": 0.704
+        },
+        {
+          "text": " ",
+          "start": 197.815,
+          "duration": 0
+        },
+        {
+          "text": "さ",
+          "start": 198.279,
+          "duration": 0.236
+        },
+        {
+          "text": "よ",
+          "start": 198.711,
+          "duration": 0.22
+        },
+        {
+          "text": "う",
+          "start": 198.931,
+          "duration": 0.22
+        },
+        {
+          "text": "な",
+          "start": 199.151,
+          "duration": 0.192
+        },
+        {
+          "text": "ら",
+          "start": 199.559,
+          "duration": 0.992
+        }
+      ]
+    },
+    {
+      "time": 201.09,
+      "end": 206.51,
+      "text": "記憶は残せど",
+      "words": [
+        {
+          "text": "記",
+          "start": 201.09,
+          "duration": 0.358
+        },
+        {
+          "text": "憶",
+          "start": 201.792,
+          "duration": 0.509
+        },
+        {
+          "text": "は",
+          "start": 202.473,
+          "duration": 0.582
+        },
+        {
+          "text": "残",
+          "start": 203.743,
+          "duration": 0.648
+        },
+        {
+          "text": "せ",
+          "start": 204.583,
+          "duration": 0.232
+        },
+        {
+          "text": "ど",
+          "start": 205.023,
+          "duration": 1.32
+        }
+      ]
+    },
+    {
+      "time": 206.511,
+      "end": 215.555,
+      "text": "想像の上 誰も立てぬ場所",
+      "words": [
+        {
+          "text": "想",
+          "start": 206.511,
+          "duration": 1.192
+        },
+        {
+          "text": "像",
+          "start": 207.703,
+          "duration": 1.088
+        },
+        {
+          "text": "の",
+          "start": 208.791,
+          "duration": 0.195
+        },
+        {
+          "text": "上",
+          "start": 209.127,
+          "duration": 1.46
+        },
+        {
+          "text": " ",
+          "start": 210.587,
+          "duration": 0
+        },
+        {
+          "text": "誰",
+          "start": 210.817,
+          "duration": 0.422
+        },
+        {
+          "text": "も",
+          "start": 211.503,
+          "duration": 0.856
+        },
+        {
+          "text": "立",
+          "start": 212.575,
+          "duration": 0.192
+        },
+        {
+          "text": "て",
+          "start": 212.967,
+          "duration": 0.256
+        },
+        {
+          "text": "ぬ",
+          "start": 213.761,
+          "duration": 0.198
+        },
+        {
+          "text": "場",
+          "start": 214.127,
+          "duration": 0.184
+        },
+        {
+          "text": "所",
+          "start": 214.311,
+          "duration": 0.884
+        }
+      ]
+    },
+    {
+      "time": 215.556,
+      "end": 223.937,
+      "text": "慈しみひとつ恋しさを持てば",
+      "words": [
+        {
+          "text": "慈",
+          "start": 215.556,
+          "duration": 0.926
+        },
+        {
+          "text": "し",
+          "start": 216.777,
+          "duration": 0.625
+        },
+        {
+          "text": "み",
+          "start": 217.577,
+          "duration": 0.2
+        },
+        {
+          "text": "ひ",
+          "start": 217.777,
+          "duration": 0.32
+        },
+        {
+          "text": "と",
+          "start": 218.097,
+          "duration": 0.449
+        },
+        {
+          "text": "つ",
+          "start": 218.546,
+          "duration": 0.273
+        },
+        {
+          "text": "恋",
+          "start": 219.026,
+          "duration": 0.592
+        },
+        {
+          "text": "し",
+          "start": 219.841,
+          "duration": 0.193
+        },
+        {
+          "text": "さ",
+          "start": 220.281,
+          "duration": 0.216
+        },
+        {
+          "text": "を",
+          "start": 220.867,
+          "duration": 0.254
+        },
+        {
+          "text": "持",
+          "start": 221.434,
+          "duration": 0.215
+        },
+        {
+          "text": "て",
+          "start": 221.649,
+          "duration": 0.345
+        },
+        {
+          "text": "ば",
+          "start": 222.137,
+          "duration": 1.082
+        }
+      ]
+    },
+    {
+      "time": 223.938,
+      "end": 230.905,
+      "text": "手にする愛",
+      "words": [
+        {
+          "text": "手",
+          "start": 223.938,
+          "duration": 0.351
+        },
+        {
+          "text": "に",
+          "start": 224.289,
+          "duration": 0.265
+        },
+        {
+          "text": "す",
+          "start": 224.769,
+          "duration": 0.305
+        },
+        {
+          "text": "る",
+          "start": 226.113,
+          "duration": 0.689
+        },
+        {
+          "text": "愛",
+          "start": 227.378,
+          "duration": 3.327
+        }
+      ]
+    }
+  ]
+}
