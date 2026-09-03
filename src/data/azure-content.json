@@ -456,6 +456,8 @@
     "backgroundVideo": "/media/opening-roxy-720p.mp4"
   },
   "musicPage": {
+    "heroImage": "/assets/images/roxy/roxy-motion-loop.gif",
+    "heroImageAlt": "洛琪希与流动的水光",
     "title": "乐境",
     "intro": "有些旋律适合陪着写作，有些旋律会把人带回某一段时间。",
     "emptyLyrics": "这首歌暂时没有歌词，旋律仍会继续。",

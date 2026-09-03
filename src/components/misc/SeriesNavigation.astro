@@ -1,0 +1,21 @@
+---
+import { getCollection } from "astro:content";
+import { getSeriesPosts } from "@/utils/series-utils";
+import { getPostUrlBySlug } from "@/utils/url-utils";
+
+interface Props { currentId: string; series: string; }
+const { currentId, series } = Astro.props;
+const posts = series?.trim() ? getSeriesPosts(await getCollection("posts"), series) : [];
+---
+
+{posts.length > 0 && <nav class="card-base p-6 mb-4" aria-label={`系列文章：${series}`}>
+	<h2 class="text-lg font-bold text-(--content-regular)">系列：{series}</h2>
+	<ol class="mt-3 space-y-1">
+		{posts.map((post, index) => <li>
+			<a href={getPostUrlBySlug(post.id)} aria-current={post.id === currentId ? "page" : undefined}
+				class:list={["block rounded-lg px-3 py-2 break-words hover:bg-(--btn-regular-bg) focus-visible:outline-2 focus-visible:outline-(--primary)", post.id === currentId ? "font-bold text-(--primary) bg-(--btn-regular-bg)" : "text-(--content-regular)"]}>
+				{index + 1}. {post.data.title}{post.id === currentId && <span class="ml-2 text-sm">（当前文章）</span>}
+			</a>
+		</li>)}
+	</ol>
+</nav>}

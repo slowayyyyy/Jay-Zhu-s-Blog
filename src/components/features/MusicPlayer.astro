@@ -1,6 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
 import { musicPlayerConfig } from "@/config/musicConfig";
+import azureContent from "@/data/azure-content.json";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
@@ -18,7 +19,7 @@ const viewConfigStr = JSON.stringify({
 	i18n: {
 		noPlaying: i18n(I18nKey.musicNoPlaying),
 		lyrics: i18n(I18nKey.musicLyrics),
-		noLyrics: i18n(I18nKey.musicNoLyrics),
+		noLyrics: azureContent.musicPage.emptyLyrics || i18n(I18nKey.musicNoLyrics),
 		loadingLyrics: i18n(I18nKey.musicLoadingLyrics),
 		failedLyrics: i18n(I18nKey.musicFailedLyrics),
 		noSongs: i18n(I18nKey.musicNoSongs),
@@ -563,16 +564,23 @@ const widgetId =
         local.hasTranslations = false;
         ui.lrcContainer.innerHTML = '';
         updateTranslationUI();
+        function showMessage(text) {
+            var message = document.createElement('div');
+            message.className = 'text-neutral-400 text-sm py-10';
+            message.setAttribute('role', 'option');
+            message.textContent = text;
+            ui.lrcContainer.appendChild(message);
+        }
         if (status === 'loading') {
-            ui.lrcContainer.innerHTML = '<div class="text-neutral-400 text-sm py-10">' + cfg.i18n.loadingLyrics + '</div>';
+            showMessage(cfg.i18n.loadingLyrics);
             return;
         }
         if (status === 'failed') {
-            ui.lrcContainer.innerHTML = '<div class="text-neutral-400 text-sm py-10">' + cfg.i18n.failedLyrics + '</div>';
+            showMessage(cfg.i18n.failedLyrics);
             return;
         }
         if (!lyrics || lyrics.length === 0) {
-            ui.lrcContainer.innerHTML = '<div class="text-neutral-400 text-sm py-10" role="option">' + cfg.i18n.noLyrics + '</div>';
+            showMessage(cfg.i18n.noLyrics);
             return;
         }
         local.hasTranslations = lyrics.some(function (line) { return Boolean(line.translation); });

@@ -1,11 +1,12 @@
 import type { AnalyticsConfig } from "../types/analyticsConfig";
+import azureContent from "../data/azure-content.json";
 
 export const analyticsConfig: AnalyticsConfig = {
 	googleAnalyticsId: "",
 	microsoftClarityId: "",
 	umamiAnalytics: {
-		websiteId: "",
-		scriptUrl: "https://cloud.umami.is/script.js",
+		websiteId: azureContent.integrations.umamiWebsiteId?.trim() || "",
+		scriptUrl: azureContent.integrations.umamiScriptUrl,
 		shareId: "",
 		shareApiBase: "https://cloud.umami.is/analytics/us",
 		historicalStats: { visitors: 0, pageviews: 0 },

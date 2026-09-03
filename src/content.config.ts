@@ -15,6 +15,8 @@ type PostData = {
 	category: string | null;
 	lang: string;
 	pinned: boolean;
+	series: string;
+	seriesOrder?: number;
 	author: string;
 	sourceLink: string;
 	licenseName: string;
@@ -34,8 +36,19 @@ type DynamicData = {
 	location: string;
 };
 
+type SpecData = {
+	heroTitle?: string;
+	heroSubtitle?: string;
+	quote?: string;
+	closingTitle?: string;
+	closingText?: string;
+	roleLabel?: string;
+	interestsIntro?: string;
+	stackNote?: string;
+};
+
 type PostsCollection = CollectionConfig<z.ZodType<PostData>>;
-type SpecCollection = CollectionConfig<z.ZodType<Record<string, never>>>;
+type SpecCollection = CollectionConfig<z.ZodType<SpecData>>;
 type DynamicCollection = CollectionConfig<z.ZodType<DynamicData>>;
 
 const postsCollection: PostsCollection = defineCollection({
@@ -52,6 +65,8 @@ const postsCollection: PostsCollection = defineCollection({
 		category: z.string().optional().nullable().default(""),
 		lang: z.string().optional().default(""),
 		pinned: z.boolean().optional().default(false),
+		series: z.string().optional().default(""),
+		seriesOrder: z.number().int().min(1).nullable().optional().transform((value) => value ?? undefined),
 		author: z.string().optional().default(""),
 		sourceLink: z.string().optional().default(""),
 		licenseName: z.string().optional().default(""),
@@ -70,7 +85,16 @@ const postsCollection: PostsCollection = defineCollection({
 
 const specCollection: SpecCollection = defineCollection({
 	loader: glob({ pattern: "**/*.{md,mdx}", base: "./src/content/spec" }),
-	schema: z.object({}),
+	schema: z.object({
+		heroTitle: z.string().optional(),
+		heroSubtitle: z.string().optional(),
+		quote: z.string().optional(),
+		closingTitle: z.string().optional(),
+		closingText: z.string().optional(),
+		roleLabel: z.string().optional(),
+		interestsIntro: z.string().optional(),
+		stackNote: z.string().optional(),
+	}),
 });
 
 const dynamicCollection: DynamicCollection = defineCollection({

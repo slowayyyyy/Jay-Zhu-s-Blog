@@ -3,7 +3,7 @@ import { getCollection, getEntry, render } from "astro:content";
 import { Icon } from "astro-icon/components";
 import Markdown from "@components/common/Markdown.astro";
 import ImageWrapper from "@/components/common/ImageWrapper.astro";
-import { getEnabledFriends, profileConfig } from "@/config";
+import { getEnabledFriends, profileConfig, siteConfig } from "@/config";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
@@ -17,6 +17,8 @@ if (!aboutPost) {
 }
 
 const { Content } = await render(aboutPost);
+const aboutData = aboutPost.data;
+const githubLink = profileConfig.links.find((link) => /github\.com\//i.test(link.url));
 const friendCount = getEnabledFriends().length;
 const publicPostCount = (await getCollection("posts", ({ data }) => !data.draft)).length;
 
@@ -66,7 +68,7 @@ const serverStats = [
 ];
 ---
 
-<MainGridLayout title={i18n(I18nKey.about)} description={i18n(I18nKey.about)}>
+<MainGridLayout title={aboutData.heroTitle || i18n(I18nKey.about)} description={aboutData.heroSubtitle || profileConfig.bio}>
 	<!--
 		ABOUT DESIGN CONTRACT
 		THESIS: 用 Aemeath 的 GitHub profile / README 信息秩序呈现 Jay Zhu 的研究与生活。
@@ -90,26 +92,26 @@ const serverStats = [
 				<div class="profile-identity">
 					<div class="profile-kicker">
 						<span class="profile-kicker__dot"></span>
-						<span>PUBLIC PROFILE</span>
+						<span>{aboutData.heroTitle}</span>
 						<span class="profile-kicker__divider">/</span>
-						<span>JAY-ZHU-S-BLOG.PAGES.DEV</span>
+						<span>{new URL(siteConfig.site_url).hostname}</span>
 					</div>
-					<h1 id="about-title">Jay Zhu</h1>
-					<p class="profile-handle">计算机学习者 · 研究记录者 / 博客作者</p>
-					<p class="profile-lead">把论文里的问题读明白，也把成长与普通生活认真写下来。</p>
+					<h1 id="about-title">{profileConfig.name}</h1>
+					<p class="profile-handle">{aboutData.roleLabel}</p>
+					<p class="profile-lead">{aboutData.heroSubtitle}</p>
 					<div class="profile-status" aria-label="当前状态">
 						<span class="profile-status__dot"></span>
-						<span>正在研究视频时序定位，也在持续写作</span>
+						<span>{profileConfig.bio}</span>
 					</div>
 				</div>
 			</div>
 
 			<div class="profile-actions" aria-label="个人主页操作">
-				<a class="profile-action profile-action--primary" href="https://github.com/slowayyyyy" target="_blank" rel="noopener noreferrer">
+				{githubLink && <a class="profile-action profile-action--primary" href={githubLink.url} target="_blank" rel="noopener noreferrer">
 					<Icon is:inline name="fa7-brands:github" aria-hidden="true" />
 					<span>查看 GitHub</span>
 					<Icon is:inline name="material-symbols:arrow-outward-rounded" aria-hidden="true" />
-				</a>
+				</a>}
 				<a class="profile-action" href="/guestbook/">
 					<Icon is:inline name="material-symbols:chat-bubble-outline-rounded" aria-hidden="true" />
 					<span>去留言</span>
@@ -148,7 +150,7 @@ const serverStats = [
 						<span class="profile-panel__meta">公开 · 持续更新</span>
 					</header>
 					<div class="profile-readme__body">
-						<p class="profile-readme__quote">“把尚未想明白的问题，交给下一页和下一次出发。”</p>
+						{aboutData.quote && <p class="profile-readme__quote">“{aboutData.quote}”</p>}
 						<Markdown class="profile-markdown">
 							<Content />
 						</Markdown>
@@ -231,7 +233,7 @@ const serverStats = [
 						<Icon is:inline name="material-symbols:explore-rounded" aria-hidden="true" />
 						<h2 id="interests-title">正在关注</h2>
 					</header>
-					<p>从论文里理解模型为什么有效，也在阅读和生活里校准自己的方向。</p>
+					<p>{aboutData.interestsIntro}</p>
 					<div class="chip-list">
 						{interests.map((item) => <span>{item}</span>)}
 					</div>
@@ -245,7 +247,7 @@ const serverStats = [
 					<div class="stack-list">
 						{stack.map((item) => <span>{item}</span>)}
 					</div>
-					<p class="profile-side-note">工具会变化，解决问题的方式会留下。</p>
+					<p class="profile-side-note">{aboutData.stackNote}</p>
 				</section>
 
 				<section class="profile-panel profile-side-panel card-base" aria-labelledby="connect-title">
@@ -254,9 +256,9 @@ const serverStats = [
 						<h2 id="connect-title">保持联系</h2>
 					</header>
 					<div class="profile-connect-list">
-						<a href="https://github.com/slowayyyyy" target="_blank" rel="noopener noreferrer"><Icon is:inline name="fa7-brands:github" aria-hidden="true" /><span>GitHub</span><Icon class="profile-connect-arrow" is:inline name="material-symbols:arrow-outward-rounded" aria-hidden="true" /></a>
-						<a href="mailto:zhuyongtao777@gmail.com"><Icon is:inline name="fa7-solid:envelope" aria-hidden="true" /><span>zhuyongtao777@gmail.com</span><Icon class="profile-connect-arrow" is:inline name="material-symbols:arrow-outward-rounded" aria-hidden="true" /></a>
-						<a href="/rss.xml"><Icon is:inline name="fa7-solid:rss" aria-hidden="true" /><span>RSS</span><Icon class="profile-connect-arrow" is:inline name="material-symbols:arrow-outward-rounded" aria-hidden="true" /></a>
+						{profileConfig.links.filter((link) => link.url).map((link) => (
+							<a href={link.url} target={link.url.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"><Icon is:inline name={link.icon} aria-hidden="true" /><span>{link.name}</span><Icon class="profile-connect-arrow" is:inline name="material-symbols:arrow-outward-rounded" aria-hidden="true" /></a>
+						))}
 					</div>
 				</section>
 
@@ -286,7 +288,8 @@ const serverStats = [
 		<footer class="profile-footer card-base">
 			<div>
 				<span class="profile-footer__eyebrow">OPEN SOURCE, OPEN CHANNEL</span>
-				<strong>如果你也在把想法变成东西，欢迎来坐坐。</strong>
+				<strong>{aboutData.closingTitle}</strong>
+				{aboutData.closingText && <p>{aboutData.closingText}</p>}
 			</div>
 			<div class="profile-footer__links">
 				<a href="/friends/">认识友链 <Icon is:inline name="material-symbols:arrow-right-alt-rounded" aria-hidden="true" /></a>

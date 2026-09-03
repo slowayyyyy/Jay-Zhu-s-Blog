@@ -1,5 +1,6 @@
 ---
 import { musicPlayerConfig } from "@/config/musicConfig";
+import azureContent from "@/data/azure-content.json";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { url } from "@/utils/url-utils";
@@ -20,7 +21,7 @@ const localPlaylist =
 							: url(song.cover)
 						: undefined,
 					lrc: song.lrc
-						? isFullUrl(song.lrc)
+						? isFullUrl(song.lrc) || /^\s*[\[{]/.test(song.lrc)
 							? song.lrc
 							: url(song.lrc)
 						: undefined,
@@ -44,7 +45,7 @@ const managerConfigStr = JSON.stringify({
 		prev: i18n(I18nKey.musicPrev),
 		next: i18n(I18nKey.musicNext),
 		playlist: i18n(I18nKey.musicPlaylist),
-		noLyrics: i18n(I18nKey.musicNoLyrics),
+		noLyrics: azureContent.musicPage.emptyLyrics || i18n(I18nKey.musicNoLyrics),
 		loadingLyrics: i18n(I18nKey.musicLoadingLyrics),
 		failedLyrics: i18n(I18nKey.musicFailedLyrics),
 		noSongs: i18n(I18nKey.musicNoSongs),
@@ -76,7 +77,7 @@ const managerConfigStr = JSON.stringify({
         if (!lrc) return [];
         var lines = lrc.split('\n');
         var result = [];
-        var timeReg = /\[(\d{2}):(\d{2})\.(\d{2,3})\]/g;
+        var timeReg = /\[(\d{1,3}):(\d{2})(?:\.(\d{1,3}))?\]/g;
         lines.forEach(function (line) {
             var matches = Array.from(line.matchAll(timeReg));
             if (matches.length > 0) {
@@ -85,8 +86,8 @@ const managerConfigStr = JSON.stringify({
                     matches.forEach(function (match) {
                         var m = parseInt(match[1]);
                         var s = parseInt(match[2]);
-                        var ms = parseInt(match[3]);
-                        var time = m * 60 + s + ms / (match[3].length === 3 ? 1000 : 100);
+                        var fraction = match[3] ? Number('0.' + match[3]) : 0;
+                        var time = m * 60 + s + fraction;
                         result.push({ time: time, text: text });
                     });
                 }
@@ -139,6 +140,12 @@ const managerConfigStr = JSON.stringify({
     var loadVersion = 0; // incremented on each loadTrack to discard stale play() results
     var lyricsLoadVersion = 0;
     var lyricAnimationFrame = 0;
+    // A shuffled bag is consumed once per round; history is separate so Back
+    // and Forward replay the same path without consuming unplayed songs.
+    var shuffleBag = [];
+    var shuffleHistory = [];
+    var shuffleCursor = -1;
+    var maxHistory = 200;
     var state = {
         playlist: [],
         currentIndex: 0,
@@ -298,8 +305,9 @@ const managerConfigStr = JSON.stringify({
 
     // ── Track loading ────────────────────────────────────────
     function loadTrack(index, autoPlay) {
-        if (index < 0 || index >= state.playlist.length) return;
+        if (!Number.isInteger(index) || index < 0 || index >= state.playlist.length) return;
         state.currentIndex = index;
+        state.error = null;
         var track = state.playlist[index];
         var ver = ++loadVersion;
 
@@ -333,7 +341,42 @@ const managerConfigStr = JSON.stringify({
     }
 
     // ── Playback controls ────────────────────────────────────
+    function fillShuffleBag(excludeCurrent) {
+        shuffleBag = [];
+        for (var i = 0; i < state.playlist.length; i++) {
+            if (!excludeCurrent || i !== state.currentIndex) shuffleBag.push(i);
+        }
+        // Fisher–Yates: do not sort with a random comparator.
+        for (var j = shuffleBag.length - 1; j > 0; j--) {
+            var k = Math.floor(Math.random() * (j + 1));
+            var saved = shuffleBag[j];
+            shuffleBag[j] = shuffleBag[k];
+            shuffleBag[k] = saved;
+        }
+        // New round: keep all songs, but don't immediately repeat the last one.
+        if (shuffleBag.length > 1 && shuffleBag[0] === state.currentIndex) {
+            var swap = 1 + Math.floor(Math.random() * (shuffleBag.length - 1));
+            var first = shuffleBag[0];
+            shuffleBag[0] = shuffleBag[swap];
+            shuffleBag[swap] = first;
+        }
+    }
+
+    function resetShuffle() {
+        shuffleHistory = state.playlist.length ? [state.currentIndex] : [];
+        shuffleCursor = shuffleHistory.length - 1;
+        fillShuffleBag(true);
+    }
+
+    function rememberTrack(index) {
+        shuffleHistory = shuffleHistory.slice(0, shuffleCursor + 1);
+        if (shuffleHistory[shuffleHistory.length - 1] !== index) shuffleHistory.push(index);
+        if (shuffleHistory.length > maxHistory) shuffleHistory.shift();
+        shuffleCursor = shuffleHistory.length - 1;
+    }
+
     function togglePlay() {
+        if (!state.playlist.length) return;
         if (state.isPlaying || state.isLoading) {
             loadVersion++;
             audio.pause();
@@ -371,15 +414,20 @@ const managerConfigStr = JSON.stringify({
     }
 
     function playNext(auto) {
+        if (!state.playlist.length) return;
         if (state.playMode === 1 && auto) {
-            audio.currentTime = 0;
-            setLoading(true);
-            audio.play();
+            loadTrack(state.currentIndex, true);
             return;
         }
         var nextIndex;
         if (state.playMode === 2) {
-            nextIndex = Math.floor(Math.random() * state.playlist.length);
+            if (shuffleCursor < shuffleHistory.length - 1) {
+                nextIndex = shuffleHistory[++shuffleCursor];
+            } else {
+                if (!shuffleBag.length) fillShuffleBag(false);
+                nextIndex = shuffleBag.shift();
+                rememberTrack(nextIndex);
+            }
         } else {
             nextIndex = (state.currentIndex + 1) % state.playlist.length;
         }
@@ -387,9 +435,11 @@ const managerConfigStr = JSON.stringify({
     }
 
     function playPrev() {
+        if (!state.playlist.length) return;
         var prevIndex;
         if (state.playMode === 2) {
-            prevIndex = Math.floor(Math.random() * state.playlist.length);
+            if (shuffleCursor > 0) shuffleCursor--;
+            prevIndex = shuffleHistory[shuffleCursor] ?? state.currentIndex;
         } else {
             prevIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length;
         }
@@ -397,7 +447,9 @@ const managerConfigStr = JSON.stringify({
     }
 
     function setPlayMode(mode) {
+        if (mode === state.playMode) return;
         state.playMode = mode;
+        if (mode === 2) resetShuffle();
         emit('fm:mode', { playMode: mode });
     }
 
@@ -432,9 +484,14 @@ const managerConfigStr = JSON.stringify({
     }
 
     function playTrackByIndex(index) {
+        if (!Number.isInteger(index) || index < 0 || index >= state.playlist.length) return;
         if (index === state.currentIndex && !audio.paused) {
             togglePlay();
         } else {
+            if (state.playMode === 2 && index !== state.currentIndex) {
+                shuffleBag = shuffleBag.filter(function (value) { return value !== index; });
+                rememberTrack(index);
+            }
             loadTrack(index, true);
         }
     }
@@ -524,6 +581,7 @@ const managerConfigStr = JSON.stringify({
                 });
 
                 loadTrack(startIndex, false);
+                resetShuffle();
             } else {
                 state.initialized = true;
                 emit('fm:init', {

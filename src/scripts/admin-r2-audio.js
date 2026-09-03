@@ -93,7 +93,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 				this.props.onChange(payload.path);
 				this.setState({ uploading: false, error: '' });
 				showStatus(
-					`${file.name} 已上传到 R2。请继续保存“网站与个人资料”，让歌单正式生效。`,
+					`${file.name} 已上传到 R2。请继续保存“全部前台文案与歌单”，等待部署完成后生效。`,
 					'success',
 					7600,
 				);
@@ -120,7 +120,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 				: managedByR2
 					? '已由 R2 托管。替换或移出歌单不会自动删除原文件，避免其他设置保存时误删音乐。'
 					: value
-						? '这是旧版 GitHub 音乐地址，建议重新上传迁移到 R2。'
+						? '这是站内或外部音乐地址；替换时会上传新文件到 R2，原地址不会被删除。'
 						: '选择音乐后会先上传到 R2，再保存歌单设置。';
 
 			return h(
@@ -198,7 +198,7 @@ export function setupR2AudioWidget({ getGithubAccessToken, isLocalPreview, showS
 										cursor: 'pointer',
 									},
 								},
-								'移出歌单',
+								'清空音乐文件',
 							)
 						: null,
 				),

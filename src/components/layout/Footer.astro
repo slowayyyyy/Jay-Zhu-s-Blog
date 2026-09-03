@@ -28,8 +28,7 @@ const socials = [
 		name: "GitHub",
 		icon: "simple-icons:github",
 		url:
-			profileConfig.links.find((item) => item.name === "GitHub")?.url ??
-			"https://github.com/slowayyyyy",
+			profileConfig.links.find((item) => /github\.com\//i.test(item.url))?.url ?? "",
 		external: true,
 	},
 	{
@@ -38,7 +37,7 @@ const socials = [
 		url: profileConfig.links.find((item) => item.name === "RSS")?.url ?? "/rss/",
 		external: false,
 	},
-];
+].filter((item) => item.url);
 
 const techStack = [
 	{ label: "Astro", tone: "violet", icon: "simple-icons:astro" },

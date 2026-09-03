@@ -16,7 +16,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		fallbackApis: [],
 	},
 	local: {
-		playlist: azureContent.playlist.map((track) => ({
+		playlist: (azureContent.playlist || []).filter((track) => track.src?.trim()).map((track) => ({
 			name: track.name,
 			artist: track.artist,
 			url: track.src,

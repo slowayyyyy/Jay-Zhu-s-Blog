@@ -227,23 +227,35 @@ collections:
       - { label: 分区说明, name: description, widget: text, required: false }
 
   - name: about_settings
-    label: 关于页面
+    label: 独立页面正文
+    description: 关于页文案与友链补充正文；姓名、签名、头像和联系方式在“苍蓝回廊设置 → 个人资料与联系入口”维护。
     files:
       - label: 关于我
         name: about
         file: src/content/spec/about.md
         format: frontmatter
         fields:
-          - { label: 主标题, name: heroTitle, widget: string }
-          - { label: 一句话介绍, name: heroSubtitle, widget: text }
-          - { label: 引言, name: quote, widget: text }
+          - { label: 页面名称与顶部眉题, name: heroTitle, widget: string }
+          - { label: 关于页身份标签, name: roleLabel, widget: string, required: false }
+          - { label: 关于页详细介绍, name: heroSubtitle, widget: text }
+          - { label: README 上方引言, name: quote, widget: text, required: false }
+          - { label: 兴趣方向介绍, name: interestsIntro, widget: text, required: false }
+          - { label: 技术轨迹说明, name: stackNote, widget: text, required: false }
           - { label: 结尾标题, name: closingTitle, widget: string }
-          - { label: 结尾说明, name: closingText, widget: text }
-          - { label: 详细介绍, name: body, widget: richtext }
+          - { label: 结尾说明, name: closingText, widget: text, required: false }
+          - { label: README 正文, name: body, widget: richtext }
+      - label: 友链补充正文
+        name: friends_body
+        file: src/content/spec/friends.mdx
+        format: frontmatter
+        fields:
+          - { label: 旧标题, name: title, widget: hidden, required: false }
+          - { label: 旧介绍, name: description, widget: hidden, required: false }
+          - { label: 补充正文（高级 MDX 编辑）, name: body, widget: markdown, modes: [raw], hint: 开启“友链页面 → 显示补充正文”后展示。此处含布局代码，只修改文字并保留语法；常规友链卡片请在“友链页面”管理。 }
 
   - name: site_settings
     label: 苍蓝回廊设置
-    description: 修改首页文案、音乐页文案、外部服务、个人资料和 R2 歌单。
+    description: 每个字段注明前台位置。保存会提交 main；等待 Cloudflare 构建成功后刷新前台才生效，无需清理音乐缓存。开场动画保持停用。
     files:
       - label: 全部前台文案与歌单
         name: azure
@@ -307,7 +319,7 @@ collections:
             widget: list
             min: 1
             summary: "{{fields.text}} · {{fields.author}}"
-            hint: 前台按访客本地日期自动轮换，每天午夜自动换下一条，无需每天手工发布。
+            hint: 用于侧栏“今日一言”，按访客本地日期每天轮换，无需每天发布。与首页横幅的“回廊时刻短句池”独立。
             fields:
               - { label: 句子, name: text, widget: string }
               - { label: 作者或出处, name: author, widget: string }
@@ -342,58 +354,42 @@ collections:
                   widget: string,
                   required: false,
                 }
-          - label: 开场页面（暂未启用）
+          - label: 旧开场数据（保留，不渲染）
             name: opening
-            widget: object
-            fields:
-              - {
-                  label: 启用开场,
-                  name: enabled,
-                  widget: boolean,
-                  default: false,
-                  hint: 当前前端已移除开场动画；未来恢复组件后再启用。,
-                }
-              - { label: 英文眉题, name: kicker, widget: string }
-              - { label: 开场标题, name: title, widget: string }
-              - { label: 开场说明, name: subtitle, widget: text }
-              - { label: 进入按钮, name: enterLabel, widget: string }
-              - { label: 按钮下提示, name: hint, widget: string }
-              - {
-                  label: 开场视频地址,
-                  name: videoUrl,
-                  widget: string,
-                  required: false,
-                  hint: 默认使用受保护的 /media/opening；留空或加载失败时自动显示洛琪希静态封面。,
-                }
-          - label: 开场与首页首屏
+            widget: hidden
+            required: false
+          - label: 首页横幅文字
             name: hero
             widget: object
+            hint: 首页顶部大图上的文字，不是开场动画。访客需要开启“横幅文字”并使用横幅或全屏壁纸模式才能看到。
             fields:
-              - { label: 博客名, name: title, widget: string }
-              - { label: 作者介绍, name: subtitle, widget: text }
-              - { label: 座右铭, name: note, widget: string }
-              - { label: 主按钮, name: primaryCta, widget: string }
-              - { label: 次按钮, name: secondaryCta, widget: string }
-          - label: 首页下半部
+              - { label: 横幅主标题, name: title, widget: string }
+              - { label: 短句池为空时的备用介绍, name: subtitle, widget: text, hint: 下方“回廊时刻短句池”有内容时，优先轮播短句。 }
+              - { label: 旧座右铭, name: note, widget: hidden, required: false }
+              - { label: 旧主按钮, name: primaryCta, widget: hidden, required: false }
+              - { label: 旧次按钮, name: secondaryCta, widget: hidden, required: false }
+          - label: 首页短句与文章区
             name: home
             widget: object
             fields:
-              - { label: 最近文章标题, name: recentTitle, widget: string }
-              - { label: 最近文章介绍, name: recentIntro, widget: text }
-              - { label: 分支英文眉题, name: branchesKicker, widget: string }
-              - { label: 分支标题, name: branchesTitle, widget: string }
-              - { label: 分支介绍, name: branchesIntro, widget: text }
-              - { label: 乐境入口标题, name: musicTitle, widget: string }
-              - { label: 乐境入口说明, name: musicDescription, widget: string }
-              - { label: 画廊入口标题, name: galleryTitle, widget: string }
-              - { label: 说说入口文案, name: dynamicQuote, widget: text }
-              - { label: 追番入口标题, name: animeTitle, widget: string }
-              - { label: 追番入口状态, name: animeStatus, widget: string }
-              - { label: 关于入口标题, name: aboutTitle, widget: string }
+              - { label: 最近文章标题, name: recentTitle, widget: string, hint: 出现在首页文章列表上方。 }
+              - { label: 最近文章介绍, name: recentIntro, widget: text, required: false }
+              - { label: 旧分支眉题, name: branchesKicker, widget: hidden, required: false }
+              - { label: 旧分支标题, name: branchesTitle, widget: hidden, required: false }
+              - { label: 旧分支介绍, name: branchesIntro, widget: hidden, required: false }
+              - { label: 旧乐境入口, name: musicTitle, widget: hidden, required: false }
+              - { label: 旧乐境说明, name: musicDescription, widget: hidden, required: false }
+              - { label: 旧画廊入口, name: galleryTitle, widget: hidden, required: false }
+              - { label: 旧说说入口, name: dynamicQuote, widget: hidden, required: false }
+              - { label: 旧追番入口, name: animeTitle, widget: hidden, required: false }
+              - { label: 旧追番状态, name: animeStatus, widget: hidden, required: false }
+              - { label: 旧关于入口, name: aboutTitle, widget: hidden, required: false }
               - label: 回廊时刻短句池
                 name: momentQuotes
                 widget: list
-                min: 1
+                required: false
+                default: []
+                hint: 首页顶部大图中，主标题下方的打字机文字。按列表顺序循环；可拖动排序。全部清空后显示“备用介绍”，不是侧栏“今日一言”。
                 field: { label: 短句, name: quote, widget: string }
           - label: 乐境页面文案
             name: musicPage
@@ -401,10 +397,12 @@ collections:
             fields:
               - { label: 页面标题, name: title, widget: string }
               - { label: 页面介绍, name: intro, widget: text }
-              - { label: 无歌词提示, name: emptyLyrics, widget: string }
-              - { label: 参考内容标题, name: referenceTitle, widget: string }
-              - { label: 参考内容正文, name: referenceText, widget: text }
-              - { label: 参考内容标记, name: referenceMeta, widget: string }
+              - { label: 乐境顶部图片或动图, name: heroImage, widget: image, required: false, hint: 只控制乐境页顶部右侧图片，不影响唱片封面。 }
+              - { label: 顶部图片说明, name: heroImageAlt, widget: string, required: false }
+              - { label: 无歌词提示, name: emptyLyrics, widget: string, hint: 全站播放器中无歌词曲目的提示文字；不会覆盖歌词加载失败提示。 }
+              - { label: 播放器上方说明标题, name: referenceTitle, widget: string, required: false, hint: 留空则隐藏整个说明区。 }
+              - { label: 播放器上方说明正文, name: referenceText, widget: text, required: false }
+              - { label: 播放器上方说明标记, name: referenceMeta, widget: string, required: false }
           - label: 外部服务
             name: integrations
             widget: object
@@ -429,6 +427,7 @@ collections:
                   name: umamiWebsiteId,
                   widget: string,
                   required: false,
+                  hint: 填写后加载统计脚本；这是公开 ID，不是 API 密钥。访问量报表在你自己的 Umami 控制台查看。,
                 }
               - {
                   label: Umami 脚本地址,
@@ -439,6 +438,9 @@ collections:
           - label: 音乐歌单
             name: playlist
             widget: list
+            required: false
+            default: []
+            hint: 一条记录对应一首歌。拖动可排序；删除整条记录才会移出歌单。清空音乐文件只停用该条目，云端原文件保留。保存其他文案不会删除或清理音乐。
             summary: "{{fields.name}} · {{fields.artist}}"
             fields:
               - { label: 歌名, name: name, widget: string }
@@ -447,7 +449,8 @@ collections:
                   label: 音乐文件,
                   name: src,
                   widget: r2-audio,
-                  hint: 上传后该文件只属于当前这一条曲目。,
+                  required: false,
+                  hint: 上传后与本条封面、歌词和翻译配对。没有音乐地址的条目不进入前台播放队列。,
                 }
               - {
                   label: 唱片封面,
@@ -461,7 +464,7 @@ collections:
                   name: lrc,
                   widget: text,
                   required: false,
-                  hint: "在同一条曲目内粘贴完整 LRC，或填写以 / 开头的 .lrc/.txt 文件地址。时间标签如 [00:12.50] 会自动与歌曲进度同步。",
+                  hint: "支持完整 LRC 文本、以 / 开头的站内歌词地址或 HTTPS 地址。现有 .json 为 KRC 转换后的逐字歌词；原始 KRC 需转换后使用，不能直接粘贴文件。LRC 如 [00:12.50] 会按时间同步。",
                 }
               - label: 逐行中文翻译
                 name: translations
@@ -480,11 +483,12 @@ collections:
               widget: image,
               hint: 首页资料组件和“关于”页共用此头像；上传后保存即可同步更新。,
             }
-          - { label: 显示名称, name: name, widget: string }
-          - { label: 一句话介绍, name: bio, widget: text }
+          - { label: 显示名称, name: name, widget: string, hint: 侧栏、关于页姓名与默认文章署名共用。 }
+          - { label: 个性签名, name: bio, widget: text, hint: 同步显示在侧栏个人卡片和关于页状态行；关于页的长介绍在“独立页面正文”维护。 }
           - label: 联系入口
             name: links
             widget: list
+            hint: 侧栏个人卡片和关于页联系方式共用；GitHub 地址也用于关于页顶部按钮。
             summary: "{{fields.name}} · {{fields.url}}"
             fields:
               - { label: 名称, name: name, widget: string }
@@ -700,6 +704,7 @@ collections:
               name: showCustomContent,
               widget: boolean,
               default: false,
+              hint: 正文在“独立页面正文 → 友链补充正文”编辑。,
             }
           - {
               label: 显示评论,
@@ -739,8 +744,8 @@ collections:
               - { label: 启用, name: enabled, widget: boolean, default: true }
 
   - name: media_library
-    label: 视觉素材库
-    description: 统一查看洛琪希图片、动图及其前台用途；素材文件不会因移除索引而被静默删除。
+    label: 视觉素材索引
+    description: 统一查找素材路径和用途，不是前台配置。更换前台图片需到对应的壁纸、个人资料、乐境、歌单或相册字段选择图片。修改索引不会自动替换页面，也不会删除原文件。
     files:
       - label: 网站视觉素材
         name: site_visual_assets

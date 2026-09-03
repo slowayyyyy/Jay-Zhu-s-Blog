@@ -5,6 +5,7 @@ import PostPage from "@/components/layout/PostPage.astro";
 import { siteConfig } from "@/config";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { getSortedPosts } from "@/utils/content-utils";
+import azureContent from "@/data/azure-content.json";
 export const getStaticPaths = (async ({ paginate }) => {
 	const allBlogPosts = await getSortedPosts();
 	// 使用配置中的文章数量
@@ -19,6 +20,10 @@ const len = page.data.length;
 ---
 
 <MainGridLayout>
+  <header class="card-base px-7 py-5 mb-4">
+      <h2 class="text-xl font-bold text-(--content-regular)">{azureContent.home.recentTitle}</h2>
+    {azureContent.home.recentIntro && <p class="mt-2 text-sm leading-relaxed text-(--content-meta)">{azureContent.home.recentIntro}</p>}
+  </header>
   <PostPage page={page} />
   {
     page.total > page.size && (

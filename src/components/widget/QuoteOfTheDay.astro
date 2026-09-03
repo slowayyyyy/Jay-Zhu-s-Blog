@@ -2,6 +2,7 @@
 import WidgetLayout from "@/components/common/WidgetLayout.astro";
 import type { WidgetComponentConfig } from "@/types/config";
 import azureContent from "@/data/azure-content.json";
+import { profileConfig } from "@/config/profileConfig";
 
 interface Props {
 	class?: string;
@@ -10,9 +11,9 @@ interface Props {
 }
 
 const { class: className, style } = Astro.props;
-const dailyQuotes = azureContent.dailyQuotes.length > 0
+const dailyQuotes = azureContent.dailyQuotes?.length > 0
 	? azureContent.dailyQuotes
-	: [{ text: "慢一点，也是在向前走。", author: "Jay Zhu" }];
+	: [{ text: "慢一点，也是在向前走。", author: profileConfig.name }];
 ---
 
 <WidgetLayout

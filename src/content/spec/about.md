@@ -1,3 +1,14 @@
+---
+heroTitle: 关于我
+heroSubtitle: 把论文里的问题读明白，也把成长与普通生活认真写下来。
+roleLabel: 计算机学习者 · 研究记录者 / 博客作者
+quote: 把尚未想明白的问题，交给下一页和下一次出发。
+interestsIntro: 从论文里理解模型为什么有效，也在阅读和生活里校准自己的方向。
+stackNote: 工具会变化，解决问题的方式会留下。
+closingTitle: 如果你也在把想法变成东西，欢迎来坐坐。
+closingText: ""
+---
+
 # 关于我 / About Me
 
 你好，我是 **Jay Zhu**。

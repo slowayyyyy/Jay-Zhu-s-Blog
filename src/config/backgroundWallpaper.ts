@@ -3,6 +3,8 @@ import azureContent from "../data/azure-content.json";
 
 const desktopWallpaperImages = azureContent.visuals.desktopWallpapers;
 const mobileWallpaperImages = azureContent.visuals.mobileWallpapers;
+const headlineQuotes = (azureContent.home.momentQuotes || [])
+	.map((quote) => quote.trim()).filter(Boolean);
 
 export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 壁纸模式："banner" 横幅壁纸，"fullscreen" 全屏壁纸，"overlay" 全屏透明，"none" 纯色背景无壁纸
@@ -12,7 +14,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 	// 推荐只选择自己喜欢的模式并关闭切换功能
 	switchable: true,
 	// 是否启用背景视频播放，配置后将在导航栏显示视频播放按钮
-	playerEnable: true,
+	playerEnable: Boolean(azureContent.visuals.backgroundVideo?.trim()),
 	/**
 	 * 背景图片配置
 	 * 图片路径支持三种格式：
@@ -69,15 +71,11 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 			// 是否允许用户通过控制面板切换横幅标题显示
 			switchable: true,
 			// 主页横幅主标题
-			title: "苍蓝回廊",
+			title: azureContent.hero.title.trim() || azureContent.site.title,
 			// 主页横幅主标题字体大小
 			titleSize: "3.8rem",
 			// 主页横幅副标题
-			subtitle: [
-				"论文、读书与日常，沿着水纹慢慢汇流。",
-				"把尚未想明白的问题，交给下一页和下一次出发。",
-				"愿每一次认真，都在时间里留下清澈的回声。",
-			],
+			subtitle: headlineQuotes.length ? headlineQuotes : azureContent.hero.subtitle,
 			// 主页横幅副标题字体大小
 			subtitleSize: "1.5rem",
 			typewriter: {

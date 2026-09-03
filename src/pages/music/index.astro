@@ -4,7 +4,8 @@ import MusicPlayer from "@/components/features/MusicPlayer.astro";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import azureContent from "@/data/azure-content.json";
 
-const { musicPage, playlist } = azureContent;
+const { musicPage } = azureContent;
+const playlist = (azureContent.playlist || []).filter((track) => track.src?.trim());
 ---
 
 <MainGridLayout title={musicPage.title} description={musicPage.intro}>
@@ -15,17 +16,17 @@ const { musicPage, playlist } = azureContent;
 				<h1>{musicPage.title}</h1>
 				<span>{musicPage.intro}</span>
 			</div>
-			<img src="/assets/images/roxy/roxy-motion-loop.gif" alt="洛琪希与流动的水光" loading="eager" />
+			{musicPage.heroImage && <img src={musicPage.heroImage} alt={musicPage.heroImageAlt} loading="eager" />}
 		</header>
 
-		<article class="music-reference" aria-label="乐境参考内容">
+		{musicPage.referenceTitle && <article class="music-reference" aria-label={musicPage.referenceTitle}>
 			<span class="music-reference__icon"><Icon is:inline name="material-symbols:headphones-rounded" /></span>
 			<div>
 				<p>{musicPage.referenceMeta}</p>
 				<h2>{musicPage.referenceTitle}</h2>
 				<span>{musicPage.referenceText}</span>
 			</div>
-		</article>
+		</article>}
 
 		<div class="music-player-panel">
 			<div class="music-player-heading"><Icon is:inline name="material-symbols:graphic-eq-rounded" /><span>正在播放</span></div>

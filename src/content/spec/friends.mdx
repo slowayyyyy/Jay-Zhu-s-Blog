@@ -7,13 +7,16 @@ description: "与优秀的朋友们一起成长"
 
 {/* ========== 站点信息 ========= */}
 
+import { siteConfig, profileConfig } from "@/config";
+import azureContent from "@/data/azure-content.json";
+
 export const site = {
-  name: "苍蓝回廊",
-  desc: "论文、读书与日常，沿着水纹慢慢汇流",
-  url: "https://jay-zhu-s-blog.pages.dev/",
-  avatar: "https://jay-zhu-s-blog.pages.dev/uploads/48061921671960433.jpg",
-  screenshot: "https://jay-zhu-s-blog.pages.dev/assets/images/roxy/field-journey.jpg",
-  email: "zhuyongtao777@gmail.com",
+  name: siteConfig.title,
+  desc: siteConfig.subtitle,
+  url: siteConfig.site_url,
+  avatar: new URL(profileConfig.avatar || "/favicon/azure-corridor.svg", siteConfig.site_url).href,
+  screenshot: new URL(azureContent.visuals.desktopWallpapers[0] || "/favicon/azure-corridor.svg", siteConfig.site_url).href,
+  email: (profileConfig.links.find((link) => link.url.startsWith("mailto:"))?.url || "").replace(/^mailto:/, ""),
 };
 
 {/* ========= 注意事项 ========== */}
@@ -66,7 +69,7 @@ export const notes = [
                 <p class="text-[0.65rem] text-neutral-400 dark:text-neutral-500 mb-0.5">{item.label}</p>
                 <p class="text-xs font-medium truncate">{item.value}</p>
               </div>
-              <button onclick={`navigator.clipboard.writeText('${item.value.replace(/'/g, "\\'")}');this.querySelectorAll('svg')[0].classList.add('hidden');this.querySelectorAll('svg')[1].classList.remove('hidden');setTimeout(()=>{this.querySelectorAll('svg')[0].classList.remove('hidden');this.querySelectorAll('svg')[1].classList.add('hidden')},1500)`} class="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-black/10 dark:bg-white/10 text-(--btn-content) hover:opacity-80 transition-opacity cursor-pointer">
+              <button data-copy={item.value} aria-label={`复制${item.label}`} onclick="navigator.clipboard.writeText(this.dataset.copy);this.querySelectorAll('svg')[0].classList.add('hidden');this.querySelectorAll('svg')[1].classList.remove('hidden');setTimeout(()=>{this.querySelectorAll('svg')[0].classList.remove('hidden');this.querySelectorAll('svg')[1].classList.add('hidden')},1500)" class="shrink-0 w-7 h-7 flex items-center justify-center rounded-md bg-black/10 dark:bg-white/10 text-(--btn-content) hover:opacity-80 transition-opacity cursor-pointer">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg>
                 <svg class="w-3.5 h-3.5 hidden text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
               </button>
@@ -97,7 +100,7 @@ export const notes = [
             <div class="pb-4">
               <p class="font-semibold text-sm mb-1">添加本站友链</p>
               <p class="text-xs text-neutral-500 dark:text-neutral-400 leading-relaxed">请先在您的网站友链页面添加本站信息，可直接复制左侧各字段</p>
-              <p class="mt-1 text-xs text-(--primary) leading-relaxed">建议直接按照申请模板填写后发到评论区，已嵌入 AI 自动审核了哦，通过后会自动添加的~</p>
+              <p class="mt-1 text-xs text-(--primary) leading-relaxed">请按申请模板发送邮件，由站长确认后添加；本站未启用 AI 自动审核。</p>
             </div>
           </div>
 
