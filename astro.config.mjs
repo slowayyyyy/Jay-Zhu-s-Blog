@@ -43,6 +43,7 @@ import { remarkPlantuml } from "./src/plugins/remark-plantuml.js";
 import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { remarkWikiLink } from "./src/plugins/remark-wiki-link.mjs";
 import { rehypeCodeGroup } from "./src/plugins/rehype-code-group.mjs";
+import { remarkTightInlineFormatting } from "./src/lib/remark-tight-inline-formatting.mjs";
 
 if (process.env.NODE_ENV === "development") {
 	setMaxListeners(20);
@@ -238,6 +239,9 @@ export default defineConfig({
 	markdown: {
 		processor: unified({
 			remarkPlugins: [
+				// CommonMark leaves some emphasis markers next to CJK punctuation as text.
+				// Keep the production renderer aligned with the Decap CMS preview.
+				remarkTightInlineFormatting,
 				...(siteConfig.post.rehypeCallouts.enablePythonMarkdownAdmonitions !== false
 					? [remarkAdmonitionToBlockquoteCallout]
 					: []),
