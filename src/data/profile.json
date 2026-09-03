@@ -23,12 +23,11 @@
     }
   ],
   "interests": [
-    "视频时序定位",
+    "TSGV",
     "多模态学习",
-    "Video LLM",
     "论文阅读",
     "读书",
-    "个人成长"
+    "追番"
   ],
   "stack": [
     "Python",
@@ -52,30 +51,8 @@
       "icon": "material-symbols:auto-awesome-rounded"
     },
     {
-      "title": "论文阅读档案",
-      "description": "从 Moment-DETR 到 TimeLens，把模型动机、数据与训练方法整理成可回看的笔记。",
-      "tags": [
-        "论文阅读",
-        "多模态",
-        "学习"
-      ],
-      "tone": "mint",
-      "icon": "material-symbols:history-rounded"
-    },
-    {
-      "title": "生活手账",
-      "description": "记录读书、食谱和普通日子，让研究之外的生活也拥有清晰的坐标。",
-      "tags": [
-        "阅读",
-        "食谱",
-        "生活"
-      ],
-      "tone": "gold",
-      "icon": "material-symbols:auto-awesome-rounded"
-    },
-    {
       "title": "个人博客",
-      "description": "用 Astro、Firefly 与 Aemeath 搭建的个人写作空间，保留文章、图片与媒体。",
+      "description": "基于Firefly 与 Aemeath 项目搭建的个人写作空间，具有稳定前后端与页面展示效果。",
       "tags": [
         "Astro",
         "写作",
@@ -83,17 +60,6 @@
       ],
       "tone": "violet",
       "icon": "material-symbols:edit-note-rounded"
-    },
-    {
-      "title": "职业与成长",
-      "description": "把职业规划、学习路径和仍未想清楚的问题诚实地记录下来。",
-      "tags": [
-        "成长",
-        "职业规划",
-        "进行中"
-      ],
-      "tone": "gold",
-      "icon": "material-symbols:history-rounded"
     }
   ],
   "recentActivity": [
@@ -109,7 +75,7 @@
     },
     {
       "kind": "系统",
-      "title": "Aemeath × 洛琪希主题重构",
+      "title": "Roxy-主题重构",
       "href": "/changelog/"
     }
   ]
