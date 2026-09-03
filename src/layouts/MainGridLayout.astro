@@ -465,7 +465,29 @@ const hasMultipleImages =
             var defaultEnabled = container.dataset.carouselEnabled === 'true';
             var effect = container.dataset.carouselEffect || 'fade';
             var FADE_MS = 800;
-            var transitioning = false;
+            var reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+            var carouselVisible = true;
+            var changeVersion = 0;
+            var cancelImageWait = null;
+            var pendingDone = null;
+            var transitionTimers = [];
+
+            function getSyncedTypewriter() {
+                if (document.documentElement.getAttribute('data-banner-title-enabled') === 'false') return null;
+                return document.querySelector('.banner-home-text-overlay:not(.hidden):not(.user-hidden) .typewriter[data-sync-carousel="true"][data-typewriter-ready="true"]');
+            }
+
+            function cancelPendingChange() {
+                changeVersion++;
+                if (cancelImageWait) cancelImageWait();
+                cancelImageWait = null;
+                transitionTimers.forEach(clearTimeout);
+                transitionTimers = [];
+                if (overlay) overlay.style.opacity = '0';
+                var done = pendingDone;
+                pendingDone = null;
+                if (done) done();
+            }
 
             // 创建过渡遮罩（用于 kenburns 效果的 LQIP 桥接）
             var overlay = null;
@@ -552,18 +574,32 @@ const hasMultipleImages =
             function whenSlideImageReady(slide, callback) {
                 var img = loadSlideImage(slide);
                 if (!img || (img.complete && img.naturalWidth > 0)) {
-                    callback();
-                    return;
+                    callback(true);
+                    return function() {};
                 }
                 img.setAttribute('loading', 'eager');
                 var done = false;
-                var finish = function() {
+                var timer;
+                var cleanup = function() {
+                    clearTimeout(timer);
+                    img.removeEventListener('load', loaded);
+                    img.removeEventListener('error', failed);
+                };
+                var finish = function(success) {
                     if (done) return;
                     done = true;
-                    callback();
+                    cleanup();
+                    if (!success) slide.dataset.loadFailed = 'true';
+                    callback(success);
                 };
-                img.addEventListener('load', finish, { once: true });
-                img.addEventListener('error', finish, { once: true });
+                var loaded = function() { finish(img.naturalWidth > 0); };
+                var failed = function() { finish(false); };
+                img.addEventListener('load', loaded, { once: true });
+                img.addEventListener('error', failed, { once: true });
+                // A broken/offline image must not stall all subsequent sentences.
+                timer = setTimeout(failed, 5000);
+                if (img.complete) loaded();
+                return function() { done = true; cleanup(); };
             }
 
             function applySlideChange(slides, nextIndex) {
@@ -580,36 +616,50 @@ const hasMultipleImages =
                 }
             }
 
-            function changeToSlide(targetIndex, resetProgress) {
-                if (isFixedWallpaperSelected()) return;
+            function changeToSlide(targetIndex, resetProgress, onChange, isStillCurrent) {
+                cancelPendingChange();
+                var finish = function() {
+                    pendingDone = null;
+                    if (onChange) onChange();
+                };
+                if (isFixedWallpaperSelected()) { finish(); return; }
                 var slides = getVisibleSlides();
-                if (slides.length <= 1) return;
-                if (transitioning) return;
+                if (slides.length <= 1) { finish(); return; }
 
                 var nextIndex = targetIndex;
                 if (nextIndex >= slides.length) nextIndex = 0;
                 else if (nextIndex < 0) nextIndex = slides.length - 1;
 
                 var currentIndex = getCurrentIndex(slides);
-                if (nextIndex === currentIndex) return;
+                var direction = targetIndex < currentIndex ? -1 : 1;
+                for (var attempt = 0; attempt < slides.length && slides[nextIndex].dataset.loadFailed === 'true'; attempt++) {
+                    nextIndex = (nextIndex + direction + slides.length) % slides.length;
+                }
+                if (nextIndex === currentIndex) { finish(); return; }
+                pendingDone = finish;
+                var version = changeVersion;
 
-                whenSlideImageReady(slides[nextIndex], function() {
-                if (effect === 'kenburns' && overlay) {
+                cancelImageWait = whenSlideImageReady(slides[nextIndex], function(success) {
+                if (version !== changeVersion) return;
+                if (!success || !container.isConnected || (isStillCurrent && !isStillCurrent())) { finish(); return; }
+                if (effect === 'kenburns' && overlay && !reducedMotion.matches) {
                     // Ken Burns: 用下一张图的 LQIP 做桥接过渡
-                    transitioning = true;
                     overlay.style.background = getSlideLqipStyle(slides[nextIndex]);
                     overlay.style.opacity = '1';
-                    setTimeout(function() {
+                    transitionTimers.push(setTimeout(function() {
+                        if (version !== changeVersion) return;
+                        if (isStillCurrent && !isStillCurrent()) { overlay.style.opacity = '0'; finish(); return; }
                         applySlideChange(slides, nextIndex);
+                        finish();
                         // 等新图 Ken Burns 动画开始后再移除遮罩
-                        setTimeout(function() {
+                        transitionTimers.push(setTimeout(function() {
                             overlay.style.opacity = '0';
-                            transitioning = false;
-                        }, 150);
-                    }, FADE_MS / 2);
+                        }, 150));
+                    }, FADE_MS / 2));
                 } else {
                     // 其他效果：直接切换（CSS transition 处理）
                     applySlideChange(slides, nextIndex);
+                    finish();
                 }
                 prepareNextSlide();
                 });
@@ -621,6 +671,7 @@ const hasMultipleImages =
 
             var appState = {
                 isPlaying: false,
+                userPaused: false,
                 autoPlayTimer: null,
                 touchStartX: 0,
                 touchEndX: 0
@@ -631,11 +682,16 @@ const hasMultipleImages =
                 if (isFixedWallpaperSelected()) return;
                 if (!isCarouselEnabled()) return;
                 if (!isBannerWallpaperMode()) return;
+                if (appState.userPaused || document.hidden || !carouselVisible || reducedMotion.matches) return;
+                if (document.documentElement.hasAttribute('data-bg-video-playing')) return;
 
                 appState.isPlaying = true;
                 prepareNextSlide();
+                // Homepage text owns the clock, not this five-second fallback.
+                if (getSyncedTypewriter()) return;
                 appState.autoPlayTimer = setTimeout(function advance() {
                     if (!appState.isPlaying) return;
+                    if (getSyncedTypewriter()) { prepareNextSlide(); return; }
                     var slides = getVisibleSlides();
                     var currentIdx = getCurrentIndex(slides);
                     changeToSlide(currentIdx + 1, false);
@@ -651,6 +707,27 @@ const hasMultipleImages =
                 }
             }
 
+            window.addEventListener('hero:cycle', function(e) {
+                if (e.target !== getSyncedTypewriter()) return;
+                if (!isCarouselEnabled() || !isBannerWallpaperMode() || isFixedWallpaperSelected()) return;
+                if (!e.detail.manual && (!appState.isPlaying || reducedMotion.matches)) return;
+                e.preventDefault();
+                var slides = getVisibleSlides();
+                changeToSlide(getCurrentIndex(slides) + e.detail.direction, false, e.detail.resume, function() {
+                    return e.target.isConnected && e.target === getSyncedTypewriter();
+                });
+            });
+
+            function manualStep(direction) {
+                var typewriter = getSyncedTypewriter();
+                if (typewriter) {
+                    typewriter.dispatchEvent(new CustomEvent('hero:skip', { detail: { direction: direction } }));
+                } else {
+                    var slides = getVisibleSlides();
+                    changeToSlide(getCurrentIndex(slides) + direction);
+                }
+            }
+
             // 键盘控制
             document.addEventListener('keydown', function(e) {
                 var target = e.target;
@@ -660,38 +737,62 @@ const hasMultipleImages =
                     target instanceof HTMLSelectElement ||
                     (target instanceof HTMLElement && target.isContentEditable)
                 ) return;
+                if (target instanceof HTMLElement && target.closest('button, a, [role="slider"]')) return;
                 if (isFixedWallpaperSelected()) return;
                 if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
                 if (e.key === 'ArrowRight') {
-                    var slides = getVisibleSlides();
-                    changeToSlide(getCurrentIndex(slides) + 1);
+                    manualStep(1);
                 } else if (e.key === 'ArrowLeft') {
-                    var slides2 = getVisibleSlides();
-                    changeToSlide(getCurrentIndex(slides2) - 1);
+                    manualStep(-1);
                 } else if (e.key === ' ') {
                     e.preventDefault();
-                    appState.isPlaying ? stopAutoPlay() : startAutoPlay();
+                    appState.userPaused = !appState.userPaused;
+                    window.dispatchEvent(new CustomEvent('hero:pause', { detail: { paused: appState.userPaused } }));
+                    if (appState.userPaused) { stopAutoPlay(); cancelPendingChange(); }
+                    else startAutoPlay();
                 }
             });
 
             // 触屏滑动
-            document.addEventListener('touchstart', function(e) {
+            container.addEventListener('touchstart', function(e) {
                 if (isFixedWallpaperSelected()) return;
                 appState.touchStartX = e.changedTouches[0].screenX;
             }, { passive: true });
-            document.addEventListener('touchend', function(e) {
+            container.addEventListener('touchend', function(e) {
                 if (isFixedWallpaperSelected()) return;
+                if (!isBannerWallpaperMode() || !isCarouselEnabled()) return;
                 appState.touchEndX = e.changedTouches[0].screenX;
                 var diff = appState.touchEndX - appState.touchStartX;
                 if (Math.abs(diff) > 50) {
-                    var slides = getVisibleSlides();
-                    if (diff > 0) changeToSlide(getCurrentIndex(slides) - 1);
-                    else changeToSlide(getCurrentIndex(slides) + 1);
+                    manualStep(diff > 0 ? -1 : 1);
                 }
             }, { passive: true });
 
             // 事件监听
+            function refreshPlayback() {
+                cancelPendingChange();
+                startAutoPlay();
+            }
+            window.addEventListener('hero:typewriter-ready', function() {
+                startAutoPlay();
+                window.dispatchEvent(new CustomEvent('hero:pause', { detail: { paused: appState.userPaused } }));
+            });
+            document.addEventListener('visibilitychange', refreshPlayback);
+            reducedMotion.addEventListener('change', refreshPlayback);
+            window.addEventListener('bg-player-state-change', refreshPlayback);
+            var visibilityObserver = new IntersectionObserver(function(entries) {
+                carouselVisible = entries[0].isIntersecting;
+                if (!carouselVisible) cancelPendingChange();
+                startAutoPlay();
+            });
+            visibilityObserver.observe(container);
+            var preferencesObserver = new MutationObserver(function() { startAutoPlay(); });
+            preferencesObserver.observe(document.documentElement, { attributes: true, attributeFilter: ['data-banner-title-enabled'] });
+            // The wallpaper persists across Swup navigation; its text overlay does not.
+            document.addEventListener('swup:page:view', refreshPlayback);
+            window.addEventListener('resize', refreshPlayback);
             window.addEventListener('bannerCarouselChange', function(e) {
+                cancelPendingChange();
                 if (isFixedWallpaperSelected()) {
                     stopAutoPlay();
                     return;
@@ -699,6 +800,7 @@ const hasMultipleImages =
                 e.detail && e.detail.enabled ? startAutoPlay() : stopAutoPlay();
             });
             window.addEventListener('wallpaperModeChange', function(e) {
+                cancelPendingChange();
                 if (e.detail && (e.detail.mode === 'banner' || e.detail.mode === 'fullscreen' || e.detail.mode === 'overlay')) {
                     if (isCarouselEnabled()) startAutoPlay();
                 } else {
@@ -706,6 +808,7 @@ const hasMultipleImages =
                 }
             });
             window.addEventListener('selectedWallpaperChange', function(e) {
+                cancelPendingChange();
                 if (e.detail && e.detail.selected) {
                     stopAutoPlay();
                     return;
@@ -748,6 +851,7 @@ const hasMultipleImages =
                             {backgroundWallpaper.common.homeText.typewriter?.enable ? (
                                 <TypewriterText
                                     text={backgroundWallpaper.common.homeText.subtitle}
+                                    syncCarousel={true}
                                     speed={backgroundWallpaper.common.homeText.typewriter.speed}
                                     deleteSpeed={backgroundWallpaper.common.homeText.typewriter.deleteSpeed}
                                     pauseTime={backgroundWallpaper.common.homeText.typewriter.pauseTime}

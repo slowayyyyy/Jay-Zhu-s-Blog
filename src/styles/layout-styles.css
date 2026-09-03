@@ -447,6 +447,14 @@ html.is-page-transitioning .banner-home-text-overlay {
     animation: kenburns var(--carousel-interval, 5000ms) ease-out forwards;
 }
 
+@media (prefers-reduced-motion: reduce) {
+    #banner-images-container .slide-item {
+        transition: none !important;
+        animation: none !important;
+        transform: none !important;
+    }
+}
+
 /* 当banner被禁用时的布局样式 */
 .no-banner-layout {
     top: 5.5rem !important;

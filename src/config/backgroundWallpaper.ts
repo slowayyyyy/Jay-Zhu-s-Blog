@@ -128,7 +128,7 @@ export const backgroundWallpaper: BackgroundWallpaperConfig = {
 		carousel: {
 			// 是否启用壁纸轮播；关闭时保持每次刷新随机显示一张
 			enable: true,
-			// 轮播切换间隔（毫秒）
+			// 非首页或隐藏横幅文字时的轮播间隔；首页随短句实际播放进度换图
 			interval: 5000,
 			// 过渡效果: 'fade' 渐变 | 'zoom' 缩放 | 'slide' 滑动 | 'kenburns' 旋转木马
 			transitionEffect: "zoom",

@@ -389,7 +389,7 @@ collections:
                 widget: list
                 required: false
                 default: []
-                hint: 首页顶部大图中，主标题下方的打字机文字。按列表顺序循环；可拖动排序。全部清空后显示“备用介绍”，不是侧栏“今日一言”。
+                hint: 首页大图主标题下的打字机文字。每句打完、停留并退场后，下一句与下一张图片同步开始，时长按字数自适应，无需设置秒数。短句与图片数量可以不同，各自顺序循环；清空后使用“备用介绍”。
                 field: { label: 短句, name: quote, widget: string }
           - label: 乐境页面文案
             name: musicPage
