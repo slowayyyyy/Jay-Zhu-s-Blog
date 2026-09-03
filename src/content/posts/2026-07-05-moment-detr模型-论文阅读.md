@@ -1,7 +1,7 @@
 ---
 title: "Moment-DETR模型-论文阅读"
 published: 2026-07-06
-description: "《QVHIGHLIGHTS: Detecting Moments and Highlights in Videos via Natural Language Queries》论文阅读笔记"
+description: "《QVHIGHLIGHTS: Detecting Moments and Highlights in Videos via Natural Language Queries》这篇论文在2021年发表于NeurIPS,为TSGV方向构建了数据集，提供了baseline，对后续的研究有重大影响。"
 image: ""
 tags:
   - "科研"
