@@ -4,5 +4,19 @@
   "showCustomContent": false,
   "showComment": false,
   "randomizeSort": false,
-  "items": []
+  "items": [
+    {
+      "weight": 0,
+      "enabled": true,
+      "title": "EnterSuper",
+      "imgurl": "/uploads/607dd5bce8328e1ca93afa8230321494.png",
+      "desc": "一只Shit K。",
+      "siteurl": "https://entersuper.github.io/",
+      "tags": [
+        "计科之神",
+        "Shit K",
+        "EnterSuper"
+      ]
+    }
+  ]
 }
