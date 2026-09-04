@@ -3,6 +3,7 @@ import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
+import { setupChoiceWidgets } from './admin-choice-widgets.js';
 import { setupImageCropWidget } from './admin-image-crop.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 
@@ -1305,6 +1306,8 @@ export function setupAdminCms() {
 		isLocalPreview,
 		showStatus,
 	});
+
+	setupChoiceWidgets();
 
 	setupImageCropWidget({
 		isLocalPreview,

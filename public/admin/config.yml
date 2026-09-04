@@ -508,10 +508,10 @@ collections:
             fields:
               - { label: 名称, name: name, widget: string }
               - {
-                  label: Iconify 图标名,
+                  label: 图标,
                   name: icon,
-                  widget: string,
-                  hint: 例如 fa7-brands:github 或 fa7-solid:envelope。,
+                  widget: icon-picker,
+                  hint: 从可视化图标库中选择；也支持搜索用途和高级自定义。,
                 }
               - { label: 地址, name: url, widget: string }
               - {
@@ -546,19 +546,37 @@ collections:
                   widget: list,
                   field: { label: 标签, name: tag, widget: string },
                 }
-              - {
-                  label: 配色,
-                  name: tone,
-                  widget: select,
-                  options: [blue, mint, gold, violet],
-                }
-              - { label: Iconify 图标名, name: icon, widget: string }
+              - label: 配色
+                name: tone
+                widget: select
+                options:
+                  - { label: 苍蓝（推荐 · 研究与技术）, value: blue }
+                  - { label: 薄荷（成长与工具）, value: mint }
+                  - { label: 暖金（成果与重点）, value: gold }
+                  - { label: 淡紫（创意与生活）, value: violet }
+              - { label: 图标, name: icon, widget: icon-picker, hint: 选择最能代表项目内容的图标。 }
           - label: 最近动态入口
             name: recentActivity
             widget: list
             summary: "{{fields.kind}} · {{fields.title}}"
             fields:
-              - { label: 类型, name: kind, widget: string }
+              - label: 类型
+                name: kind
+                widget: select
+                options:
+                  - 文章
+                  - 研究
+                  - 读书
+                  - 项目
+                  - 博客
+                  - 系统
+                  - 说说
+                  - 相册
+                  - 音乐
+                  - 番剧
+                  - 生活
+                  - 工具
+                  - 公告
               - { label: 标题, name: title, widget: string }
               - { label: 链接, name: href, widget: string }
       - label: 更新日志
@@ -590,12 +608,12 @@ collections:
                   widget: list,
                   field: { label: 标签, name: tag, widget: string },
                 }
-              - { label: Iconify 图标名, name: icon, widget: string }
+              - { label: 图标, name: icon, widget: icon-picker, hint: 直接按用途搜索并选择；“闪光 / 大更新”适合综合性更新。 }
               - {
                   label: 强调色,
                   name: accent,
-                  widget: string,
-                  hint: "例如 #60a5fa。",
+                  widget: color-palette,
+                  hint: 从带用途说明的色板中选择，也可以打开系统颜色选择器。,
                 }
               - {
                   label: 变更内容,
@@ -625,7 +643,7 @@ collections:
                 fields:
                   - { label: 名称, name: name, widget: string }
                   - { label: 说明, name: description, widget: text }
-                  - { label: Iconify 图标名, name: icon, widget: string }
+                  - { label: 图标, name: icon, widget: icon-picker, hint: 可按工具用途或品牌名称搜索。 }
                   - { label: 链接, name: url, widget: string }
                   - {
                       label: 标签,
@@ -636,8 +654,8 @@ collections:
                   - {
                       label: 强调色,
                       name: accent,
-                      widget: string,
-                      hint: "例如 #38bdf8。",
+                      widget: color-palette,
+                      hint: 选择工具卡片的识别色；苍蓝适合通用站内工具。,
                     }
       - label: 图库与相册
         name: gallery

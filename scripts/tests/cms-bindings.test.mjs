@@ -4,6 +4,11 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import vm from "node:vm";
 import ts from "typescript";
+import {
+	ADMIN_ACTIVITY_TYPES,
+	ADMIN_COLOR_OPTIONS,
+	ADMIN_ICON_OPTIONS,
+} from "../../src/scripts/admin-choice-options.js";
 
 const root = new URL("../../", import.meta.url);
 const read = (path) => readFileSync(new URL(path, root), "utf8");
@@ -126,6 +131,80 @@ test("image crop lists bind the same nested values used by the frontend", () => 
 			assert.equal(typeof item.crop.positionY, "number");
 			assert.equal(typeof item.crop.zoom, "number");
 		}
+	}
+});
+
+test("visual CMS fields use understandable pickers and preserve every current value", () => {
+	const files = cms.collections.find(
+		(collection) => collection.name === "site_settings",
+	).files;
+	const profile = files.find((file) => file.name === "profile");
+	const changelog = files.find((file) => file.name === "changelog");
+	const tools = files.find((file) => file.name === "tools");
+	const profileData = JSON.parse(read("src/data/profile.json"));
+	const changelogData = JSON.parse(read("src/data/changelog.json"));
+	const toolsData = JSON.parse(read("src/data/tools.json"));
+	const iconValues = new Set(ADMIN_ICON_OPTIONS.map((option) => option.value));
+	const colorValues = new Set(
+		ADMIN_COLOR_OPTIONS.map((option) => option.value),
+	);
+
+	const links = profile.fields.find((field) => field.name === "links");
+	const projects = profile.fields.find((field) => field.name === "projects");
+	const activity = profile.fields.find(
+		(field) => field.name === "recentActivity",
+	);
+	const entries = changelog.fields.find((field) => field.name === "entries");
+	const toolItems = tools.fields
+		.find((field) => field.name === "sections")
+		.fields.find((field) => field.name === "items");
+
+	for (const field of [links, projects, entries, toolItems]) {
+		assert.equal(
+			field.fields.find((item) => item.name === "icon").widget,
+			"icon-picker",
+		);
+	}
+	for (const field of [entries, toolItems]) {
+		assert.equal(
+			field.fields.find((item) => item.name === "accent").widget,
+			"color-palette",
+		);
+	}
+	assert.equal(
+		projects.fields.find((field) => field.name === "tone").widget,
+		"select",
+	);
+	const activityType = activity.fields.find((field) => field.name === "kind");
+	assert.equal(activityType.widget, "select");
+	assert.deepEqual(activityType.options, ADMIN_ACTIVITY_TYPES);
+
+	for (const icon of [
+		...profileData.links.map((item) => item.icon),
+		...profileData.projects.map((item) => item.icon),
+		...changelogData.entries.map((item) => item.icon),
+		...toolsData.sections.flatMap((section) =>
+			section.items.map((item) => item.icon),
+		),
+	]) {
+		assert.ok(iconValues.has(icon), `missing current icon option: ${icon}`);
+	}
+	for (const accent of [
+		...changelogData.entries.map((item) => item.accent),
+		...toolsData.sections.flatMap((section) =>
+			section.items.map((item) => item.accent),
+		),
+	]) {
+		assert.ok(
+			colorValues.has(accent),
+			`missing current color option: ${accent}`,
+		);
+	}
+	for (const item of profileData.recentActivity) {
+		assert.ok(
+			ADMIN_ACTIVITY_TYPES.includes(item.kind),
+			`missing activity type: ${item.kind}`,
+		);
 	}
 });
 

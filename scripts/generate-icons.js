@@ -68,6 +68,8 @@ function extractIconNames(content) {
 		// icon="xxx:yyy" 或 icon='xxx:yyy'
 		/icon=["']([a-z0-9-]+:[a-z0-9-]+)["']/gi,
 		/\bicon\s*:\s*["']([a-z0-9-]+:[a-z0-9-]+)["']/gi,
+		// 后台图标选择器的候选值
+		/\bvalue\s*:\s*["']([a-z0-9-]+:[a-z0-9-]+)["']/gi,
 		// icon={`xxx:yyy`}
 		/icon=\{[`"']([a-z0-9-]+:[a-z0-9-]+)[`"']\}/gi,
 		// getIconSvg("xxx:yyy") 或 getIconSvg('xxx:yyy')
@@ -207,6 +209,7 @@ async function main() {
 	const files = [
 		...getAllFiles(SRC_DIR),
 		join(SRC_DIR, "config", "navBarConfig.ts"),
+		join(SRC_DIR, "scripts", "admin-choice-options.js"),
 	];
 	console.log(`📁 找到 ${files.length} 个源文件\n`);
 
