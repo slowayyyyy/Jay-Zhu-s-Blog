@@ -29,7 +29,9 @@ export type ResolvedBackgroundImage = Required<BackgroundImageCrop>;
 export const resolveBackgroundImage = (
 	image: BackgroundImageSource,
 ): ResolvedBackgroundImage => {
-	const source = typeof image === "string" ? { src: image } : image;
+	const unwrapped =
+		typeof image === "object" && "crop" in image ? image.crop : image;
+	const source = typeof unwrapped === "string" ? { src: unwrapped } : unwrapped;
 	return {
 		src: source.src?.trim() || "",
 		positionX: clamp(source.positionX, 0, 100, 50),

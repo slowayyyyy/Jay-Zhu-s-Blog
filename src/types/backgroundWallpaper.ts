@@ -5,7 +5,14 @@ export type BackgroundImageCrop = {
 	zoom?: number;
 };
 
-export type BackgroundImageSource = string | BackgroundImageCrop;
+export type BackgroundImageCropField = {
+	crop: string | BackgroundImageCrop;
+};
+
+export type BackgroundImageSource =
+	| string
+	| BackgroundImageCrop
+	| BackgroundImageCropField;
 
 export type BackgroundWallpaperConfig = {
 	mode: "banner" | "fullscreen" | "overlay" | "none"; // 壁纸模式：banner横幅模式、fullscreen全屏壁纸、overlay全屏透明覆盖模式或none纯色背景

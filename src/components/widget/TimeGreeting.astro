@@ -1,7 +1,7 @@
 ---
 import { Icon } from "astro-icon/components";
-import type { WidgetComponentConfig } from "@/types/config";
 import azureContent from "@/data/azure-content.json";
+import type { WidgetComponentConfig } from "@/types/config";
 
 interface Props {
 	class?: string;
@@ -261,6 +261,7 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 		positionY: number;
 		zoom: number;
 	};
+	type CroppedImageField = { crop?: unknown };
 
 	const greetingPeriods: GreetingPeriod[] = [
 		{ id: "late-night", message: "夜深了，早点休息！" },
@@ -291,10 +292,13 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 	}
 
 	function normalizeCroppedImage(value: unknown): CroppedImage | null {
-		const source = typeof value === "string"
-			? { src: value }
-			: value && typeof value === "object"
-				? value as Partial<CroppedImage>
+		const unwrapped = value && typeof value === "object" && "crop" in value
+			? (value as CroppedImageField).crop
+			: value;
+		const source = typeof unwrapped === "string"
+			? { src: unwrapped }
+			: unwrapped && typeof unwrapped === "object"
+				? unwrapped as Partial<CroppedImage>
 				: null;
 		if (!source?.src?.trim()) return null;
 		const clamp = (input: number | undefined, minimum: number, maximum: number, fallback: number) =>

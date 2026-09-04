@@ -15,7 +15,7 @@ export const site = {
   desc: siteConfig.subtitle,
   url: siteConfig.site_url,
   avatar: new URL(profileConfig.avatar || "/favicon/azure-corridor.svg", siteConfig.site_url).href,
-  screenshot: new URL(azureContent.visuals.desktopWallpapers[0]?.src || "/favicon/azure-corridor.svg", siteConfig.site_url).href,
+  screenshot: new URL(azureContent.visuals.desktopWallpapers[0]?.crop?.src || "/favicon/azure-corridor.svg", siteConfig.site_url).href,
   email: (profileConfig.links.find((link) => link.url.startsWith("mailto:"))?.url || "").replace(/^mailto:/, ""),
 };
 

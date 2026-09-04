@@ -435,74 +435,96 @@
   "visuals": {
     "desktopWallpapers": [
       {
-        "src": "/uploads/home-desktop-water-magic-clean.webp",
-        "positionX": 50,
-        "positionY": 42,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-desktop-water-magic-clean.webp",
+          "positionX": 50,
+          "positionY": 42,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-desktop-portrait-magic-clean.webp",
-        "positionX": 50,
-        "positionY": 36,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-desktop-portrait-magic-clean.webp",
+          "positionX": 50,
+          "positionY": 36,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-carousel-collage-clean.webp",
-        "positionX": 50,
-        "positionY": 44,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-carousel-collage-clean.webp",
+          "positionX": 50,
+          "positionY": 44,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-carousel-miss-you-clean.webp",
-        "positionX": 72,
-        "positionY": 38,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-carousel-miss-you-clean.webp",
+          "positionX": 72,
+          "positionY": 38,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-carousel-sunset-street-clean.webp",
-        "positionX": 34,
-        "positionY": 42,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-carousel-sunset-street-clean.webp",
+          "positionX": 34,
+          "positionY": 42,
+          "zoom": 1
+        }
       }
     ],
     "mobileWallpapers": [
       {
-        "src": "/uploads/home-mobile-field-journey.jpg",
-        "positionX": 50,
-        "positionY": 34,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-mobile-field-journey.jpg",
+          "positionX": 50,
+          "positionY": 34,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-mobile-sweater-clean.webp",
-        "positionX": 52,
-        "positionY": 34,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-mobile-sweater-clean.webp",
+          "positionX": 52,
+          "positionY": 34,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/home-shared-portrait-magic-clean.webp",
-        "positionX": 50,
-        "positionY": 34,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-shared-portrait-magic-clean.webp",
+          "positionX": 50,
+          "positionY": 34,
+          "zoom": 1
+        }
       }
     ],
     "timeGreetingImages": [
       {
-        "src": "/uploads/home-mobile-field-journey.jpg",
-        "positionX": 50,
-        "positionY": 34,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/home-mobile-field-journey.jpg",
+          "positionX": 50,
+          "positionY": 34,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/time-card-sunset-rest.jpg",
-        "positionX": 50,
-        "positionY": 64,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/time-card-sunset-rest.jpg",
+          "positionX": 50,
+          "positionY": 64,
+          "zoom": 1
+        }
       },
       {
-        "src": "/uploads/time-card-study-clean.webp",
-        "positionX": 50,
-        "positionY": 42,
-        "zoom": 1
+        "crop": {
+          "src": "/uploads/time-card-study-clean.webp",
+          "positionX": 50,
+          "positionY": 42,
+          "zoom": 1
+        }
       }
     ],
     "backgroundVideo": "/media/opening-roxy-720p.mp4"
