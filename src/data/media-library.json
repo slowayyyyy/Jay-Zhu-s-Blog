@@ -3,6 +3,107 @@
 	"description": "这里统一索引当前博客使用和保留的洛琪希图片、动图。新增素材后，可在图库与相册、壁纸、时间问候或其他对应模块中选择；替换前请先查看“当前用途”，避免误改多个页面共同使用的素材。",
 	"assets": [
 		{
+			"id": "home-miss-you-user-clean",
+			"name": "I Miss You 无字版（用户提供）",
+			"kind": "图片",
+			"src": "/uploads/home-carousel-miss-you-user.png",
+			"usage": "视觉素材库；可用于桌面首页轮播、横幅或其他模块",
+			"note": "用户提供的当前版本，保留原始 16:9 构图与浅蓝波纹背景。"
+		},
+		{
+			"id": "home-i-miss-you-original",
+			"name": "I Miss You 原版文字版",
+			"kind": "图片",
+			"src": "/uploads/home-carousel-i-miss-you-original.webp",
+			"usage": "视觉素材库；可用于桌面首页轮播、横幅或其他模块",
+			"note": "从桌面原始动态素材提取的 2560×1440 清晰帧，完整保留左侧 I miss you 字样。"
+		},
+		{
+			"id": "home-miss-you-clean-wide",
+			"name": "I Miss You 无字宽屏版",
+			"kind": "图片",
+			"src": "/uploads/home-carousel-miss-you-clean.webp",
+			"usage": "当前桌面首页轮播",
+			"note": "适配宽屏展示的无字版本。"
+		},
+		{
+			"id": "home-water-magic-clean-wide",
+			"name": "水之魔法无字宽屏版",
+			"kind": "图片",
+			"src": "/uploads/home-desktop-water-magic-clean.webp",
+			"usage": "当前桌面首页轮播",
+			"note": "已调整为宽屏构图，优先保留人物脸部。"
+		},
+		{
+			"id": "home-water-magic-clean-source",
+			"name": "水之魔法无字原图",
+			"kind": "图片",
+			"src": "/uploads/home-desktop-water-magic.jpg",
+			"usage": "视觉素材库；宽屏版的保留源图"
+		},
+		{
+			"id": "home-portrait-magic-clean-wide",
+			"name": "水之魔术师无字宽屏版",
+			"kind": "图片",
+			"src": "/uploads/home-desktop-portrait-magic-clean.webp",
+			"usage": "当前桌面首页轮播",
+			"note": "已移除原图署名水印并重构为宽屏构图。"
+		},
+		{
+			"id": "home-collage-clean",
+			"name": "洛琪希拼贴无字版",
+			"kind": "图片",
+			"src": "/uploads/home-carousel-collage-clean.webp",
+			"usage": "当前桌面首页轮播",
+			"note": "由桌面首页素材生成的无标题静态版本。"
+		},
+		{
+			"id": "home-sunset-street-clean",
+			"name": "黄昏街道无时间版",
+			"kind": "图片",
+			"src": "/uploads/home-carousel-sunset-street-clean.webp",
+			"usage": "当前桌面首页轮播",
+			"note": "由动态工程预览重构，未保留时钟与日期叠层。"
+		},
+		{
+			"id": "home-mobile-field-journey",
+			"name": "原野旅途移动版",
+			"kind": "图片",
+			"src": "/uploads/home-mobile-field-journey.jpg",
+			"usage": "当前移动端首页轮播、时间问候卡片"
+		},
+		{
+			"id": "home-mobile-sweater-clean",
+			"name": "毛衣肖像无字移动版",
+			"kind": "图片",
+			"src": "/uploads/home-mobile-sweater-clean.webp",
+			"usage": "当前移动端首页轮播",
+			"note": "已移除原图文字。"
+		},
+		{
+			"id": "home-portrait-magic-clean-mobile",
+			"name": "水之魔术师无字移动版",
+			"kind": "图片",
+			"src": "/uploads/home-shared-portrait-magic-clean.webp",
+			"usage": "当前移动端首页轮播",
+			"note": "移动端纵向构图，优先保留人物脸部。"
+		},
+		{
+			"id": "time-card-study-clean",
+			"name": "书房学习无时间版",
+			"kind": "图片",
+			"src": "/uploads/time-card-study-clean.webp",
+			"usage": "当前时间问候卡片",
+			"note": "已移除原图右侧时间与残留文字。"
+		},
+		{
+			"id": "time-card-sunset-rest",
+			"name": "落日草原时间卡片版",
+			"kind": "图片",
+			"src": "/uploads/time-card-sunset-rest.jpg",
+			"usage": "当前时间问候卡片"
+		},
+		{
 			"id": "roxy-field-journey",
 			"name": "原野旅途",
 			"kind": "图片",
