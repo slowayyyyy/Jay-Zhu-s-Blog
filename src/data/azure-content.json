@@ -454,7 +454,7 @@
         "crop": {
           "src": "/uploads/home-carousel-collage-clean.webp",
           "positionX": 50,
-          "positionY": 44,
+          "positionY": 7,
           "zoom": 1
         }
       },
@@ -562,7 +562,7 @@
     "galleryTitle": "光影留下的水纹",
     "branchesTitle": "回廊深处",
     "aboutTitle": "认识文字背后的人",
-    "recentIntro": "这里放着我最近读过的论文、想明白的问题，也有读书、吃饭和日常生活留下的小小回声。",
+    "recentIntro": "念念不忘，必有回响。",
     "musicTitle": "让旋律陪文字继续走一段",
     "musicDescription": "进入完整播放器，查看歌词与歌单。",
     "momentQuotes": [
