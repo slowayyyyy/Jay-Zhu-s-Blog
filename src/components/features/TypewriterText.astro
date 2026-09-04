@@ -60,14 +60,19 @@ const textData = Array.isArray(text) ? JSON.stringify(text) : text;
 
 <style>
   .typewriter {
+    display: inline-block;
+    max-width: 100%;
     position: relative;
     overflow-wrap: anywhere;
   }
 
   .typewriter::after {
     content: "|";
+    position: absolute;
+    inset-inline-start: 100%;
+    top: 0;
     animation: blink 1s infinite;
-    margin-left: 2px;
+    margin-inline-start: 2px;
   }
 
   @media (prefers-reduced-motion: reduce) {

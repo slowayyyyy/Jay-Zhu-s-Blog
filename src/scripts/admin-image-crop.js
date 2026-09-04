@@ -5,6 +5,35 @@ const readFieldOption = (field, name, fallback) => {
 
 const readValue = (value, name) => value?.get?.(name) ?? value?.[name];
 
+const unwrapCropValue = (value) => {
+	let current = value;
+	const visited = new Set();
+
+	while (current && typeof current === "object" && !visited.has(current)) {
+		visited.add(current);
+		if (readValue(current, "src") != null) break;
+
+		const nested =
+			readValue(current, "crop") ??
+			readValue(current, "value") ??
+			readValue(current, "image");
+		if (nested == null || nested === current) break;
+		current = nested;
+	}
+
+	return current;
+};
+
+const normalizeImageSource = (value) => {
+	if (typeof value === "string") return value;
+	return String(
+		readValue(value, "path") ??
+			readValue(value, "url") ??
+			readValue(value, "src") ??
+			"",
+	);
+};
+
 const clamp = (value, minimum, maximum, fallback) => {
 	const number = Number(value);
 	return Math.min(
@@ -14,14 +43,15 @@ const clamp = (value, minimum, maximum, fallback) => {
 };
 
 const normalizeCropValue = (value) => {
-	if (typeof value === "string") {
-		return { src: value, positionX: 50, positionY: 50, zoom: 1 };
+	const unwrappedValue = unwrapCropValue(value);
+	if (typeof unwrappedValue === "string") {
+		return { src: unwrappedValue, positionX: 50, positionY: 50, zoom: 1 };
 	}
 	return {
-		src: String(readValue(value, "src") || ""),
-		positionX: clamp(readValue(value, "positionX"), 0, 100, 50),
-		positionY: clamp(readValue(value, "positionY"), 0, 100, 50),
-		zoom: clamp(readValue(value, "zoom"), 1, 2, 1),
+		src: normalizeImageSource(readValue(unwrappedValue, "src")),
+		positionX: clamp(readValue(unwrappedValue, "positionX"), 0, 100, 50),
+		positionY: clamp(readValue(unwrappedValue, "positionY"), 0, 100, 50),
+		zoom: clamp(readValue(unwrappedValue, "zoom"), 1, 2, 1),
 	};
 };
 
