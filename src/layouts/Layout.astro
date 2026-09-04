@@ -71,7 +71,7 @@ const shouldShowTopHighlight =
 const enableBanner = backgroundWallpaper.mode === "banner";
 const backgroundImages = getBackgroundImages();
 const wallpaperPreloadImage =
-	backgroundImages.desktop[0] || backgroundImages.mobile[0] || "";
+	backgroundImages.desktop[0]?.src || backgroundImages.mobile[0]?.src || "";
 
 let pageTitle: string;
 if (title) {

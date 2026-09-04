@@ -1,17 +1,48 @@
 import { backgroundWallpaper } from "../config";
+import type {
+	BackgroundImageCrop,
+	BackgroundImageSource,
+} from "../types/backgroundWallpaper";
 
 // 将单个值或数组统一为数组
-const toArray = (src: string | string[] | undefined): string[] => {
+const toArray = (
+	src: BackgroundImageSource | BackgroundImageSource[] | undefined,
+): BackgroundImageSource[] => {
 	if (!src) return [];
 	if (Array.isArray(src)) return src;
 	return [src];
 };
 
+const clamp = (
+	value: number | undefined,
+	minimum: number,
+	maximum: number,
+	fallback: number,
+) =>
+	Math.min(
+		maximum,
+		Math.max(minimum, Number.isFinite(value) ? Number(value) : fallback),
+	);
+
+export type ResolvedBackgroundImage = Required<BackgroundImageCrop>;
+
+export const resolveBackgroundImage = (
+	image: BackgroundImageSource,
+): ResolvedBackgroundImage => {
+	const source = typeof image === "string" ? { src: image } : image;
+	return {
+		src: source.src?.trim() || "",
+		positionX: clamp(source.positionX, 0, 100, 50),
+		positionY: clamp(source.positionY, 0, 100, 50),
+		zoom: clamp(source.zoom, 1, 2, 1),
+	};
+};
+
 // 背景图片处理工具函数
 // 返回所有配置的图片（用于构建时渲染所有图片）
 export type BackgroundImages = {
-	desktop: string[];
-	mobile: string[];
+	desktop: ResolvedBackgroundImage[];
+	mobile: ResolvedBackgroundImage[];
 	isMultiple: boolean;
 };
 
@@ -25,11 +56,15 @@ export const getBackgroundImages = (): BackgroundImages => {
 		("desktop" in bgSrc || "mobile" in bgSrc)
 	) {
 		const srcObj = bgSrc as {
-			desktop?: string | string[];
-			mobile?: string | string[];
+			desktop?: BackgroundImageSource | BackgroundImageSource[];
+			mobile?: BackgroundImageSource | BackgroundImageSource[];
 		};
-		const desktopImages = toArray(srcObj.desktop);
-		const mobileImages = toArray(srcObj.mobile);
+		const desktopImages = toArray(srcObj.desktop)
+			.map(resolveBackgroundImage)
+			.filter((image) => image.src);
+		const mobileImages = toArray(srcObj.mobile)
+			.map(resolveBackgroundImage)
+			.filter((image) => image.src);
 		return {
 			desktop: desktopImages.length > 0 ? desktopImages : mobileImages,
 			mobile: mobileImages.length > 0 ? mobileImages : desktopImages,
@@ -37,7 +72,11 @@ export const getBackgroundImages = (): BackgroundImages => {
 		};
 	}
 	// 如果是字符串或数组，同时用于桌面端和移动端
-	const images = toArray(bgSrc as string | string[]);
+	const images = toArray(
+		bgSrc as BackgroundImageSource | BackgroundImageSource[],
+	)
+		.map(resolveBackgroundImage)
+		.filter((image) => image.src);
 	return {
 		desktop: images,
 		mobile: images,
@@ -48,10 +87,16 @@ export const getBackgroundImages = (): BackgroundImages => {
 // 类型守卫函数
 export const isBannerSrcObject = (
 	src:
-		| string
-		| string[]
-		| { desktop?: string | string[]; mobile?: string | string[] },
-): src is { desktop?: string | string[]; mobile?: string | string[] } => {
+		| BackgroundImageSource
+		| BackgroundImageSource[]
+		| {
+				desktop?: BackgroundImageSource | BackgroundImageSource[];
+				mobile?: BackgroundImageSource | BackgroundImageSource[];
+		  },
+): src is {
+	desktop?: BackgroundImageSource | BackgroundImageSource[];
+	mobile?: BackgroundImageSource | BackgroundImageSource[];
+} => {
 	return (
 		typeof src === "object" &&
 		src !== null &&
@@ -63,7 +108,7 @@ export const isBannerSrcObject = (
 // 获取默认背景图片（返回第一张，用于 SEO 等场景）
 export const getDefaultBackground = (): string => {
 	const images = getBackgroundImages();
-	return images.desktop[0] || images.mobile[0] || "";
+	return images.desktop[0]?.src || images.mobile[0]?.src || "";
 };
 
 // 检查是否为首页

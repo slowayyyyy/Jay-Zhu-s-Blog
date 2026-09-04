@@ -3,6 +3,7 @@ import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
+import { setupImageCropWidget } from './admin-image-crop.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
@@ -1303,5 +1304,11 @@ export function setupAdminCms() {
 		getGithubAccessToken,
 		isLocalPreview,
 		showStatus,
+	});
+
+	setupImageCropWidget({
+		isLocalPreview,
+		showStatus,
+		uploadImage: async (file) => uploadImageToGithub(await prepareClipboardImage(file)),
 	});
 }

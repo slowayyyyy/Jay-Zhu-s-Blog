@@ -327,27 +327,42 @@ collections:
             name: visuals
             widget: object
             fields:
-              - {
-                  label: 桌面轮播图片,
-                  name: desktopWallpapers,
-                  widget: list,
-                  min: 1,
-                  field: { label: 图片, name: image, widget: image },
-                }
-              - {
-                  label: 手机轮播图片,
-                  name: mobileWallpapers,
-                  widget: list,
-                  min: 1,
-                  field: { label: 图片, name: image, widget: image },
-                }
-              - {
-                  label: 时间卡片图片,
-                  name: timeGreetingImages,
-                  widget: list,
-                  min: 1,
-                  field: { label: 图片, name: image, widget: image },
-                }
+              - label: 桌面轮播图片与取景
+                name: desktopWallpapers
+                widget: list
+                min: 1
+                label_singular: 桌面轮播图
+                hint: 上传原图后直接在预览框中调整左右、上下焦点和缩放；只改变前台取景，不会破坏原图。建议始终让人物脸部位于虚线安全区内。
+                field:
+                  label: 桌面轮播图取景
+                  name: crop
+                  widget: image-crop
+                  preview_aspect: "16 / 7"
+                  crop_hint: 这里按首页桌面横幅比例预览。拖动焦点与缩放，确保人物脸部完整并避开原图边缘。
+              - label: 手机轮播图片与取景
+                name: mobileWallpapers
+                widget: list
+                min: 1
+                label_singular: 手机轮播图
+                hint: 手机与桌面取景相互独立，可以使用同一张图并分别调整。
+                field:
+                  label: 手机轮播图取景
+                  name: crop
+                  widget: image-crop
+                  preview_aspect: "9 / 16"
+                  crop_hint: 这里按手机竖屏比例预览。优先保留完整脸部和发梢，避免眼睛靠近边缘。
+              - label: 时间卡片图片与取景
+                name: timeGreetingImages
+                widget: list
+                min: 1
+                label_singular: 时间卡片图
+                hint: 时间文字由网页实时生成，不需要写进图片。请上传无时间、无水印的原图，再调整卡片内的可见区域。
+                field:
+                  label: 时间卡片图取景
+                  name: crop
+                  widget: image-crop
+                  preview_aspect: "7 / 3"
+                  crop_hint: 这里按时间卡片的短横幅比例预览。调整到脸部完整、主体清楚即可。
               - {
                   label: 可选背景视频地址,
                   name: backgroundVideo,

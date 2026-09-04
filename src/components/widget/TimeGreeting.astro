@@ -190,22 +190,32 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 		height: 9rem;
 		overflow: hidden;
 		flex: none;
+		background: color-mix(in srgb, var(--card-bg) 86%, #c8d7e2);
+		opacity: 0;
+		transition: opacity 650ms ease;
+	}
+
+	.time-greeting-image::before {
+		position: absolute;
+		inset: 0;
+		content: "";
 		background-image: var(
 			--time-greeting-image,
 			url("/assets/images/roxy/field-journey.jpg")
 		);
-		background-position: center;
+		background-position: var(--time-greeting-position, 50% 50%);
 		background-size: cover;
-		opacity: 0;
-		transform: scale(1.025);
-		transition:
-			opacity 650ms ease,
-			transform 5s ease;
+		transform: scale(var(--time-greeting-zoom, 1.025));
+		transform-origin: var(--time-greeting-position, 50% 50%);
+		transition: transform 5s ease;
 	}
 
 	time-greeting-widget[data-image-ready="true"] .time-greeting-image {
 		opacity: 1;
-		transform: scale(1);
+	}
+
+	time-greeting-widget[data-image-ready="true"] .time-greeting-image::before {
+		transform: scale(var(--time-greeting-zoom, 1));
 	}
 
 	.time-greeting-image-placeholder {
@@ -231,6 +241,7 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 
 	@media (prefers-reduced-motion: reduce) {
 		.time-greeting-image,
+		.time-greeting-image::before,
 		.time-greeting-icons :global(svg[data-active="true"]) {
 			animation: none;
 			transition: none;
@@ -242,6 +253,13 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 	type GreetingPeriod = {
 		id: string;
 		message: string;
+	};
+
+	type CroppedImage = {
+		src: string;
+		positionX: number;
+		positionY: number;
+		zoom: number;
 	};
 
 	const greetingPeriods: GreetingPeriod[] = [
@@ -270,6 +288,23 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 		if (hour < 14) return greetingPeriods[3];
 		if (hour < 18) return greetingPeriods[4];
 		return greetingPeriods[5];
+	}
+
+	function normalizeCroppedImage(value: unknown): CroppedImage | null {
+		const source = typeof value === "string"
+			? { src: value }
+			: value && typeof value === "object"
+				? value as Partial<CroppedImage>
+				: null;
+		if (!source?.src?.trim()) return null;
+		const clamp = (input: number | undefined, minimum: number, maximum: number, fallback: number) =>
+			Math.min(maximum, Math.max(minimum, Number.isFinite(input) ? Number(input) : fallback));
+		return {
+			src: source.src.trim(),
+			positionX: clamp(source.positionX, 0, 100, 50),
+			positionY: clamp(source.positionY, 0, 100, 50),
+			zoom: clamp(source.zoom, 1, 2, 1),
+		};
 	}
 
 	class TimeGreetingWidget extends HTMLElement {
@@ -303,24 +338,35 @@ const timeGreetingImages = azureContent.visuals.timeGreetingImages;
 			if (this.imageInitialized) return;
 			this.imageInitialized = true;
 
-			let images: string[] = [];
+			let images: CroppedImage[] = [];
 			try {
-				images = JSON.parse(this.dataset.images || "[]");
+				const parsed: unknown[] = JSON.parse(this.dataset.images || "[]");
+				images = parsed.map(normalizeCroppedImage).filter((image): image is CroppedImage => Boolean(image));
 			} catch {
 				images = [];
 			}
-			const fallback = "/assets/images/roxy/field-journey.jpg";
-			const imageUrl = images.length > 0
+			const fallback: CroppedImage = {
+				src: "/assets/images/roxy/field-journey.jpg",
+				positionX: 50,
+				positionY: 50,
+				zoom: 1,
+			};
+			const selectedImage = images.length > 0
 				? images[Math.floor(Math.random() * images.length)]
 				: fallback;
 			const image = new Image();
-			image.onload = () => this.setLandscapeImage(imageUrl);
+			image.onload = () => this.setLandscapeImage(selectedImage);
 			image.onerror = () => this.setLandscapeImage(fallback);
-			image.src = imageUrl;
+			image.src = selectedImage.src;
 		}
 
-		private setLandscapeImage(url: string) {
-			this.style.setProperty("--time-greeting-image", `url("${url}")`);
+		private setLandscapeImage(image: CroppedImage) {
+			this.style.setProperty("--time-greeting-image", `url("${image.src}")`);
+			this.style.setProperty(
+				"--time-greeting-position",
+				`${image.positionX}% ${image.positionY}%`,
+			);
+			this.style.setProperty("--time-greeting-zoom", String(image.zoom));
 			this.dataset.imageReady = "true";
 		}
 

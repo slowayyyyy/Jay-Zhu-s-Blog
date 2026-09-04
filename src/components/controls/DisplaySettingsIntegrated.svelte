@@ -91,10 +91,10 @@ function getWallpaperPreview(src: string): string {
 
 const configuredWallpapers = getBackgroundImages();
 const builtInWallpapers: WallpaperOption[] = configuredWallpapers.desktop.map(
-	(src, index) => ({
+	(image, index) => ({
 		index,
-		src,
-		preview: getWallpaperPreview(src),
+		src: image.src,
+		preview: getWallpaperPreview(image.src),
 		label: `${i18n(I18nKey.builtinWallpaper)} ${index + 1}`,
 	}),
 );

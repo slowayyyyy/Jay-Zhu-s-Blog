@@ -434,18 +434,76 @@
   ],
   "visuals": {
     "desktopWallpapers": [
-      "/assets/images/roxy/water-magic.jpg",
-      "/assets/images/roxy/portrait-magic.jpg"
+      {
+        "src": "/uploads/home-desktop-water-magic-clean.webp",
+        "positionX": 50,
+        "positionY": 42,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-desktop-portrait-magic-clean.webp",
+        "positionX": 50,
+        "positionY": 36,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-carousel-collage-clean.webp",
+        "positionX": 50,
+        "positionY": 44,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-carousel-miss-you-clean.webp",
+        "positionX": 72,
+        "positionY": 38,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-carousel-sunset-street-clean.webp",
+        "positionX": 34,
+        "positionY": 42,
+        "zoom": 1
+      }
     ],
     "mobileWallpapers": [
-      "/assets/images/roxy/field-journey.jpg",
-      "/assets/images/roxy/sweater.jpg",
-      "/assets/images/roxy/portrait-magic.jpg"
+      {
+        "src": "/uploads/home-mobile-field-journey.jpg",
+        "positionX": 50,
+        "positionY": 34,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-mobile-sweater-clean.webp",
+        "positionX": 52,
+        "positionY": 34,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/home-shared-portrait-magic-clean.webp",
+        "positionX": 50,
+        "positionY": 34,
+        "zoom": 1
+      }
     ],
     "timeGreetingImages": [
-      "/assets/images/roxy/field-journey.jpg",
-      "/assets/images/roxy/sunset-rest.jpg",
-      "/assets/images/roxy/study.jpg"
+      {
+        "src": "/uploads/home-mobile-field-journey.jpg",
+        "positionX": 50,
+        "positionY": 34,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/time-card-sunset-rest.jpg",
+        "positionX": 50,
+        "positionY": 64,
+        "zoom": 1
+      },
+      {
+        "src": "/uploads/time-card-study-clean.webp",
+        "positionX": 50,
+        "positionY": 42,
+        "zoom": 1
+      }
     ],
     "backgroundVideo": "/media/opening-roxy-720p.mp4"
   },

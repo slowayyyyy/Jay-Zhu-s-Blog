@@ -18,6 +18,7 @@ interface Props {
 	class?: string;
 	alt?: string;
 	position?: string;
+	zoom?: number;
 	basePath?: string;
 	loading?: "lazy" | "eager";
 	fetchpriority?: "high" | "low" | "auto";
@@ -36,6 +37,7 @@ const {
 	src,
 	alt,
 	position = "center",
+	zoom = 1,
 	basePath = "/",
 	loading = "lazy",
 	fetchpriority = "auto",
@@ -84,7 +86,8 @@ if (isLocal) {
 
 const imageClass =
 	"w-full h-full object-cover opacity-0 transition-opacity duration-500 ease-out";
-const imageStyle = `object-position: ${position}`;
+const safeZoom = Math.min(2, Math.max(1, Number.isFinite(zoom) ? zoom : 1));
+const imageStyle = `object-position: ${position}; transform: scale(${safeZoom}); transform-origin: ${position}`;
 
 // 检查是否需要添加 referrerpolicy（仅对非本地图片）
 const fullSrc = isPublic ? url(src) : src;

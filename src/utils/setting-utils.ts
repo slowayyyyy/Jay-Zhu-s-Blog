@@ -16,7 +16,10 @@ import {
 	sakuraConfig,
 	siteConfig,
 } from "../config";
-import { isHomePage as checkIsHomePage } from "./layout-utils";
+import {
+	isBannerSrcObject,
+	isHomePage as checkIsHomePage,
+} from "./layout-utils";
 
 // Declare global functions
 declare global {
@@ -33,7 +36,7 @@ function getConfiguredWallpaperCount(): number {
 	const src = backgroundWallpaper.src;
 	if (Array.isArray(src)) return src.length;
 	if (typeof src === "string") return 1;
-	if (src && typeof src === "object") {
+	if (isBannerSrcObject(src)) {
 		const desktop = src.desktop;
 		const mobile = src.mobile;
 		const desktopCount = Array.isArray(desktop) ? desktop.length : desktop ? 1 : 0;

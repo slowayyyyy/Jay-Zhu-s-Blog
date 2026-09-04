@@ -30,7 +30,11 @@ import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 import { formatDateToYYYYMMDD } from "@/utils/date-utils";
 import { getImageQuality } from "@/utils/image-utils";
-import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
+import {
+	getBackgroundImages,
+	isBannerSrcObject,
+	isHomePage,
+} from "@/utils/layout-utils";
 import {
 	generateGridClasses,
 	generateMainContentClasses,
@@ -74,9 +78,9 @@ interface Props {
 
 const backgroundImages = getBackgroundImages();
 const wallpaperFallbackImage =
-	backgroundImages.desktop[0] || backgroundImages.mobile[0] || "";
+	backgroundImages.desktop[0] || backgroundImages.mobile[0];
 const wallpaperFallbackStyle = wallpaperFallbackImage
-	? `background-image: url('${wallpaperFallbackImage}'); background-size: cover; background-position: ${backgroundWallpaper.banner?.position ?? "center"}; background-color: transparent;`
+	? `background-image: url('${wallpaperFallbackImage.src}'); background-size: cover; background-position: ${wallpaperFallbackImage.positionX}% ${wallpaperFallbackImage.positionY}%; background-color: transparent;`
 	: "background-color: transparent;";
 const wallpaperOverlayVars = `--overlay-opacity: ${backgroundWallpaper.overlay?.opacity ?? 0.8}; --overlay-z-index: ${backgroundWallpaper.overlay?.zIndex ?? -1}; --overlay-blur: ${backgroundWallpaper.overlay?.blur ?? 0}px;`;
 
@@ -381,13 +385,14 @@ const hasMultipleImages =
          data-carousel-switchable={bannerCarouselSwitchable}
          data-carousel-interval={bannerCarouselInterval}
          data-carousel-effect={bannerCarouselEffect}>
-        {backgroundImages.mobile.map((src, index) => (
+		{backgroundImages.mobile.map((image, index) => (
             <div class:list={["slide-item block lg:hidden", index === 0 && "active"]} data-index={index}>
                 <ImageWrapper
                     alt="Mobile background image of the blog"
                     class="object-cover h-full w-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
+					src={image.src}
+					position={`${image.positionX}% ${image.positionY}%`}
+					zoom={image.zoom}
                     widths={[640, 750, 1080]}
                     sizes="100vw"
                     loading={index === 0 ? "eager" : "lazy"}
@@ -397,14 +402,15 @@ const hasMultipleImages =
                 />
             </div>
         ))}
-        {backgroundImages.desktop.map((src, index) => (
+		{backgroundImages.desktop.map((image, index) => (
             <div class:list={["slide-item hidden lg:block", index === 0 && "active"]} data-index={index}>
                 <ImageWrapper
                     id="banner"
                     alt="Desktop background image of the blog"
                     class="object-cover h-full"
-                    src={src}
-                    position={backgroundWallpaper.banner?.position}
+					src={image.src}
+					position={`${image.positionX}% ${image.positionY}%`}
+					zoom={image.zoom}
                     widths={[1280, 1920, 2560]}
                     sizes="100vw"
                     loading={index === 0 ? "eager" : "lazy"}
@@ -423,8 +429,9 @@ const hasMultipleImages =
                 <ImageWrapper
                     alt="Mobile background image of the blog"
                     class="object-cover h-full w-full"
-                    src={backgroundImages.mobile[0]}
-                    position={backgroundWallpaper.banner?.position}
+					src={backgroundImages.mobile[0].src}
+					position={`${backgroundImages.mobile[0].positionX}% ${backgroundImages.mobile[0].positionY}%`}
+					zoom={backgroundImages.mobile[0].zoom}
                     widths={[640, 750, 1080]}
                     sizes="100vw"
                     loading="eager"
@@ -439,8 +446,9 @@ const hasMultipleImages =
                     id="banner"
                     alt="Desktop background image of the blog"
                     class="object-cover h-full"
-                    src={backgroundImages.desktop[0]}
-                    position={backgroundWallpaper.banner?.position}
+					src={backgroundImages.desktop[0].src}
+					position={`${backgroundImages.desktop[0].positionX}% ${backgroundImages.desktop[0].positionY}%`}
+					zoom={backgroundImages.desktop[0].zoom}
                     widths={[1280, 1920, 2560]}
                     sizes="100vw"
                     loading="eager"
@@ -828,7 +836,7 @@ const hasMultipleImages =
     </script>
     )}
     
-    {backgroundWallpaper.playerEnable && typeof backgroundWallpaper.src === "object" && !Array.isArray(backgroundWallpaper.src) && backgroundWallpaper.src.playerUrl && (
+    {backgroundWallpaper.playerEnable && isBannerSrcObject(backgroundWallpaper.src) && backgroundWallpaper.src.playerUrl && (
         <BackgroundPlayer playerUrl={backgroundWallpaper.src.playerUrl} playerMode={backgroundWallpaper.common?.playerMode ?? "order"} />
     )}
 
