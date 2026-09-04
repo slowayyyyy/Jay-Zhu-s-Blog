@@ -435,13 +435,9 @@
   "visuals": {
     "desktopWallpapers": [
       "/assets/images/roxy/water-magic.jpg",
-      "/assets/images/roxy/night-flight.jpg",
-      "/assets/images/roxy/portrait-magic.jpg",
-      "/assets/images/roxy/field-journey.jpg",
-      "/assets/images/roxy/magic-preview.jpg"
+      "/assets/images/roxy/portrait-magic.jpg"
     ],
     "mobileWallpapers": [
-      "/assets/images/roxy/night-flight.jpg",
       "/assets/images/roxy/field-journey.jpg",
       "/assets/images/roxy/sweater.jpg",
       "/assets/images/roxy/portrait-magic.jpg"
@@ -449,9 +445,7 @@
     "timeGreetingImages": [
       "/assets/images/roxy/field-journey.jpg",
       "/assets/images/roxy/sunset-rest.jpg",
-      "/assets/images/roxy/night-flight.jpg",
-      "/assets/images/roxy/study.jpg",
-      "/assets/images/roxy/water-magic.jpg"
+      "/assets/images/roxy/study.jpg"
     ],
     "backgroundVideo": "/media/opening-roxy-720p.mp4"
   },
