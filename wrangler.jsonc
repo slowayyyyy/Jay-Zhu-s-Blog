@@ -3,6 +3,12 @@
 	"compatibility_date": "2025-01-01",
 	"compatibility_flags": ["nodejs_compat"],
 	"pages_build_output_dir": "./dist",
+	"secrets": {
+		"required": [
+			"GITHUB_OAUTH_CLIENT_ID",
+			"GITHUB_OAUTH_CLIENT_SECRET"
+		]
+	},
 	"r2_buckets": [
 		{
 			"binding": "BLOG_MEDIA",
