@@ -446,7 +446,7 @@
         "crop": {
           "src": "/uploads/home-desktop-portrait-magic-clean.webp",
           "positionX": 50,
-          "positionY": 36,
+          "positionY": 35,
           "zoom": 1
         }
       },
@@ -506,7 +506,7 @@
         "crop": {
           "src": "/uploads/home-mobile-field-journey.jpg",
           "positionX": 50,
-          "positionY": 34,
+          "positionY": 26,
           "zoom": 1
         }
       },
