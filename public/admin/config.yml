@@ -79,15 +79,9 @@ collections:
         hint: 在“分区管理”中新建并发布分区后，即可在这里搜索选择。
       - label: 标签
         name: tags
-        widget: relation
-        collection: tag_settings
-        search_fields: [name, description]
-        display_fields: [name]
-        value_field: "{{slug}}"
-        multiple: true
-        options_length: 200
+        widget: creatable-tags
         required: false
-        hint: 在“标签管理”中新建并发布标签后，即可在这里搜索选择。
+        hint: 可直接添加新标签，保存文章时自动同步到标签管理；移除文章标签不会删除标签记录。
       - {
           label: 文章头图,
           name: image,
@@ -197,7 +191,7 @@ collections:
   - name: tag_settings
     label: 标签管理
     label_singular: 标签
-    description: 先在这里维护标签，再在文章中搜索选择。
+    description: 文章编辑器中添加的新标签会自动出现在这里；可补充说明或维护已有标签。
     folder: src/content/tags
     create: true
     delete: true

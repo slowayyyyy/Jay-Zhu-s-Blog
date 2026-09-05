@@ -4,6 +4,8 @@ import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
 import { setupChoiceWidgets } from './admin-choice-widgets.js';
+import { createTagService } from './admin-tags-service.js';
+import { setupTagsWidget } from './admin-tags-widget.js';
 import { setupImageCropWidget } from './admin-image-crop.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 
@@ -292,6 +294,31 @@ export function setupAdminCms() {
 
 		return IMAGE_EXTENSION_BY_TYPE.get(file.type) || 'png';
 	};
+
+	const tagsService = createTagService({
+		request: async (path, options = {}) => {
+			const token = getGithubAccessToken();
+			if (!token) throw new Error('登录状态已失效，请重新登录后台后再保存。');
+			const { repo, branch } = getGithubRepoInfo();
+			const prefix = encodePathPreservingSlashes(`repos/${repo}`);
+			const query = options.method ? '' : `?ref=${encodeURIComponent(branch)}`;
+			const response = await fetch(`/api/github/${prefix}/${path}${query}`, {
+				method: options.method || 'GET', cache: 'no-store',
+				headers: { Authorization: `token ${token}`, Accept: 'application/vnd.github+json', 'Content-Type': 'application/json' },
+				...(options.body ? { body: JSON.stringify({ ...options.body, branch }) } : {}),
+			});
+			if (!response.ok) throw new Error(`标签同步失败（${response.status}），请检查网络和仓库权限后重试。`);
+			return response.json();
+		},
+		localRequest: isLocalPreview ? async (action, params) => {
+			const response = await fetch('http://localhost:8081/api/v1', {
+				method: 'POST', headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ action, params: { ...params, branch: getGithubRepoInfo().branch } }),
+			});
+			if (!response.ok) throw new Error('本地标签同步失败，请确认 Decap 本地服务已启动。');
+			return response.json();
+		} : undefined,
+	});
 
 	const createUploadFilename = (file, index = 0) => {
 		const extension = getImageExtension(file);
@@ -675,6 +702,18 @@ export function setupAdminCms() {
 
 	const prepareEntryBeforeSave = async (payload) => {
 		const normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
+		if (payload.entry?.get?.('collection') === 'posts') {
+			try {
+				showStatus('正在同步文章标签…', 'pending');
+				const tags = await tagsService.ensure(readEntryDataField(normalizedData, 'tags'));
+				showStatus('标签已同步，正在保存文章…', 'pending');
+				return setEntryDataField(normalizedData, 'tags', tags);
+			} catch (error) {
+				const message = error.message || '标签同步失败，请检查网络后重试。';
+				showStatus(`${message} 文章编辑内容仍保留。`, 'error', 9000);
+				throw new Error(message);
+			}
+		}
 		return normalizeCheckinModuleBeforeSave(payload.entry, normalizedData);
 	};
 
@@ -1308,6 +1347,7 @@ export function setupAdminCms() {
 	});
 
 	setupChoiceWidgets();
+	setupTagsWidget(tagsService);
 
 	setupImageCropWidget({
 		isLocalPreview,

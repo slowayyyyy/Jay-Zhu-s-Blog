@@ -1,0 +1,19 @@
+.jay-tags { padding: 14px; background: #f8fafb; border: 1px solid #d6e0e4; border-radius: 12px; color: #26383f; }
+.jay-tags * { box-sizing: border-box; }
+.jay-tags-help { margin: 0 0 10px; color: #52666e; font-size: 13px; line-height: 1.6; }
+.jay-tags-selected, .jay-tags-options { display: flex; flex-wrap: wrap; gap: 8px; }
+.jay-tags-selected { margin: 14px 0; }
+.jay-tags button { cursor: pointer; font: inherit; min-height: 36px; border: 1px solid #adbec5; border-radius: 6px; padding: 6px 10px; background: #fff; color: #254f5b; }
+.jay-tags button:hover { background: #e9f2f5; }
+.jay-tags button:disabled { opacity: .6; cursor: default; }
+.jay-tags :is(button, input):focus-visible { outline: 2px solid #246879; outline-offset: 2px; }
+.jay-tags-chip { display: inline-flex; align-items: center; gap: 8px; padding-left: 10px; border: 1px solid #aecbd3; border-radius: 6px; background: #e0f0f4; max-width: 100%; overflow-wrap: anywhere; }
+.jay-tags-chip small { white-space: nowrap; color: #42616b; }
+.jay-tags-chip button { border: 0; background: transparent; font-size: 20px; }
+.jay-tags-entry { display: flex; flex-wrap: wrap; gap: 8px; }
+.jay-tags-entry input { flex: 1 1 200px; width: 100%; min-width: 0; border: 1px solid #adbec5; border-radius: 6px; padding: 10px; background: #fff; color: #26383f; font-size: 16px; }
+.jay-tags-entry > button { background: #2f7283; color: #fff; }
+.jay-tags-entry > button:hover { background: #255c6a; }
+.jay-tags-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin: 14px 0 8px; font-size: 13px; color: #52666e; }
+.jay-tags-options { max-height: 190px; overflow-y: auto; padding: 3px; }
+.jay-tags-error { color: #9d3024; font-size: 13px; line-height: 1.6; }
