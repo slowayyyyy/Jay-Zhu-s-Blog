@@ -155,6 +155,10 @@ const config = sakuraConfig;
 			return ret;
 		}
 
+		function removeSakuraCanvases() {
+			document.querySelectorAll('#canvas_sakura').forEach((canvas) => canvas.remove());
+		}
+
 		// 樱花管理器类
 		class SakuraManager {
 			constructor(config) {
@@ -211,6 +215,9 @@ const config = sakuraConfig;
 
 			// 创建画布
 			createCanvas() {
+				// A previous Swup-rendered script may have lost its manager reference.
+				// Remove any orphaned canvas before creating the single active surface.
+				removeSakuraCanvases();
 				this.canvas = document.createElement('canvas');
 				this.canvas.height = windowHeight;
 				this.canvas.width = windowWidth;
@@ -319,6 +326,7 @@ const config = sakuraConfig;
 				}
 
 				if (this.canvas) {
+					this.ctx?.clearRect(0, 0, this.canvas.width, this.canvas.height);
 					this.canvas.remove();
 					this.canvas = null;
 				}
@@ -327,6 +335,13 @@ const config = sakuraConfig;
 					window.removeEventListener('resize', this._boundHandleResize);
 					this._boundHandleResize = null;
 				}
+				if (this.img) {
+					this.img.onload = null;
+					this.img.onerror = null;
+				}
+				this.ctx = null;
+				this.sakuraList = null;
+				this.img = null;
 				this.isRunning = false;
 				this.isPaused = false;
 			}
@@ -344,14 +359,14 @@ const config = sakuraConfig;
 
 			// 更新配置
 			updateConfig(newConfig) {
-				const wasRunning = this.isRunning;
+				const wasActive = this.isRunning || this.isInitializing;
 				this.initToken++;
 				this.isInitializing = false;
-				if (wasRunning) {
+				if (wasActive) {
 					this.stop();
 				}
 				this.config = newConfig;
-				if (wasRunning && newConfig.enable) {
+				if (newConfig.enable) {
 					this.init();
 				}
 			}
@@ -363,14 +378,16 @@ const config = sakuraConfig;
 		}
 
 		// 创建全局樱花管理器实例
-		let globalSakuraManager = null;
-		window.sakuraManager = null;
+		// Inline scripts can run again after Swup navigation. Reuse the live manager
+		// instead of erasing its only public reference while its RAF keeps running.
+		let globalSakuraManager = window.sakuraManager || null;
 
 		// 初始化樱花特效
 		function initSakura(config) {
 			if (globalSakuraManager) {
 				globalSakuraManager.updateConfig(config);
 			} else {
+				removeSakuraCanvases();
 				globalSakuraManager = new SakuraManager(config);
 				window.sakuraManager = globalSakuraManager;
 				if (config.enable) {
@@ -382,13 +399,13 @@ const config = sakuraConfig;
 		// 樱花特效初始化
 		(function() {
 			// 全局标记，确保樱花特效只初始化一次
-			if (window.sakuraInitialized) {
+			if (window.sakuraInitialized && window.sakuraManager) {
 				return;
 			}
 			
 			// 初始化樱花特效的函数
 			const setupSakura = () => {
-				if (window.sakuraInitialized) return;
+				if (window.sakuraInitialized && window.sakuraManager) return;
 				// 检查用户是否在设置中关闭了樱花特效
 				var storedEnabled = localStorage.getItem("sakuraEnabled");
 				var isEnabled = storedEnabled !== null ? storedEnabled === "true" : sakuraConfig.enable;
@@ -407,27 +424,42 @@ const config = sakuraConfig;
 		})();
 
 		// 监听设置面板的樱花特效切换事件
-		window.addEventListener('sakuraToggle', function(e) {
-			var enabled = e.detail.enabled;
-			var mgr = window.sakuraManager;
-			if (!mgr) return;
-			// 同步配置后再切换，确保关闭操作也能取消尚未完成的图片加载。
-			mgr.config.enable = enabled;
-			if (enabled && !mgr.getIsRunning()) {
-				mgr.config.enable = true;
-				mgr.init();
-			} else if (!enabled) {
-				mgr.stop();
-			}
-		});
+		if (!window.sakuraToggleListenerBound) {
+			window.addEventListener('sakuraToggle', function(e) {
+				var enabled = e.detail.enabled;
+				var mgr = window.sakuraManager;
+
+				if (!mgr) {
+					if (enabled) {
+						initSakura(Object.assign({}, sakuraConfig, { enable: true }));
+					} else {
+						removeSakuraCanvases();
+					}
+					return;
+				}
+
+				// 同步配置后再切换，确保关闭操作也能取消尚未完成的图片加载。
+				mgr.config.enable = enabled;
+				if (enabled && !mgr.getIsRunning()) {
+					mgr.init();
+				} else if (!enabled) {
+					mgr.stop();
+					removeSakuraCanvases();
+				}
+			});
+			window.sakuraToggleListenerBound = true;
+		}
 
 		// 全屏友链漫游打开时暂停樱花 Canvas，避免与 WebGL 隧道争抢帧；关闭后恢复。
-		window.addEventListener('friends-portal-open', function() {
-			window.__friendsPortalActive = true;
-			window.sakuraManager?.pause?.();
-		});
-		window.addEventListener('friends-portal-close', function() {
-			window.__friendsPortalActive = false;
-			window.sakuraManager?.resume?.();
-		});
+		if (!window.sakuraPortalListenersBound) {
+			window.addEventListener('friends-portal-open', function() {
+				window.__friendsPortalActive = true;
+				window.sakuraManager?.pause?.();
+			});
+			window.addEventListener('friends-portal-close', function() {
+				window.__friendsPortalActive = false;
+				window.sakuraManager?.resume?.();
+			});
+			window.sakuraPortalListenersBound = true;
+		}
 	</script>
