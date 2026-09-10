@@ -157,7 +157,8 @@ collections:
       - label: 正文
         name: body
         widget: richtext
-        hint: 支持图片粘贴、图片说明、LaTeX、Mermaid、脚注、代码块、上标和下标。
+        editor_components: [image, enhanced-code-block, latex-block, mermaid-diagram, superscript, subscript]
+        hint: 支持图片粘贴、图片说明、LaTeX、Mermaid、脚注、上标和下标。添加代码时点击编辑器工具栏的“+”，选择“代码块（高亮）”，即可选择语言后直接粘贴。
 
   - name: dynamic
     label: 说说

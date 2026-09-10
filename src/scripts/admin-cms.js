@@ -3,6 +3,7 @@ import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { setupChoiceWidgets } from './admin-choice-widgets.js';
+import { registerAdminCodeBlock } from './admin-code-block.js';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
 import { setupImageCropWidget } from './admin-image-crop.js';
 import { setupPostStatusIndicators } from './admin-post-status.js';
@@ -134,6 +135,7 @@ export function setupAdminCms() {
 
 	window.CMS.registerRemarkPlugin(remarkTightInlineFormatting);
 	window.CMS.registerRemarkPlugin(remarkImagePresentation);
+	registerAdminCodeBlock(window.CMS);
 	window.CMS.registerPreviewStyle(katexStylesUrl);
 	window.CMS.registerPreviewStyle(
 		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}.jay-inline-script-preview{font-size:1rem;line-height:1.6}figure.prose-media>figcaption.prose-caption{width:min(100%,var(--prose-media-width,42rem));max-width:100%;margin:.72rem auto 0;color:rgba(24,33,43,.68);font:400 .78rem/1.65 "Segoe UI","PingFang SC","Noto Sans SC",sans-serif;text-align:center;overflow-wrap:anywhere}',

@@ -1,6 +1,9 @@
 .expressive-code {
   .frame {
     @apply shadow-none!;
+    overflow: hidden;
+    border-color: color-mix(in oklch, var(--primary) 18%, var(--line-color)) !important;
+    box-shadow: 0 0.7rem 1.8rem color-mix(in oklch, var(--primary) 8%, transparent) !important;
   }
 
   .title {
@@ -9,9 +12,20 @@
       Consolas, "Liberation Mono", "Courier New", monospace;
   }
 
+  .header {
+    border-bottom-color: color-mix(in oklch, var(--primary) 14%, var(--line-color)) !important;
+  }
+
+  pre {
+    overscroll-behavior-x: contain;
+    scrollbar-color: color-mix(in oklch, var(--primary) 38%, transparent) transparent;
+    scrollbar-width: thin;
+  }
+
   /* Language Badge 样式适配主题色和亮暗色 */
   /* 覆盖 expressive-code-language-badge 插件的默认样式 */
   [data-language]::before {
+    right: 3rem !important;
     color: var(--btn-content) !important;
     background: var(--btn-regular-bg) !important;
   }
@@ -43,9 +57,27 @@
     box-shadow: 0 5px 14px color-mix(in oklch, var(--primary) 18%, transparent);
   }
 
+  .copy button:focus-visible {
+    opacity: 1 !important;
+    outline: 2px solid var(--primary) !important;
+    outline-offset: 2px;
+  }
+
   .frame.ff-code-touch-active .copy button {
     opacity: 1 !important;
     transform: translateY(-1px);
+  }
+}
+
+@media (hover: none), (max-width: 720px) {
+  .expressive-code .copy button {
+    opacity: 1 !important;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .custom-md .code-group-panel:not([hidden]) {
+    animation: none;
   }
 }
 
