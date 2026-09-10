@@ -1,4 +1,17 @@
 ---
+import { getCollection } from "astro:content";
+
+const initialPostStatuses = (await getCollection("posts")).map((post) => ({
+	slug:
+		post.filePath
+			?.replaceAll("\\", "/")
+			.split("/")
+			.at(-1)
+			?.replace(/\.(?:md|mdx)$/iu, "") ?? post.id,
+	draft: post.data.draft,
+	pinned: post.data.pinned,
+	locked: Boolean(post.data.password?.trim()),
+}));
 ---
 
 <!doctype html>
@@ -13,6 +26,9 @@
 	</head>
 	<body>
 		<div class="cms-loading">正在打开博客内容管理后台...</div>
+		<script define:vars={{ initialPostStatuses }} is:inline>
+			window.__JAY_INITIAL_POST_STATUSES__ = initialPostStatuses;
+		</script>
 		<script is:inline src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 		<script>
 			import { setupAdminCms } from '../../scripts/admin-cms.js';

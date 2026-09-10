@@ -2,12 +2,13 @@ import katex from 'katex';
 import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
-import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
 import { setupChoiceWidgets } from './admin-choice-widgets.js';
+import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
+import { setupImageCropWidget } from './admin-image-crop.js';
+import { setupPostStatusIndicators } from './admin-post-status.js';
+import { setupR2AudioWidget } from './admin-r2-audio.js';
 import { createTagService } from './admin-tags-service.js';
 import { setupTagsWidget } from './admin-tags-widget.js';
-import { setupImageCropWidget } from './admin-image-crop.js';
-import { setupR2AudioWidget } from './admin-r2-audio.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -208,6 +209,9 @@ export function setupAdminCms() {
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
+	const postStatusIndicators = setupPostStatusIndicators(
+		window.__JAY_INITIAL_POST_STATUSES__ || [],
+	);
 	const previewObserver = new MutationObserver((mutations) => {
 		for (const mutation of mutations) {
 			if (mutation.type === 'attributes' && mutation.target instanceof HTMLImageElement) {
@@ -1262,6 +1266,7 @@ export function setupAdminCms() {
 
 	const handleContentUpdate = async ({ entry }) => {
 		const collection = entry?.get?.('collection') || 'unknown';
+		if (collection === 'posts') postStatusIndicators.updateFromEntry(entry);
 		const label = collectionLabel(collection);
 		const reloadAdminOptions = shouldReloadAdminOptions(collection);
 		window.clearTimeout(syncTimer);
