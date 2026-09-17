@@ -3,6 +3,28 @@
 .custom-md {
   overflow-wrap: break-word;
 
+  mark {
+    padding: 0 .12em;
+    border-radius: .2em;
+    background: color-mix(in srgb, #e9b96b 35%, transparent);
+    color: inherit;
+  }
+
+  .typora-toc {
+	padding: 1rem 1.25rem;
+	border: 1px solid var(--line-divider);
+	border-radius: .75rem;
+	background: color-mix(in srgb, var(--card-bg) 94%, var(--primary) 6%);
+	}
+
+  .typora-toc strong { display: block; margin-bottom: .45rem; }
+  .typora-toc ol { margin: 0; padding-left: 1.25rem; }
+  .typora-toc li { margin: .2rem 0; }
+  .typora-toc__level-3 { margin-left: .85rem !important; }
+  .typora-toc__level-4,
+  .typora-toc__level-5,
+  .typora-toc__level-6 { margin-left: 1.6rem !important; }
+
   body.sticky-navbar & {
     [id] {
       scroll-margin-top: 5.5rem;

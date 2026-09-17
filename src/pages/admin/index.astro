@@ -26,6 +26,7 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	</head>
 	<body>
 		<div class="cms-loading">正在打开博客内容管理后台...</div>
+		<a class="typora-import-entry" href="/admin/typora/" aria-label="导入 Typora Markdown 文章">导入 Typora 文章</a>
 		<script define:vars={{ initialPostStatuses }} is:inline>
 			window.__JAY_INITIAL_POST_STATUSES__ = initialPostStatuses;
 		</script>
@@ -59,5 +60,59 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 
 	body:has(#nc-root > *) .cms-loading {
 		display: none;
+	}
+
+	.typora-import-entry {
+		position: fixed;
+		z-index: 1000;
+		right: max(1rem, env(safe-area-inset-right));
+		bottom: max(1rem, env(safe-area-inset-bottom));
+		padding: .68rem .85rem;
+		border: 1px solid #b8d0d8;
+		border-radius: 10px;
+		background: #fff;
+		box-shadow: 0 6px 18px rgb(15 44 55 / .12);
+		color: #235e71;
+		font: 650 14px/1.2 system-ui, "PingFang SC", sans-serif;
+		text-decoration: none;
+	}
+
+	.typora-import-entry:hover { background: #f3fafb; }
+	.typora-import-entry:focus-visible { outline: 3px solid #2e7f93; outline-offset: 3px; }
+
+	.jay-markdown-toolbar {
+		position: fixed;
+		z-index: 999;
+		left: 50%;
+		bottom: max(1rem, env(safe-area-inset-bottom));
+		transform: translateX(-50%);
+		display: none;
+		align-items: center;
+		gap: .25rem;
+		max-width: min(82vw, 740px);
+		overflow-x: auto;
+		padding: .4rem;
+		border: 1px solid #c4d9df;
+		border-radius: 12px;
+		background: #fff;
+		box-shadow: 0 8px 26px rgb(15 44 55 / .15);
+	}
+	.jay-markdown-toolbar.is-visible { display: flex; }
+	.jay-markdown-toolbar button {
+		flex: none;
+		min-width: 36px;
+		min-height: 36px;
+		padding: .25rem .5rem;
+		border: 0;
+		border-radius: 7px;
+		background: transparent;
+		color: #254958;
+		font: 650 13px/1.2 system-ui, "PingFang SC", sans-serif;
+		cursor: pointer;
+	}
+	.jay-markdown-toolbar button:hover { background: #eaf4f6; }
+	.jay-markdown-toolbar button:focus-visible { outline: 2px solid #2e7f93; }
+	@media (max-width: 700px) {
+		.jay-markdown-toolbar { left: .5rem; right: .5rem; bottom: max(3.8rem, env(safe-area-inset-bottom)); transform: none; max-width: none; }
 	}
 </style>
