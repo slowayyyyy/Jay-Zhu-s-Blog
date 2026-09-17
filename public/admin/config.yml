@@ -158,7 +158,7 @@ collections:
         name: body
         widget: richtext
         editor_components: [image, enhanced-code-block, latex-block, mermaid-diagram, superscript, subscript]
-        hint: 支持图片粘贴、图片说明、LaTeX、Mermaid、脚注、上标和下标。添加代码时点击编辑器工具栏的“+”，选择“代码块（高亮）”，即可选择语言后直接粘贴。
+        hint: 可切换源码模式直接写 Markdown；支持删除线、高亮、上下标、[toc]、表格、任务列表、公式与代码块。源码模式使用 Typora 常用快捷键，如 ⌘/Ctrl+B 加粗、⌘/Ctrl+I 斜体、⌘/Ctrl+K 链接，也可用浮动格式栏。完整 Typora 文件及本地图片请用后台右下角“导入 Typora 文章”。
 
   - name: dynamic
     label: 说说

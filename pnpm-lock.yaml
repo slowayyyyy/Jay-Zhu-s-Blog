@@ -152,9 +152,15 @@ importers:
       remark-directive:
         specifier: ^3.0.1
         version: 3.0.1
+      remark-gfm:
+        specifier: ^4.0.1
+        version: 4.0.1
       remark-math:
         specifier: ^6.0.0
         version: 6.0.0
+      remark-parse:
+        specifier: ^11.0.0
+        version: 11.0.0
       remark-sectionize:
         specifier: ^2.1.0
         version: 2.1.0
@@ -182,12 +188,18 @@ importers:
       typescript:
         specifier: ^5.9.2
         version: 5.9.3
+      unified:
+        specifier: ^11.0.5
+        version: 11.0.5
       unist-util-visit:
         specifier: ^5.1.0
         version: 5.1.0
       wrangler:
         specifier: ^4.102.0
         version: 4.102.0
+      yaml:
+        specifier: ^2.9.0
+        version: 2.9.0
     devDependencies:
       '@astrojs/ts-plugin':
         specifier: ^1.10.9
@@ -225,6 +237,12 @@ importers:
       postcss-nesting:
         specifier: ^14.0.0
         version: 14.0.0(postcss@8.5.15)
+      rehype-stringify:
+        specifier: ^10.0.1
+        version: 10.0.1
+      remark-rehype:
+        specifier: ^11.1.2
+        version: 11.1.2
       subset-font:
         specifier: ^2.5.0
         version: 2.5.0

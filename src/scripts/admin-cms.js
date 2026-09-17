@@ -2,6 +2,8 @@ import katex from 'katex';
 import katexStylesUrl from 'katex/dist/katex.min.css?url';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
+import { remarkTyporaInline } from '../lib/remark-typora-inline.mjs';
+import { remarkTyporaToc } from '../lib/typora-toc.mjs';
 import { setupChoiceWidgets } from './admin-choice-widgets.js';
 import { registerAdminCodeBlock } from './admin-code-block.js';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
@@ -10,6 +12,7 @@ import { setupPostStatusIndicators } from './admin-post-status.js';
 import { setupR2AudioWidget } from './admin-r2-audio.js';
 import { createTagService } from './admin-tags-service.js';
 import { setupTagsWidget } from './admin-tags-widget.js';
+import { setupTyporaShortcuts } from './admin-typora-shortcuts.js';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -132,8 +135,11 @@ export const localizeImageCaptionFields = (root = document) => {
 export function setupAdminCms() {
 	if (!window.CMS || window.__jayCmsSetup) return;
 	window.__jayCmsSetup = true;
+	setupTyporaShortcuts();
 
 	window.CMS.registerRemarkPlugin(remarkTightInlineFormatting);
+	window.CMS.registerRemarkPlugin(remarkTyporaInline);
+	window.CMS.registerRemarkPlugin(remarkTyporaToc);
 	window.CMS.registerRemarkPlugin(remarkImagePresentation);
 	registerAdminCodeBlock(window.CMS);
 	window.CMS.registerPreviewStyle(katexStylesUrl);
@@ -806,6 +812,16 @@ export function setupAdminCms() {
 		if (!isTextEditingTarget(event.target)) return;
 
 		const clipboardSnapshot = snapshotClipboardData(event.clipboardData);
+		const htmlText = clipboardSnapshot.html
+			? new DOMParser().parseFromString(clipboardSnapshot.html, 'text/html').body.textContent?.trim()
+			: '';
+		// Whole-article rich paste must remain one paste. The image-only handler would otherwise
+		// prevent the browser paste and silently replace all surrounding prose with images.
+		if ((htmlText && /<img\b/iu.test(clipboardSnapshot.html)) ||
+			(clipboardSnapshot.files.length && clipboardSnapshot.text?.trim() && !/^https?:\/\/\S+$/iu.test(clipboardSnapshot.text.trim()))) {
+			showStatus('检测到图文混合粘贴：正文将按编辑器原样粘贴。本地图片请使用“导入 Typora 文章”以确保一起上传。', 'pending', 9000);
+			return;
+		}
 		const richEditorSelection = captureRichEditorSelection(event.target);
 		const hasImageFile = clipboardSnapshot.files.length > 0;
 		const htmlImageSources = extractImageSourcesFromHtml(clipboardSnapshot.html);

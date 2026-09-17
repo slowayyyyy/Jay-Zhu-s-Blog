@@ -1,0 +1,83 @@
+---
+const categoryModules = import.meta.glob('../../content/categories/*.json', { eager: true, import: 'default' });
+const categories = Object.values(categoryModules)
+	.map((item: any) => String(item?.name || '').trim())
+	.filter(Boolean)
+	.sort((a, b) => a.localeCompare(b, 'zh-CN'));
+---
+
+<!doctype html>
+<html lang="zh-CN">
+	<head>
+		<meta charset="UTF-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="robots" content="noindex, nofollow" />
+		<meta name="referrer" content="same-origin" />
+		<link rel="icon" href="/favicon/azure-corridor.svg" type="image/svg+xml" />
+		<title>导入 Typora 文章 · 苍蓝回廊</title>
+	</head>
+	<body>
+		<main class="import-shell">
+			<header class="import-head">
+				<a href="/admin/" class="back-link">返回内容后台</a>
+				<h1>导入 Typora 文章</h1>
+				<p>保留 Markdown 正文与可识别的 YAML 元数据；本地图片在一次提交中一并存入素材目录。导入后文章默认隐藏，检查无误再公开。</p>
+			</header>
+			<form id="typora-import-form" novalidate>
+				<section class="form-section" aria-labelledby="source-title">
+					<h2 id="source-title">选择文章</h2>
+					<p>推荐选择包含一篇 <code>.md</code> 和图片文件夹的整个目录；也可分别选择文章和图片。原文件不会被修改。</p>
+					<div class="file-options">
+						<label class="file-option"><strong>选择 Typora 文章目录</strong><span>一篇 Markdown + 同目录素材</span><input id="folder-input" type="file" multiple /></label>
+						<label class="file-option"><strong>仅选择 .md 文件</strong><span>无图片文章可直接使用</span><input id="markdown-input" type="file" accept=".md,.markdown,text/markdown" /></label>
+						<label class="file-option"><strong>补充本地图片</strong><span>单独选择文章时可添加多张</span><input id="assets-input" type="file" accept="image/avif,image/gif,image/jpeg,image/png,image/webp" multiple /></label>
+					</div>
+					<p id="file-summary" class="file-summary" aria-live="polite">尚未选择文章。</p>
+				</section>
+				<section class="form-section" aria-labelledby="details-title">
+					<h2 id="details-title">文章信息</h2>
+					<div class="field-grid">
+						<label class="field field-wide">标题<input id="import-title" required autocomplete="off" /></label>
+						<label class="field">发布日期<input id="import-date" type="date" required /></label>
+						<label class="field">分区<select id="import-category" required><option value="">请选择</option>{categories.map((category) => <option value={category}>{category}</option>)}</select></label>
+						<label class="field field-wide">页面描述<textarea id="import-description" rows="3" placeholder="用于文章卡片、搜索与分享预览"></textarea></label>
+						<label class="field field-wide">标签（用逗号分隔）<input id="import-tags" placeholder="例如：Markdown, 学习笔记" /></label>
+					</div>
+				</section>
+				<section class="form-section preview-section" aria-labelledby="preview-title">
+					<h2 id="preview-title">导入预览</h2>
+					<p id="import-summary" class="muted">选择文章后显示图片匹配与输出路径。</p>
+					<div id="import-issues" class="issues" role="status" aria-live="polite"></div>
+					<details><summary>查看整理后的 Markdown 源码</summary><pre id="import-preview"></pre></details>
+				</section>
+				<footer class="form-footer"><p>导入会向 GitHub <code>main</code> 新增一篇隐藏文章和所需图片，不覆盖同名文件；Cloudflare 构建完成后可在后台继续编辑。</p><button id="import-submit" type="submit" disabled>导入为隐藏草稿</button></footer>
+			</form>
+			<div id="import-status" class="import-status" role="status" aria-live="polite"></div>
+		</main>
+		<script>
+			import { setupTyporaImportPage } from '../../scripts/typora-import-page.js';
+			setupTyporaImportPage();
+		</script>
+	</body>
+</html>
+
+<style>
+	:global(body){margin:0;background:#f2f6f8;color:#1b3340;font:16px/1.6 system-ui,-apple-system,"PingFang SC",sans-serif}
+	:global(*){box-sizing:border-box}
+	:global(:focus-visible){outline:3px solid #2e7f93;outline-offset:3px}
+	.import-shell{max-width:960px;margin:0 auto;padding:clamp(1rem,4vw,3rem) 1rem 5rem}
+	.import-head{padding:0 .2rem 1.3rem;border-bottom:1px solid #cbdbe0}
+	.back-link{color:#266c7f;font-weight:650;text-decoration:none}.back-link:hover{text-decoration:underline}
+	h1{margin:.75rem 0 .3rem;font-size:clamp(1.7rem,4vw,2.3rem);line-height:1.2}h2{margin:0 0 .45rem;font-size:1.12rem}
+	p{margin:.45rem 0;color:#526b76}.import-head p{max-width:70ch}
+	form{margin-top:1.2rem;background:#fff;border:1px solid #d8e4e8;border-radius:16px;box-shadow:0 12px 30px rgb(0 0 0 / .06)}
+	.form-section{padding:1.45rem 1.6rem;border-bottom:1px solid #e1e9ec}.file-options{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:.7rem;margin-top:1rem}
+	.file-option{display:flex;flex-direction:column;gap:.25rem;min-width:0;padding:.85rem;border:1px solid #cedde2;border-radius:10px;cursor:pointer}.file-option:hover{border-color:#2e7f93;background:#f7fbfc}.file-option span{font-size:.78rem;color:#56727e}.file-option input{width:100%;font-size:.75rem;margin-top:.5rem}
+	.file-summary{font-size:.85rem;margin-top:.8rem}.field-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem 1.2rem;margin-top:1rem}.field{display:flex;flex-direction:column;gap:.3rem;font-size:.85rem;font-weight:650}.field-wide{grid-column:1/-1}
+	.field input,.field select,.field textarea{width:100%;padding:.65rem .75rem;border:1px solid #b8cbd2;border-radius:8px;background:#fff;color:#1b3340;font:inherit;font-size:1rem;font-weight:400;line-height:1.5}.field textarea{resize:vertical;min-height:5rem}.field input:focus,.field select:focus,.field textarea:focus{border-color:#2e7f93}
+	.muted{font-size:.86rem}.issues{font-size:.85rem}.issues p{margin:.45rem 0}.issues .error{color:#a33c36}.issues .warning{color:#75551a}
+	details{margin-top:.8rem}summary{cursor:pointer;color:#246a7f;font-weight:650}pre{max-height:24rem;overflow:auto;padding:1rem;background:#edf3f5;border-radius:8px;font-size:.8rem;white-space:pre-wrap;overflow-wrap:anywhere}
+	.form-footer{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1.2rem 1.6rem}.form-footer p{max-width:58ch;font-size:.8rem}.form-footer button{flex:none;padding:.72rem 1.1rem;border:0;border-radius:8px;color:#fff;background:#286f83;font:inherit;font-size:.9rem;font-weight:650;line-height:1.2;cursor:pointer}.form-footer button:hover{background:#1f586a}.form-footer button:disabled{background:#a6b7be;cursor:not-allowed}
+	.import-status{margin-top:1rem;font-size:.9rem}.import-status[data-kind="error"]{color:#a33c36}.import-status[data-kind="success"]{color:#176951}.import-status a{color:inherit;font-weight:700}
+	@media(max-width:700px){.file-options,.field-grid{grid-template-columns:1fr}.form-section,.form-footer{padding:1.1rem}.form-footer{align-items:stretch;flex-direction:column}.form-footer button{width:100%;min-height:44px}}
+</style>
