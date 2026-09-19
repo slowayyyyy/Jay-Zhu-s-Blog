@@ -2,6 +2,14 @@
 
 最后更新：2026-09-19
 
+## 2026-09-19 新增 YOASOBI《たぶん》
+
+- 歌单新增 `たぶん (大概) - YOASOBI`，音频由 Cloudflare R2 的 `/media/audio/20260919-yoasobi-tabun.mp3` 提供。
+- 原始 KRC 转换为 `/lyrics/yoasobi-tabun.json`，保留 62 行逐字时间；乐器演奏署名不会混入歌词。
+- 62 条中文翻译与日文歌词逐行对应，继续使用播放器现有的翻译开关。
+- 唱片封面保存为 `/assets/images/music-covers/10-yoasobi-tabun.png`，播放器会将居中的圆形唱片画面裁成唱片外观。
+- 回归：`node --test scripts/tests/cms-bindings.test.mjs`、`pnpm check`、`pnpm build`。
+
 ## 2026-09-19 数学公式边界修复
 
 - 修复《How Should Video LLMs Output Time?》文章中 `$$...$$` 与 `\[...\]` 重复嵌套导致的 KaTeX 缺失和错误显示。

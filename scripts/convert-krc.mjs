@@ -32,7 +32,8 @@ function parseMeta(text) {
 
 function isCreditLine(text) {
 	return /\s[-—]\s.+$/.test(text)
-		|| /^(?:词|曲|编曲|作词|作曲|演唱|歌手)\s*[:：]/.test(text);
+		|| /^(?:词|曲|编曲|作词|作曲|演唱|歌手)\s*[:：]/.test(text)
+		|| /^(?:Gt|Guitar|Bass|Dr|Drums|Piano|Keyboard|Strings?)\.?\s*[:：]/i.test(text);
 }
 
 function parseLyrics(text) {
