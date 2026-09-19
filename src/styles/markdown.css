@@ -188,7 +188,17 @@
   .katex-display-container {
     max-width: 100%;
     overflow-x: auto;
-    margin: 1em 0;
+    margin: 1.25em 0;
+    padding: 0.3rem 0.2rem;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+    scrollbar-gutter: stable both-edges;
+  }
+
+  .katex-display-container > .katex-display {
+    width: max-content;
+    min-width: 100%;
+    margin: 0;
   }
 
   .horizontal-scroll-container {

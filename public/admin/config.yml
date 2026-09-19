@@ -158,7 +158,7 @@ collections:
         name: body
         widget: richtext
         editor_components: [image, enhanced-code-block, latex-block, mermaid-diagram, superscript, subscript]
-        hint: 可切换源码模式直接写 Markdown；支持删除线、高亮、上下标、[toc]、表格、任务列表、公式与代码块。源码模式使用 Typora 常用快捷键，如 ⌘/Ctrl+B 加粗、⌘/Ctrl+I 斜体、⌘/Ctrl+K 链接，也可用浮动格式栏。完整 Typora 文件及本地图片请用后台右下角“导入 Typora 文章”。
+        hint: 可切换源码模式直接写 Markdown；支持删除线、高亮、上下标、[toc]、表格、任务列表、公式与代码块。块公式只使用一层 $$ 边界，不要在其中再写 \[...\]；后台保存时会自动整理重复边界。源码模式使用 Typora 常用快捷键，如 ⌘/Ctrl+B 加粗、⌘/Ctrl+I 斜体、⌘/Ctrl+K 链接，也可用浮动格式栏。完整 Typora 文件及本地图片请用后台右下角“导入 Typora 文章”。
 
   - name: dynamic
     label: 说说

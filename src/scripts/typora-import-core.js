@@ -3,6 +3,7 @@ import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
 import { visit } from 'unist-util-visit';
 import YAML from 'yaml';
+import { normalizeMarkdownMath } from '../lib/markdown-math.mjs';
 
 const IMAGE_EXTENSIONS = /\.(?:avif|gif|jpe?g|png|webp)$/iu;
 const REMOTE_URL = /^(?:https?:)?\/\//iu;
@@ -179,6 +180,7 @@ export function prepareTyporaImport({ markdown, markdownFile, files = [], catego
 	for (const item of replacements.sort((a, b) => b.start - a.start)) {
 		rewritten = rewritten.slice(0, item.start) + item.value + rewritten.slice(item.end);
 	}
+	rewritten = normalizeMarkdownMath(rewritten);
 
 	const metadata = { ...original };
 	for (const key of TYPORA_KEYS) delete metadata[key];

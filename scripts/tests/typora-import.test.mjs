@@ -5,10 +5,17 @@ import { applyTyporaCommand, typoraCommandForKey } from '../../src/scripts/admin
 import { publishTyporaDraft, validateImportAssets } from '../../src/scripts/typora-import-publish.js';
 import { remarkTyporaInline } from '../../src/lib/remark-typora-inline.mjs';
 import { remarkTyporaToc, rehypeTyporaToc } from '../../src/lib/typora-toc.mjs';
+import {
+	normalizeMarkdownMath,
+	remarkNormalizeMath,
+	unwrapMathDelimiters,
+} from '../../src/lib/markdown-math.mjs';
 import { unified } from 'unified';
 import remarkParse from 'remark-parse';
 import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
 import remarkRehype from 'remark-rehype';
+import rehypeKatex from 'rehype-katex';
 import rehypeStringify from 'rehype-stringify';
 
 const markdownFile = { name: '我的文章.md', webkitRelativePath: '文章/我的文章.md' };
@@ -93,6 +100,73 @@ test('Typora markup renders strikethrough, highlight, subscript and superscript'
 	assert.match(result, /<mark>高亮<\/mark>/u);
 	assert.match(result, /<sub>2<\/sub>/u);
 	assert.match(result, /<sup>2<\/sup>/u);
+});
+
+test('math normalization removes duplicate display wrappers and preserves fenced examples', () => {
+	const markdown = [
+		'$$',
+		String.raw`\[`,
+		String.raw`P(x)=\sum_{i=1}^{n}x_i`,
+		String.raw`\]`,
+		'$$',
+		'',
+		String.raw`\[`,
+		'E = mc^2',
+		String.raw`\]`,
+		'',
+		'~~~md',
+		'$$',
+		String.raw`\[`,
+		'示例保持原样',
+		String.raw`\]`,
+		'$$',
+		'~~~',
+		'',
+	].join('\n');
+	const normalized = normalizeMarkdownMath(markdown);
+	assert.match(normalized, /\$\$\nP\(x\)=\\sum_\{i=1\}\^\{n\}x_i\n\$\$/u);
+	assert.match(normalized, /\$\$\nE = mc\^2\n\$\$/u);
+	assert.match(normalized, /~~~md\n\$\$\n\\\[\n示例保持原样\n\\\]\n\$\$\n~~~/u);
+	assert.equal(unwrapMathDelimiters(String.raw`\[ x+y \]`, true), 'x+y');
+});
+
+test('normalized math reaches KaTeX without exposing delimiter commands', async () => {
+	const processor = unified()
+		.use(remarkParse)
+		.use(remarkMath)
+		.use(remarkNormalizeMath)
+		.use(remarkRehype)
+		.use(rehypeKatex)
+		.use(rehypeStringify);
+	const source = [
+		'$$',
+		String.raw`\[`,
+		String.raw`\begin{aligned}`,
+		String.raw`x &= y \\`,
+		'y &= z',
+		String.raw`\end{aligned}`,
+		String.raw`\]`,
+		'$$',
+	].join('\n');
+	const html = String(await processor.process(source));
+	assert.match(html, /class="katex-display"/u);
+	assert.doesNotMatch(html, /katex-error|\\\[|\\\]/u);
+});
+
+test('Typora import canonicalizes copied LaTeX display delimiters', () => {
+	const markdown = [
+		'# 公式笔记',
+		'',
+		'$$',
+		String.raw`\[`,
+		String.raw`\mathcal{L} = -\log p(y)`,
+		String.raw`\]`,
+		'$$',
+		'',
+	].join('\n');
+	const plan = prepareTyporaImport({ markdown, markdownFile, category: '学习笔记' });
+	assert.match(plan.content, /\$\$\n\\mathcal\{L\} = -\\log p\(y\)\n\$\$/u);
+	assert.doesNotMatch(plan.content, /\\\[|\\\]/u);
 });
 
 test('[toc] uses the generated heading IDs', async () => {

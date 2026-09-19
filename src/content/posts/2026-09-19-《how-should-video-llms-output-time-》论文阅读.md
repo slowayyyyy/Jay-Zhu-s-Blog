@@ -40,21 +40,17 @@ comment: false
 测试过程：测试时没有正确答案，所以模型输出第k个token实际上是基于I、K、前面模型预测的k-1个token的，理论上每新生成一个token都要从头重新生成隐藏状态，实际上由KV cache避免重复计算。
 
 $$
-\[
 P(\mathcal{T}\mid I,F)
 =
 \prod_{j=1}^{L}
 P(w_j\mid w_{<j},I,F)
-\]
 $$
 
 $$
-\[
 \mathcal{L}_{\mathrm{text}}
 =
 -\sum_{j=1}^{L}
 \log P\left(w_j \mid w_{<j}, I, F\right)
-\]
 $$
 
 第一个公式是文本数字生成的概率模型，说明了一个预测整体的概率是由每一个token的概率相乘得到的，而每一个token的概率生成也是基于之前的token的。将第一个公式做变形，也就是取负对数，就可以得到第二个公式，这就是损失函数，最小化损失函数的目标也就是为了加大得到GT的概率。
@@ -64,23 +60,19 @@ $$
 这里的时间token编码采用TRACE风格，首先是创建了时间词表以及时间专用输出头，时间词表长这样：<0> <1> ... <9> <.> <sep> <sync>，而且TRACE风格还训练了显著性分数，所以在后续的性能对照表中，可以看到只有这种方式有HD任务的输出结果。下面简单看两个公式来进行理解这种方法吧：
 
 $$
-\[
 P(\mathcal{E}\mid I,F)
 =
 \prod_{k=1}^{K}
 P(e_k\mid e_{<k},I,F)
-\]
 $$
 
 $$
-\[
 \begin{aligned}
 P(e_k\mid e_{<k},\cdot)
 ={}&P(t_k\mid e_{<k},\cdot) \\
 &\cdot P(s_k\mid t_k,e_{<k},\cdot) \\
 &\cdot P(c_k\mid s_k,t_k,e_{<k},\cdot)
 \end{aligned}
-\]
 $$
 
 第一个公式是说，在多事件情况下，第k个事件预测基于I、F、前k-1个事件，这是事件间的概率模型；而第二个公式则是表示了事件内部的概率模型，每一个事件显示在前面事件的基础上生成t，接着在t的基础上生成s，在它们的基础上再生成c，这样就生成了一个事件。这样做的是为了DVC任务，方便建模事件之间的联系。
@@ -90,18 +82,15 @@ $$
 设计了一个专用token⟨TIME STAMP⟩来提取h表示，称作htime，假设我们设置33个anchor，那么算上开始和结束一共就会有66个anchor，将htime输入一个MLP先进行降维成66维，然后softmax得到概率分布，然后用如下公式加权平均即可（公式一是连续型积分，公式二是离散表示）得到时间表示。
 
 $$
-\[
 \hat{t}
 =
 \mathbb{E}_{\tau\sim p(\tau\mid\mathbf{h})}[\tau]
 =
 \int_{\Gamma}
 \tau\cdot p(\tau\mid\mathbf{h})\,d\tau
-\]
 $$
 
 $$
-\[
 \hat{t}_s
 =
 \sum_{i=0}^{reg_{\max}}
@@ -111,7 +100,6 @@ e_{st}^{(i)}\cdot a_i,
 =
 \sum_{i=0}^{reg_{\max}}
 e_{et}^{(i)}\cdot a_i
-\]
 $$
 
 ### 三种方式对比
