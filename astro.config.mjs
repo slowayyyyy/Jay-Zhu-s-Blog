@@ -44,6 +44,7 @@ import { remarkReadingTime } from "./src/plugins/remark-reading-time.mjs";
 import { remarkWikiLink } from "./src/plugins/remark-wiki-link.mjs";
 import { rehypeCodeGroup } from "./src/plugins/rehype-code-group.mjs";
 import { remarkTightInlineFormatting } from "./src/lib/remark-tight-inline-formatting.mjs";
+import { remarkNormalizeMath } from "./src/lib/markdown-math.mjs";
 import { remarkTyporaInline } from "./src/lib/remark-typora-inline.mjs";
 import { remarkTyporaToc, rehypeTyporaToc } from "./src/lib/typora-toc.mjs";
 
@@ -250,6 +251,7 @@ export default defineConfig({
 					? [remarkAdmonitionToBlockquoteCallout]
 					: []),
 				remarkMath,
+				remarkNormalizeMath,
 				remarkReadingTime,
 				remarkImageGrid,
 				remarkExcerpt,

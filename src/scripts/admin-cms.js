@@ -1,5 +1,6 @@
 import katex from 'katex';
 import katexStylesUrl from 'katex/dist/katex.min.css?url';
+import { normalizeMarkdownMath, unwrapMathDelimiters } from '../lib/markdown-math.mjs';
 import { remarkImagePresentation } from '../lib/remark-image-presentation.mjs';
 import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatting.mjs';
 import { remarkTyporaInline } from '../lib/remark-typora-inline.mjs';
@@ -72,7 +73,7 @@ const decodeAdminHtml = (value) => {
 };
 
 const renderAdminFormula = (formula, displayMode = true) =>
-	katex.renderToString(String(formula ?? '').trim(), {
+	katex.renderToString(unwrapMathDelimiters(formula, displayMode), {
 		displayMode,
 		throwOnError: false,
 		strict: false,
@@ -157,12 +158,12 @@ export function setupAdminCms() {
 				label: 'LaTeX 公式',
 				widget: 'text',
 				default: 'E = mc^2',
-				hint: String.raw`只填写公式内容，不需要输入 $$。例如：\frac{1}{n}\sum_{i=1}^{n}x_i`,
+				hint: String.raw`只填写公式内容，不要输入 $$、\[ 或 \]。例如：\frac{1}{n}\sum_{i=1}^{n}x_i`,
 			},
 		],
 		pattern: /^\$\$\r?\n([\s\S]*?)\r?\n\$\$$/m,
-		fromBlock: (match) => ({ formula: match[1].trim() }),
-		toBlock: ({ formula }) => `$$\n${String(formula ?? '').trim()}\n$$`,
+		fromBlock: (match) => ({ formula: unwrapMathDelimiters(match[1], true) }),
+		toBlock: ({ formula }) => `$$\n${unwrapMathDelimiters(formula, true)}\n$$`,
 		toPreview: ({ formula }) =>
 			`<div class="jay-formula-preview">${renderAdminFormula(formula, true)}</div>`,
 	});
@@ -713,8 +714,16 @@ export function setupAdminCms() {
 	};
 
 	const prepareEntryBeforeSave = async (payload) => {
-		const normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
+		let normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
 		if (payload.entry?.get?.('collection') === 'posts') {
+			const body = readEntryDataField(normalizedData, 'body');
+			if (typeof body === 'string') {
+				const normalizedBody = normalizeMarkdownMath(body);
+				if (normalizedBody !== body) {
+					normalizedData = setEntryDataField(normalizedData, 'body', normalizedBody);
+					showStatus('已自动整理重复的公式边界，正在继续保存文章…', 'success', 4200);
+				}
+			}
 			try {
 				showStatus('正在同步文章标签…', 'pending');
 				const tags = await tagsService.ensure(readEntryDataField(normalizedData, 'tags'));
