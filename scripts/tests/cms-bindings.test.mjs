@@ -86,6 +86,21 @@ test("music configuration excludes empty sources without disturbing track/cover/
 	);
 });
 
+test("YOASOBI たぶん keeps audio, cover, karaoke timing and translation lines paired", () => {
+	const track = data.playlist.find((item) => item.name === "たぶん (大概)");
+	assert.ok(track);
+	assert.equal(track.src, "/media/audio/20260919-yoasobi-tabun.mp3");
+	assert.equal(track.cover, "/assets/images/music-covers/10-yoasobi-tabun.png");
+	assert.equal(track.lrc, "/lyrics/yoasobi-tabun.json");
+	const karaoke = JSON.parse(read(`public${track.lrc}`));
+	assert.equal(karaoke.format, "karaoke-v1");
+	assert.equal(karaoke.lines.length, 62);
+	assert.equal(track.translations.length, karaoke.lines.length);
+	assert.equal(karaoke.lines[0].text, "涙流すことすら無いまま");
+	assert.equal(karaoke.lines.at(-1).text, "少し冷えた朝だ");
+	assert.ok(karaoke.lines.every((line) => line.words.length > 0));
+});
+
 test("Umami public ID and script address use CMS settings; blank ID disables collection", () => {
 	const content = structuredClone(data);
 	content.integrations.umamiWebsiteId = " test-id ";
