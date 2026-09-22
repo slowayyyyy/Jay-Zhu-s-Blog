@@ -18,6 +18,142 @@ comment: false
 
 **创新点由来：**
 
-《Learning to Refuse》作者应是先注意到视频中可能根本不存在文本查询，然后查阅了相关的资料，发现做这个方向的研究主要有两条路，一是基于训练的方法，也就是通过将无关查询与视频通过训练的方式让模型学会拒绝完全不相干的查询，而是基于大模型的方法，也就是通过大模型的泛化能力自主拒绝回答不相关查询。作者继续发掘现状，虽然已经有拒绝完全不相关查询的工作了，但是如果将正确查询只修改一小部分，这种错误查询非常考验模型的细粒度，当前的工作就无法解决了。于是基于这种查询，作者称之为Hard-Irrelevant Query，作者提出自己的强化学习微调方式：RA-RFT。我们可以通过图1这个例子，简单了解一下所谓Hard-Irrelevant Query是什么。![粘贴图片 1 | lg | center](/uploads/20260922033404-image-15425b16.png "困难不相关查询样例")
+《Learning to Refuse》作者应是先注意到视频中可能根本不存在文本查询，然后查阅了相关的资料，发现做这个方向的研究主要有两条路，一是基于训练的方法，也就是通过将无关查询与视频通过训练的方式让模型学会拒绝完全不相干的查询，而是基于大模型的方法，也就是通过大模型的泛化能力自主拒绝回答不相关查询。作者继续发掘现状，虽然已经有拒绝完全不相关查询的工作了，但是如果将正确查询只修改一小部分，这种错误查询非常考验模型的细粒度，当前的工作就无法解决了。于是基于这种查询，作者称之为Hard-Irrelevant Query，作者提出自己的**强化学习微调方式**：RA-RFT。我们可以通过图1这个例子，简单了解一下所谓Hard-Irrelevant Query是什么。![粘贴图片 1 | lg | center](/uploads/20260922033404-image-15425b16.png "困难不相关查询样例")
 
-《MUSEG》作者则是注意到对于一个视频和一个查询，完全可能出现多个查询对应的片段，所以提出了多片段训练的创新思路，而且作者注意到SFT多采用训练数据自动构筑CoT，在RL投入使用之后，也主要是把答案的正确性投入奖励，却没有将推理过程中的时间戳融入奖励当中，所以作者将MUSEG称为Reinforcing Video Temporal Understanding  via Timestamp-Aware Multi-Segment Grounding，主要创新在于时间戳感知与多片段定位。
+《MUSEG》作者则是注意到对于一个视频和一个查询，完全可能出现多个查询对应的片段，所以提出了多片段训练的创新思路，而且作者注意到SFT多采用训练数据自动构筑CoT，在RL投入使用之后，也主要是把答案的正确性投入奖励，却没有将推理过程中的时间戳融入奖励当中，所以作者将MUSEG称为Reinforcing Video Temporal Understanding  via Timestamp-Aware Multi-Segment Grounding，主要创新在于**基于强化学习的时间戳感知与多片段定位。**
+
+## 原理介绍
+
+### 《Learning to Refuse》方法介绍
+
+![粘贴图片 1 | lg | center](/uploads/20260922125218-image-8447efd7.png "图2 《Learning to Refuse》设计方案图")
+
+要看懂本文，只需要看懂图2即可。先看到右上角的VTG Dataset，这是常规的VTG数据集，有视频，有查询qr，也有真实时间atime，而作者设计的数据则会加上右下方这一部分，可以看到将原本的查询修改一个部分生成的查询被作者称为Strong Hard-irre. query，也就是最高难度的不相关查询，而修改两部分原始查询得到的查询就是Moderate Hard-irre. query，也就是中等难度，以此类推。与修改查询相关的，作者还会给出Refusal response，也就是模型的拒答回复。这样设计数据的原因是先要训练模型遇到这种困难不相关查询时能够拒绝回答，然后给出解释为什么拒绝回答，最后能够给出修正查询。\
+数据集的基本设计就如上所说，再看到左边，接下来就要设计奖励函数了。我们用左下角的例子来看懂作者的意图：左下角的视频内容是一名身穿黄色制服的女子在投掷标枪，查询中写的是身穿红色制服的女子在投掷标枪，明显可以看出这是高难度的不相关查询，那么作者希望模型如何回复呢，我们看到模型生成回答这里，首先模型的回答遵循一定的格式，也就是<think><think><answer></answer><correct></correct>，作者希望模型先经历思考，接着给出拒答解释，接着给出更正后的正确查询。而这种格式上的要求，被称为Format reward，符合格式要求奖励1，否则0，公式如下：
+
+$$
+\begin{equation}
+r_{\mathrm{for}}(o)
+=
+\begin{cases}
+1, & \text{if } o \text{ has correct format},\\
+0, & \text{if } o \text{ has wrong format}.
+\end{cases}
+\end{equation}
+$$
+
+接着作者想要**当查询正确的时候，奖励模型输出符合Ground Truth的时间回复，当查询错误的时候，模型应该拒绝回答，**如下公式：
+
+$$
+\begin{equation}
+r_{\mathrm{R\text{-}IoU}}(o)
+=
+\begin{cases}
+\operatorname{IoU}(a_{\mathrm{time}},\hat{a}),
+&
+q\in\mathrm{Rel.}
+\text{ and }
+\{t_s,t_e\}\in\hat{a},
+\\
+1,
+&
+q\in\mathrm{Irre.}
+\text{ and }
+\{t_s,t_e\}\notin\hat{a},
+\\
+0,
+&
+\text{otherwise}.
+\end{cases}
+\end{equation}
+$$
+
+当查询正确，用IoU衡量时间预测正确的重叠程度，当查询错误，给出拒绝回答奖励1，除了以上两种情况都不给奖励。
+
+$$
+\begin{equation}
+r_{\mathrm{exp}}(o)
+=
+\operatorname{sim}(a_{\mathrm{pos}},\hat{a})
+-
+\operatorname{sim}(a_{\mathrm{neg}},\hat{a}).
+\end{equation}
+$$
+
+接着作者想要模型给出合适的解释，当查询正确时，解释应该是时间戳而非拒答回复，于是apos取atime，aneg取arefusal，用语义相似度使答案趋向时间而非拒答回复；当查询错误时，同理。
+
+$$
+\begin{equation}
+r_{\mathrm{cor}}(o)
+=
+\begin{cases}
+0, & q\in\mathrm{Rel.},\\
+\operatorname{sim}(q_r,\hat{c}), & q\in\mathrm{Irre.}.
+\end{cases}
+\end{equation}
+$$
+
+最后，当查询错误时，作者想要模型给出修正查询，通过上述公式，通过语义相似度的方式，使查询错误时候的修正回复能趋向于原始正确查询。
+
+### 《MUSEG》方法介绍
+
+![粘贴图片 1 | lg | center](/uploads/20260922133146-image-2835032f.png "《MUSEG》概念图")仍然一张图讲解全文。本文聚焦于**多段，时间戳，分阶段**，只要抓住这三个点，就能抓住全文的脉络。作者训练模型用了900轮（为什么，没为什么，问就是测出来的），前四百轮采用阶段一训练，后五百轮采用阶段二训练，阶段一有三个奖励，从上到下分别是多片段匹配奖励（很好理解，我们想要模型预测的多个片段尽量符合Ground Truth），格式奖励（这个说过了，RL基操），时间戳奖励（神奇的设计，后面具体讲），二阶段有两个奖励，其实也就是在一阶段的基础上删去了时间戳奖励（问就是测出来效果好）。
+
+下面具体分析几种奖励方式：
+
+$$
+\begin{equation}
+r_G
+=
+\frac{
+\sum_{i,j}\left|G_i\cap P_j\right|
+}{
+\left|
+\left(\bigcup_i G_i\right)
+\cup
+\left(\bigcup_j P_j\right)
+\right|
+}.
+\end{equation}
+$$
+
+$$
+\begin{equation}
+\operatorname{NGIoU}(G_n,P_n)
+=
+\frac{1}{2}
+\left(
+1
++
+\frac{|G_n\cap P_n|}
+{|G_n\cup P_n|}
+-
+\frac{
+\left|C\setminus(G_n\cup P_n)\right|
+}{
+|C|
+}
+\right).
+\end{equation}
+$$
+
+$$
+\begin{equation}
+r_L
+=
+\frac{
+\sum_{n=1}^{N}
+\operatorname{NGIoU}(G_n,P_n)
+}{
+N
+}.
+\end{equation}
+$$
+
+$$
+\begin{equation}
+r_M
+=
+\frac{r_G+r_L}{2}.
+\end{equation}
+$$
