@@ -1,6 +1,8 @@
 const COMMANDS = [
 	{ id: 'bold', label: '加粗', short: 'B', keys: '⌘/Ctrl+B' },
 	{ id: 'italic', label: '斜体', short: 'I', keys: '⌘/Ctrl+I' },
+	{ id: 'sup', label: '上标', short: '上标 x²', keys: '⌘/Ctrl+Shift+.' },
+	{ id: 'sub', label: '下标', short: '下标 x₂', keys: '⌘/Ctrl+Shift+,' },
 	{ id: 'strike', label: '删除线', short: 'S', keys: 'Windows Alt+Shift+5 / Mac Ctrl+Shift+`' },
 	{ id: 'code', label: '行内代码', short: '</>', keys: '⌘/Ctrl+Shift+`' },
 	{ id: 'link', label: '链接', short: '链接', keys: '⌘/Ctrl+K' },
@@ -12,9 +14,19 @@ const COMMANDS = [
 	{ id: 'fence', label: '代码块', short: '代码块', keys: 'Windows Ctrl+Shift+K / Mac ⌘+⌥+C' },
 	{ id: 'math', label: '公式块', short: '公式', keys: 'Windows Ctrl+Shift+M / Mac ⌘+⌥+B' },
 	{ id: 'mark', label: '高亮', short: '高亮', keys: '工具栏' },
-	{ id: 'sub', label: '下标', short: '下标', keys: '工具栏' },
-	{ id: 'sup', label: '上标', short: '上标', keys: '工具栏' },
 ];
+
+const SCRIPT_TAGS = { sup: 'sup', sub: 'sub' };
+
+export function inlineScriptMarkup(text, command) {
+	const tag = SCRIPT_TAGS[command];
+	if (!tag) return null;
+	const content = String(text || '2')
+		.replaceAll('&', '&amp;')
+		.replaceAll('<', '&lt;')
+		.replaceAll('>', '&gt;');
+	return `<${tag}>${content}</${tag}>`;
+}
 
 const wrap = (value, start, end, before, after = before, placeholder = '文字') => {
 	const selected = value.slice(start, end) || placeholder;
@@ -64,6 +76,8 @@ export function typoraCommandForKey(event, isMac = /Mac|iPhone|iPad/u.test(navig
 	if (plainPrimary && event.key.toLowerCase() === 'k') return 'link';
 	if (isMac && event.ctrlKey && event.shiftKey && event.code === 'Backquote') return 'strike';
 	if (!isMac && event.altKey && event.shiftKey && event.code === 'Digit5') return 'strike';
+	if (primary && event.shiftKey && !event.altKey && event.code === 'Period') return 'sup';
+	if (primary && event.shiftKey && !event.altKey && event.code === 'Comma') return 'sub';
 	if (primary && event.shiftKey && !event.altKey && event.code === 'Backquote') return 'code';
 	if (!isMac && primary && event.shiftKey && event.key.toLowerCase() === 'q') return 'quote';
 	if (!isMac && primary && event.shiftKey && event.code === 'BracketRight') return 'bullet';
@@ -92,6 +106,21 @@ const isPostMarkdownTextarea = (target) => {
 	return box.height >= 180 && box.width >= 280;
 };
 
+const isPostSlateEditor = (target) => {
+	if (!(target instanceof Element) || !/^#\/collections\/posts\/(?:new|entries\/)/u.test(location.hash)) return false;
+	const slate = target.closest('[contenteditable="true"][data-slate-editor="true"]');
+	const field = slate?.closest('[aria-label="richtext field"], [aria-label="markdown field"]');
+	return Boolean(field?.querySelector('label[for^="body-field-"]'));
+};
+
+const getPostEditor = (target) => {
+	if (isPostMarkdownTextarea(target)) return target;
+	if (isPostSlateEditor(target)) {
+		return target.closest('[contenteditable="true"][data-slate-editor="true"]');
+	}
+	return null;
+};
+
 export function setupTyporaShortcuts() {
 	if (window.__jayTyporaShortcuts) return;
 	window.__jayTyporaShortcuts = true;
@@ -103,6 +132,7 @@ export function setupTyporaShortcuts() {
 	for (const command of COMMANDS) {
 		const button = document.createElement('button');
 		button.type = 'button';
+		button.dataset.command = command.id;
 		button.textContent = command.short;
 		button.title = `${command.label} · ${command.keys}`;
 		button.setAttribute('aria-label', `${command.label}，${command.keys}`);
@@ -110,10 +140,34 @@ export function setupTyporaShortcuts() {
 		button.addEventListener('click', () => apply(command.id));
 		toolbar.append(button);
 	}
+	const status = document.createElement('span');
+	status.className = 'jay-markdown-toolbar-status';
+	status.setAttribute('role', 'status');
+	toolbar.append(status);
 	document.body.append(toolbar);
 
 	const apply = (command) => {
 		if (!editor?.isConnected) return;
+		status.textContent = '';
+		if (!(editor instanceof HTMLTextAreaElement)) {
+			if (!SCRIPT_TAGS[command]) return;
+			const selection = document.getSelection();
+			if (!selection || !editor.contains(selection.anchorNode) || !editor.contains(selection.focusNode)) return;
+			const selected = selection.toString();
+			if (!selected) {
+				status.textContent = '请先选中需要设为上标或下标的文字';
+				return;
+			}
+			if (selected.includes('\n')) {
+				status.textContent = '请只选中同一行的文字';
+				return;
+			}
+			const markup = inlineScriptMarkup(selected, command);
+			const clipboardData = new DataTransfer();
+			clipboardData.setData('text/plain', markup);
+			editor.dispatchEvent(new ClipboardEvent('paste', { bubbles: true, cancelable: true, clipboardData }));
+			return;
+		}
 		const { selectionStart, selectionEnd, value } = editor;
 		const result = applyTyporaCommand(value, selectionStart, selectionEnd, command);
 		if (!result) return;
@@ -125,14 +179,19 @@ export function setupTyporaShortcuts() {
 	};
 
 	document.addEventListener('focusin', (event) => {
-		editor = isPostMarkdownTextarea(event.target) ? event.target : null;
+		editor = getPostEditor(event.target);
 		toolbar.classList.toggle('is-visible', Boolean(editor));
+		toolbar.classList.toggle('is-slate-editor', Boolean(editor && !(editor instanceof HTMLTextAreaElement)));
+		toolbar.setAttribute('aria-label', editor instanceof HTMLTextAreaElement ? 'Markdown 快捷格式' : '行内格式');
+		status.textContent = '';
 	});
 	document.addEventListener('keydown', (event) => {
-		if (!isPostMarkdownTextarea(event.target) || event.isComposing) return;
-		editor = event.target;
+		if (event.isComposing) return;
+		const target = getPostEditor(event.target);
+		if (!target) return;
 		const command = typoraCommandForKey(event);
-		if (!command) return;
+		if (!command || (!(target instanceof HTMLTextAreaElement) && !SCRIPT_TAGS[command])) return;
+		editor = target;
 		event.preventDefault();
 		event.stopImmediatePropagation();
 		apply(command);

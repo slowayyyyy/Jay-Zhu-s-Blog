@@ -66,12 +66,6 @@ const escapeAdminHtml = (value) =>
 		.replaceAll('"', '&quot;')
 		.replaceAll("'", '&#39;');
 
-const decodeAdminHtml = (value) => {
-	const textarea = document.createElement('textarea');
-	textarea.innerHTML = String(value ?? '');
-	return textarea.value;
-};
-
 const renderAdminFormula = (formula, displayMode = true) =>
 	katex.renderToString(unwrapMathDelimiters(formula, displayMode), {
 		displayMode,
@@ -145,7 +139,7 @@ export function setupAdminCms() {
 	registerAdminCodeBlock(window.CMS);
 	window.CMS.registerPreviewStyle(katexStylesUrl);
 	window.CMS.registerPreviewStyle(
-		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}.jay-inline-script-preview{font-size:1rem;line-height:1.6}figure.prose-media>figcaption.prose-caption{width:min(100%,var(--prose-media-width,42rem));max-width:100%;margin:.72rem auto 0;color:rgba(24,33,43,.68);font:400 .78rem/1.65 "Segoe UI","PingFang SC","Noto Sans SC",sans-serif;text-align:center;overflow-wrap:anywhere}',
+		'.jay-formula-preview{overflow-x:auto;padding:1rem;text-align:center}.jay-mermaid-preview{overflow-x:auto;padding:1rem;border:1px solid #dfe6e8;border-radius:12px;background:#f7f9fa;white-space:pre-wrap}figure.prose-media>figcaption.prose-caption{width:min(100%,var(--prose-media-width,42rem));max-width:100%;margin:.72rem auto 0;color:rgba(24,33,43,.68);font:400 .78rem/1.65 "Segoe UI","PingFang SC","Noto Sans SC",sans-serif;text-align:center;overflow-wrap:anywhere}',
 		{ raw: true },
 	);
 	window.CMS.registerEditorComponent({
@@ -185,31 +179,6 @@ export function setupAdminCms() {
 		toPreview: ({ diagram }) =>
 			`<pre class="jay-mermaid-preview">${escapeAdminHtml(diagram)}</pre>`,
 	});
-	[
-		{ id: 'superscript', label: '上标', tag: 'sup', example: '2' },
-		{ id: 'subscript', label: '下标', tag: 'sub', example: '2' },
-	].forEach(({ id, label, tag, example }) => {
-		window.CMS.registerEditorComponent({
-			id,
-			label,
-			collapsed: false,
-			fields: [
-				{
-					name: 'text',
-					label: `${label}内容`,
-					widget: 'string',
-					default: example,
-					hint: label === '上标' ? '例如 x² 中的 2。' : '例如 H₂O 中的 2。',
-				},
-			],
-			pattern: new RegExp(`^<${tag}>([\\s\\S]*?)<\\/${tag}>$`, 'm'),
-			fromBlock: (match) => ({ text: decodeAdminHtml(match[1]) }),
-			toBlock: ({ text }) => `<${tag}>${escapeAdminHtml(String(text ?? '').trim())}</${tag}>`,
-			toPreview: ({ text }) =>
-				`<span class="jay-inline-script-preview"><${tag}>${escapeAdminHtml(String(text ?? '').trim())}</${tag}></span>`,
-		});
-	});
-
 	let syncTimer;
 	let statusTimer;
 	let reloadTimer;

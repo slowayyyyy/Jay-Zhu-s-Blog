@@ -157,8 +157,8 @@ collections:
       - label: 正文
         name: body
         widget: richtext
-        editor_components: [image, enhanced-code-block, latex-block, mermaid-diagram, superscript, subscript]
-        hint: 可切换源码模式直接写 Markdown；支持删除线、高亮、上下标、[toc]、表格、任务列表、公式与代码块。块公式只使用一层 $$ 边界，不要在其中再写 \[...\]；后台保存时会自动整理重复边界。源码模式使用 Typora 常用快捷键，如 ⌘/Ctrl+B 加粗、⌘/Ctrl+I 斜体、⌘/Ctrl+K 链接，也可用浮动格式栏。完整 Typora 文件及本地图片请用后台右下角“导入 Typora 文章”。
+        editor_components: [image, enhanced-code-block, latex-block, mermaid-diagram]
+        hint: 直接在正文中选中文字或数字，点击页面底部“上标 x²”“下标 x₂”，或按 ⌘/Ctrl+Shift+. 与 ⌘/Ctrl+Shift+,；无需另起一行。右侧预览显示最终效果；编辑区出现 <sup>、<sub> 标签属于正常现象，保存后会正确排版。Markdown 模式也能使用；公式块请只写一层 $$ 边界。
 
   - name: dynamic
     label: 说说
