@@ -98,6 +98,7 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 		box-shadow: 0 8px 26px rgb(15 44 55 / .15);
 	}
 	.jay-markdown-toolbar.is-visible { display: flex; }
+	.jay-markdown-toolbar.is-slate-editor button:not([data-command="sup"]):not([data-command="sub"]) { display: none; }
 	.jay-markdown-toolbar button {
 		flex: none;
 		min-width: 36px;
@@ -112,6 +113,8 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	}
 	.jay-markdown-toolbar button:hover { background: #eaf4f6; }
 	.jay-markdown-toolbar button:focus-visible { outline: 2px solid #2e7f93; }
+	.jay-markdown-toolbar-status:empty { display: none; }
+	.jay-markdown-toolbar-status { padding: 0 .4rem; color: #8b3737; font: 500 12px/1.3 system-ui, "PingFang SC", sans-serif; }
 	@media (max-width: 700px) {
 		.jay-markdown-toolbar { left: .5rem; right: .5rem; bottom: max(3.8rem, env(safe-area-inset-bottom)); transform: none; max-width: none; }
 	}
