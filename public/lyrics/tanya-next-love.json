@@ -1,0 +1,1884 @@
+{
+  "format": "karaoke-v1",
+  "title": "下一次爱情来的时候",
+  "artist": "蔡健雅",
+  "lines": [
+    {
+      "time": 14.302,
+      "end": 19.574,
+      "text": "下一次爱情来的时候",
+      "words": [
+        {
+          "text": "下",
+          "start": 14.302,
+          "duration": 0.416
+        },
+        {
+          "text": "一",
+          "start": 14.718,
+          "duration": 0.392
+        },
+        {
+          "text": "次",
+          "start": 15.11,
+          "duration": 0.472
+        },
+        {
+          "text": "爱",
+          "start": 15.582,
+          "duration": 0.408
+        },
+        {
+          "text": "情",
+          "start": 15.99,
+          "duration": 0.344
+        },
+        {
+          "text": "来",
+          "start": 16.334,
+          "duration": 0.512
+        },
+        {
+          "text": "的",
+          "start": 16.846,
+          "duration": 0.744
+        },
+        {
+          "text": "时",
+          "start": 17.59,
+          "duration": 0.76
+        },
+        {
+          "text": "候",
+          "start": 18.35,
+          "duration": 1.224
+        }
+      ]
+    },
+    {
+      "time": 20.142,
+      "end": 24.39,
+      "text": "我应该可以冷静对待",
+      "words": [
+        {
+          "text": "我",
+          "start": 20.142,
+          "duration": 0.264
+        },
+        {
+          "text": "应",
+          "start": 20.406,
+          "duration": 0.256
+        },
+        {
+          "text": "该",
+          "start": 20.662,
+          "duration": 0.352
+        },
+        {
+          "text": "可",
+          "start": 21.014,
+          "duration": 0.288
+        },
+        {
+          "text": "以",
+          "start": 21.302,
+          "duration": 0.48
+        },
+        {
+          "text": "冷",
+          "start": 21.782,
+          "duration": 0.384
+        },
+        {
+          "text": "静",
+          "start": 22.166,
+          "duration": 0.584
+        },
+        {
+          "text": "对",
+          "start": 22.75,
+          "duration": 0.504
+        },
+        {
+          "text": "待",
+          "start": 23.254,
+          "duration": 1.136
+        }
+      ]
+    },
+    {
+      "time": 27.232,
+      "end": 32.016,
+      "text": "微笑点头不急着安排",
+      "words": [
+        {
+          "text": "微",
+          "start": 27.232,
+          "duration": 0.376
+        },
+        {
+          "text": "笑",
+          "start": 27.608,
+          "duration": 0.392
+        },
+        {
+          "text": "点",
+          "start": 28,
+          "duration": 0.377
+        },
+        {
+          "text": "头",
+          "start": 28.377,
+          "duration": 0.535
+        },
+        {
+          "text": "不",
+          "start": 28.912,
+          "duration": 0.28
+        },
+        {
+          "text": "急",
+          "start": 29.192,
+          "duration": 0.4
+        },
+        {
+          "text": "着",
+          "start": 29.592,
+          "duration": 0.816
+        },
+        {
+          "text": "安",
+          "start": 30.408,
+          "duration": 0.656
+        },
+        {
+          "text": "排",
+          "start": 31.064,
+          "duration": 0.952
+        }
+      ]
+    },
+    {
+      "time": 32.344,
+      "end": 36.96,
+      "text": "宁可心头多留些空白",
+      "words": [
+        {
+          "text": "宁",
+          "start": 32.344,
+          "duration": 0.32
+        },
+        {
+          "text": "可",
+          "start": 32.664,
+          "duration": 0.328
+        },
+        {
+          "text": "心",
+          "start": 32.992,
+          "duration": 0.256
+        },
+        {
+          "text": "头",
+          "start": 33.248,
+          "duration": 0.936
+        },
+        {
+          "text": "多",
+          "start": 34.184,
+          "duration": 0.352
+        },
+        {
+          "text": "留",
+          "start": 34.536,
+          "duration": 0.344
+        },
+        {
+          "text": "些",
+          "start": 34.88,
+          "duration": 0.792
+        },
+        {
+          "text": "空",
+          "start": 35.672,
+          "duration": 0.536
+        },
+        {
+          "text": "白",
+          "start": 36.208,
+          "duration": 0.752
+        }
+      ]
+    },
+    {
+      "time": 38.802,
+      "end": 43.45,
+      "text": "Oh 爱 本是尘埃",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 38.802,
+          "duration": 0.592
+        },
+        {
+          "text": "爱",
+          "start": 39.394,
+          "duration": 1.016
+        },
+        {
+          "text": " ",
+          "start": 40.41,
+          "duration": 0
+        },
+        {
+          "text": "本",
+          "start": 40.41,
+          "duration": 0.888
+        },
+        {
+          "text": "是",
+          "start": 41.298,
+          "duration": 0.415
+        },
+        {
+          "text": "尘",
+          "start": 41.713,
+          "duration": 0.657
+        },
+        {
+          "text": "埃",
+          "start": 42.37,
+          "duration": 1.08
+        }
+      ]
+    },
+    {
+      "time": 45.212,
+      "end": 49.74,
+      "text": "Oh 爱 落在心海",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 45.212,
+          "duration": 0.624
+        },
+        {
+          "text": "爱",
+          "start": 45.836,
+          "duration": 0.952
+        },
+        {
+          "text": " ",
+          "start": 46.788,
+          "duration": 0
+        },
+        {
+          "text": "落",
+          "start": 46.788,
+          "duration": 0.808
+        },
+        {
+          "text": "在",
+          "start": 47.596,
+          "duration": 0.736
+        },
+        {
+          "text": "心",
+          "start": 48.332,
+          "duration": 0.544
+        },
+        {
+          "text": "海",
+          "start": 48.876,
+          "duration": 0.864
+        }
+      ]
+    },
+    {
+      "time": 51.331,
+      "end": 59.251,
+      "text": "Oh 爱 不知不觉 渲染开来",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 51.331,
+          "duration": 0.599
+        },
+        {
+          "text": "爱",
+          "start": 51.93,
+          "duration": 1.513
+        },
+        {
+          "text": " ",
+          "start": 53.443,
+          "duration": 0
+        },
+        {
+          "text": "不",
+          "start": 53.443,
+          "duration": 0.432
+        },
+        {
+          "text": "知",
+          "start": 53.875,
+          "duration": 0.376
+        },
+        {
+          "text": "不",
+          "start": 54.251,
+          "duration": 0.504
+        },
+        {
+          "text": "觉",
+          "start": 54.755,
+          "duration": 1.824
+        },
+        {
+          "text": " ",
+          "start": 56.579,
+          "duration": 0
+        },
+        {
+          "text": "渲",
+          "start": 56.579,
+          "duration": 0.552
+        },
+        {
+          "text": "染",
+          "start": 57.131,
+          "duration": 0.4
+        },
+        {
+          "text": "开",
+          "start": 57.531,
+          "duration": 0.568
+        },
+        {
+          "text": "来",
+          "start": 58.099,
+          "duration": 1.152
+        }
+      ]
+    },
+    {
+      "time": 59.667,
+      "end": 63.283,
+      "text": "更改未来",
+      "words": [
+        {
+          "text": "更",
+          "start": 59.667,
+          "duration": 0.608
+        },
+        {
+          "text": "改",
+          "start": 60.275,
+          "duration": 0.728
+        },
+        {
+          "text": "未",
+          "start": 61.003,
+          "duration": 0.504
+        },
+        {
+          "text": "来",
+          "start": 61.507,
+          "duration": 1.776
+        }
+      ]
+    },
+    {
+      "time": 63.6,
+      "end": 66.68,
+      "text": "你我原来 都不应该",
+      "words": [
+        {
+          "text": "你",
+          "start": 63.6,
+          "duration": 0.328
+        },
+        {
+          "text": "我",
+          "start": 63.928,
+          "duration": 0.32
+        },
+        {
+          "text": "原",
+          "start": 64.248,
+          "duration": 0.328
+        },
+        {
+          "text": "来",
+          "start": 64.576,
+          "duration": 0.736
+        },
+        {
+          "text": " ",
+          "start": 65.312,
+          "duration": 0
+        },
+        {
+          "text": "都",
+          "start": 65.312,
+          "duration": 0.352
+        },
+        {
+          "text": "不",
+          "start": 65.664,
+          "duration": 0.328
+        },
+        {
+          "text": "应",
+          "start": 65.992,
+          "duration": 0.272
+        },
+        {
+          "text": "该",
+          "start": 66.264,
+          "duration": 0.416
+        }
+      ]
+    },
+    {
+      "time": 67.275,
+      "end": 69.803,
+      "text": "太认真太慷慨",
+      "words": [
+        {
+          "text": "太",
+          "start": 67.275,
+          "duration": 0.32
+        },
+        {
+          "text": "认",
+          "start": 67.595,
+          "duration": 0.399
+        },
+        {
+          "text": "真",
+          "start": 67.994,
+          "duration": 0.497
+        },
+        {
+          "text": "太",
+          "start": 68.491,
+          "duration": 0.271
+        },
+        {
+          "text": "慷",
+          "start": 68.762,
+          "duration": 0.321
+        },
+        {
+          "text": "慨",
+          "start": 69.083,
+          "duration": 0.72
+        }
+      ]
+    },
+    {
+      "time": 70.115,
+      "end": 76.075,
+      "text": "可是却爱 爱得没有空隙想明白",
+      "words": [
+        {
+          "text": "可",
+          "start": 70.115,
+          "duration": 0.391
+        },
+        {
+          "text": "是",
+          "start": 70.506,
+          "duration": 0.314
+        },
+        {
+          "text": "却",
+          "start": 70.82,
+          "duration": 0.295
+        },
+        {
+          "text": "爱",
+          "start": 71.115,
+          "duration": 0.576
+        },
+        {
+          "text": " ",
+          "start": 71.691,
+          "duration": 0
+        },
+        {
+          "text": "爱",
+          "start": 71.691,
+          "duration": 0.392
+        },
+        {
+          "text": "得",
+          "start": 72.083,
+          "duration": 0.36
+        },
+        {
+          "text": "没",
+          "start": 72.443,
+          "duration": 0.319
+        },
+        {
+          "text": "有",
+          "start": 72.762,
+          "duration": 0.296
+        },
+        {
+          "text": "空",
+          "start": 73.058,
+          "duration": 0.306
+        },
+        {
+          "text": "隙",
+          "start": 73.364,
+          "duration": 0.431
+        },
+        {
+          "text": "想",
+          "start": 73.795,
+          "duration": 0.392
+        },
+        {
+          "text": "明",
+          "start": 74.187,
+          "duration": 1.184
+        },
+        {
+          "text": "白",
+          "start": 75.371,
+          "duration": 0.704
+        }
+      ]
+    },
+    {
+      "time": 76.288,
+      "end": 79.368,
+      "text": "手放不开 心还存在",
+      "words": [
+        {
+          "text": "手",
+          "start": 76.288,
+          "duration": 0.296
+        },
+        {
+          "text": "放",
+          "start": 76.584,
+          "duration": 0.296
+        },
+        {
+          "text": "不",
+          "start": 76.88,
+          "duration": 0.336
+        },
+        {
+          "text": "开",
+          "start": 77.216,
+          "duration": 0.785
+        },
+        {
+          "text": " ",
+          "start": 78.001,
+          "duration": 0
+        },
+        {
+          "text": "心",
+          "start": 78.001,
+          "duration": 0.351
+        },
+        {
+          "text": "还",
+          "start": 78.352,
+          "duration": 0.248
+        },
+        {
+          "text": "存",
+          "start": 78.6,
+          "duration": 0.297
+        },
+        {
+          "text": "在",
+          "start": 78.897,
+          "duration": 0.471
+        }
+      ]
+    },
+    {
+      "time": 79.88,
+      "end": 82.488,
+      "text": "一点点的疑猜",
+      "words": [
+        {
+          "text": "一",
+          "start": 79.88,
+          "duration": 0.408
+        },
+        {
+          "text": "点",
+          "start": 80.288,
+          "duration": 0.392
+        },
+        {
+          "text": "点",
+          "start": 80.68,
+          "duration": 0.496
+        },
+        {
+          "text": "的",
+          "start": 81.176,
+          "duration": 0.464
+        },
+        {
+          "text": "疑",
+          "start": 81.64,
+          "duration": 0.336
+        },
+        {
+          "text": "猜",
+          "start": 81.976,
+          "duration": 0.512
+        }
+      ]
+    },
+    {
+      "time": 82.784,
+      "end": 89.368,
+      "text": "太浓的爱如今却变成了伤害",
+      "words": [
+        {
+          "text": "太",
+          "start": 82.784,
+          "duration": 0.368
+        },
+        {
+          "text": "浓",
+          "start": 83.152,
+          "duration": 0.28
+        },
+        {
+          "text": "的",
+          "start": 83.432,
+          "duration": 0.337
+        },
+        {
+          "text": "爱",
+          "start": 83.769,
+          "duration": 0.711
+        },
+        {
+          "text": "如",
+          "start": 84.48,
+          "duration": 0.4
+        },
+        {
+          "text": "今",
+          "start": 84.88,
+          "duration": 0.344
+        },
+        {
+          "text": "却",
+          "start": 85.224,
+          "duration": 0.512
+        },
+        {
+          "text": "变",
+          "start": 85.736,
+          "duration": 0.568
+        },
+        {
+          "text": "成",
+          "start": 86.304,
+          "duration": 0.872
+        },
+        {
+          "text": "了",
+          "start": 87.176,
+          "duration": 0.336
+        },
+        {
+          "text": "伤",
+          "start": 87.512,
+          "duration": 0.392
+        },
+        {
+          "text": "害",
+          "start": 87.904,
+          "duration": 1.464
+        }
+      ]
+    },
+    {
+      "time": 101.234,
+      "end": 106.034,
+      "text": "下一次爱情来的时候",
+      "words": [
+        {
+          "text": "下",
+          "start": 101.234,
+          "duration": 0.408
+        },
+        {
+          "text": "一",
+          "start": 101.642,
+          "duration": 0.408
+        },
+        {
+          "text": "次",
+          "start": 102.05,
+          "duration": 0.44
+        },
+        {
+          "text": "爱",
+          "start": 102.49,
+          "duration": 0.455
+        },
+        {
+          "text": "情",
+          "start": 102.945,
+          "duration": 0.37
+        },
+        {
+          "text": "来",
+          "start": 103.315,
+          "duration": 0.391
+        },
+        {
+          "text": "的",
+          "start": 103.706,
+          "duration": 0.975
+        },
+        {
+          "text": "时",
+          "start": 104.681,
+          "duration": 0.521
+        },
+        {
+          "text": "候",
+          "start": 105.202,
+          "duration": 0.832
+        }
+      ]
+    },
+    {
+      "time": 106.698,
+      "end": 111.065,
+      "text": "你应该学着慢慢去爱",
+      "words": [
+        {
+          "text": "你",
+          "start": 106.698,
+          "duration": 0.384
+        },
+        {
+          "text": "应",
+          "start": 107.082,
+          "duration": 0.344
+        },
+        {
+          "text": "该",
+          "start": 107.426,
+          "duration": 0.32
+        },
+        {
+          "text": "学",
+          "start": 107.746,
+          "duration": 0.303
+        },
+        {
+          "text": "着",
+          "start": 108.049,
+          "duration": 0.498
+        },
+        {
+          "text": "慢",
+          "start": 108.547,
+          "duration": 0.375
+        },
+        {
+          "text": "慢",
+          "start": 108.922,
+          "duration": 0.584
+        },
+        {
+          "text": "去",
+          "start": 109.506,
+          "duration": 0.567
+        },
+        {
+          "text": "爱",
+          "start": 110.073,
+          "duration": 0.992
+        }
+      ]
+    },
+    {
+      "time": 113.713,
+      "end": 118.786,
+      "text": "有些承诺需要说出来",
+      "words": [
+        {
+          "text": "有",
+          "start": 113.713,
+          "duration": 0.617
+        },
+        {
+          "text": "些",
+          "start": 114.33,
+          "duration": 0.351
+        },
+        {
+          "text": "承",
+          "start": 114.681,
+          "duration": 0.44
+        },
+        {
+          "text": "诺",
+          "start": 115.121,
+          "duration": 0.593
+        },
+        {
+          "text": "需",
+          "start": 115.714,
+          "duration": 0.432
+        },
+        {
+          "text": "要",
+          "start": 116.146,
+          "duration": 0.344
+        },
+        {
+          "text": "说",
+          "start": 116.49,
+          "duration": 1.176
+        },
+        {
+          "text": "出",
+          "start": 117.666,
+          "duration": 0.504
+        },
+        {
+          "text": "来",
+          "start": 118.17,
+          "duration": 0.616
+        }
+      ]
+    },
+    {
+      "time": 119.098,
+      "end": 123.817,
+      "text": "在适当的时候就走开",
+      "words": [
+        {
+          "text": "在",
+          "start": 119.098,
+          "duration": 0.4
+        },
+        {
+          "text": "适",
+          "start": 119.498,
+          "duration": 0.352
+        },
+        {
+          "text": "当",
+          "start": 119.85,
+          "duration": 0.384
+        },
+        {
+          "text": "的",
+          "start": 120.234,
+          "duration": 0.792
+        },
+        {
+          "text": "时",
+          "start": 121.026,
+          "duration": 0.335
+        },
+        {
+          "text": "候",
+          "start": 121.361,
+          "duration": 0.361
+        },
+        {
+          "text": "就",
+          "start": 121.722,
+          "duration": 0.873
+        },
+        {
+          "text": "走",
+          "start": 122.595,
+          "duration": 0.382
+        },
+        {
+          "text": "开",
+          "start": 122.977,
+          "duration": 0.84
+        }
+      ]
+    },
+    {
+      "time": 125.576,
+      "end": 130.168,
+      "text": "Oh 爱 本是尘埃",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 125.576,
+          "duration": 0.624
+        },
+        {
+          "text": "爱",
+          "start": 126.2,
+          "duration": 1.504
+        },
+        {
+          "text": " ",
+          "start": 127.704,
+          "duration": 0
+        },
+        {
+          "text": "本",
+          "start": 127.704,
+          "duration": 0.488
+        },
+        {
+          "text": "是",
+          "start": 128.192,
+          "duration": 0.408
+        },
+        {
+          "text": "尘",
+          "start": 128.6,
+          "duration": 0.52
+        },
+        {
+          "text": "埃",
+          "start": 129.12,
+          "duration": 1.048
+        }
+      ]
+    },
+    {
+      "time": 132.015,
+      "end": 138.032,
+      "text": "Oh 爱 落在谁的心海",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 132.015,
+          "duration": 0.649
+        },
+        {
+          "text": "爱",
+          "start": 132.664,
+          "duration": 1.336
+        },
+        {
+          "text": " ",
+          "start": 134,
+          "duration": 0
+        },
+        {
+          "text": "落",
+          "start": 134,
+          "duration": 0.352
+        },
+        {
+          "text": "在",
+          "start": 134.352,
+          "duration": 0.408
+        },
+        {
+          "text": "谁",
+          "start": 134.76,
+          "duration": 0.392
+        },
+        {
+          "text": "的",
+          "start": 135.152,
+          "duration": 0.608
+        },
+        {
+          "text": "心",
+          "start": 135.76,
+          "duration": 1.144
+        },
+        {
+          "text": "海",
+          "start": 136.904,
+          "duration": 1.128
+        }
+      ]
+    },
+    {
+      "time": 138.528,
+      "end": 146.288,
+      "text": "Oh 爱 不知不觉 渲染开来",
+      "words": [
+        {
+          "text": "Oh ",
+          "start": 138.528,
+          "duration": 0.375
+        },
+        {
+          "text": "爱",
+          "start": 138.903,
+          "duration": 1.393
+        },
+        {
+          "text": " ",
+          "start": 140.296,
+          "duration": 0
+        },
+        {
+          "text": "不",
+          "start": 140.296,
+          "duration": 0.432
+        },
+        {
+          "text": "知",
+          "start": 140.728,
+          "duration": 0.416
+        },
+        {
+          "text": "不",
+          "start": 141.144,
+          "duration": 0.584
+        },
+        {
+          "text": "觉",
+          "start": 141.728,
+          "duration": 1.616
+        },
+        {
+          "text": " ",
+          "start": 143.344,
+          "duration": 0
+        },
+        {
+          "text": "渲",
+          "start": 143.344,
+          "duration": 0.688
+        },
+        {
+          "text": "染",
+          "start": 144.032,
+          "duration": 0.336
+        },
+        {
+          "text": "开",
+          "start": 144.368,
+          "duration": 0.632
+        },
+        {
+          "text": "来",
+          "start": 145,
+          "duration": 1.288
+        }
+      ]
+    },
+    {
+      "time": 146.691,
+      "end": 150.236,
+      "text": "更改未来",
+      "words": [
+        {
+          "text": "更",
+          "start": 146.691,
+          "duration": 0.536
+        },
+        {
+          "text": "改",
+          "start": 147.227,
+          "duration": 0.56
+        },
+        {
+          "text": "未",
+          "start": 147.787,
+          "duration": 0.544
+        },
+        {
+          "text": "来",
+          "start": 148.331,
+          "duration": 1.905
+        }
+      ]
+    },
+    {
+      "time": 150.618,
+      "end": 153.691,
+      "text": "你我原来 都不应该",
+      "words": [
+        {
+          "text": "你",
+          "start": 150.618,
+          "duration": 0.417
+        },
+        {
+          "text": "我",
+          "start": 151.035,
+          "duration": 0.344
+        },
+        {
+          "text": "原",
+          "start": 151.379,
+          "duration": 0.288
+        },
+        {
+          "text": "来",
+          "start": 151.667,
+          "duration": 0.576
+        },
+        {
+          "text": " ",
+          "start": 152.243,
+          "duration": 0
+        },
+        {
+          "text": "都",
+          "start": 152.243,
+          "duration": 0.32
+        },
+        {
+          "text": "不",
+          "start": 152.563,
+          "duration": 0.272
+        },
+        {
+          "text": "应",
+          "start": 152.835,
+          "duration": 0.368
+        },
+        {
+          "text": "该",
+          "start": 153.203,
+          "duration": 0.488
+        }
+      ]
+    },
+    {
+      "time": 154.139,
+      "end": 156.635,
+      "text": "太认真太慷慨",
+      "words": [
+        {
+          "text": "太",
+          "start": 154.139,
+          "duration": 0.336
+        },
+        {
+          "text": "认",
+          "start": 154.475,
+          "duration": 0.392
+        },
+        {
+          "text": "真",
+          "start": 154.867,
+          "duration": 0.552
+        },
+        {
+          "text": "太",
+          "start": 155.419,
+          "duration": 0.408
+        },
+        {
+          "text": "慷",
+          "start": 155.827,
+          "duration": 0.344
+        },
+        {
+          "text": "慨",
+          "start": 156.171,
+          "duration": 0.464
+        }
+      ]
+    },
+    {
+      "time": 156.923,
+      "end": 162.939,
+      "text": "可是却爱 爱得没有空隙想明白",
+      "words": [
+        {
+          "text": "可",
+          "start": 156.923,
+          "duration": 0.393
+        },
+        {
+          "text": "是",
+          "start": 157.316,
+          "duration": 0.238
+        },
+        {
+          "text": "却",
+          "start": 157.554,
+          "duration": 0.329
+        },
+        {
+          "text": "爱",
+          "start": 157.883,
+          "duration": 0.672
+        },
+        {
+          "text": " ",
+          "start": 158.555,
+          "duration": 0
+        },
+        {
+          "text": "爱",
+          "start": 158.555,
+          "duration": 0.433
+        },
+        {
+          "text": "得",
+          "start": 158.988,
+          "duration": 0.327
+        },
+        {
+          "text": "没",
+          "start": 159.315,
+          "duration": 0.352
+        },
+        {
+          "text": "有",
+          "start": 159.667,
+          "duration": 0.312
+        },
+        {
+          "text": "空",
+          "start": 159.979,
+          "duration": 0.256
+        },
+        {
+          "text": "隙",
+          "start": 160.235,
+          "duration": 0.312
+        },
+        {
+          "text": "想",
+          "start": 160.547,
+          "duration": 0.448
+        },
+        {
+          "text": "明",
+          "start": 160.995,
+          "duration": 1.216
+        },
+        {
+          "text": "白",
+          "start": 162.211,
+          "duration": 0.728
+        }
+      ]
+    },
+    {
+      "time": 163.232,
+      "end": 166.255,
+      "text": "手放不开 心还存在",
+      "words": [
+        {
+          "text": "手",
+          "start": 163.232,
+          "duration": 0.248
+        },
+        {
+          "text": "放",
+          "start": 163.48,
+          "duration": 0.248
+        },
+        {
+          "text": "不",
+          "start": 163.728,
+          "duration": 0.343
+        },
+        {
+          "text": "开",
+          "start": 164.071,
+          "duration": 0.841
+        },
+        {
+          "text": " ",
+          "start": 164.912,
+          "duration": 0
+        },
+        {
+          "text": "心",
+          "start": 164.912,
+          "duration": 0.351
+        },
+        {
+          "text": "还",
+          "start": 165.263,
+          "duration": 0.248
+        },
+        {
+          "text": "存",
+          "start": 165.511,
+          "duration": 0.296
+        },
+        {
+          "text": "在",
+          "start": 165.807,
+          "duration": 0.448
+        }
+      ]
+    },
+    {
+      "time": 166.751,
+      "end": 169.456,
+      "text": "一点点的疑猜",
+      "words": [
+        {
+          "text": "一",
+          "start": 166.751,
+          "duration": 0.368
+        },
+        {
+          "text": "点",
+          "start": 167.119,
+          "duration": 0.4
+        },
+        {
+          "text": "点",
+          "start": 167.519,
+          "duration": 0.362
+        },
+        {
+          "text": "的",
+          "start": 167.881,
+          "duration": 0.455
+        },
+        {
+          "text": "疑",
+          "start": 168.336,
+          "duration": 0.384
+        },
+        {
+          "text": "猜",
+          "start": 168.72,
+          "duration": 0.736
+        }
+      ]
+    },
+    {
+      "time": 169.728,
+      "end": 177.112,
+      "text": "太浓的爱如今却变成了伤害",
+      "words": [
+        {
+          "text": "太",
+          "start": 169.728,
+          "duration": 0.32
+        },
+        {
+          "text": "浓",
+          "start": 170.048,
+          "duration": 0.279
+        },
+        {
+          "text": "的",
+          "start": 170.327,
+          "duration": 0.304
+        },
+        {
+          "text": "爱",
+          "start": 170.631,
+          "duration": 0.696
+        },
+        {
+          "text": "如",
+          "start": 171.327,
+          "duration": 0.401
+        },
+        {
+          "text": "今",
+          "start": 171.728,
+          "duration": 0.335
+        },
+        {
+          "text": "却",
+          "start": 172.063,
+          "duration": 0.8
+        },
+        {
+          "text": "变",
+          "start": 172.863,
+          "duration": 0.361
+        },
+        {
+          "text": "成",
+          "start": 173.224,
+          "duration": 0.76
+        },
+        {
+          "text": "了",
+          "start": 173.984,
+          "duration": 0.44
+        },
+        {
+          "text": "伤",
+          "start": 174.424,
+          "duration": 0.425
+        },
+        {
+          "text": "害",
+          "start": 174.849,
+          "duration": 2.263
+        }
+      ]
+    },
+    {
+      "time": 199.353,
+      "end": 202.424,
+      "text": "你我原来 都不应该",
+      "words": [
+        {
+          "text": "你",
+          "start": 199.353,
+          "duration": 0.64
+        },
+        {
+          "text": "我",
+          "start": 199.993,
+          "duration": 0.24
+        },
+        {
+          "text": "原",
+          "start": 200.233,
+          "duration": 0.344
+        },
+        {
+          "text": "来",
+          "start": 200.577,
+          "duration": 0.608
+        },
+        {
+          "text": " ",
+          "start": 201.185,
+          "duration": 0
+        },
+        {
+          "text": "都",
+          "start": 201.185,
+          "duration": 0.336
+        },
+        {
+          "text": "不",
+          "start": 201.521,
+          "duration": 0.263
+        },
+        {
+          "text": "应",
+          "start": 201.784,
+          "duration": 0.256
+        },
+        {
+          "text": "该",
+          "start": 202.04,
+          "duration": 0.384
+        }
+      ]
+    },
+    {
+      "time": 203.032,
+      "end": 205.617,
+      "text": "太认真太慷慨",
+      "words": [
+        {
+          "text": "太",
+          "start": 203.032,
+          "duration": 0.361
+        },
+        {
+          "text": "认",
+          "start": 203.393,
+          "duration": 0.44
+        },
+        {
+          "text": "真",
+          "start": 203.833,
+          "duration": 0.536
+        },
+        {
+          "text": "太",
+          "start": 204.369,
+          "duration": 0.319
+        },
+        {
+          "text": "慷",
+          "start": 204.688,
+          "duration": 0.345
+        },
+        {
+          "text": "慨",
+          "start": 205.033,
+          "duration": 0.584
+        }
+      ]
+    },
+    {
+      "time": 205.961,
+      "end": 211.816,
+      "text": "可是却爱 爱得没有空隙想明白",
+      "words": [
+        {
+          "text": "可",
+          "start": 205.961,
+          "duration": 0.328
+        },
+        {
+          "text": "是",
+          "start": 206.289,
+          "duration": 0.239
+        },
+        {
+          "text": "却",
+          "start": 206.528,
+          "duration": 0.32
+        },
+        {
+          "text": "爱",
+          "start": 206.848,
+          "duration": 0.625
+        },
+        {
+          "text": " ",
+          "start": 207.473,
+          "duration": 0
+        },
+        {
+          "text": "爱",
+          "start": 207.473,
+          "duration": 0.343
+        },
+        {
+          "text": "得",
+          "start": 207.816,
+          "duration": 0.328
+        },
+        {
+          "text": "没",
+          "start": 208.144,
+          "duration": 0.386
+        },
+        {
+          "text": "有",
+          "start": 208.53,
+          "duration": 0.343
+        },
+        {
+          "text": "空",
+          "start": 208.873,
+          "duration": 0.303
+        },
+        {
+          "text": "隙",
+          "start": 209.176,
+          "duration": 0.36
+        },
+        {
+          "text": "想",
+          "start": 209.536,
+          "duration": 0.377
+        },
+        {
+          "text": "明",
+          "start": 209.913,
+          "duration": 1.192
+        },
+        {
+          "text": "白",
+          "start": 211.105,
+          "duration": 0.711
+        }
+      ]
+    },
+    {
+      "time": 212.169,
+      "end": 215.209,
+      "text": "手放不开 心还存在",
+      "words": [
+        {
+          "text": "手",
+          "start": 212.169,
+          "duration": 0.409
+        },
+        {
+          "text": "放",
+          "start": 212.578,
+          "duration": 0.247
+        },
+        {
+          "text": "不",
+          "start": 212.825,
+          "duration": 0.312
+        },
+        {
+          "text": "开",
+          "start": 213.137,
+          "duration": 0.615
+        },
+        {
+          "text": " ",
+          "start": 213.752,
+          "duration": 0
+        },
+        {
+          "text": "心",
+          "start": 213.752,
+          "duration": 0.353
+        },
+        {
+          "text": "还",
+          "start": 214.105,
+          "duration": 0.296
+        },
+        {
+          "text": "存",
+          "start": 214.401,
+          "duration": 0.359
+        },
+        {
+          "text": "在",
+          "start": 214.76,
+          "duration": 0.449
+        }
+      ]
+    },
+    {
+      "time": 215.681,
+      "end": 218.344,
+      "text": "一点点的疑猜",
+      "words": [
+        {
+          "text": "一",
+          "start": 215.681,
+          "duration": 0.32
+        },
+        {
+          "text": "点",
+          "start": 216.001,
+          "duration": 0.32
+        },
+        {
+          "text": "点",
+          "start": 216.321,
+          "duration": 0.615
+        },
+        {
+          "text": "的",
+          "start": 216.936,
+          "duration": 0.385
+        },
+        {
+          "text": "疑",
+          "start": 217.321,
+          "duration": 0.352
+        },
+        {
+          "text": "猜",
+          "start": 217.673,
+          "duration": 0.671
+        }
+      ]
+    },
+    {
+      "time": 218.633,
+      "end": 224.601,
+      "text": "太浓的爱却变成了伤害",
+      "words": [
+        {
+          "text": "太",
+          "start": 218.633,
+          "duration": 0.352
+        },
+        {
+          "text": "浓",
+          "start": 218.985,
+          "duration": 0.311
+        },
+        {
+          "text": "的",
+          "start": 219.296,
+          "duration": 0.281
+        },
+        {
+          "text": "爱",
+          "start": 219.577,
+          "duration": 1.991
+        },
+        {
+          "text": "却",
+          "start": 221.568,
+          "duration": 0.329
+        },
+        {
+          "text": "变",
+          "start": 221.897,
+          "duration": 0.248
+        },
+        {
+          "text": "成",
+          "start": 222.145,
+          "duration": 0.328
+        },
+        {
+          "text": "了",
+          "start": 222.473,
+          "duration": 0.471
+        },
+        {
+          "text": "伤",
+          "start": 222.944,
+          "duration": 0.809
+        },
+        {
+          "text": "害",
+          "start": 223.753,
+          "duration": 0.848
+        }
+      ]
+    },
+    {
+      "time": 224.905,
+      "end": 230.953,
+      "text": "过了好久 以为自己会逃不开",
+      "words": [
+        {
+          "text": "过",
+          "start": 224.905,
+          "duration": 0.335
+        },
+        {
+          "text": "了",
+          "start": 225.24,
+          "duration": 0.297
+        },
+        {
+          "text": "好",
+          "start": 225.537,
+          "duration": 0.28
+        },
+        {
+          "text": "久",
+          "start": 225.817,
+          "duration": 2.031
+        },
+        {
+          "text": " ",
+          "start": 227.848,
+          "duration": 0
+        },
+        {
+          "text": "以",
+          "start": 227.848,
+          "duration": 0.512
+        },
+        {
+          "text": "为",
+          "start": 228.36,
+          "duration": 0.321
+        },
+        {
+          "text": "自",
+          "start": 228.681,
+          "duration": 0.305
+        },
+        {
+          "text": "己",
+          "start": 228.986,
+          "duration": 0.471
+        },
+        {
+          "text": "会",
+          "start": 229.457,
+          "duration": 0.296
+        },
+        {
+          "text": "逃",
+          "start": 229.753,
+          "duration": 0.343
+        },
+        {
+          "text": "不",
+          "start": 230.096,
+          "duration": 0.28
+        },
+        {
+          "text": "开",
+          "start": 230.376,
+          "duration": 0.577
+        }
+      ]
+    },
+    {
+      "time": 231.265,
+      "end": 240.513,
+      "text": "我会等待 下一次爱情再来",
+      "words": [
+        {
+          "text": "我",
+          "start": 231.265,
+          "duration": 0.343
+        },
+        {
+          "text": "会",
+          "start": 231.608,
+          "duration": 0.288
+        },
+        {
+          "text": "等",
+          "start": 231.896,
+          "duration": 0.369
+        },
+        {
+          "text": "待",
+          "start": 232.265,
+          "duration": 2.047
+        },
+        {
+          "text": " ",
+          "start": 234.312,
+          "duration": 0
+        },
+        {
+          "text": "下",
+          "start": 234.312,
+          "duration": 0.376
+        },
+        {
+          "text": "一",
+          "start": 234.688,
+          "duration": 0.393
+        },
+        {
+          "text": "次",
+          "start": 235.081,
+          "duration": 0.912
+        },
+        {
+          "text": "爱",
+          "start": 235.993,
+          "duration": 0.64
+        },
+        {
+          "text": "情",
+          "start": 236.633,
+          "duration": 0.872
+        },
+        {
+          "text": "再",
+          "start": 237.505,
+          "duration": 0.68
+        },
+        {
+          "text": "来",
+          "start": 238.185,
+          "duration": 2.328
+        }
+      ]
+    }
+  ]
+}

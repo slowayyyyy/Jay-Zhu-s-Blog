@@ -501,6 +501,12 @@
         "我只能凄然一笑",
         "在这微凉的清晨"
       ]
+    },
+    {
+      "name": "下一次爱情来的时候",
+      "artist": "蔡健雅",
+      "src": "/media/audio/20261009-tanya-next-love.mp3",
+      "lrc": "/lyrics/tanya-next-love.json"
     }
   ],
   "visuals": {

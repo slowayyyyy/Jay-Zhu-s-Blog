@@ -101,6 +101,21 @@ test("YOASOBI たぶん keeps audio, cover, karaoke timing and translation lines
 	assert.ok(karaoke.lines.every((line) => line.words.length > 0));
 });
 
+test("蔡健雅 下一次爱情来的时候 keeps its audio and timed KRC lyrics paired", () => {
+	const track = data.playlist.find((item) => item.name === "下一次爱情来的时候");
+	assert.ok(track);
+	assert.equal(track.artist, "蔡健雅");
+	assert.equal(track.src, "/media/audio/20261009-tanya-next-love.mp3");
+	assert.equal(track.lrc, "/lyrics/tanya-next-love.json");
+	const karaoke = JSON.parse(read(`public${track.lrc}`));
+	assert.equal(karaoke.format, "karaoke-v1");
+	assert.equal(karaoke.lines.length, 36);
+	assert.equal(karaoke.lines[0].text, "下一次爱情来的时候");
+	assert.equal(karaoke.lines.at(-1).text, "我会等待 下一次爱情再来");
+	assert.ok(karaoke.lines.every((line) => line.words.length > 0));
+	assert.ok(karaoke.lines.every((line) => line.words.every((word) => word.start >= line.time && word.start < line.end)));
+});
+
 test("Umami public ID and script address use CMS settings; blank ID disables collection", () => {
 	const content = structuredClone(data);
 	content.integrations.umamiWebsiteId = " test-id ";
