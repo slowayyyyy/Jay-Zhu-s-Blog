@@ -15,7 +15,7 @@
 			"name": "I Miss You 原版文字版",
 			"kind": "图片",
 			"src": "/uploads/home-carousel-i-miss-you-original.webp",
-			"usage": "视觉素材库；可用于桌面首页轮播、横幅或其他模块",
+			"usage": "当前桌面首页轮播",
 			"note": "从桌面原始动态素材提取的 2560×1440 清晰帧，完整保留左侧 I miss you 字样。"
 		},
 		{
@@ -23,7 +23,7 @@
 			"name": "I Miss You 无字宽屏版",
 			"kind": "图片",
 			"src": "/uploads/home-carousel-miss-you-clean.webp",
-			"usage": "当前桌面首页轮播",
+			"usage": "视觉素材库；可选的无字宽屏版本",
 			"note": "适配宽屏展示的无字版本。"
 		},
 		{

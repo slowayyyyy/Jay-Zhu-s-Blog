@@ -2,6 +2,12 @@
 
 最后更新：2026-10-09
 
+## 2026-10-09 首页有字轮播图与后台选图
+
+- 桌面首页轮播中的 I Miss You 图片改回 `/uploads/home-carousel-i-miss-you-original.webp`；无字版文件和素材索引继续保留，未删除。
+- 后台 `image-crop` 控件新增“从已有素材选择”，展示视觉素材索引及 `public/uploads`、`public/assets/images` 中的站内图片；按名称、用途或路径搜索，点击后更新对应条目并重置取景，仍须保存站点设置才会发布。
+- 图片选单由 `src/pages/admin/index.astro` 构建时生成；新增文件经 GitHub/Cloudflare 发布后刷新后台即可出现，不再需要复制路径或从 Mac 重复上传。图片上传失败时撤销临时预览，避免误以为已成功保存。
+
 ## 2026-10-09 新增蔡健雅《下一次爱情来的时候》
 
 - 音频由 Cloudflare R2 的 `/media/audio/20261009-tanya-next-love.mp3` 提供；上传使用现有受保护接口，未将认证信息写入仓库。

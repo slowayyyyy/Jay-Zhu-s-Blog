@@ -1,5 +1,8 @@
 ---
 import { getCollection } from "astro:content";
+import { join } from "node:path";
+import mediaLibrary from "../../data/media-library.json";
+import { buildAdminImageLibrary } from "../../lib/admin-image-library.mjs";
 
 const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	slug:
@@ -12,6 +15,7 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	pinned: post.data.pinned,
 	locked: Boolean(post.data.password?.trim()),
 }));
+const imageLibrary = await buildAdminImageLibrary(join(process.cwd(), "public"), mediaLibrary.assets);
 ---
 
 <!doctype html>
@@ -27,8 +31,9 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	<body>
 		<div class="cms-loading">正在打开博客内容管理后台...</div>
 		<a class="typora-import-entry" href="/admin/typora/" aria-label="导入 Typora Markdown 文章">导入 Typora 文章</a>
-		<script define:vars={{ initialPostStatuses }} is:inline>
+		<script define:vars={{ initialPostStatuses, imageLibrary }} is:inline>
 			window.__JAY_INITIAL_POST_STATUSES__ = initialPostStatuses;
+			window.__JAY_IMAGE_LIBRARY__ = imageLibrary;
 		</script>
 		<script is:inline src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
 		<script>
@@ -79,6 +84,89 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 
 	.typora-import-entry:hover { background: #f3fafb; }
 	.typora-import-entry:focus-visible { outline: 3px solid #2e7f93; outline-offset: 3px; }
+	.jay-image-library__open {
+		min-height: 42px;
+		padding: 9px 13px;
+		border: 1px solid #2f7283;
+		border-radius: 8px;
+		background: #e8f4f6;
+		color: #225969;
+		font: 650 14px/1.3 system-ui, "PingFang SC", sans-serif;
+		cursor: pointer;
+	}
+	.jay-image-library__open:hover,
+	.jay-image-library__open[aria-expanded="true"] { background: #d8ebef; }
+	.jay-image-library {
+		margin: 0 0 14px;
+		padding: 14px;
+		border: 1px solid #c9d9df;
+		border-radius: 12px;
+		background: #fff;
+		color: #253c44;
+		font: 14px/1.45 system-ui, "PingFang SC", sans-serif;
+	}
+	.jay-image-library__head { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+	.jay-image-library__head strong { font-size: 16px; }
+	.jay-image-library__close,
+	.jay-image-library__more {
+		padding: 7px 10px;
+		border: 1px solid #b9cbd1;
+		border-radius: 8px;
+		background: #fff;
+		color: #24596a;
+		cursor: pointer;
+	}
+	.jay-image-library__note { margin: 7px 0 12px; color: #526b74; }
+	.jay-image-library__search {
+		width: 100%;
+		min-height: 42px;
+		padding: 9px 11px;
+		border: 1px solid #aebdc3;
+		border-radius: 8px;
+		background: #fff;
+		color: #1f2b30;
+		font: 16px/1.3 system-ui, "PingFang SC", sans-serif;
+	}
+	.jay-image-library__scopes { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+	.jay-image-library__scope {
+		padding: 7px 11px;
+		border: 1px solid #bbccd2;
+		border-radius: 8px;
+		background: #fff;
+		color: #31515b;
+		font: 600 13px/1.3 system-ui, "PingFang SC", sans-serif;
+		cursor: pointer;
+	}
+	.jay-image-library__scope[aria-pressed="true"] { border-color: #2f7283; background: #e8f4f6; color: #225969; }
+	.jay-image-library__count { margin: 11px 0 8px; color: #526b74; font-size: 13px; }
+	.jay-image-library__grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fill, minmax(132px, 1fr));
+		gap: 10px;
+		max-height: 470px;
+		overflow-y: auto;
+		padding: 2px;
+	}
+	.jay-image-library__item {
+		min-width: 0;
+		padding: 5px;
+		border: 2px solid #d9e3e6;
+		border-radius: 10px;
+		background: #fff;
+		color: #253c44;
+		text-align: left;
+		cursor: pointer;
+	}
+	.jay-image-library__item:hover { border-color: #7daebc; background: #f5fafb; }
+	.jay-image-library__item[aria-pressed="true"] { border-color: #2f7283; background: #eaf5f7; }
+	.jay-image-library__item img { display: block; width: 100%; aspect-ratio: 4 / 3; border-radius: 5px; background: #e4edf0; object-fit: cover; }
+	.jay-image-library__name { display: block; margin-top: 6px; font-weight: 650; overflow-wrap: anywhere; }
+	.jay-image-library__usage { display: block; margin-top: 2px; color: #59727a; line-height: 1.35; overflow-wrap: anywhere; }
+	.jay-image-library__empty { margin: 12px 0; padding: 20px; border-radius: 8px; background: #f4f8f9; color: #526b74; }
+	.jay-image-library__more { margin-top: 10px; }
+	.jay-image-library button:focus-visible,
+	.jay-image-library__open:focus-visible,
+	.jay-image-library__search:focus-visible { outline: 3px solid #2e7f93; outline-offset: 2px; }
 
 	.jay-markdown-toolbar {
 		position: fixed;
@@ -117,5 +205,7 @@ const initialPostStatuses = (await getCollection("posts")).map((post) => ({
 	.jay-markdown-toolbar-status { padding: 0 .4rem; color: #8b3737; font: 500 12px/1.3 system-ui, "PingFang SC", sans-serif; }
 	@media (max-width: 700px) {
 		.jay-markdown-toolbar { left: .5rem; right: .5rem; bottom: max(3.8rem, env(safe-area-inset-bottom)); transform: none; max-width: none; }
+		.jay-image-library { padding: 10px; }
+		.jay-image-library__grid { grid-template-columns: repeat(auto-fill, minmax(105px, 1fr)); }
 	}
 </style>

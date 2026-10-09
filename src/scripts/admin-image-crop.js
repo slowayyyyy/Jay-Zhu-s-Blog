@@ -55,6 +55,29 @@ const normalizeCropValue = (value) => {
 	};
 };
 
+export const filterImageLibrary = (images, query, indexedOnly) => {
+	const search = String(query || "")
+		.trim()
+		.toLocaleLowerCase("zh-CN");
+	return images.filter((image) => {
+		if (indexedOnly && !image.indexed) return false;
+		return (
+			!search ||
+			`${image.name} ${image.usage} ${image.src}`
+				.toLocaleLowerCase("zh-CN")
+				.includes(search)
+		);
+	});
+};
+
+export const selectLibraryImage = (currentValue, src) => ({
+	...normalizeCropValue(currentValue),
+	src,
+	positionX: 50,
+	positionY: 50,
+	zoom: 1,
+});
+
 const controlLabelStyle = {
 	display: "flex",
 	justifyContent: "space-between",
@@ -86,7 +109,16 @@ export function setupImageCropWidget({
 
 	const ImageCropControl = createClass({
 		getInitialState() {
-			return { uploading: false, error: "", localPreviewUrl: "" };
+			return {
+				uploading: false,
+				error: "",
+				localPreviewUrl: "",
+				previewError: false,
+				galleryOpen: false,
+				galleryScope: "indexed",
+				galleryQuery: "",
+				galleryLimit: 24,
+			};
 		},
 
 		componentWillUnmount() {
@@ -110,8 +142,21 @@ export function setupImageCropWidget({
 			if (this.state.localPreviewUrl?.startsWith("blob:")) {
 				URL.revokeObjectURL(this.state.localPreviewUrl);
 			}
-			this.setState({ localPreviewUrl: "", error: "" });
+			this.setState({ localPreviewUrl: "", error: "", previewError: false });
 			this.setCropValue({ src: event.target.value });
+		},
+
+		handleSelectLibraryImage(image) {
+			if (this.state.localPreviewUrl?.startsWith("blob:")) {
+				URL.revokeObjectURL(this.state.localPreviewUrl);
+			}
+			this.props.onChange(selectLibraryImage(this.props.value, image.src));
+			this.setState({ localPreviewUrl: "", previewError: false, error: "" });
+			showStatus?.(
+				`已选用“${image.name}”。调整取景后保存站点设置。`,
+				"success",
+				4200,
+			);
 		},
 
 		async handleFileChange(event) {
@@ -127,7 +172,12 @@ export function setupImageCropWidget({
 			const localPreviewUrl = URL.createObjectURL(file);
 			if (previousPreviewUrl?.startsWith("blob:"))
 				URL.revokeObjectURL(previousPreviewUrl);
-			this.setState({ uploading: true, error: "", localPreviewUrl });
+			this.setState({
+				uploading: true,
+				error: "",
+				localPreviewUrl,
+				previewError: false,
+			});
 			showStatus?.("正在上传取景图片，请不要关闭页面…", "pending");
 
 			try {
@@ -146,9 +196,149 @@ export function setupImageCropWidget({
 						: error?.message === "missing_github_token"
 							? "未读取到 GitHub 登录状态，请刷新后台并重新登录后再试。"
 							: `上传失败：${error?.message || "请稍后重试"}`;
-				this.setState({ uploading: false, error: message });
+				URL.revokeObjectURL(localPreviewUrl);
+				this.setState({
+					uploading: false,
+					localPreviewUrl: "",
+					error: message,
+				});
 				showStatus?.(message, "error", 7600);
 			}
+		},
+
+		renderLibrary() {
+			const images = Array.isArray(window.__JAY_IMAGE_LIBRARY__)
+				? window.__JAY_IMAGE_LIBRARY__
+				: [];
+			const indexedCount = images.filter((image) => image.indexed).length;
+			const indexedOnly = this.state.galleryScope === "indexed";
+			const matches = filterImageLibrary(
+				images,
+				this.state.galleryQuery,
+				indexedOnly,
+			);
+			const visible = matches.slice(0, this.state.galleryLimit);
+			const currentSource = normalizeCropValue(this.props.value).src;
+			const panelId = `${this.props.forID}-library`;
+
+			return h(
+				"section",
+				{
+					id: panelId,
+					className: "jay-image-library",
+					"aria-label": "选择站内已有图片",
+				},
+				h(
+					"div",
+					{ className: "jay-image-library__head" },
+					h("strong", null, "选择站内已有图片"),
+					h(
+						"button",
+						{
+							type: "button",
+							className: "jay-image-library__close",
+							"aria-label": "收起图片库",
+							onClick: () => this.setState({ galleryOpen: false }),
+						},
+						"收起",
+					),
+				),
+				h(
+					"p",
+					{ className: "jay-image-library__note" },
+					"选用已有图片不会重复上传或删除原文件；保存站点设置后前台才会更新。",
+				),
+				h("input", {
+					type: "search",
+					className: "jay-image-library__search",
+					placeholder: "搜索素材名称、用途或文件名",
+					"aria-label": "搜索已有图片",
+					value: this.state.galleryQuery,
+					onChange: (event) =>
+						this.setState({
+							galleryQuery: event.target.value,
+							galleryLimit: 24,
+						}),
+				}),
+				h(
+					"div",
+					{
+						className: "jay-image-library__scopes",
+						role: "group",
+						"aria-label": "图片范围",
+					},
+					[
+						["indexed", `已整理素材 ${indexedCount}`],
+						["all", `全部站内图片 ${images.length}`],
+					].map(([scope, label]) =>
+						h(
+							"button",
+							{
+								key: scope,
+								type: "button",
+								className: "jay-image-library__scope",
+								"aria-pressed": this.state.galleryScope === scope,
+								onClick: () =>
+									this.setState({ galleryScope: scope, galleryLimit: 24 }),
+							},
+							label,
+						),
+					),
+				),
+				h(
+					"p",
+					{ className: "jay-image-library__count", role: "status" },
+					`找到 ${matches.length} 张图片${matches.length > visible.length ? `，当前显示 ${visible.length} 张` : ""}`,
+				),
+				visible.length
+					? h(
+							"div",
+							{ className: "jay-image-library__grid" },
+							visible.map((image) =>
+								h(
+									"button",
+									{
+										key: image.src,
+										type: "button",
+										className: "jay-image-library__item",
+										"aria-pressed": currentSource === image.src,
+										title: image.src,
+										onClick: () => this.handleSelectLibraryImage(image),
+									},
+									h("img", { src: image.src, alt: "", loading: "lazy" }),
+									h(
+										"span",
+										{ className: "jay-image-library__name" },
+										image.name,
+									),
+									h(
+										"small",
+										{ className: "jay-image-library__usage" },
+										image.usage || image.src,
+									),
+								),
+							),
+						)
+					: h(
+							"p",
+							{ className: "jay-image-library__empty" },
+							images.length
+								? "没有找到匹配的图片，可修改搜索词或查看全部站内图片。"
+								: "暂无站内图片，可从 Mac 上传新图片。",
+						),
+				matches.length > visible.length
+					? h(
+							"button",
+							{
+								type: "button",
+								className: "jay-image-library__more",
+								onClick: () =>
+									this.setState({ galleryLimit: this.state.galleryLimit + 24 }),
+							},
+							`继续显示（还剩 ${matches.length - visible.length} 张）`,
+						)
+					: null,
+			);
 		},
 
 		renderRange(label, name, minimum, maximum, step, suffix = "") {
@@ -215,10 +405,11 @@ export function setupImageCropWidget({
 				h(
 					"div",
 					{ style: previewStyle },
-					previewSource
+					previewSource && !this.state.previewError
 						? h("img", {
 								alt: "当前前台取景预览",
 								src: previewSource,
+								onError: () => this.setState({ previewError: true }),
 								style: {
 									width: "100%",
 									height: "100%",
@@ -240,7 +431,9 @@ export function setupImageCropWidget({
 										textAlign: "center",
 									},
 								},
-								"先上传图片或填写已有图片路径",
+								this.state.previewError
+									? "图片无法加载。请从已有素材中重新选择，或检查图片路径。"
+									: "从已有素材中选择，或从 Mac 上传图片",
 							),
 					h("div", {
 						"aria-hidden": true,
@@ -276,6 +469,18 @@ export function setupImageCropWidget({
 						},
 					},
 					h(
+						"button",
+						{
+							type: "button",
+							className: "jay-image-library__open",
+							"aria-expanded": this.state.galleryOpen,
+							"aria-controls": `${this.props.forID}-library`,
+							onClick: () =>
+								this.setState({ galleryOpen: !this.state.galleryOpen }),
+						},
+						"从已有素材选择",
+					),
+					h(
 						"label",
 						{
 							style: {
@@ -289,11 +494,7 @@ export function setupImageCropWidget({
 								fontWeight: 650,
 							},
 						},
-						this.state.uploading
-							? "正在上传…"
-							: value.src
-								? "替换图片"
-								: "选择并上传图片",
+						this.state.uploading ? "正在上传…" : "从 Mac 上传新图片",
 						h("input", {
 							type: "file",
 							accept: "image/jpeg,image/png,image/webp,image/gif,image/avif",
@@ -320,6 +521,7 @@ export function setupImageCropWidget({
 						"恢复居中",
 					),
 				),
+				this.state.galleryOpen ? this.renderLibrary() : null,
 				h(
 					"label",
 					{ style: { display: "block", marginBottom: "14px" } },
