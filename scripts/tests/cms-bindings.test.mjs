@@ -106,6 +106,7 @@ test("蔡健雅 下一次爱情来的时候 keeps its audio and timed KRC lyrics
 	assert.ok(track);
 	assert.equal(track.artist, "蔡健雅");
 	assert.equal(track.src, "/media/audio/20261009-tanya-next-love.mp3");
+	assert.equal(track.cover, "/assets/images/music-covers/11-tanya-next-love.png");
 	assert.equal(track.lrc, "/lyrics/tanya-next-love.json");
 	const karaoke = JSON.parse(read(`public${track.lrc}`));
 	assert.equal(karaoke.format, "karaoke-v1");

@@ -256,6 +256,14 @@
 			"kind": "图片",
 			"src": "/assets/images/music-covers/09-kaze-to-iku-michi.png",
 			"usage": "乐境播放器第 9 首歌曲唱片封面"
+		},
+		{
+			"id": "cover-tanya-next-love",
+			"name": "下一次爱情来的时候唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/11-tanya-next-love.png",
+			"usage": "乐境播放器《下一次爱情来的时候》唱片封面",
+			"note": "从站长提供的截图中精确截取圆盘内原图，外圈橙色背景已透明化。"
 		}
 	]
 }

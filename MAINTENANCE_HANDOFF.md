@@ -6,7 +6,7 @@
 
 - 音频由 Cloudflare R2 的 `/media/audio/20261009-tanya-next-love.mp3` 提供；上传使用现有受保护接口，未将认证信息写入仓库。
 - 用户提供的 KRC 转为 `/lyrics/tanya-next-love.json`，保留 36 行逐字时间；播放器按歌单条目的 `src` 和 `lrc` 配对。
-- 本次未收到独立封面或翻译，故未填 `cover` 或 `translations`。以后可直接在后台该曲目补充，不影响现有歌词。
+- 唱片封面为 `/assets/images/music-covers/11-tanya-next-love.png`，从用户提供的圆盘截图精确裁切并去除橙色外圈，同时登记在后台视觉素材索引。尚未收到中文翻译，`translations` 留空；以后可在后台该曲目补充。
 
 ## 2026-09-26 后台正文行内上下标
 
