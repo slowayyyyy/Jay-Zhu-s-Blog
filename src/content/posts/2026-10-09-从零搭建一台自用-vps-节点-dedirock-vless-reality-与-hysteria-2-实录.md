@@ -1,30 +1,31 @@
 ---
-title: 从零搭建一台自用 VPS 节点：DediRock、VLESS + REALITY 与 Hysteria 2 实录
-description: 我购买的是 DediRock 洛杉矶的 Promo VPS Special LA。购买时页面显示：2 GB 内存、1 vCore、30 GB SSD、1 个 IPv4、1 Gbps 网口、2 TB 流量，年付 10.88 美元。本文记录的是当时的订单，促销库存、价格和规格都可能改变；下单前以 DediRock 促销产品页及客户区的当前订单页为准。
+title: 从零搭建一台自用 VPS 节点
+description: 如果一个人要网上冲浪，他会怎么做？
 published: 2026-10-09
 category: 学习笔记
-tags: []
-draft: true
+tags:
+  - vps
+  - 自建节点
+draft: false
+password: linuxdo
+passwordHint: 一个知名AI技术网站，小写不含空格
 ---
-
 # 从零搭建一台自用 VPS 节点：DediRock、VLESS + REALITY 与 Hysteria 2 实录
 
-> 这是一篇根据我的实际操作整理的复现笔记，记录时间为 2026 年 9—10 月。文中的 `<VPS_IP>`、`<UUID>`、`<私钥>`、`<密码>` 等都要换成读者自己的值。**不要把自己的节点分享链接、二维码、SSH 私钥或密码贴进公开博客。** 命令分为 Mac 本机和 VPS 两种环境；先看清提示符再执行。
+> 这是一篇根据我的实际操作整理的复现笔记，记录时间为 2026 年 9—10 月。文中的 `<VPS_IP>`、`<UUID>`、`<私钥>`、`<密码>` 等都要换成读者自己的值。命令分为 Mac 本机和 VPS 两种环境；先看清提示符再执行。
 
 ## 1. 最终搭成了什么
 
 我购买的是 DediRock 洛杉矶的 **Promo VPS Special LA**。购买时页面显示：2 GB 内存、1 vCore、30 GB SSD、1 个 IPv4、1 Gbps 网口、2 TB 流量，年付 10.88 美元。本文记录的是**当时的订单**，促销库存、价格和规格都可能改变；下单前以 [DediRock 促销产品页](https://billing.dedirock.com/index.php/store/promo-vps-los-angeles)及[客户区](https://billing.dedirock.com/)的当前订单页为准。
 
-服务器运行 Debian 13。我们先完成 SSH 密钥登录、防火墙和自动安全更新，再部署了两条可独立选择的节点：
+服务器运行 Debian 13。我们先完成 SSH 密钥登录、防火墙和自动安全更新，再部署了两条可独立选择的节点（我个人最后使用的是HY2的节点，如果要搭建的话可以略过第7部分VLESS + REALITY节点的搭建过程）：
 
-| 节点 | 服务端软件 | 入口 | 分享给客户端的格式 |
-| --- | --- | --- | --- |
-| DediRock-LA | Xray：VLESS + REALITY + Vision | TCP 443 | `vless://...` |
-| DediRock-HY2 | Hysteria 2 | UDP 443 | `hysteria2://...` |
+| 节点           | 服务端软件                         | 入口      | 分享给客户端的格式         |
+| ------------ | ----------------------------- | ------- | ----------------- |
+| DediRock-LA  | Xray：VLESS + REALITY + Vision | TCP 443 | `vless://...`     |
+| DediRock-HY2 | Hysteria 2                    | UDP 443 | `hysteria2://...` |
 
 同一台机器可以同时使用 TCP 443 和 UDP 443，因为它们是不同的传输协议。Xray 和 Hysteria 由 systemd 在 VPS 后台运行，**关闭 Mac 终端或关闭 Mac 不会停止 VPS**；只有 VPS 关机、服务停止或网络出问题时节点才会不可用。两条节点最终都导入了 Shadowrocket。
-
-**费用更正：**年付价格不等于“绝不会再扣费”。DediRock [服务条款第 8 节](https://dedirock.com/terms-of-services/)写明带宽是**按月分配**；超额时服务商可以暂停服务，也可以收取超额费用等，具体由其决定。续费、付款方式和是否有额外费用应在客户区确认。域名不是本方案的必需品；如果读者尚未购买 Shadowrocket，客户端也可能另有购买成本。
 
 ## 2. 准备和识别两个终端
 
@@ -264,7 +265,7 @@ sudo openssl x509 -noout -fingerprint -sha256 -in /etc/hysteria/server.crt
 openssl rand -hex 24
 ```
 
-最后一行生成客户端认证密码；不要把它贴在博客或聊天里。证书指纹要从**刚生成的证书**计算，不能从网上复制别人的。用 `sudo nano /etc/hysteria/config.yaml` 写入：
+最后一行生成客户端认证密码。证书指纹要从**刚生成的证书**计算，不能从网上复制别人的。用 `sudo nano /etc/hysteria/config.yaml` 写入：
 
 ```yaml
 listen: :443
@@ -338,39 +339,15 @@ scp -i ~/.ssh/dedirock_vps -o IdentitiesOnly=yes \
   vpsadmin@<VPS_IP>:/home/vpsadmin/dedirock-hy2.png ~/Downloads/
 ```
 
-在 Mac 打开 `~/Downloads/dedirock-hy2.png`，用 iPhone Shadowrocket 扫码导入；Mac 版也可以导入分享链接或图片。导入后选择节点，再通过 [Cloudflare trace 页面](https://www.cloudflare.com/cdn-cgi/trace)等确认出口 IP。二维码**包含完整连接凭据**：别人只要得到图片就能导入，也能继续转发；共享单个 HY2 密码不能精确按“人”统计或单独撤销某个人。
+在 Mac 打开 `~/Downloads/dedirock-hy2.png`，用 iPhone Shadowrocket 扫码导入；Mac 版也可以导入分享链接或图片。导入后选择节点，再通过 [Cloudflare trace 页面](https://www.cloudflare.com/cdn-cgi/trace)等确认出口 IP。二维码**包含完整连接凭据**：别人只要得到图片就能导入，也能继续转发。
 
 ## 10. 我们实际踩过的坑
 
-| 现象 | 原因或排查结论 | 对应做法 |
-| --- | --- | --- |
-| 浏览器打不开 `dedirock-数字` | 主机名没有公开 DNS 记录 | 在客户区找 Primary IP，用 IP SSH 登录；不要把主机名当网站地址。 |
-| SSH 密钥已能登录，但感觉“还是要输密码” | 输入的是**Mac 本地私钥口令**；它与上传到 VPS 的公钥配合使用 | 使用 `-o PasswordAuthentication=no` 验证确实通过密钥登录，再关闭服务端密码登录。 |
-| `apt update` 报一次 diff 索引错误 | apt 自动重试后成功 | 看最终退出结果；若升级仍在运行，不要因单行报错强制重启。 |
-| 安装完 Xray 却还不能用 | 安装程序、配置凭据、开放 TCP 443 是三件事 | 依次查 `systemctl`、配置验证、监听和 UFW。 |
-| `nc -G 5 ...` 提示 `invalid hop pointer` | 把原本给 Mac 用的 `nc` 参数粘贴到了 Debian VPS；两端实现不同 | 先看提示符；跨平台测试可用 Python 的 `socket.create_connection`。TCP 连通也不能证明 HY2 的 UDP 连通。 |
-| `python3 /home/vpsadmin/...` 在 Mac 上提示找不到文件 | VPS 路径被拿到 Mac 执行 | 先 `ssh` 登录，或通过 `ssh user@ip '远端命令'` 执行。 |
-| 切换“全局路由：代理”反而更慢 | 全部流量进入节点后暴露了链路瓶颈；不能据此证明配置一定更好 | 回到原来的“配置”模式，比较同一网页的实际加载时间。 |
-| VLESS 节点曾设置“代理通过”机场节点 | 客户端走了链式路径，测试结果不再是 Mac 直连 VPS | Shadowrocket 编辑节点 → “代理通过” → 取消选择并保存；该行变空后再测。外部看到的出口 IP 仍可能是 VPS，不能据此判断前置是否存在。 |
-| Mac `ping` VPS 出现约 0.3 ms | 到洛杉矶不可能有这样的物理往返时间，强烈提示本地代理/TUN 或测量路径影响了结果 | 关闭代理后再做直连测试，并同时看路由、TCP 连接和实际下载。 |
-| 另一次直连 `ping` 约 300 ms、45% 丢包 | 说明当时路径质量差，但 ICMP 可能受限速 | 同时测 TCP、UDP 以及真实网页；不能只凭一次 ICMP 判定 VPS 故障。 |
-| TCP 443 十次连接都成功，网页仍然慢 | 能建连不代表吞吐、丢包恢复和长连接质量好 | 比较首字节时间、持续下载、浏览器行为；不要只看 Shadowrocket 的延迟数字。 |
-| VPS 上 `curl https://chatgpt.com/` 很快返回 HTTP 403 | 证明服务器能快速到达该站并收到响应；403 可能是站点策略 | 不把 403 当作客户端聊天页面能正常使用的证据。 |
-| 联通热点波动大；电信热点初期明显更稳，后来也变慢 | 接入网、跨境路由、时段拥塞等都可能变化；没有证据能把原因锁定为某一个 | 同一台 VPS、同一节点，在不同运营商和不同时段测网页与下载；保存结果再判断是否换线路。 |
-| HY2 比 VLESS 体感改善，却仍有网站转圈 | 协议变化不能消除不稳定的上游路径，也可能受客户端规则、DNS、网站状态影响 | 保留 TCP 和 UDP 两条节点作对照，优先查实际路径及客户端规则。 |
-| Grok 正常窗口不行，无痕窗口可用 | 至少说明该次故障可能与浏览器状态有关 | 排查该站点的 Cookie、缓存、扩展和登录状态；不要直接归咎于 VPS。 |
+总结本次的流程大概是，购买 VPS → SSH 连接并更新 Debian → 配置管理员账号、密钥登录和防火墙 → 搭建 VLESS + REALITY → 尝试 BBR → 增加 HY2 节点 → 改用电信热点测试。一般来说搭建完VLESS + REALITY作为第一个节点就可以使用了，但是实测效果非常不好网络波动严重，我猜测可能是拥塞控制算法的问题，于是尝试BBR，使用了之后感觉稍微好了一点点，但是总体仍然很差， 于是我尝试使用HY2的方式搭建节点，这种方式的优点就是通过 **UDP/QUIC** 连接 VPS，实际上使用了HY2搭建之后，仍然是体感上稍微好了一些，但是网路仍然明显波动。**最后我尝试将联通运营商网络切换为电信网络，发现网络总体稳定，速度提升了很多，这也是本次搭建过程中遇到的最大的问题。**
 
-我们曾在 VPS 上测试：对 Cloudflare 的小文件下载非常快；而 Mac 经节点的下载和网页体验明显差。这个对照使“VPS 到目标网站不通”不再是最强解释，问题更可能落在**客户端到 VPS 的链路、客户端配置或两者交互**。这仍不是对“运营商 QoS”“防火墙干扰”或“VPS 硬件差”的确定归因。即使 Shadowrocket 显示约 200 ms 延迟，持续传输也可能慢，因为延迟、丢包和吞吐是不同指标。
 
-## 11. 为什么没有继续叠加 BBR、IPv6 隧道或 Cloudflare 免费代理
 
-我们尝试过把服务器 TCP 拥塞控制改成 BBR，但没有得到可重复证明它改善体验的结果。BBR 改的是 TCP 拥塞控制；HY2 基于 UDP/QUIC，不能指望 Linux 的 TCP BBR 直接修复它。某次复制命令还导致终端一直等待，最终按 `Control+C` 回到提示符。**本文不把 BBR 作为必做步骤或加速保证。**
-
-当时套餐页面只列出 1 个 IPv4，没有承诺原生 IPv6。即便得到免费的 IPv6 隧道，它通常仍要经过原有网络或另一个中间点，不能凭“IPv6”三个字推断更快。无域名也不影响本文两种直连节点；购买域名的主要作用是拥有可控 DNS 名称、方便申请可信 TLS 证书。
-
-Cloudflare 免费代理也不能直接套在这两条现有连接前面当“免费加速中转”。[Hysteria 官方的 CDN 说明](https://v2.hysteria.network/zh/docs/misc/CDN/)指出普通 CDN 代理不支持其 UDP/QUIC 原样转发。Xray REALITY 这一配置也不是普通 HTTP 网站，把域名打开 CDN 小云朵不会自动代理该 TCP 流量。若改成另一种可由 CDN 承载的协议，那已经是**重新设计节点**，需要域名与新的配置，无法保证速度。
-
-## 12. 日常维护与安全边界
+## 11. 日常维护与安全边界
 
 常用只读检查命令，在 VPS 上运行：
 
@@ -388,6 +365,6 @@ sudo journalctl -u hysteria-server -n 50 --no-pager
 
 ## 官方资料
 
-- [DediRock 客户区](https://billing.dedirock.com/)与[服务条款](https://dedirock.com/terms-of-services/)
-- [Xray 官方安装器](https://github.com/XTLS/Xray-install)、[REALITY 配置说明](https://xtls.github.io/en/config/transports/reality.html)、[VLESS + REALITY 示例](https://github.com/XTLS/Xray-examples/blob/main/VLESS-TCP-XTLS-Vision-REALITY/config_server.jsonc)
-- [Hysteria 2 安装](https://v2.hysteria.network/docs/getting-started/Server-Installation-Script/)、[服务端配置](https://v2.hysteria.network/docs/advanced/Full-Server-Config/)、[客户端证书校验](https://v2.hysteria.network/docs/getting-started/Client/)、[分享 URI 格式](https://v2.hysteria.network/docs/developers/URI-Scheme/)
+* [DediRock 客户区](https://billing.dedirock.com/)与[服务条款](https://dedirock.com/terms-of-services/)
+* [Xray 官方安装器](https://github.com/XTLS/Xray-install)、[REALITY 配置说明](https://xtls.github.io/en/config/transports/reality.html)、[VLESS + REALITY 示例](https://github.com/XTLS/Xray-examples/blob/main/VLESS-TCP-XTLS-Vision-REALITY/config_server.jsonc)
+* [Hysteria 2 安装](https://v2.hysteria.network/docs/getting-started/Server-Installation-Script/)、[服务端配置](https://v2.hysteria.network/docs/advanced/Full-Server-Config/)、[客户端证书校验](https://v2.hysteria.network/docs/getting-started/Client/)、[分享 URI 格式](https://v2.hysteria.network/docs/developers/URI-Scheme/)
