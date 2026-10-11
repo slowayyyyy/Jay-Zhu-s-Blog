@@ -826,6 +826,13 @@ const siteLang = lang.replace("_", "-");
 </style>
 
 <script>
+  import { setupDynamicFeed } from "@/scripts/dynamic-feed";
+  import { setupHomeTitleMotion } from "@/scripts/home-title-motion";
+  // Page-specific modules must be available even when the first visit is another route.
+  setupDynamicFeed();
+  setupHomeTitleMotion();
+  document.addEventListener("astro:page-load", setupDynamicFeed);
+  document.addEventListener("astro:page-load", setupHomeTitleMotion);
   import { pathsEqual, url } from "@/utils/url-utils";
   import {
     BANNER_HEIGHT,

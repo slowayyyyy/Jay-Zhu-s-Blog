@@ -4,6 +4,24 @@
 	"kicker": "CHANGELOG / AZURE CORRIDOR",
 	"entries": [
 		{
+			"date": "2026-10-11",
+			"title": "标题变色与说说小图预览",
+			"description": "首页标题增加柔和变色，说说图片改为紧凑预览。",
+			"tags": ["首页", "说说"],
+			"icon": "material-symbols:auto-awesome-rounded",
+			"accent": "#60a5fa",
+			"changes": ["首页标题缓慢变色，支持暂停。", "说说图片缩小显示，点击可查看完整原图。"]
+		},
+		{
+			"date": "2026-10-11",
+			"title": "沉浸首页与说说时间线",
+			"description": "首页大图铺满首屏，说说改为时间线。",
+			"tags": ["首页", "说说"],
+			"icon": "material-symbols:sync-rounded",
+			"accent": "#38bdf8",
+			"changes": ["首页导航按需显示，短句在面板中与图片同步轮播。", "说说显示头像、时间和地点，支持复制链接与加载更多。"]
+		},
+		{
 			"date": "2026-09-04",
 			"title": "后台内容接入与音乐随机播放修复",
 			"description": "让后台字段对应到真实前台位置，统一个人资料来源，并修复随机播放反复切换少数歌曲的问题。",

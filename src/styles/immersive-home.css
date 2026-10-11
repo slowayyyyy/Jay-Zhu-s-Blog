@@ -80,7 +80,17 @@ body.is-home.immersive-home .banner-home-text-overlay { padding: 1.25rem !import
 	line-height: 1.2 !important;
 	letter-spacing: .035em;
 	margin: 0 !important;
-	text-shadow: 0 4px 24px rgb(0 0 0 / .5);
+	color: #e0f5ff;
+	text-shadow: 0 3px 6px rgb(0 0 0 / .7), 0 8px 24px rgb(0 0 0 / .4);
+	animation: home-title-colors 18s ease-in-out infinite;
+	animation-play-state: paused;
+}
+#wallpaper-wrapper .home-hero-title[data-motion-active="true"] { animation-play-state: running; }
+@keyframes home-title-colors {
+	0%, 100% { color: #e0f5ff; }
+	25% { color: #c6e8ff; }
+	50% { color: #e3d5ff; }
+	75% { color: #ffdce9; }
 }
 .home-hero-panel {
 	width: min(100%, 35rem);
@@ -155,6 +165,7 @@ body.is-home.immersive-home #wallpaper-wrapper .scroll-down-indicator.hide { opa
 	body.is-home.immersive-home #wallpaper-wrapper .scroll-down-indicator { bottom: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
+	#wallpaper-wrapper .home-hero-title { animation: none; }
 	body.is-home.home-navigation-demand #navbar-wrapper { transition: none; }
 	body.is-home.immersive-home #wallpaper-wrapper .scroll-down-icon { animation: none; }
 }

@@ -59,52 +59,6 @@ const { title, description, layout } = azureContent.dynamic;
 	</section>
 </MainGridLayout>
 
-<script>
-	let cleanup: (() => void) | undefined;
-	function setupDynamicFeed() {
-		cleanup?.();
-		const shell = document.querySelector<HTMLElement>(".dynamic-shell");
-		if (!shell) return;
-		const abort = new AbortController();
-		cleanup = () => abort.abort();
-		const items = Array.from(shell.querySelectorAll<HTMLElement>(".dynamic-item"));
-		const more = shell.querySelector<HTMLButtonElement>(".dynamic-load-more");
-		const end = shell.querySelector<HTMLElement>(".dynamic-end-label");
-		let visibleCount = 6;
-		const update = () => {
-			items.forEach((item, index) => { item.hidden = index >= visibleCount; });
-			if (more) more.hidden = visibleCount >= items.length;
-			if (end) end.hidden = visibleCount < items.length;
-		};
-		const revealAnchor = () => {
-			let anchor: string;
-			try { anchor = decodeURIComponent(location.hash.slice(1)); } catch { return; }
-			const index = items.findIndex((item) => item.id === anchor);
-			if (index >= visibleCount) { visibleCount = index + 1; update(); }
-		};
-		more?.addEventListener("click", () => { visibleCount += 6; update(); }, { signal: abort.signal });
-		shell.addEventListener("click", async (event) => {
-			const button = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-moment-share]") : null;
-			if (!button?.dataset.momentShare) return;
-			const permalink = new URL(location.href);
-			permalink.hash = button.dataset.momentShare;
-			const status = shell.querySelector<HTMLElement>(".dynamic-copy-status");
-			try {
-				await navigator.clipboard.writeText(permalink.href);
-				if (status) status.textContent = "说说链接已复制";
-			} catch {
-				if (status) status.textContent = "无法复制，请点击这条说说的日期打开链接。";
-			}
-		}, { signal: abort.signal });
-		window.addEventListener("hashchange", revealAnchor, { signal: abort.signal });
-		update();
-		revealAnchor();
-	}
-	setupDynamicFeed();
-	document.addEventListener("swup:page:view", setupDynamicFeed);
-	if (window.swup?.hooks) window.swup.hooks.on("page:view", setupDynamicFeed);
-</script>
-
 <style>
 	.dynamic-shell { padding: 2rem clamp(1.2rem, 4vw, 3rem); overflow: hidden; }
 	.dynamic-heading { display: flex; justify-content: space-between; align-items: start; gap: 1rem; max-width: 44rem; margin: 0 auto 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line-divider); }
@@ -122,7 +76,11 @@ const { title, description, layout } = azureContent.dynamic;
 	.dynamic-content { color: var(--content-regular); font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
 	.dynamic-content :global(p:first-child) { margin-top: 0; }
 	.dynamic-content :global(p:last-child) { margin-bottom: 0; }
-	.dynamic-content :global(img) { max-height: 30rem; width: auto; max-width: 100%; object-fit: contain; border-radius: .6rem; }
+	/* Thumbnails never replace or crop the original media used by the lightbox. */
+	.dynamic-content :global(center) { text-align: left; }
+	.dynamic-content :global(figure) { display: inline-block; max-width: min(100%, 240px); margin: .6rem 0; vertical-align: top; }
+	.dynamic-content :global(img) { display: block; height: auto; max-height: 240px; width: auto; max-width: min(100%, 240px); object-fit: contain; border-radius: .6rem; cursor: zoom-in; }
+	.dynamic-content :global(img:focus-visible) { outline: 2px solid var(--primary); outline-offset: 3px; }
 	.dynamic-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .85rem; }
 	.dynamic-meta-text { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; color: var(--content-meta); font-size: .75rem; }
 	.dynamic-meta-text span { display: inline-flex; align-items: center; gap: .2rem; }
@@ -143,6 +101,8 @@ const { title, description, layout } = azureContent.dynamic;
 		.dynamic-item { grid-template-columns: 40px minmax(0, 1fr); gap: .65rem; padding: 1.2rem 0; }
 		.dynamic-avatar img { width: 40px; height: 40px; }
 		.dynamic-content { font-size: .95rem; }
+		.dynamic-content :global(figure), .dynamic-content :global(img) { max-width: min(100%, 180px); }
+		.dynamic-content :global(img) { max-height: 210px; }
 		.dynamic-shell--cards .dynamic-item { padding: .8rem; }
 	}
 </style>
