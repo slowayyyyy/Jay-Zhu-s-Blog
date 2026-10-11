@@ -2,13 +2,15 @@
 import { Icon } from "astro-icon/components";
 ---
 
-<div
+<button
+  type="button"
+  aria-label="向下浏览文章"
   id="scroll-down-indicator"
   class="scroll-down-indicator"
-  onclick="document.getElementById('main-grid')?.scrollIntoView({ behavior: 'smooth' })"
+  onclick="document.getElementById('main-grid')?.scrollIntoView({ behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'instant' : 'smooth' })"
 >
   <Icon is:inline name="material-symbols:keyboard-arrow-down-rounded" class="scroll-down-icon" />
-</div>
+</button>
 
 <script is:inline>
   (function () {

@@ -1,54 +1,148 @@
 ---
 import { getCollection, render } from "astro:content";
 import { Icon } from "astro-icon/components";
+import { profileConfig } from "@/config";
+import azureContent from "@/data/azure-content.json";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import { url } from "@/utils/url-utils";
 
 const entries = (await getCollection("dynamic")).sort(
 	(a, b) => Number(b.data.pinned) - Number(a.data.pinned) || b.data.published.getTime() - a.data.published.getTime(),
 );
 const moments = await Promise.all(entries.map(async (entry) => ({
-	entry,
-	Content: (await render(entry)).Content,
+	entry, Content: (await render(entry)).Content,
 })));
-const formatter = new Intl.DateTimeFormat("zh-CN", { year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const formatter = new Intl.DateTimeFormat("zh-CN", {
+	// CMS stores wall-clock values without an offset; YAML loads them as UTC.
+	// Preserve the author's written date instead of applying a second +08 shift.
+	timeZone: "UTC",
+	year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit",
+});
+const { title, description, layout } = azureContent.dynamic;
 ---
 
-<MainGridLayout title="动态" description="短一点的想法，和正在发生的日常">
-	<section class="dynamic-shell card-base z-10 px-7 py-7 relative w-full onload-animation">
-		<header class="dynamic-hero">
-			<div class="dynamic-icon"><Icon is:inline name="material-symbols:water-drop-rounded" /></div>
-			<div><p>DYNAMIC / JAY ZHU</p><h1>沿途水纹</h1><span>不必展开成文章，也值得被认真记住。</span></div>
-			<strong>{moments.length}</strong>
+<MainGridLayout title={title} description={description}>
+	<section class:list={["dynamic-shell card-base z-10 relative w-full onload-animation", layout === "cards" && "dynamic-shell--cards"]}>
+		<header class="dynamic-heading">
+			<div><h1>{title}</h1><p>{description}</p></div>
+			<span>{moments.length} 条记录</span>
 		</header>
-		{moments.length ? (
-			<div class="dynamic-list">
-				{moments.map(({ entry, Content }) => (
-					<article class:list={["dynamic-item", entry.data.pinned && "is-pinned"]}>
-						<div class="dynamic-meta">
-							<time datetime={entry.data.published.toISOString()}>{formatter.format(entry.data.published)}</time>
-							{entry.data.location && <span><Icon is:inline name="material-symbols:location-on-outline-rounded" />{entry.data.location}</span>}
-							{entry.data.pinned && <span class="pin"><Icon is:inline name="material-symbols:keep-rounded" />置顶</span>}
+		<div class="dynamic-feed" aria-label="说说时间线">
+			{moments.map(({ entry, Content }) => (
+				<article class:list={["dynamic-item", entry.data.pinned && "is-pinned"]} id={`moment-${entry.id}`}>
+					<a class="dynamic-avatar" href={url("/about/")} aria-label={`关于${profileConfig.name}`}>
+						<img src={profileConfig.avatar} alt="" width="44" height="44" loading="lazy" />
+					</a>
+					<div class="dynamic-main">
+						<div class="dynamic-author">
+							<a href={url("/about/")}>{profileConfig.name}</a>
+							{entry.data.pinned && <span class="dynamic-pin"><Icon is:inline name="material-symbols:keep-rounded" />置顶</span>}
 						</div>
 						<div class="dynamic-content prose"><Content /></div>
-					</article>
-				))}
-			</div>
-		) : (
-			<div class="dynamic-empty">
-				<Icon is:inline name="material-symbols:ink-pen-outline-rounded" />
-				<h2>这里正等着第一圈水纹</h2>
-				<p>原有动态目录已经完整保留。以后从后台写下的短句会按时间出现在这里。</p>
-			</div>
-		)}
+						<footer class="dynamic-meta">
+							<div class="dynamic-meta-text">
+								<a href={`#moment-${entry.id}`}><time datetime={entry.data.published.toISOString()}>{formatter.format(entry.data.published)}</time></a>
+								{entry.data.location && <span><Icon is:inline name="material-symbols:location-on-outline-rounded" />{entry.data.location}</span>}
+							</div>
+							<button type="button" class="dynamic-share" data-moment-share={`moment-${entry.id}`} aria-label="复制这条说说的链接" title="复制链接"><Icon is:inline name="material-symbols:link-rounded" /></button>
+						</footer>
+					</div>
+				</article>
+			))}
+		</div>
+		{!moments.length && <div class="dynamic-empty"><Icon is:inline name="material-symbols:ink-pen-outline-rounded" /><h2>这里正等着第一圈水纹</h2><p>在后台“说说”写下的想法，会按时间出现在这里。</p></div>}
+		<div class="dynamic-feed-end">
+			<button type="button" class="dynamic-load-more" hidden>加载更多</button>
+			{moments.length > 0 && <p class="dynamic-end-label">暂时记录到这里。</p>}
+			<span class="dynamic-copy-status sr-only" role="status"></span>
+		</div>
 	</section>
 </MainGridLayout>
 
+<script>
+	let cleanup: (() => void) | undefined;
+	function setupDynamicFeed() {
+		cleanup?.();
+		const shell = document.querySelector<HTMLElement>(".dynamic-shell");
+		if (!shell) return;
+		const abort = new AbortController();
+		cleanup = () => abort.abort();
+		const items = Array.from(shell.querySelectorAll<HTMLElement>(".dynamic-item"));
+		const more = shell.querySelector<HTMLButtonElement>(".dynamic-load-more");
+		const end = shell.querySelector<HTMLElement>(".dynamic-end-label");
+		let visibleCount = 6;
+		const update = () => {
+			items.forEach((item, index) => { item.hidden = index >= visibleCount; });
+			if (more) more.hidden = visibleCount >= items.length;
+			if (end) end.hidden = visibleCount < items.length;
+		};
+		const revealAnchor = () => {
+			let anchor: string;
+			try { anchor = decodeURIComponent(location.hash.slice(1)); } catch { return; }
+			const index = items.findIndex((item) => item.id === anchor);
+			if (index >= visibleCount) { visibleCount = index + 1; update(); }
+		};
+		more?.addEventListener("click", () => { visibleCount += 6; update(); }, { signal: abort.signal });
+		shell.addEventListener("click", async (event) => {
+			const button = event.target instanceof Element ? event.target.closest<HTMLElement>("[data-moment-share]") : null;
+			if (!button?.dataset.momentShare) return;
+			const permalink = new URL(location.href);
+			permalink.hash = button.dataset.momentShare;
+			const status = shell.querySelector<HTMLElement>(".dynamic-copy-status");
+			try {
+				await navigator.clipboard.writeText(permalink.href);
+				if (status) status.textContent = "说说链接已复制";
+			} catch {
+				if (status) status.textContent = "无法复制，请点击这条说说的日期打开链接。";
+			}
+		}, { signal: abort.signal });
+		window.addEventListener("hashchange", revealAnchor, { signal: abort.signal });
+		update();
+		revealAnchor();
+	}
+	setupDynamicFeed();
+	document.addEventListener("swup:page:view", setupDynamicFeed);
+	if (window.swup?.hooks) window.swup.hooks.on("page:view", setupDynamicFeed);
+</script>
+
 <style>
-	.dynamic-shell{overflow:hidden}.dynamic-hero{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:1rem;padding:.25rem 0 1.4rem;border-bottom:1px solid var(--line-divider)}
-	.dynamic-icon{width:3.4rem;height:3.4rem;display:grid;place-items:center;border-radius:1.2rem;color:white;font-size:1.5rem;background:linear-gradient(145deg,#2563eb,#22d3ee);box-shadow:0 .8rem 1.8rem rgb(37 99 235/.2)}
-	.dynamic-hero p{margin:0 0 .15rem;color:var(--primary);font-size:.65rem;font-weight:850;letter-spacing:.14em}.dynamic-hero h1{margin:0;color:var(--content-regular);font-size:1.55rem}.dynamic-hero span{display:block;margin-top:.25rem;color:var(--content-meta);font-size:.8rem}.dynamic-hero>strong{color:var(--primary);font-size:1.7rem;opacity:.65}
-	.dynamic-list{position:relative;display:grid;gap:1rem;padding:1.5rem 0 0}.dynamic-item{position:relative;padding:1.05rem 1.15rem 1.1rem 1.35rem;border:1px solid var(--line-divider);border-radius:1.05rem;background:color-mix(in srgb,var(--card-bg) 96%,var(--primary) 4%)}.dynamic-item::before{content:"";position:absolute;left:0;top:1rem;bottom:1rem;width:3px;border-radius:0 4px 4px 0;background:linear-gradient(#60a5fa,#22d3ee)}.dynamic-item.is-pinned{border-color:color-mix(in srgb,var(--primary) 38%,var(--line-divider))}
-	.dynamic-meta{display:flex;flex-wrap:wrap;gap:.7rem;margin-bottom:.65rem;color:var(--content-meta);font-size:.7rem}.dynamic-meta span{display:inline-flex;align-items:center;gap:.2rem}.dynamic-meta .pin{color:var(--primary);font-weight:800}
-	.dynamic-content{color:var(--content-regular);font-size:.9rem;line-height:1.8}.dynamic-content :global(p:first-child){margin-top:0}.dynamic-content :global(p:last-child){margin-bottom:0}.dynamic-empty{display:grid;place-items:center;padding:4rem 1rem;text-align:center}.dynamic-empty>svg{color:var(--primary);font-size:2.3rem}.dynamic-empty h2{margin:.8rem 0 .25rem;color:var(--content-regular);font-size:1.1rem}.dynamic-empty p{max-width:28rem;margin:0;color:var(--content-meta);font-size:.8rem;line-height:1.7}
-	@media(max-width:640px){.dynamic-shell{padding:1.15rem}.dynamic-hero{grid-template-columns:auto 1fr}.dynamic-hero>strong{display:none}.dynamic-icon{width:3rem;height:3rem}.dynamic-item{padding:1rem 1rem 1rem 1.2rem}}
+	.dynamic-shell { padding: 2rem clamp(1.2rem, 4vw, 3rem); overflow: hidden; }
+	.dynamic-heading { display: flex; justify-content: space-between; align-items: start; gap: 1rem; max-width: 44rem; margin: 0 auto 1.5rem; padding-bottom: 1.5rem; border-bottom: 1px solid var(--line-divider); }
+	.dynamic-heading h1 { margin: 0; font-size: 1.65rem; font-weight: 700; color: var(--content-regular); }
+	.dynamic-heading p { margin: .5rem 0 0; color: var(--content-meta); font-size: .85rem; line-height: 1.7; }
+	.dynamic-heading > span { flex-shrink: 0; padding-top: .5rem; font-size: .75rem; color: var(--content-meta); }
+	.dynamic-feed { max-width: 44rem; margin: 0 auto; }
+	.dynamic-item { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 1rem; padding: 1.5rem 0; scroll-margin-top: 6rem; border-bottom: 1px solid var(--line-divider); }
+	.dynamic-item[hidden] { display: none; }
+	.dynamic-item:last-child { border-bottom: 0; }
+	.dynamic-avatar img { width: 44px; height: 44px; border-radius: 50%; object-fit: cover; }
+	.dynamic-author { display: flex; align-items: center; gap: .7rem; min-height: 1.5rem; margin-bottom: .5rem; }
+	.dynamic-author > a { color: var(--primary); font-size: .95rem; font-weight: 700; }
+	.dynamic-pin { display: inline-flex; align-items: center; gap: .2rem; color: var(--content-meta); font-size: .7rem; }
+	.dynamic-content { color: var(--content-regular); font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
+	.dynamic-content :global(p:first-child) { margin-top: 0; }
+	.dynamic-content :global(p:last-child) { margin-bottom: 0; }
+	.dynamic-content :global(img) { max-height: 30rem; width: auto; max-width: 100%; object-fit: contain; border-radius: .6rem; }
+	.dynamic-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .85rem; }
+	.dynamic-meta-text { display: flex; flex-wrap: wrap; align-items: center; gap: .8rem; color: var(--content-meta); font-size: .75rem; }
+	.dynamic-meta-text span { display: inline-flex; align-items: center; gap: .2rem; }
+	.dynamic-meta-text a:hover { color: var(--primary); }
+	.dynamic-share { display: grid; place-items: center; flex-shrink: 0; width: 40px; height: 40px; border-radius: .5rem; color: var(--content-meta); font-size: 1.2rem; cursor: pointer; }
+	.dynamic-share:hover { color: var(--primary); background: var(--btn-regular-bg); }
+	.dynamic-share:focus-visible, .dynamic-load-more:focus-visible { outline: 2px solid var(--primary); outline-offset: 3px; }
+	.dynamic-shell--cards .dynamic-item { padding: 1.2rem; margin-bottom: 1rem; border: 1px solid var(--line-divider); border-radius: .8rem; }
+	.dynamic-feed-end { text-align: center; margin-top: 1.5rem; color: var(--content-meta); font-size: .8rem; }
+	.dynamic-load-more { padding: .7rem 1.5rem; border-radius: .6rem; color: var(--primary); background: var(--btn-regular-bg); cursor: pointer; }
+	.dynamic-empty { display: grid; justify-items: center; padding: 3rem 1rem; text-align: center; color: var(--content-meta); }
+	.dynamic-empty > svg { font-size: 2rem; color: var(--primary); }
+	.dynamic-empty h2 { margin: 1rem 0 .5rem; color: var(--content-regular); font-size: 1.1rem; }
+	@media (max-width: 640px) {
+		.dynamic-shell { padding: 1.2rem; }
+		.dynamic-heading { margin-bottom: .6rem; }
+		.dynamic-heading > span { display: none; }
+		.dynamic-item { grid-template-columns: 40px minmax(0, 1fr); gap: .65rem; padding: 1.2rem 0; }
+		.dynamic-avatar img { width: 40px; height: 40px; }
+		.dynamic-content { font-size: .95rem; }
+		.dynamic-shell--cards .dynamic-item { padding: .8rem; }
+	}
 </style>

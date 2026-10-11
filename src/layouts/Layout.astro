@@ -12,6 +12,7 @@ import SakuraEffect from "@components/features/SakuraEffect.astro";
 import WalineManager from "@components/features/WalineManager.astro";
 import WelcomeToast from "@components/features/WelcomeToast.astro";
 import ConfigCarrier from "@components/layout/ConfigCarrier.astro";
+import azureContent from "@/data/azure-content.json";
 
 import {
 	analyticsConfig,
@@ -583,6 +584,8 @@ const siteLang = lang.replace("_", "-");
     class:list={[
       {
         "is-home": isHomePageCheck,
+        "immersive-home": azureContent.home.immersive !== false,
+        "home-navigation-demand": azureContent.home.navigationOnDemand !== false,
         "lg:is-home": isHomePageCheck,
         "post-list-page": isPostListPage,
         "enable-banner": enableBanner,
@@ -599,6 +602,7 @@ const siteLang = lang.replace("_", "-");
     <ConfigCarrier />
     <MusicManager />
     <slot />
+    <noscript><style>@layer utilities{body.is-home.home-navigation-demand #navbar-wrapper{visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:auto!important}}.home-navigation-trigger{display:none!important}</style></noscript>
 
 
 
@@ -1110,7 +1114,7 @@ function disableAnimation() {
 
       // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
       if (!isMobileForBanner && currentMode === "banner" && mainEl) {
-        mainEl.style.setProperty("top", "calc(var(--banner-height) - 3.5rem)", "important");
+        mainEl.style.setProperty("top", isHome && document.body.classList.contains("immersive-home") ? "var(--home-scene-height)" : "calc(var(--banner-height) - 3.5rem)", "important");
         mainEl.style.position = "";
         mainEl.style.zIndex = "";
         mainEl.style.setProperty("margin-top", "0", "important");
@@ -1269,7 +1273,7 @@ function disableAnimation() {
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
             } else {
-              mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3.5rem)", "important");
+              mainContentWrapper.style.setProperty("top", document.body.classList.contains("immersive-home") ? "var(--home-scene-height)" : "calc(var(--banner-height) - 3.5rem)", "important");
               mainContentWrapper.style.position = "";
               mainContentWrapper.style.zIndex = "";
               mainContentWrapper.style.setProperty("margin-top", "0", "important");
@@ -1301,7 +1305,7 @@ function disableAnimation() {
           }
           // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
           if (visitDesktopMode === "banner") {
-            mainContentWrapper.style.setProperty("top", "calc(var(--banner-height) - 3.5rem)", "important");
+            mainContentWrapper.style.setProperty("top", isHomePage && document.body.classList.contains("immersive-home") ? "var(--home-scene-height)" : "calc(var(--banner-height) - 3.5rem)", "important");
             mainContentWrapper.style.position = "";
             mainContentWrapper.style.zIndex = "";
             mainContentWrapper.style.setProperty("margin-top", "0", "important");
@@ -1394,7 +1398,7 @@ function disableAnimation() {
 
       // 桌面端横幅模式：统一用banner高度定位，不改变grid transform
       if (!isMobileForBanner && currentMode === "banner" && mainEl) {
-        mainEl.style.setProperty("top", "calc(var(--banner-height) - 3.5rem)", "important");
+        mainEl.style.setProperty("top", isHome && document.body.classList.contains("immersive-home") ? "var(--home-scene-height)" : "calc(var(--banner-height) - 3.5rem)", "important");
         mainEl.style.position = "";
         mainEl.style.zIndex = "";
         mainEl.style.setProperty("margin-top", "0", "important");

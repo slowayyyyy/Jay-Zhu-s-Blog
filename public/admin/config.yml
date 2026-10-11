@@ -332,8 +332,8 @@ collections:
                   - label: 桌面轮播图取景
                     name: crop
                     widget: image-crop
-                    preview_aspect: "16 / 7"
-                    crop_hint: 这里按首页桌面横幅比例预览。拖动焦点与缩放，确保人物脸部完整并避开原图边缘。
+                    preview_aspect: "16 / 9"
+                    crop_hint: 首页沉浸首屏按屏幕比例取景，这里以常见的 16:9 屏幕预览。其他比例的屏幕会适当裁切，请让人物脸部留在安全区内。
               - label: 手机轮播图片与取景
                 name: mobileWallpapers
                 widget: list
@@ -382,6 +382,8 @@ collections:
             name: home
             widget: object
             fields:
+              - { label: 首页大图铺满首屏, name: immersive, widget: boolean, default: true, required: false, hint: 开启后首页图片占满第一屏，文章从下一屏开始；其他页面保持原有高度。 }
+              - { label: 首页导航按需显示, name: navigationOnDemand, widget: boolean, default: true, required: false, hint: 首屏导航默认隐藏；鼠标移至屏幕顶部、点击导航入口或向下滚动时显示。 }
               - { label: 最近文章标题, name: recentTitle, widget: string, hint: 出现在首页文章列表上方。 }
               - { label: 最近文章介绍, name: recentIntro, widget: text, required: false }
               - { label: 旧分支眉题, name: branchesKicker, widget: hidden, required: false }
@@ -399,8 +401,21 @@ collections:
                 widget: list
                 required: false
                 default: []
-                hint: 首页大图主标题下的打字机文字。每句打完、停留并退场后，下一句与下一张图片同步开始，时长按字数自适应，无需设置秒数。短句与图片数量可以不同，各自顺序循环；清空后使用“备用介绍”。
+                hint: 首页大图中半透明文字框的短句。每句打完、停留并退场后，下一句与下一张图片同步开始，时长按字数自适应。前台可手动切换或暂停；清空后使用“备用介绍”。
                 field: { label: 短句, name: quote, widget: string }
+          - label: 说说页面展示
+            name: dynamic
+            widget: object
+            fields:
+              - { label: 页面标题, name: title, widget: string }
+              - { label: 页面介绍, name: description, widget: text }
+              - label: 展示样式
+                name: layout
+                widget: select
+                default: timeline
+                options:
+                  - { label: 朋友圈时间线（推荐）, value: timeline }
+                  - { label: 独立卡片, value: cards }
           - label: 乐境页面文案
             name: musicPage
             widget: object

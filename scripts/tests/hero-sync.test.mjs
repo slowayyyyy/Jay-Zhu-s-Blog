@@ -100,6 +100,12 @@ function harness(texts = ["短句", "下一段文字"], options = {}) {
 	element.closest = () => overlay;
 	document.getElementById = (id) => ({ "banner-images-container": container, "wallpaper-wrapper": wrapper })[id] || null;
 	document.querySelector = () => element.isConnected && element.dataset.typewriterReady === "true" && !overlay.classList.contains("hidden") ? element : null;
+	const pauseButton = new Element(), nextButton = new Element();
+	pauseButton.setAttribute("data-hero-pause", "");
+	nextButton.setAttribute("data-hero-direction", "1");
+	pauseButton.closest = () => pauseButton;
+	nextButton.closest = () => nextButton;
+	document.querySelectorAll = () => [pauseButton];
 	const intersections = [];
 	class IntersectionObserver {
 		constructor(callback) { this.callback = callback; intersections.push(this); }
@@ -111,7 +117,7 @@ function harness(texts = ["短句", "下一段文字"], options = {}) {
 	const context = vm.createContext({
 		window, document, console, exports: {}, Intl, performance: { now: () => now },
 		setTimeout, clearTimeout, CustomEvent: Event, IntersectionObserver, MutationObserver,
-		localStorage: { getItem: () => null }, HTMLElement: Element,
+		localStorage: { getItem: () => null }, HTMLElement: Element, Element,
 		HTMLInputElement: class {}, HTMLTextAreaElement: class {}, HTMLSelectElement: class {},
 	});
 	if (options.carousel !== false) vm.runInContext(carousel, context);
@@ -128,8 +134,36 @@ function harness(texts = ["短句", "下一段文字"], options = {}) {
 		};
 	});
 	const emit = (target, type, detail) => target.dispatchEvent(new Event(type, { detail }));
-	return { writer, element, desktop, mobile, window, document, media, overlay, intersections, boundaries, index, tick, emit, now: () => now };
+	return { writer, element, desktop, mobile, window, document, media, overlay, intersections, boundaries, index, tick, emit, pauseButton, nextButton, now: () => now };
 }
+
+test("new hero controls pause both clocks, keep the state after text replacement and allow manual next", () => {
+	const h = harness();
+	h.tick(100);
+	h.document.dispatchEvent(new Event("click", { target: h.pauseButton }));
+	assert.equal(h.pauseButton.getAttribute("aria-pressed"), "true");
+	const text = h.element.textContent;
+	h.tick(10000);
+	assert.equal(h.element.textContent, text);
+	assert.equal(h.index(), 0);
+	h.pauseButton.attrs.delete("aria-pressed");
+	h.emit(h.window, "hero:typewriter-ready");
+	assert.equal(h.pauseButton.getAttribute("aria-pressed"), "true");
+	h.document.dispatchEvent(new Event("click", { target: h.nextButton }));
+	assert.equal(h.index(), 1);
+	assert.equal(h.element.textContent, "下一段文字");
+	h.document.dispatchEvent(new Event("click", { target: h.pauseButton }));
+	assert.equal(h.pauseButton.getAttribute("aria-pressed"), "false");
+});
+
+test("new hero controls still work with only one picture", () => {
+	const h = harness(undefined, { images: 1 });
+	h.document.dispatchEvent(new Event("click", { target: h.pauseButton }));
+	h.document.dispatchEvent(new Event("click", { target: h.nextButton }));
+	assert.equal(h.index(), 0);
+	assert.equal(h.element.textContent, "下一段文字");
+	assert.equal(h.pauseButton.getAttribute("aria-pressed"), "true");
+});
 
 test("different sentence lengths drive the exact image/first-character boundary without fixed-time drift", () => {
 	const h = harness(["短句", "这是一段很长很长的测试文字".repeat(5), "👨‍👩‍👧‍👦好"]);

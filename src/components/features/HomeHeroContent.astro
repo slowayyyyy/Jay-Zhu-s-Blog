@@ -1,0 +1,40 @@
+---
+import { Icon } from "astro-icon/components";
+import { backgroundWallpaper, profileConfig } from "@/config";
+import { url } from "@/utils/url-utils";
+import TypewriterText from "./TypewriterText.astro";
+
+const homeText = backgroundWallpaper.common?.homeText;
+const quotes = (Array.isArray(homeText?.subtitle) ? homeText.subtitle : [homeText?.subtitle || ""])
+	.map((text) => text.trim()).filter(Boolean);
+const links = profileConfig.links.filter((link) => link.url?.trim());
+---
+
+<div class="home-hero-content">
+	{homeText?.title && <div class="banner-title home-hero-title" style={{ "--banner-title-size": homeText.titleSize || "3.8rem" }}>{homeText.title}</div>}
+	<div class="home-hero-panel">
+		<div class="home-hero-quote">
+			<span class="home-hero-quote-mark" aria-hidden="true">“</span>
+			<div id="banner-subtitle" class="banner-subtitle banner-subtitle--home home-hero-quote-stage" data-subtitles={JSON.stringify(homeText?.subtitle)}>
+				{quotes.map((text) => <span class="home-hero-quote-sizing" aria-hidden="true">{text}</span>)}
+				<div class="home-hero-quote-playing">
+					{homeText?.typewriter?.enable ? <TypewriterText text={quotes} syncCarousel={true} speed={homeText.typewriter.speed} deleteSpeed={homeText.typewriter.deleteSpeed} pauseTime={homeText.typewriter.pauseTime} /> : quotes[0]}
+				</div>
+			</div>
+			<span class="home-hero-quote-mark" aria-hidden="true">”</span>
+		</div>
+		<div class="home-hero-controls" aria-label="首页轮播与联系入口">
+			<button type="button" data-hero-direction="-1" aria-label="上一张图片与短句" title="上一张"><Icon is:inline name="material-symbols:chevron-left-rounded" /></button>
+			<div class="home-hero-links">
+				{links.map((link) => link.url.startsWith("copy:") ? (
+					<button type="button" data-hero-copy={link.url.slice(5)} aria-label={`复制${link.name}`} title={link.name}><Icon is:inline name={link.icon} /></button>
+				) : (
+					<a href={link.url.startsWith("/") ? url(link.url) : link.url} aria-label={link.name} title={link.name} target={link.url.startsWith("http") ? "_blank" : undefined} rel="noopener noreferrer"><Icon is:inline name={link.icon} /></a>
+				))}
+			</div>
+			<button type="button" data-hero-pause aria-label="暂停首页轮播" title="暂停首页轮播" aria-pressed="false"><span class="home-hero-pause-icon"><Icon is:inline name="material-symbols:pause-rounded" /></span><span class="home-hero-play-icon"><Icon is:inline name="material-symbols:play-arrow-rounded" /></span></button>
+			<button type="button" data-hero-direction="1" aria-label="下一张图片与短句" title="下一张"><Icon is:inline name="material-symbols:chevron-right-rounded" /></button>
+		</div>
+		<span class="home-hero-status sr-only" role="status"></span>
+	</div>
+</div>

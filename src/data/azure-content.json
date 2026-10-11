@@ -634,6 +634,8 @@
     "secondaryCta": "认识我"
   },
   "home": {
+    "immersive": true,
+    "navigationOnDemand": true,
     "branchesKicker": "BEYOND THE NOTES",
     "animeTitle": "故事世界的观影手记",
     "animeStatus": "档案正在生长",
@@ -652,6 +654,11 @@
     "branchesIntro": "文字之外，还有旋律、光影和偶尔浮上水面的日常。它们从不同方向汇进同一段私人记忆。",
     "recentTitle": "最近写下",
     "dynamicQuote": "短一些的念头，也值得拥有自己的停靠处。"
+  },
+  "dynamic": {
+    "title": "说说",
+    "description": "不必展开成文章，也值得被认真记住。",
+    "layout": "timeline"
   },
   "integrations": {
     "bilibiliUid": "398487766",
