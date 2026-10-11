@@ -31,7 +31,7 @@ function harness() {
 	return { title, button, document, observers, emit, setup: exports.setupHomeTitleMotion };
 }
 
-test("title only cycles while visible and pauses in hidden tabs", () => {
+test("title motion only runs while visible and pauses in hidden tabs", () => {
 	const h = harness();
 	assert.equal(h.title.dataset.motionActive, "false");
 	h.observers[0].callback([{ isIntersecting: true }]);
@@ -70,10 +70,17 @@ test("Swup reinitialization releases old observers and listeners", () => {
 
 test("reduced motion and small moment previews remain scoped to their surfaces", () => {
 	const css = readFileSync(new URL("../../src/styles/immersive-home.css", import.meta.url), "utf8");
-	assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*#wallpaper-wrapper \.home-hero-title \{ animation: none;/);
+	assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*#wallpaper-wrapper \.home-hero-title \.home-title-glitch-layer \{ animation: none; opacity: 0;/);
+	assert.doesNotMatch(css, /home-title-colors/);
+	assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)/);
+	assert.match(css, /:hover \.home-title-glitch-blue \{ animation: home-title-glitch-blue/);
+	assert.match(css, /:hover \.home-title-glitch-red \{ animation: home-title-glitch-red/);
+	const title = readFileSync(new URL("../../src/components/features/HomeHeroContent.astro", import.meta.url), "utf8");
+	assert.equal((title.match(/aria-hidden="true">\{homeText.title\}/g) || []).length, 2);
 	const page = readFileSync(new URL("../../src/pages/dynamic/index.astro", import.meta.url), "utf8");
 	assert.match(page, /\.dynamic-content :global\(img\).*max-height: 240px/);
 	assert.match(page, /max-width: min\(100%, 180px\)/);
+	assert.match(page, /:global\(figcaption\).*contain: inline-size;.*text-align: center/);
 	const layout = readFileSync(new URL("../../src/layouts/Layout.astro", import.meta.url), "utf8");
 	assert.match(layout, /import \{ setupDynamicFeed \} from "@\/scripts\/dynamic-feed"/);
 	assert.match(layout, /addEventListener\("astro:page-load", setupDynamicFeed\)/);

@@ -79,6 +79,7 @@ const { title, description, layout } = azureContent.dynamic;
 	/* Thumbnails never replace or crop the original media used by the lightbox. */
 	.dynamic-content :global(center) { text-align: left; }
 	.dynamic-content :global(figure) { display: inline-block; max-width: min(100%, 240px); margin: .6rem 0; vertical-align: top; }
+	.dynamic-content :global(figcaption) { contain: inline-size; width: 100%; text-align: center; overflow-wrap: anywhere; }
 	.dynamic-content :global(img) { display: block; height: auto; max-height: 240px; width: auto; max-width: min(100%, 240px); object-fit: contain; border-radius: .6rem; cursor: zoom-in; }
 	.dynamic-content :global(img:focus-visible) { outline: 2px solid var(--primary); outline-offset: 3px; }
 	.dynamic-meta { display: flex; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .85rem; }

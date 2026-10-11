@@ -1,6 +1,6 @@
 let cleanup: (() => void) | undefined;
 
-/** Pause the decorative color cycle outside the hero, in hidden tabs, or on request. */
+/** Pause the hover glitch outside the hero, in hidden tabs, or on request. */
 export function setupHomeTitleMotion(): void {
 	cleanup?.();
 	cleanup = undefined;
