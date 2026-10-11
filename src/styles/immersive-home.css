@@ -80,43 +80,35 @@ body.is-home.immersive-home .banner-home-text-overlay { padding: 1.25rem !import
 	line-height: 1.2 !important;
 	letter-spacing: .035em;
 	margin: 0 !important;
-	color: white;
-	text-shadow: 0 3px 6px rgb(0 0 0 / .7), 0 8px 24px rgb(0 0 0 / .4);
+	color: #fff8f0;
+	text-shadow: 0 3px 8px rgb(24 19 34 / .65), 0 8px 24px rgb(24 19 34 / .4);
 	position: relative;
 	isolation: isolate;
 	pointer-events: auto;
 }
-.home-title-glitch-layer {
+.home-title-petal-light {
 	position: absolute;
 	inset: 0;
 	font: inherit;
 	letter-spacing: inherit;
-	color: white;
+	color: #fff8f0;
 	pointer-events: none;
 	opacity: 0;
-	clip-path: inset(100% 0 0);
 }
-.home-title-glitch-blue { text-shadow: -4px 0 #3897ff; }
-.home-title-glitch-red { text-shadow: 4px 0 #ff636f; }
 @media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
-	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-layer { opacity: 1; animation-play-state: paused; }
-	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-blue { animation: home-title-glitch-blue .8s ease-in-out infinite alternate-reverse; animation-play-state: paused; }
-	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-red { animation: home-title-glitch-red .8s ease-in-out infinite alternate-reverse; animation-play-state: paused; }
-	#wallpaper-wrapper .home-hero-title[data-motion-active="true"]:hover .home-title-glitch-layer { animation-play-state: running; }
+	.home-title-petal-light {
+		animation: home-title-petal-light 8s ease-in-out infinite;
+		animation-play-state: paused;
+		transition: opacity 900ms cubic-bezier(.16, 1, .3, 1);
+	}
+	#wallpaper-wrapper .home-hero-title:hover .home-title-petal-light { opacity: .85; }
+	#wallpaper-wrapper .home-hero-title[data-motion-active="true"]:hover .home-title-petal-light { animation-play-state: running; }
 }
-@keyframes home-title-glitch-blue {
-	0% { clip-path: inset(30% 0 50%); transform: translate(1px, 0); }
-	25% { clip-path: inset(10% 0 65%); transform: translate(3px, -2px); }
-	50% { clip-path: inset(55% 0 20%); transform: translate(-2px, 1px); }
-	75% { clip-path: inset(20% 0 35%); transform: translate(1px, -1px); }
-	100% { clip-path: inset(70% 0 10%); transform: translate(-1px, 0); }
-}
-@keyframes home-title-glitch-red {
-	0% { clip-path: inset(60% 0 15%); transform: translate(-1px, 0); }
-	25% { clip-path: inset(35% 0 35%); transform: translate(-3px, 2px); }
-	50% { clip-path: inset(5% 0 70%); transform: translate(2px, -1px); }
-	75% { clip-path: inset(65% 0 10%); transform: translate(-1px, 1px); }
-	100% { clip-path: inset(25% 0 45%); transform: translate(1px, 0); }
+/* A slow change in petal-colored light; the lettering never shifts or splits. */
+@keyframes home-title-petal-light {
+	0%, 100% { color: #fff8f0; text-shadow: 0 3px 8px rgb(24 19 34 / .65), 0 6px 22px rgb(255 224 206 / .28); }
+	40% { color: #ffe1e8; text-shadow: 0 3px 8px rgb(24 19 34 / .65), 0 6px 26px rgb(239 173 196 / .38); }
+	70% { color: #e9e2ff; text-shadow: 0 3px 8px rgb(24 19 34 / .65), 0 6px 26px rgb(191 177 229 / .34); }
 }
 .home-hero-panel {
 	width: min(100%, 35rem);
@@ -191,7 +183,7 @@ body.is-home.immersive-home #wallpaper-wrapper .scroll-down-indicator.hide { opa
 	body.is-home.immersive-home #wallpaper-wrapper .scroll-down-indicator { bottom: .5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-	#wallpaper-wrapper .home-hero-title .home-title-glitch-layer { animation: none; opacity: 0; }
+	#wallpaper-wrapper .home-hero-title .home-title-petal-light { animation: none; transition: none; opacity: 0; }
 	body.is-home.home-navigation-demand #navbar-wrapper { transition: none; }
 	body.is-home.immersive-home #wallpaper-wrapper .scroll-down-icon { animation: none; }
 }

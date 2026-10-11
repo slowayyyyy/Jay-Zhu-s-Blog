@@ -70,13 +70,18 @@ test("Swup reinitialization releases old observers and listeners", () => {
 
 test("reduced motion and small moment previews remain scoped to their surfaces", () => {
 	const css = readFileSync(new URL("../../src/styles/immersive-home.css", import.meta.url), "utf8");
-	assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*#wallpaper-wrapper \.home-hero-title \.home-title-glitch-layer \{ animation: none; opacity: 0;/);
-	assert.doesNotMatch(css, /home-title-colors/);
+	assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*#wallpaper-wrapper \.home-hero-title \.home-title-petal-light \{ animation: none; transition: none; opacity: 0;/);
+	assert.doesNotMatch(css, /home-title-glitch|home-title-colors/);
 	assert.match(css, /@media \(hover: hover\) and \(pointer: fine\) and \(prefers-reduced-motion: no-preference\)/);
-	assert.match(css, /:hover \.home-title-glitch-blue \{ animation: home-title-glitch-blue/);
-	assert.match(css, /:hover \.home-title-glitch-red \{ animation: home-title-glitch-red/);
+	assert.match(css, /animation: home-title-petal-light 8s ease-in-out infinite;\s*animation-play-state: paused/);
+	assert.match(css, /:hover \.home-title-petal-light \{ opacity: \.85;/);
+	assert.match(css, /\[data-motion-active="true"\]:hover \.home-title-petal-light \{ animation-play-state: running;/);
+	const light = css.match(/@keyframes home-title-petal-light \{([\s\S]*?)\n\}/)?.[1];
+	assert.ok(light);
+	assert.doesNotMatch(light, /transform|clip-path|filter/);
+	assert.match(css, /transition: opacity 900ms/);
 	const title = readFileSync(new URL("../../src/components/features/HomeHeroContent.astro", import.meta.url), "utf8");
-	assert.equal((title.match(/aria-hidden="true">\{homeText.title\}/g) || []).length, 2);
+	assert.equal((title.match(/aria-hidden="true">\{homeText.title\}/g) || []).length, 1);
 	const page = readFileSync(new URL("../../src/pages/dynamic/index.astro", import.meta.url), "utf8");
 	assert.match(page, /\.dynamic-content :global\(img\).*max-height: 240px/);
 	assert.match(page, /max-width: min\(100%, 180px\)/);
