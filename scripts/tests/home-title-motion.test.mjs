@@ -72,7 +72,7 @@ test("reduced motion and small moment previews remain scoped to their surfaces",
 	const css = readFileSync(new URL("../../src/styles/immersive-home.css", import.meta.url), "utf8");
 	assert.match(css, /@media \(prefers-reduced-motion: reduce\)\s*\{\s*#wallpaper-wrapper \.home-hero-title \.home-title-glitch-layer \{ animation: none; opacity: 0;/);
 	assert.doesNotMatch(css, /home-title-colors/);
-	assert.match(css, /@media \(hover: hover\) and \(pointer: fine\)/);
+	assert.match(css, /@media \(hover: hover\) and \(pointer: fine\) and \(prefers-reduced-motion: no-preference\)/);
 	assert.match(css, /:hover \.home-title-glitch-blue \{ animation: home-title-glitch-blue/);
 	assert.match(css, /:hover \.home-title-glitch-red \{ animation: home-title-glitch-red/);
 	const title = readFileSync(new URL("../../src/components/features/HomeHeroContent.astro", import.meta.url), "utf8");

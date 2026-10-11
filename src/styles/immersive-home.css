@@ -98,7 +98,7 @@ body.is-home.immersive-home .banner-home-text-overlay { padding: 1.25rem !import
 }
 .home-title-glitch-blue { text-shadow: -4px 0 #3897ff; }
 .home-title-glitch-red { text-shadow: 4px 0 #ff636f; }
-@media (hover: hover) and (pointer: fine) {
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
 	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-layer { opacity: 1; animation-play-state: paused; }
 	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-blue { animation: home-title-glitch-blue .8s ease-in-out infinite alternate-reverse; animation-play-state: paused; }
 	#wallpaper-wrapper .home-hero-title:hover .home-title-glitch-red { animation: home-title-glitch-red .8s ease-in-out infinite alternate-reverse; animation-play-state: paused; }
