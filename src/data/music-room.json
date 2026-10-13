@@ -91,6 +91,9 @@
 	],
 	"notesTitle": "听歌手记",
 	"showNotes": true,
+	"allNotesLabel": "查看全部手记",
+	"notesSearchPlaceholder": "寻找歌名、歌手或手记",
+	"notesEmptyMessage": "没有找到对应的手记，换个关键词试试。",
 	"notes": [
 		{
 			"title": "在一首歌里停留",

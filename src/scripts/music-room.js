@@ -78,9 +78,41 @@ function applyFilter() {
   if (empty) empty.hidden = visible !== 0;
 }
 
+function syncCurrentNote(root, currentIndex) {
+  const section = root?.querySelector('[data-current-note]');
+  if (!section) return;
+  let entries;
+  try { entries = JSON.parse(section.dataset.noteEntries); } catch { section.hidden = true; return; }
+  const note = entries.find(entry => entry.index === (currentIndex >= 0 ? currentIndex : 0));
+  section.hidden = !note;
+  if (!note) return;
+  section.querySelector('[data-note-song]').textContent = `${note.name} · ${note.artist}`;
+  section.querySelector('[data-note-title]').textContent = note.title;
+  section.querySelector('[data-note-text]').textContent = note.text;
+  section.querySelector('[data-note-example]').hidden = !note.example;
+  const cover = section.querySelector('[data-note-cover]');
+  cover.hidden = !note.cover;
+  if (note.cover) { cover.src = note.cover; cover.alt = note.name; }
+  else cover.removeAttribute('src');
+}
+
+function filterNoteArchive(root) {
+  if (!root) return;
+  const query = root.querySelector('[data-note-search]')?.value.trim().toLocaleLowerCase() || '';
+  let matches = 0;
+  root.querySelectorAll('[data-note-search-text]').forEach(item => {
+    item.hidden = !item.dataset.noteSearchText.includes(query);
+    if (item.hidden) item.open = false;
+    else matches++;
+  });
+  const empty = root.querySelector('[data-notes-empty]');
+  if (empty) empty.hidden = matches !== 0;
+}
+
 function syncPlaying() {
   const state = window.__fireflyMusic?.getState();
   if (!state) return;
+  syncCurrentNote(page(), state.currentIndex);
   page()?.querySelectorAll('[data-song-index]').forEach(button => {
     const active = Number(button.dataset.songIndex) === state.currentIndex;
     button.setAttribute('aria-current',String(active));
@@ -155,7 +187,10 @@ document.addEventListener('click',async event => {
     root.querySelectorAll('[data-library-view-button]').forEach(button=>button.setAttribute('aria-pressed',String(button===view)));
   }
 });
-document.addEventListener('input',event => { if (event.target.matches?.('[data-song-search]')) applyFilter(); });
+document.addEventListener('input',event => {
+  if (event.target.matches?.('[data-song-search]')) applyFilter();
+  if (event.target.matches?.('[data-note-search]')) filterNoteArchive(page());
+});
 ['fm:init','fm:track','fm:play-state'].forEach(name=>window.addEventListener(name,syncPlaying));
 function bindSwup() {
   if (!window.swup || boundSwup === window.swup) return;

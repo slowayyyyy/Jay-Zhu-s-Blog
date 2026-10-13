@@ -3,7 +3,7 @@ import { readFileSync, existsSync } from 'node:fs';
 import test from 'node:test';
 import { createRequire } from 'node:module';
 import vm from 'node:vm';
-import { musicLibrary, selectTracks, cropStyle } from '../../src/lib/music-library.mjs';
+import { musicLibrary, selectTracks, cropStyle, listeningNotes } from '../../src/lib/music-library.mjs';
 const root = new URL('../../',import.meta.url);
 const read = path=>readFileSync(new URL(path,root),'utf8');
 const azure=JSON.parse(read('src/data/azure-content.json'));
@@ -22,11 +22,55 @@ test('room navigation uses its own width budget and collapses by shell width, no
  assert.match(css,/#main-content-shell>div\s*\{[^}]*max-width:1200px/);
 });
 
-test('listening notes are ordered content, not a hidden autoplay queue',()=>{
+test('song notes are maintained beside the song; archived data does not become live again',()=>{
+ const songs=[{id:'a',src:'/a',name:'A',note:{text:'First'}},{id:'b',src:'/b',name:'B',note:{title:'B note',text:'Second'}},{id:'empty',src:'/c',note:{text:'  '}},{id:'off',src:'',note:{text:'Inactive'}}];
+ assert.deepEqual(listeningNotes(musicLibrary(songs)).map(n=>[n.id,n.index,n.title]),[['a',0,'A'],['b',1,'B note']]);
+ assert.deepEqual(listeningNotes(musicLibrary([songs[1],songs[0]])).map(n=>[n.id,n.index]),[['b',0],['a',1]]);
+ assert.deepEqual(listeningNotes(musicLibrary([{...songs[0],note:{text:''}}])),[]);
+ for(const old of room.notes){
+  const track=azure.playlist.find(t=>t.id===old.track);
+  assert.deepEqual(track.note,{title:old.title,text:old.text,example:old.example});
+ }
  const template=read('src/pages/music/room/index.astro');
- assert.match(template,/notes\.map\(note/);
- assert.match(template,/class="note-cover" data-song-index=\{track.index\}/);
- assert.match(read('public/admin/config.yml'),/多条手记按此列表顺序依次展示，不自动轮播/);
+ assert.match(template,/const notes = listeningNotes\(library\)/);
+ assert.match(template,/data-current-note/);
+ assert.match(template,/<details class="notes-archive"/);
+ assert.doesNotMatch(template,/const notes = room.notes/);
+ assert.match(read('public/admin/config.yml'),/正文留空则不显示/);
+});
+
+test('current song changes update one note safely; absent notes hide the whole section',()=>{
+ const source=read('src/scripts/music-room.js');
+ const logic=source.slice(source.indexOf('function syncCurrentNote('),source.indexOf('function syncPlaying('));
+ const entries=[{index:0,name:'A',artist:'Artist',title:'Note A',text:'<script>literal text</script>',cover:'/a.png',example:true},{index:2,name:'C',artist:'Other',title:'Note C',text:'Body C',cover:'',example:false}];
+ const parts=Object.fromEntries(['song','title','text','example','cover'].map(key=>['[data-note-'+key+']',{hidden:false,removeAttribute(k){delete this[k];}}]));
+ const section={dataset:{noteEntries:JSON.stringify(entries)},querySelector:s=>parts[s]};
+ const root={querySelector:()=>section};
+ const context={};vm.createContext(context);vm.runInContext(logic,context);
+ context.syncCurrentNote(root,0);
+ assert.equal(section.hidden,false);assert.equal(parts['[data-note-text]'].textContent,entries[0].text);
+ assert.equal(parts['[data-note-cover]'].src,'/a.png');
+ context.syncCurrentNote(root,1);assert.equal(section.hidden,true);
+ context.syncCurrentNote(root,2);assert.equal(section.hidden,false);
+ assert.equal(parts['[data-note-title]'].textContent,'Note C');assert.equal(parts['[data-note-cover]'].hidden,true);
+ assert.equal(parts['[data-note-example]'].hidden,true);
+ context.syncCurrentNote(null,0);
+ section.dataset.noteEntries='broken';context.syncCurrentNote(root,0);assert.equal(section.hidden,true);
+ assert.match(source,/syncCurrentNote\(page\(\), state.currentIndex\)/);
+ assert.match(source,/'fm:init','fm:track','fm:play-state'/);
+});
+
+test('all-notes search filters text and names without changing playback',()=>{
+ const source=read('src/scripts/music-room.js');
+ const logic=source.slice(source.indexOf('function filterNoteArchive('),source.indexOf('function syncPlaying('));
+ const rows=[{dataset:{noteSearchText:'a artist ocean'},open:true},{dataset:{noteSearchText:'b other forest'},open:true}];
+ const search={value:' Ocean '};const empty={hidden:true};
+ const root={querySelector:s=>s==='[data-note-search]'?search:empty,querySelectorAll:()=>rows};
+ const context={};vm.createContext(context);vm.runInContext(logic,context);
+ context.filterNoteArchive(root);assert.equal(rows[0].hidden,false);assert.equal(rows[1].hidden,true);assert.equal(rows[1].open,false);assert.equal(empty.hidden,true);
+ search.value='nothing';context.filterNoteArchive(root);assert.equal(empty.hidden,false);
+ search.value='';context.filterNoteArchive(root);assert.ok(rows.every(r=>!r.hidden));
+ assert.doesNotMatch(logic,/playTrack|togglePlay|\.init\(/);
 });
 
 test('fixed song references survive reorder and audio replacement; inactive songs are not played',()=>{
@@ -74,6 +118,9 @@ test('CMS exposes every room setting and retains the incumbent audio widget',()=
  const playlist=azureFields.find(f=>f.name==='playlist');
  assert.equal(playlist.fields.find(f=>f.name==='src').widget,'r2-audio');
  assert.equal(playlist.fields.find(f=>f.name==='id').widget,'hidden');
+ assert.equal(playlist.fields.find(f=>f.name==='note').widget,'object');
+ assert.equal(playlist.fields.find(f=>f.name==='note').fields.find(f=>f.name==='text').widget,'text');
+ assert.equal(fields.find(f=>f.name==='notes').widget,'hidden');
  assert.equal(fields.find(f=>f.name==='headerImage').widget,'image-crop');
 });
 

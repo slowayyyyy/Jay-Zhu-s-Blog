@@ -18,6 +18,15 @@ export function selectTracks(library, ids = []) {
   return [...new Set(ids)].map((id) => library.find((track) => track.id === id)).filter(Boolean);
 }
 
+// Only a song's own note is live. Archived room notes never reappear after
+// the owner clears a note or removes a song from the playback library.
+export function listeningNotes(library = []) {
+  return library.filter(track => typeof track.note?.text === 'string' && track.note.text.trim()).map(track => ({
+    id:track.id,index:track.index,name:track.name,artist:track.artist,cover:track.cover || '',
+    title:String(track.note.title || track.name),text:track.note.text,example:track.note.example === true,
+  }));
+}
+
 export function cropStyle(crop = {}) {
   crop ||= {};
   const clamp = (value, min, max, fallback) => Number.isFinite(Number(value)) ? Math.min(max, Math.max(min, Number(value))) : fallback;

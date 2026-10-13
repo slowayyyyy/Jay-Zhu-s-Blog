@@ -96,7 +96,12 @@
         "心怀仁慈思慕",
         "爱意触手可得"
       ],
-      "id": "tabibito-no-uta"
+      "id": "tabibito-no-uta",
+      "note": {
+        "title": "在一首歌里停留",
+        "text": "心怀仁慈思慕，爱意触手可得。",
+        "example": true
+      }
     },
     {
       "name": "芽吹の唄",

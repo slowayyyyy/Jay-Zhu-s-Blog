@@ -314,17 +314,10 @@ collections:
               - { label: 标为参考歌单, name: example, widget: boolean, default: false, hint: 示例保留标记；换成你自己的选曲后可以关闭。 }
           - { label: 显示听歌手记, name: showNotes, widget: boolean, default: true }
           - { label: 手记区域标题, name: notesTitle, widget: string }
-          - label: 听歌手记
-            name: notes
-            widget: list
-            required: false
-            summary: "{{fields.title}}"
-            hint: 多条手记按此列表顺序依次展示，不自动轮播，也不组成播放队列。点击封面或“听听”播放对应歌曲；后续按播放器当前模式播放。可拖动条目调整展示顺序。
-            fields:
-              - { label: 手记标题, name: title, widget: string }
-              - { label: 手记正文, name: text, widget: text }
-              - { label: 对应歌曲, name: track, widget: music-track-picker, multiple: false, required: false, hint: 封面使用对应歌曲的唱片封面，点击可播放。 }
-              - { label: 标为参考手记, name: example, widget: boolean, default: false }
+          - { label: 全部手记入口文字, name: allNotesLabel, widget: string, default: 查看全部手记, hint: 主页面只显示当前歌曲的手记；全部手记按需展开，不自动播放。手记内容在“全部前台文案与歌单 → 音乐歌单 → 对应歌曲 → 听歌手记”编辑。 }
+          - { label: 手记检索提示, name: notesSearchPlaceholder, widget: string, default: 寻找歌名、歌手或手记 }
+          - { label: 手记检索无结果提示, name: notesEmptyMessage, widget: text, default: 没有找到对应的手记，换个关键词试试。 }
+          - { label: 迁移前手记归档（不参与展示）, name: notes, widget: hidden, required: false }
           - { label: 曲库区域标题, name: libraryTitle, widget: string }
           - { label: 搜索框提示, name: searchPlaceholder, widget: string }
           - { label: 无匹配歌曲提示, name: emptyMessage, widget: text }
@@ -553,6 +546,16 @@ collections:
               - { label: 歌名, name: name, widget: string }
               - { label: 歌曲固定标识, name: id, widget: hidden, required: false }
               - { label: 歌手, name: artist, widget: string }
+              - label: 听歌手记
+                name: note
+                widget: object
+                required: false
+                collapsed: true
+                hint: 为这首歌写一点文字。聆听室随当前歌曲切换手记；正文留空则不显示，不会填入默认文案。不影响音乐文件、歌词或播放顺序。
+                fields:
+                  - { label: 手记标题, name: title, widget: string, required: false, hint: 可选；留空时显示歌名。 }
+                  - { label: 手记正文, name: text, widget: text, required: false }
+                  - { label: 标为参考手记, name: example, widget: boolean, default: false, required: false, hint: 改成自己的文字后可以关闭此标记。 }
               - {
                   label: 音乐文件,
                   name: src,

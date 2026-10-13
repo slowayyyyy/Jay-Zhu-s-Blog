@@ -4,10 +4,11 @@ import MusicPlayer from "@/components/features/MusicPlayer.astro";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import azureContent from "@/data/azure-content.json";
 import room from "@/data/music-room.json";
-import { musicLibrary, selectTracks, cropStyle } from "@/lib/music-library.mjs";
+import { musicLibrary, selectTracks, cropStyle, listeningNotes } from "@/lib/music-library.mjs";
 const library = musicLibrary(azureContent.playlist);
 const collections = room.collections || [];
-const notes = room.notes || [];
+const notes = listeningNotes(library);
+const firstNote = notes.find(note=>note.index===0);
 ---
 <MainGridLayout title={room.title} description={room.intro}>
   <section class="listening-room" data-music-page="room" data-music-transition={JSON.stringify(room.transition)} style={`--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.accent : "#167eb3"}`}>
@@ -24,13 +25,24 @@ const notes = room.notes || [];
           <span class="collection-description"><small>{collection.description}</small><em>{selectTracks(library,collection.tracks).length} 首{collection.example ? " · 参考歌单" : ""}</em></span>
         </button>)}</div>
       </section>}
-      {room.showNotes && notes.length > 0 && <section class="room-notes" aria-label={room.notesTitle}>
+      {room.showNotes && notes.length > 0 && <>
+      <section class="room-notes" data-current-note data-note-entries={JSON.stringify(notes)} aria-label={room.notesTitle} hidden={!firstNote}>
         <div class="music-section-head"><h2>{room.notesTitle}</h2></div>
-        {notes.map(note => {const track=library.find(track=>track.id===note.track);return <article class="listening-note">
-          <div><h3>{note.title}{note.example && <small class="note-reference">参考手记</small>}</h3><p>{note.text}</p>{track && <button class="music-text-link" data-song-index={track.index}>听听《{track.name}》 <Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true"/></button>}</div>
-          {track?.cover && <button class="note-cover" data-song-index={track.index} aria-label={`播放 ${track.name}`}><img src={track.cover} alt={track.name} loading="lazy"/></button>}
-        </article>})}
-      </section>}
+        <article class="listening-note">
+          <div><span class="note-song" data-note-song>{firstNote ? `${firstNote.name} · ${firstNote.artist}` : ""}</span><h3><span data-note-title>{firstNote?.title}</span><small class="note-reference" data-note-example hidden={!firstNote?.example}>参考手记</small></h3><div class="note-body" tabindex="0" role="region" aria-label="手记正文"><p data-note-text>{firstNote?.text}</p></div></div>
+          <img class="note-cover" data-note-cover src={firstNote?.cover || undefined} alt={firstNote?.name || ""} hidden={!firstNote?.cover} loading="lazy"/>
+        </article>
+      </section>
+      <details class="notes-archive" data-notes-archive>
+        <summary>{room.allNotesLabel}<span class="notes-count">{notes.length}</span></summary>
+        <label class="music-search notes-search"><span class="sr-only">{room.notesSearchPlaceholder}</span><input type="search" placeholder={room.notesSearchPlaceholder} data-note-search /></label>
+        <div class="notes-archive-list">{notes.map(note=><details class="note-archive-item" data-note-search-text={`${note.name} ${note.artist} ${note.title} ${note.text}`.toLocaleLowerCase()}>
+          <summary><strong>{note.name}</strong><span>{note.artist}</span></summary>
+          <div class="note-archive-content"><h3>{note.title}{note.example && <small class="note-reference">参考手记</small>}</h3><p>{note.text}</p><button class="music-text-link" data-song-index={note.index}>听听《{note.name}》 <Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true"/></button></div>
+        </details>)}</div>
+        <p class="music-empty" data-notes-empty hidden>{room.notesEmptyMessage}</p>
+      </details>
+      </>}
       <section id="library" class="room-library" data-library-view={room.defaultView}>
         <div class="music-section-head library-heading"><h2>{room.libraryTitle}<small>{library.length}</small></h2><label class="music-search"><span class="sr-only">{room.searchPlaceholder}</span><input type="search" placeholder={room.searchPlaceholder} data-song-search /></label><div class="library-view-switch" aria-label="歌曲展示方式"><button data-library-view-button="list" aria-pressed={room.defaultView === "list"}>列表</button><button data-library-view-button="covers" aria-pressed={room.defaultView === "covers"}>封面</button></div></div>
         <div class="collection-filter" hidden><span data-filter-label></span><button data-clear-filter>显示全部 ×</button></div>
