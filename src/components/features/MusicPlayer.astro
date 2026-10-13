@@ -202,7 +202,9 @@ const widgetId =
 (function () {
     var cfg = JSON.parse(viewConfigStr);
     var widget = document.getElementById(widgetId);
-    if (!widget) return;
+    // Swup replays a visited page's inline scripts, but navbar/sidebar widgets
+    // persist. Bind once per actual DOM node, not once per route visit.
+    if (!widget || widget.__fireflyMusicBound) return;
 
     var mgr = window.__fireflyMusic;
     if (!mgr) return;
@@ -251,6 +253,7 @@ const widgetId =
         ui.progressContainer, ui.btnNext, ui.btnPrev, ui.loading,
         ui.cover, ui.title, ui.artist, ui.playlistContainer, ui.itemTemplate];
     if (_critical.some(function(el) { return !el; })) return;
+    widget.__fireflyMusicBound = true;
 
     // ── Local state (drawers, user scrolling, virtual scroll) ──
     var ITEM_H = 42;
@@ -279,11 +282,10 @@ const widgetId =
 
     // ── UI update functions ──────────────────────────────────
     function setLoading(bool) {
-        if (bool) {
-            ui.loading.classList.remove('opacity-0', 'pointer-events-none');
-        } else {
-            ui.loading.classList.add('opacity-0', 'pointer-events-none');
-        }
+        // Buffering must not intercept Pause, Next or translation clicks.
+        ui.loading.classList.toggle('opacity-0', !bool);
+        ui.loading.classList.add('pointer-events-none');
+        ui.widget.setAttribute('aria-busy', String(bool));
     }
 
     function updatePlayStateUI(isPlaying) {
@@ -944,6 +946,8 @@ const widgetId =
 
     // ── Cleanup on DOM removal ───────────────────────────────
     var observer = new MutationObserver(function (mutations) {
+        // Moving a persistent widget within the layout is not unmounting it.
+        if (widget.isConnected) return;
         for (var i = 0; i < mutations.length; i++) {
             var removed = mutations[i].removedNodes;
             for (var j = 0; j < removed.length; j++) {
@@ -954,6 +958,7 @@ const widgetId =
                     });
                     observer.disconnect();
                     clearTimeout(local.scrollTimeout);
+                    cancelAnimationFrame(local.vs.scrollRaf);
                     return;
                 }
             }
