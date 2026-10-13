@@ -256,6 +256,7 @@ export const ADMIN_ICON_OPTIONS = [
 ];
 
 export const ADMIN_COLOR_OPTIONS = [
+	{ value: '#167eb3', label: '聆听室蓝', usage: '乐境播放按钮、歌词与音乐更新', recommended: true },
 	{
 		value: '#38bdf8',
 		label: '苍蓝',

@@ -33,6 +33,7 @@ import { getBackgroundImages, isHomePage } from "@/utils/layout-utils";
 import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
+import "@/styles/music-room.css";
 import "@/styles/variables.styl";
 import "@/styles/markdown-extend.styl";
 import "@/styles/mouse.css";
@@ -595,12 +596,22 @@ const siteLang = lang.replace("_", "-");
       },
     ]}
   >
-
+    {Astro.url.pathname.startsWith("/music/") && <Fragment set:html={`<!--
+THESIS: A light music foyer opens into a wide, unhurried listening room.
+OWN-WORLD: Cool white and azure, natural flowers, real record and metal tonearm, user album covers; no character wallpaper in the room.
+STORY: Window-side introduction, record and lyrics, scene collections, listening notes, searchable library; one persistent audio engine.
+FIRST VIEWPORT: Large record at left, song controls in the middle, lyrics at right; stacked lyrics on mobile and a visible bottom playback dock.
+FORM: User-approved azure music journal concept, seed user-approved-comp; shared-record transition at 600ms, reduced-motion respected.
+FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
+-->`} />}
     <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->
     {shouldShowTopHighlight && <div class="top-gradient-highlight" />}
     <div id="page-background-decoration" aria-hidden="true"></div>
     <ConfigCarrier />
     <MusicManager />
+    <script>
+      import "@/scripts/music-room.js";
+    </script>
     <slot />
     <noscript><style>@layer utilities{body.is-home.home-navigation-demand #navbar-wrapper{visibility:visible!important;opacity:1!important;transform:none!important;pointer-events:auto!important}}.home-navigation-trigger{display:none!important}</style></noscript>
 

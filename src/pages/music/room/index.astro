@@ -1,0 +1,44 @@
+---
+import { Icon } from "astro-icon/components";
+import MusicPlayer from "@/components/features/MusicPlayer.astro";
+import MainGridLayout from "@/layouts/MainGridLayout.astro";
+import azureContent from "@/data/azure-content.json";
+import room from "@/data/music-room.json";
+import { musicLibrary, selectTracks, cropStyle } from "@/lib/music-library.mjs";
+const library = musicLibrary(azureContent.playlist);
+const collections = room.collections || [];
+const notes = room.notes || [];
+---
+<MainGridLayout title={room.title} description={room.intro}>
+  <section class="listening-room" data-music-page="room" data-music-transition={JSON.stringify(room.transition)} style={`--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.accent : "#167eb3"}`}>
+    {room.enabled ? <>
+      <header class="room-header">
+        {room.headerImage?.src && <img class="room-header-image" src={room.headerImage.src} alt={room.headerImageAlt || ""} style={cropStyle(room.headerImage)} />}
+        <div class="room-header-copy"><a href="/music/" data-music-return class="room-back"><Icon is:inline name="material-symbols:arrow-back-rounded" aria-hidden="true"/> {room.backLabel}</a><h1>{room.title}</h1><p>{room.intro}</p></div>
+      </header>
+      <div class="room-turntable"><MusicPlayer id="music-room-player" variant="room" /></div>
+      {room.showCollections && collections.length > 0 && <section class="room-collections" aria-label={room.collectionsTitle}>
+        <div class="music-section-head"><h2>{room.collectionsTitle}</h2></div>
+        <div class="collection-shelf">{collections.map((collection,index) => <button class="collection-card" data-collection={index} data-members={JSON.stringify(selectTracks(library,collection.tracks).map(track=>track.index))} aria-pressed="false">
+          <span class="collection-image">{collection.cover?.src && <img src={collection.cover.src} alt="" style={cropStyle(collection.cover)} loading="lazy"/>}<strong>{collection.name}</strong></span>
+          <span class="collection-description"><small>{collection.description}</small><em>{selectTracks(library,collection.tracks).length} 首{collection.example ? " · 参考歌单" : ""}</em></span>
+        </button>)}</div>
+      </section>}
+      {room.showNotes && notes.length > 0 && <section class="room-notes" aria-label={room.notesTitle}>
+        <div class="music-section-head"><h2>{room.notesTitle}</h2></div>
+        {notes.map(note => {const track=library.find(track=>track.id===note.track);return <article class="listening-note">
+          <div><h3>{note.title}{note.example && <small class="note-reference">参考手记</small>}</h3><p>{note.text}</p>{track && <button class="music-text-link" data-song-index={track.index}>听听《{track.name}》 <Icon is:inline name="material-symbols:arrow-forward-rounded" aria-hidden="true"/></button>}</div>
+          {track?.cover && <button class="note-cover" data-song-index={track.index} aria-label={`播放 ${track.name}`}><img src={track.cover} alt={track.name} loading="lazy"/></button>}
+        </article>})}
+      </section>}
+      <section id="library" class="room-library" data-library-view={room.defaultView}>
+        <div class="music-section-head library-heading"><h2>{room.libraryTitle}<small>{library.length}</small></h2><label class="music-search"><span class="sr-only">{room.searchPlaceholder}</span><input type="search" placeholder={room.searchPlaceholder} data-song-search /></label><div class="library-view-switch" aria-label="歌曲展示方式"><button data-library-view-button="list" aria-pressed={room.defaultView === "list"}>列表</button><button data-library-view-button="covers" aria-pressed={room.defaultView === "covers"}>封面</button></div></div>
+        <div class="collection-filter" hidden><span data-filter-label></span><button data-clear-filter>显示全部 ×</button></div>
+        <div class="library-songs">{library.map((track,index)=><button class="song-row" data-song-index={track.index} data-song-search-text={`${track.name} ${track.artist}`.toLocaleLowerCase()} aria-label={`播放 ${track.name}`}>
+          <span class="song-number">{String(index+1).padStart(2,"0")}</span><img src={track.cover} alt="" loading="lazy"/><span><strong>{track.name}</strong><small>{track.artist}</small></span><span class="song-play" aria-hidden="true"><Icon is:inline name="material-symbols:play-arrow-rounded" class="song-play-icon"/><Icon is:inline name="material-symbols:pause-rounded" class="song-pause-icon"/></span>
+        </button>)}</div><p class="music-empty" data-library-empty hidden>{room.emptyMessage}</p>
+      </section>
+      {room.player.showMini && <div class="room-mini"><MusicPlayer id="music-room-mini" variant="mini"/></div>}
+    </> : <div class="room-disabled"><h1>{room.title}</h1><p>聆听室暂未开放，仍可在乐境听歌。</p><a href="/music/">{room.backLabel} →</a></div>}
+  </section>
+</MainGridLayout>

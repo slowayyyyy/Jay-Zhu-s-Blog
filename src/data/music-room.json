@@ -1,0 +1,106 @@
+{
+	"enabled": true,
+	"title": "聆听室",
+	"intro": "把时间留给一首歌。",
+	"entryLabel": "进入聆听室",
+	"entryDescription": "展开唱片、歌词与收藏，在这里慢慢听。",
+	"backLabel": "回到乐境",
+	"headerImage": {
+		"src": "/assets/images/music-room/listening-corner.webp",
+		"positionX": 50,
+		"positionY": 50,
+		"zoom": 1,
+		"alt": "窗边的浅蓝花束与唱片"
+	},
+	"headerImageAlt": "窗边的浅蓝花束与唱片",
+	"accent": "#167eb3",
+	"foyer": {
+		"title": "停一会儿，听一首歌",
+		"description": "从熟悉的旋律开始。",
+		"tracks": [
+			"tabibito-no-uta",
+			"yoasobi-tabun",
+			"tanya-next-love"
+		]
+	},
+	"player": {
+		"recordImage": { "src": "/assets/images/music-room/vinyl.webp", "positionX": 50, "positionY": 50, "zoom": 1 },
+		"tonearmImage": { "src": "/assets/images/music-room/tonearm.webp", "positionX": 50, "positionY": 50, "zoom": 1 },
+		"openLyrics": true,
+		"defaultTranslation": false,
+		"rotateRecord": true,
+		"showTonearm": true,
+		"showMini": true
+	},
+	"transition": {
+		"enabled": true,
+		"duration": 600,
+		"rememberScroll": true
+	},
+	"collectionsTitle": "此刻，想听",
+	"showCollections": true,
+	"collections": [
+		{
+			"name": "写作时",
+			"description": "安静地陪伴一页文字",
+			"cover": {
+				"src": "/assets/images/music-covers/01-tabibito-no-uta.png",
+				"positionX": 50,
+				"positionY": 50,
+				"zoom": 1
+			},
+			"tracks": [
+				"tabibito-no-uta",
+				"mebuki-no-uta",
+				"kaze-to-iku-michi"
+			],
+			"example": true
+		},
+		{
+			"name": "归途",
+			"description": "让熟悉的声音陪你回家",
+			"cover": {
+				"src": "/assets/images/music-covers/10-yoasobi-tabun.png",
+				"positionX": 50,
+				"positionY": 50,
+				"zoom": 1
+			},
+			"tracks": [
+				"kaze-to-iku-michi",
+				"yoasobi-tabun",
+				"mamoritai-mono"
+			],
+			"example": true
+		},
+		{
+			"name": "夜里",
+			"description": "留给夜晚的一点温柔",
+			"cover": {
+				"src": "/assets/images/music-covers/11-tanya-next-love.png",
+				"positionX": 50,
+				"positionY": 50,
+				"zoom": 1
+			},
+			"tracks": [
+				"tanya-next-love",
+				"inori-owareba",
+				"musubime"
+			],
+			"example": true
+		}
+	],
+	"notesTitle": "听歌手记",
+	"showNotes": true,
+	"notes": [
+		{
+			"title": "在一首歌里停留",
+			"text": "心怀仁慈思慕，爱意触手可得。",
+			"track": "tabibito-no-uta",
+			"example": true
+		}
+	],
+	"libraryTitle": "全部歌曲",
+	"searchPlaceholder": "寻找歌名或歌手",
+	"emptyMessage": "这里还没有匹配的歌曲，换一个关键词试试。",
+	"defaultView": "list"
+}

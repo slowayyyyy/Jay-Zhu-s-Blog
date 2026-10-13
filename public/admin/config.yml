@@ -252,6 +252,87 @@ collections:
     label: 苍蓝回廊设置
     description: 每个字段注明前台位置。保存会提交 main；等待 Cloudflare 构建成功后刷新前台才生效，无需清理音乐缓存。开场动画保持停用。
     files:
+      - label: 乐境门厅与聆听室
+        name: music_room
+        file: src/data/music-room.json
+        format: json
+        description: 门厅入口、宽版聆听室、选曲、手记与过渡动画。音乐原文件与歌词仍在“全部前台文案与歌单”管理。保存后等待部署更新；不清理音乐缓存。
+        fields:
+          - { label: 开放聆听室入口, name: enabled, widget: boolean, default: true }
+          - { label: 聆听室标题, name: title, widget: string }
+          - { label: 聆听室介绍, name: intro, widget: text }
+          - { label: 门厅入口按钮文字, name: entryLabel, widget: string }
+          - { label: 门厅入口说明, name: entryDescription, widget: text }
+          - { label: 返回门厅按钮文字, name: backLabel, widget: string }
+          - { label: 聆听室顶部照片与取景, name: headerImage, widget: image-crop, preview_aspect: "5 / 1", required: false, crop_hint: 可以从素材库选择或上传；建议花束或唱片放在右侧，左侧留给文字。仅调整展示，不修改原图。 }
+          - { label: 顶部照片说明, name: headerImageAlt, widget: string, required: false }
+          - { label: 聆听室强调色, name: accent, widget: color-palette, hint: "推荐苍蓝色 #167eb3。同步作用于播放按钮、进度条、歌词高亮和歌单选择；保留自定义颜色。" }
+          - label: 门厅精选歌曲
+            name: foyer
+            widget: object
+            fields:
+              - { label: 精选区域标题, name: title, widget: string }
+              - { label: 精选区域说明, name: description, widget: text, required: false }
+              - { label: 门厅显示哪些歌曲, name: tracks, widget: music-track-picker, multiple: true, required: false }
+          - label: 播放器展示
+            name: player
+            widget: object
+            fields:
+              - { label: 黑胶底图与取景, name: recordImage, widget: image-crop, preview_aspect: "1 / 1", required: false, hint: 通常保留透明黑胶底图。圆盘中心仍自动使用每首歌曲的封面；不影响音乐或歌词。 }
+              - { label: 透明唱臂素材, name: tonearmImage, widget: image-crop, preview_aspect: "1 / 2", required: false, crop_hint: 选择透明唱臂素材。此处可调整素材取景，建议保留完整支点与唱针。 }
+              - { label: 默认展开聆听室歌词, name: openLyrics, widget: boolean, default: true, hint: 只影响尚未手动展开或收起歌词的访客；访客自己的选择跨页面保留。 }
+              - { label: 默认显示翻译, name: defaultTranslation, widget: boolean, default: false, hint: 已经手动选择过的访客沿用自己的选择。没有翻译的歌曲不显示翻译按钮。 }
+              - { label: 播放时旋转唱片封面, name: rotateRecord, widget: boolean, default: true, hint: 系统开启减少动态效果时自动停用。 }
+              - { label: 显示唱臂, name: showTonearm, widget: boolean, default: true }
+              - { label: 显示底部迷你播放器, name: showMini, widget: boolean, default: true }
+          - label: 门厅与聆听室过渡
+            name: transition
+            widget: object
+            fields:
+              - { label: 启用唱片共享过渡, name: enabled, widget: boolean, default: true }
+              - label: 动画节奏
+                name: duration
+                widget: select
+                options:
+                  - { label: 轻快（0.45 秒）, value: 450 }
+                  - { label: 柔和（0.6 秒，推荐）, value: 600 }
+                  - { label: 舒缓（0.75 秒）, value: 750 }
+              - { label: 返回时记住门厅滚动位置, name: rememberScroll, widget: boolean, default: true }
+          - { label: 显示情境歌单, name: showCollections, widget: boolean, default: true }
+          - { label: 情境歌单区域标题, name: collectionsTitle, widget: string }
+          - label: 情境歌单
+            name: collections
+            widget: list
+            required: false
+            summary: "{{fields.name}}"
+            hint: 点击前台歌单筛选对应歌曲。选曲直接按歌名勾选；移除歌单不会删除音乐。可自由添加、排序和修改，不限于三个。
+            fields:
+              - { label: 歌单名称, name: name, widget: string }
+              - { label: 歌单描述, name: description, widget: text, required: false }
+              - { label: 歌单封面与取景, name: cover, widget: image-crop, preview_aspect: "3 / 1", required: false, crop_hint: 前台以横向宽幅显示，歌单名称叠在左下方。请在这里调整焦点与缩放，优先保留人物脸部。 }
+              - { label: 包含的歌曲, name: tracks, widget: music-track-picker, multiple: true, required: false }
+              - { label: 标为参考歌单, name: example, widget: boolean, default: false, hint: 示例保留标记；换成你自己的选曲后可以关闭。 }
+          - { label: 显示听歌手记, name: showNotes, widget: boolean, default: true }
+          - { label: 手记区域标题, name: notesTitle, widget: string }
+          - label: 听歌手记
+            name: notes
+            widget: list
+            required: false
+            summary: "{{fields.title}}"
+            fields:
+              - { label: 手记标题, name: title, widget: string }
+              - { label: 手记正文, name: text, widget: text }
+              - { label: 对应歌曲, name: track, widget: music-track-picker, multiple: false, required: false, hint: 封面使用对应歌曲的唱片封面，点击可播放。 }
+              - { label: 标为参考手记, name: example, widget: boolean, default: false }
+          - { label: 曲库区域标题, name: libraryTitle, widget: string }
+          - { label: 搜索框提示, name: searchPlaceholder, widget: string }
+          - { label: 无匹配歌曲提示, name: emptyMessage, widget: text }
+          - label: 曲库默认展示
+            name: defaultView
+            widget: select
+            options:
+              - { label: 简洁歌曲列表（推荐）, value: list }
+              - { label: 唱片封面墙, value: covers }
       - label: 全部前台文案与歌单
         name: azure
         file: src/data/azure-content.json
@@ -469,6 +550,7 @@ collections:
             summary: "{{fields.name}} · {{fields.artist}}"
             fields:
               - { label: 歌名, name: name, widget: string }
+              - { label: 歌曲固定标识, name: id, widget: hidden, required: false }
               - { label: 歌手, name: artist, widget: string }
               - {
                   label: 音乐文件,

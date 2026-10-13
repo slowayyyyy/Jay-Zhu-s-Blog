@@ -3,6 +3,30 @@
 	"description": "这里统一索引当前博客使用和保留的洛琪希图片、动图。新增素材后，可在图库与相册、壁纸、时间问候或其他对应模块中选择；替换前请先查看“当前用途”，避免误改多个页面共同使用的素材。",
 	"assets": [
 		{
+			"id": "music-room-tonearm",
+			"name": "聆听室 · 透明金属唱臂",
+			"kind": "图片",
+			"src": "/assets/images/music-room/tonearm.webp",
+			"usage": "聆听室唱片上的唱臂，可在播放器展示设置中替换或关闭",
+			"note": "为聆听室生成的透明摄影风唱臂素材，保留支点、唱杆与唱针。"
+		},
+		{
+			"id": "music-room-vinyl",
+			"name": "聆听室 · 黑胶唱片底图",
+			"kind": "图片",
+			"src": "/assets/images/music-room/vinyl.webp",
+			"usage": "门厅与聆听室的唱片底图",
+			"note": "生成的透明黑胶纹理素材，唱片中心使用每首歌曲的真实封面。"
+		},
+		{
+			"id": "music-room-listening-corner",
+			"name": "聆听室 · 窗边花束与唱片",
+			"kind": "图片",
+			"src": "/assets/images/music-room/listening-corner.webp",
+			"usage": "聆听室顶部照片；可在门厅与聆听室设置中取景或替换",
+			"note": "为聆听室制作的示意摄影素材，浅蓝花束与冷白留白；已压缩为 WebP。"
+		},
+		{
 			"id": "home-miss-you-user-clean",
 			"name": "I Miss You 无字版（用户提供）",
 			"kind": "图片",

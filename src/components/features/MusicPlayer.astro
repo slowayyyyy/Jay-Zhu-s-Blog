@@ -2,6 +2,8 @@
 import { Icon } from "astro-icon/components";
 import { musicPlayerConfig } from "@/config/musicConfig";
 import azureContent from "@/data/azure-content.json";
+import roomConfig from "@/data/music-room.json";
+import { cropStyle } from "@/lib/music-library.mjs";
 import I18nKey from "@/i18n/i18nKey";
 import { i18n } from "@/i18n/translation";
 
@@ -9,12 +11,15 @@ interface Props {
 	class?: string;
 	style?: string;
 	id?: string;
+	variant?: "default" | "foyer" | "room" | "mini";
 }
-const { class: className, style, id } = Astro.props;
+const { class: className, style, id, variant = "default" } = Astro.props;
 
 const config = musicPlayerConfig;
 
 const viewConfigStr = JSON.stringify({
+	openLyrics: variant === "room" && roomConfig.player.openLyrics,
+	defaultTranslation: roomConfig.player.defaultTranslation,
 	showLyrics: config.showLyrics ?? true,
 	i18n: {
 		noPlaying: i18n(I18nKey.musicNoPlaying),
@@ -37,20 +42,22 @@ const widgetId =
 	id || `music-widget-${Math.random().toString(36).substring(2, 9)}`;
 ---
 
-<div id={widgetId} class:list={["music-player-widget w-full relative transition-all duration-300", className]} style={style} role="region" aria-label={i18n(I18nKey.music)}>
+<div id={widgetId} data-player-variant={variant} data-rotate={roomConfig.player.rotateRecord} data-tonearm={roomConfig.player.showTonearm} class:list={["music-player-widget w-full relative transition-all duration-300", className]} style={style} role="region" aria-label={i18n(I18nKey.music)}>
 
     <!-- Top Row: Cover & Info -->
-<div class="flex items-center gap-2 mb-2 px-1">
+<div class="music-top flex items-center gap-2 mb-2 px-1">
     <!-- Circular Cover -->
-    <div class="relative shrink-0 w-14 h-14 group">
+    <div class="music-record relative shrink-0 w-14 h-14 group">
             <div class="w-full h-full rounded-full overflow-hidden shadow-lg border-2 border-white dark:border-neutral-700 relative z-10 bg-(--primary)/10 flex items-center justify-center">
+            {(variant === "room" || variant === "foyer") && <img class="music-record-texture" src={roomConfig.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" style={cropStyle(roomConfig.player.recordImage)} />}
             <Icon is:inline name="material-symbols:music-note-rounded" class="text-2xl text-(--primary) opacity-40 absolute" aria-hidden="true" />
             <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src="" alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
             </div>
+            {variant === "room" && roomConfig.player.showTonearm && <img class="music-tonearm" src={roomConfig.player.tonearmImage?.src || "/assets/images/music-room/tonearm.webp"} alt="" aria-hidden="true" style={cropStyle(roomConfig.player.tonearmImage)} />}
     </div>
 
     <!-- Info Section -->
-    <div class="flex-1 min-w-0 flex flex-col overflow-hidden">
+    <div class="music-info flex-1 min-w-0 flex flex-col overflow-hidden">
         <div class="flex items-center justify-between overflow-hidden gap-2">
             <div class="flex-1 min-w-0 overflow-hidden relative">
                 <h3 class="music-title font-bold text-base text-neutral-800 dark:text-neutral-100 leading-tight truncate">
@@ -63,7 +70,7 @@ const widgetId =
                     <Icon is:inline name="material-symbols:translate-rounded" class="text-lg" aria-hidden="true" />
                 </button>
                 <!-- Lyric Toggle -->
-                <button class={`btn-lrc-toggle hover:text-(--primary) transition-all duration-300 p-0.5 pr-2 transform active:scale-95 text-neutral-400 ${!config.showLyrics ? 'hidden' : ''}`} title={i18n(I18nKey.musicLyrics)} aria-label={i18n(I18nKey.musicLyrics)}>
+                <button class={`btn-lrc-toggle hover:text-(--primary) transition-all duration-300 p-0.5 pr-2 transform active:scale-95 text-neutral-400 ${!config.showLyrics ? 'hidden' : ''}`} title={i18n(I18nKey.musicLyrics)} aria-label={i18n(I18nKey.musicLyrics)} aria-expanded="false" aria-controls={`${widgetId}-lyrics`}>
                     <Icon is:inline name="material-symbols:subtitles-off-outline-rounded" class="icon-lrc-off text-xl" aria-hidden="true" />
                     <Icon is:inline name="material-symbols:subtitles-outline-rounded" class="icon-lrc-on text-xl hidden" aria-hidden="true" />
                 </button>
@@ -91,7 +98,7 @@ const widgetId =
                     <Icon is:inline name="material-symbols:volume-off-rounded" class="icon-vol-mute text-lg hidden" aria-hidden="true" />
                 </button>
                 <div class="w-16 transition-all duration-300 ease-out flex items-center">
-                    <div class="vol-container h-1 w-16 bg-neutral-300/50 dark:bg-neutral-500/40 rounded-full cursor-pointer relative ml-1" role="slider" aria-label={i18n(I18nKey.musicVolume)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
+                    <div class="vol-container h-1 w-16 bg-neutral-300/50 dark:bg-neutral-500/40 rounded-full cursor-pointer relative ml-1" tabindex="0" role="slider" aria-label={i18n(I18nKey.musicVolume)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="70">
                         <div class="vol-bar absolute left-0 top-0 h-full bg-(--primary) rounded-full w-[70%]"></div>
                     </div>
                 </div>
@@ -101,8 +108,8 @@ const widgetId =
 </div>
 
 <!-- Progress Bar (Slim) -->
-<div class="px-1">
-    <div class="progress-container relative w-full h-1 bg-neutral-300/60 dark:bg-neutral-500/40 rounded-full cursor-pointer touch-none mb-2 group mt-2" role="slider" aria-label={i18n(I18nKey.musicProgress)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+<div class="music-progress px-1">
+    <div class="progress-container relative w-full h-1 bg-neutral-300/60 dark:bg-neutral-500/40 rounded-full cursor-pointer touch-none mb-2 group mt-2" tabindex="0" role="slider" aria-label={i18n(I18nKey.musicProgress)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
         <div class="progress-bar absolute left-0 top-0 h-full bg-(--primary) rounded-full w-0 transition-[width] duration-100"></div>
         <!-- Hover Thumb -->
         <div class="progress-thumb absolute top-1/2 -mt-1.5 -ml-1.5 w-3 h-3 bg-(--primary) ring-2 ring-white dark:ring-neutral-800 rounded-full shadow-sm scale-0 group-hover:scale-100 transition-transform duration-200"></div>
@@ -110,7 +117,7 @@ const widgetId =
 </div>
 
 <!-- Controls Row -->
-<div class="flex items-center justify-between px-1 select-none">
+<div class="music-controls flex items-center justify-between px-1 select-none">
     <!-- Repeat Mode -->
     <button class="btn-repeat text-neutral-300 dark:text-neutral-600 hover:text-(--primary) transition-colors p-2 active:scale-95" title={i18n(I18nKey.musicPlayMode)} aria-label={i18n(I18nKey.musicPlayMode)}>
         <Icon is:inline name="material-symbols:repeat-rounded" class="icon-repeat text-xl" aria-hidden="true" />
@@ -135,13 +142,13 @@ const widgetId =
     </button>
 
     <!-- Playlist Toggle Arrow -->
-    <button class="btn-drawer-toggle text-neutral-400 hover:text-(--primary) transition-all duration-300 p-2 transform active:scale-95" title={i18n(I18nKey.musicPlaylist)} aria-label={i18n(I18nKey.musicPlaylist)}>
+    <button class="btn-drawer-toggle text-neutral-400 hover:text-(--primary) transition-all duration-300 p-2 transform active:scale-95" title={i18n(I18nKey.musicPlaylist)} aria-label={i18n(I18nKey.musicPlaylist)} aria-expanded="false" aria-controls={`${widgetId}-playlist`}>
         <Icon is:inline name="mdi:playlist-music" class="text-xl" aria-hidden="true" />
     </button>
 </div>
 
 <!-- Lyrics Drawer -->
-<div class="lrc-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
+<div id={`${widgetId}-lyrics`} inert aria-hidden="true" class="lrc-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
     <div class="overflow-hidden min-h-0">
         <div class="mt-2 pt-2 border-t border-neutral-100 dark:border-white/5 mx-1">
             <div class="lrc-container h-48 overflow-y-auto custom-scrollbar flex flex-col items-center gap-2 p-4 py-24 text-center relative scroll-smooth" role="listbox" aria-label={i18n(I18nKey.musicLyrics)}>
@@ -152,7 +159,7 @@ const widgetId =
 </div>
 
 <!-- Playlist Drawer (Accordion) -->
-<div class="playlist-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
+<div id={`${widgetId}-playlist`} inert aria-hidden="true" class="playlist-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
     <div class="overflow-hidden min-h-0">
             <div class="mt-2 pt-2 border-t border-neutral-100 dark:border-white/5 mx-1">
             <div class="playlist-container max-h-48 overflow-y-auto custom-scrollbar pr-1 pb-1 relative" role="listbox" aria-label={i18n(I18nKey.musicPlaylist)}>
@@ -248,9 +255,10 @@ const widgetId =
     // ── Local state (drawers, user scrolling, virtual scroll) ──
     var ITEM_H = 42;
     var OVERSCAN = 8;
-    var translationPreference = false;
+    var translationPreference = Boolean(cfg.defaultTranslation);
     try {
-        translationPreference = localStorage.getItem('music-player-translation-enabled') === 'true';
+        var storedPreference = localStorage.getItem('music-player-translation-enabled');
+        if (storedPreference !== null) translationPreference = storedPreference === 'true';
     } catch (_) {}
     var local = {
         isUserScrolling: false,
@@ -315,18 +323,20 @@ const widgetId =
 
     function updateModeUI(playMode) {
         var primaryColor = 'text-(--primary)';
+        ui.btnRepeat.dataset.mode = String(playMode);
+        ui.btnRepeat.setAttribute('aria-label', cfg.i18n.music + '：' + ['列表循环', '单曲循环', '随机播放'][playMode]);
         if (playMode === 0) {
-            ui.btnRepeat.className = 'p-2 active:scale-95 transition-colors text-neutral-300 dark:text-neutral-600 hover:text-[var(--primary)]';
+            ui.btnRepeat.className = 'btn-repeat p-2 active:scale-95 transition-colors text-neutral-300 dark:text-neutral-600 hover:text-[var(--primary)]';
             ui.iconRepeat.classList.remove('hidden');
             ui.iconRepeatOne.classList.add('hidden');
             ui.iconShuffle.classList.add('hidden');
         } else if (playMode === 1) {
-            ui.btnRepeat.className = 'p-2 active:scale-95 transition-colors ' + primaryColor;
+            ui.btnRepeat.className = 'btn-repeat p-2 active:scale-95 transition-colors ' + primaryColor;
             ui.iconRepeat.classList.add('hidden');
             ui.iconRepeatOne.classList.remove('hidden');
             ui.iconShuffle.classList.add('hidden');
         } else {
-            ui.btnRepeat.className = 'p-2 active:scale-95 transition-colors ' + primaryColor;
+            ui.btnRepeat.className = 'btn-repeat p-2 active:scale-95 transition-colors ' + primaryColor;
             ui.iconRepeat.classList.add('hidden');
             ui.iconRepeatOne.classList.add('hidden');
             ui.iconShuffle.classList.remove('hidden');
@@ -378,7 +388,7 @@ const widgetId =
     }
 
     // ── Virtual scroll helpers (absolute-position based) ──────
-    var PRIMARY_COLOR = getComputedStyle(document.documentElement).getPropertyValue('--primary').trim() || '#6366f1';
+    var PRIMARY_COLOR = getComputedStyle(widget).getPropertyValue('--primary').trim() || '#6366f1';
 
     function vsApplyActiveStyle(el, isActive) {
         var overlay = el.querySelector('.item-active-overlay');
@@ -591,6 +601,7 @@ const widgetId =
             lineEl.setAttribute('role', 'option');
             lineEl.setAttribute('aria-label', line.text);
             lineEl.setAttribute('aria-selected', 'false');
+            lineEl.tabIndex = 0;
             var originalEl = document.createElement('div');
             originalEl.className = 'lrc-original';
             if (Array.isArray(line.words) && line.words.length > 0) {
@@ -616,6 +627,12 @@ const widgetId =
             }
             lineEl.onclick = function () {
                 mgr.seekToTime(line.time);
+            };
+            lineEl.onkeydown = function (event) {
+                if (event.key === 'Enter' || event.key === ' ') {
+                    event.preventDefault();
+                    mgr.seekToTime(line.time);
+                }
             };
             ui.lrcContainer.appendChild(lineEl);
         });
@@ -826,68 +843,60 @@ const widgetId =
         mgr.seek(percent);
     });
 
-    // ── Drawer logic (local state) ───────────────────────────
-    ui.btnLrc.addEventListener('click', function () {
-        var isOpen = ui.lrcDrawer.style.gridTemplateRows === '1fr';
-        if (isOpen) {
-            ui.lrcDrawer.style.gridTemplateRows = '0fr';
-            ui.lrcDrawer.classList.remove('opacity-100');
-            ui.lrcDrawer.classList.add('opacity-0');
-            ui.btnLrc.classList.remove('text-(--primary)');
-            ui.btnLrc.classList.add('text-neutral-400');
-            ui.iconLrcOn.classList.add('hidden');
-            ui.iconLrcOff.classList.remove('hidden');
-        } else {
-            // Close playlist if open
-            ui.playlistDrawer.style.gridTemplateRows = '0fr';
-            ui.playlistDrawer.classList.remove('opacity-100');
-            ui.playlistDrawer.classList.add('opacity-0');
-            ui.btnDrawer.classList.remove('text-(--primary)');
-            ui.btnDrawer.classList.add('text-neutral-400');
+    [ui.progressContainer, ui.volContainer].forEach(function (slider) {
+        slider.addEventListener('keydown', function (event) {
+            if (!['ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown', 'Home', 'End'].includes(event.key)) return;
+            event.preventDefault();
+            var state = mgr.getState();
+            var volume = slider === ui.volContainer;
+            var value = volume ? state.volume : state.progress / 100;
+            value = event.key === 'Home' ? 0 : event.key === 'End' ? 1 : value + (['ArrowRight', 'ArrowUp'].includes(event.key) ? .05 : -.05);
+            (volume ? mgr.setVolume : mgr.seek)(Math.max(0, Math.min(1, value)));
+        });
+    });
 
-            ui.lrcDrawer.style.gridTemplateRows = '1fr';
-            ui.lrcDrawer.classList.add('opacity-100');
-            ui.lrcDrawer.classList.remove('opacity-0');
-            ui.btnLrc.classList.add('text-(--primary)');
-            ui.btnLrc.classList.remove('text-neutral-400');
-            ui.iconLrcOn.classList.remove('hidden');
-            ui.iconLrcOff.classList.add('hidden');
+    // ── Drawer logic: preference belongs to the visitor, not the route ──
+    function setDrawer(drawer, button, open) {
+        if (!open && drawer.contains(document.activeElement)) button.focus();
+        drawer.inert = !open;
+        drawer.setAttribute('aria-hidden', String(!open));
+        button.setAttribute('aria-expanded', String(open));
+        drawer.style.gridTemplateRows = open ? '1fr' : '0fr';
+        drawer.classList.toggle('opacity-100', open);
+        drawer.classList.toggle('opacity-0', !open);
+        button.classList.toggle('text-(--primary)', open);
+        button.classList.toggle('text-neutral-400', !open);
+    }
+
+    function setLyricsOpen(open) {
+        open = Boolean(open && cfg.showLyrics && widget.dataset.playerVariant !== 'mini');
+        if (open) {
+            setDrawer(ui.playlistDrawer, ui.btnDrawer, false);
+            local.vs.drawerOpen = false;
         }
+        setDrawer(ui.lrcDrawer, ui.btnLrc, open);
+        ui.iconLrcOn.classList.toggle('hidden', !open);
+        ui.iconLrcOff.classList.toggle('hidden', open);
+    }
+
+    function rememberLyrics(open) {
+        window.__musicLyricsOpen = open;
+        try { localStorage.setItem('music-player-lyrics-open', String(open)); } catch (_) {}
+        window.dispatchEvent(new CustomEvent('fm:lyrics-preference', { detail: { open: open } }));
+    }
+
+    on('fm:lyrics-preference', function (event) { setLyricsOpen(event.detail.open); });
+    ui.btnLrc.addEventListener('click', function () {
+        rememberLyrics(ui.btnLrc.getAttribute('aria-expanded') !== 'true');
     });
 
     ui.btnDrawer.addEventListener('click', function () {
-        var isOpen = ui.playlistDrawer.style.gridTemplateRows === '1fr';
-        if (isOpen) {
-            ui.playlistDrawer.style.gridTemplateRows = '0fr';
-            ui.playlistDrawer.classList.remove('opacity-100');
-            ui.playlistDrawer.classList.add('opacity-0');
-            ui.btnDrawer.classList.add('text-neutral-400');
-            ui.btnDrawer.classList.remove('text-(--primary)');
-            local.vs.drawerOpen = false;
-        } else {
-            // Close lyrics if open
-            ui.lrcDrawer.style.gridTemplateRows = '0fr';
-            ui.lrcDrawer.classList.remove('opacity-100');
-            ui.lrcDrawer.classList.add('opacity-0');
-            ui.btnLrc.classList.remove('text-(--primary)');
-            ui.btnLrc.classList.add('text-neutral-400');
-            ui.iconLrcOn.classList.add('hidden');
-            ui.iconLrcOff.classList.remove('hidden');
-
-            ui.playlistDrawer.style.gridTemplateRows = '1fr';
-            ui.playlistDrawer.classList.add('opacity-100');
-            ui.playlistDrawer.classList.remove('opacity-0');
-            ui.btnDrawer.classList.remove('text-neutral-400');
-            ui.btnDrawer.classList.add('text-(--primary)');
-            local.vs.drawerOpen = true;
-
-            // Render playlist after drawer transition settles
-            if (local.vs.playlist.length > 0) {
-                requestAnimationFrame(function () {
-                    vsSetContainerHeight();
-                    vsCommitRange();
-                });
-            }
+        var open = ui.btnDrawer.getAttribute('aria-expanded') !== 'true';
+        if (open) rememberLyrics(false);
+        setDrawer(ui.playlistDrawer, ui.btnDrawer, open);
+        local.vs.drawerOpen = open;
+        if (open && local.vs.playlist.length > 0) {
+            requestAnimationFrame(function () { vsSetContainerHeight(); vsCommitRange(); });
         }
     });
 
@@ -951,9 +960,17 @@ const widgetId =
         }
     });
     if (widget.parentNode) {
-        observer.observe(widget.parentNode, { childList: true });
+        observer.observe(document.body, { childList: true, subtree: true });
     }
 
+    var lyricsOpen = Boolean(cfg.openLyrics);
+    if (typeof window.__musicLyricsOpen === 'boolean') lyricsOpen = window.__musicLyricsOpen;
+    try {
+        var storedLyricsOpen = localStorage.getItem('music-player-lyrics-open');
+        if (storedLyricsOpen !== null) lyricsOpen = storedLyricsOpen === 'true';
+    } catch (_) {}
+    // Do not persist the route's fallback; only explicit visitor actions do that.
+    setLyricsOpen(lyricsOpen);
     // ── Init: either sync existing state or trigger init ─────
     var currentState = mgr.getState();
     if (currentState.initialized) {

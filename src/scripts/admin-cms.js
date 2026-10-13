@@ -6,6 +6,8 @@ import { remarkTightInlineFormatting } from '../lib/remark-tight-inline-formatti
 import { remarkTyporaInline } from '../lib/remark-typora-inline.mjs';
 import { remarkTyporaToc } from '../lib/typora-toc.mjs';
 import { setupChoiceWidgets } from './admin-choice-widgets.js';
+import { setupMusicPicker } from './admin-music-picker.js';
+import { musicLibrary } from '../lib/music-library.mjs';
 import { registerAdminCodeBlock } from './admin-code-block.js';
 import { createPastedImageMarkup, requestPastedImageCaptions } from './admin-image-caption.js';
 import { setupImageCropWidget } from './admin-image-crop.js';
@@ -131,6 +133,7 @@ export function setupAdminCms() {
 	if (!window.CMS || window.__jayCmsSetup) return;
 	window.__jayCmsSetup = true;
 	setupTyporaShortcuts();
+	setupMusicPicker();
 
 	window.CMS.registerRemarkPlugin(remarkTightInlineFormatting);
 	window.CMS.registerRemarkPlugin(remarkTyporaInline);
@@ -684,6 +687,22 @@ export function setupAdminCms() {
 
 	const prepareEntryBeforeSave = async (payload) => {
 		let normalizedData = await normalizeEmbeddedImagesBeforeSave(payload);
+		const music = readEntryDataField(normalizedData, 'playlist');
+		if (music) {
+			const plain = music.toJS?.() ?? music;
+			if (Array.isArray(plain)) {
+				const used = new Set();
+				const normalized = plain.map(track => {
+					let id = String(track.id || '').trim();
+					if (!id || used.has(id)) id = 'song-' + crypto.randomUUID();
+					used.add(id);
+					return { ...track, id };
+				});
+				normalizedData = setEntryDataField(normalizedData, 'playlist', normalized);
+				window.__JAY_MUSIC_TRACKS__ = musicLibrary(normalized);
+				window.dispatchEvent(new Event('jay:music-library'));
+			}
+		}
 		if (payload.entry?.get?.('collection') === 'posts') {
 			const body = readEntryDataField(normalizedData, 'body');
 			if (typeof body === 'string') {

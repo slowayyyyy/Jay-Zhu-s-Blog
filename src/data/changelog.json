@@ -4,6 +4,15 @@
 	"kicker": "CHANGELOG / AZURE CORRIDOR",
 	"entries": [
 		{
+			"date": "2026-10-13",
+			"title": "乐境与聆听室",
+			"description": "乐境保留轻量入口，新增可以慢慢听歌的聆听室。",
+			"tags": ["乐境", "后台管理"],
+			"icon": "material-symbols:music-note-rounded",
+			"accent": "#167eb3",
+			"changes": ["加入黑胶唱片、情境歌单、听歌手记与歌曲搜索。", "进入和返回时音乐持续播放，歌词与翻译记住自己的选择。", "后台可调整选曲、图片取景、文字与展示效果。"]
+		},
+		{
 			"date": "2026-10-11",
 			"title": "标题特效与说说小图预览",
 			"description": "首页标题改为柔和花瓣色微光，说说图片改为紧凑预览。",

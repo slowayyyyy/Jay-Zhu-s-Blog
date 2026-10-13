@@ -32,3 +32,10 @@ Use Conventional Commits, matching the current history: `feat: ...`, `fix: ...`,
 ## Security & Configuration Tips
 
 Do not commit secrets, tokens, or service keys in config files. Keep deployment-specific settings in the target platform environment, and review generated files such as `dist`, `src/constants/lqips.json`, and `src/constants/icons.ts` before committing them.
+
+## 辅助文件存放与清理
+
+- 不在 `/Users/jayzhu/Documents`（文稿）顶层创建博客预览、截图、迁移副本或内容备份目录。
+- 本机内容保护备份统一存放在 `/Users/jayzhu/.codex/project-storage/canglan-blog/backups/`；工作截图与预览放在 `/Users/jayzhu/.codex/project-storage/canglan-blog/previews/`，生成概念图可保留在 Codex 的 `generated_images` 目录。
+- 预览与测试文件使用完且不再需要后清理，优先移入废纸篓；文章、说说、个人资料及媒体备份不得作为临时文件删除。
+- 正式网站素材仍进入项目素材目录并同步后台素材库；备份迁移后更新维护交接中的路径，不把辅助备份提交到仓库或部署。
