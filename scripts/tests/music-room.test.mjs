@@ -10,6 +10,25 @@ const azure=JSON.parse(read('src/data/azure-content.json'));
 const room=JSON.parse(read('src/data/music-room.json'));
 const library=musicLibrary(azure.playlist);
 
+test('room navigation uses its own width budget and collapses by shell width, not the reading column',()=>{
+ const css=read('src/styles/music-room.css');
+ const navigation=css.match(/body\.sticky-navbar:has\(\[data-music-page="room"\]\) #top-row\s*\{([^}]+)\}/)?.[1];
+ assert.ok(navigation);
+ assert.match(navigation,/max-width:none!important/);
+ assert.doesNotMatch(navigation,/1200px/);
+ assert.match(css,/container:music-navigation \/ inline-size/);
+ assert.match(css,/@container music-navigation \(max-width:1440px\)/);
+ assert.match(css,/\.nav-actions\s*\{ grid-column:2;/);
+ assert.match(css,/#main-content-shell>div\s*\{[^}]*max-width:1200px/);
+});
+
+test('listening notes are ordered content, not a hidden autoplay queue',()=>{
+ const template=read('src/pages/music/room/index.astro');
+ assert.match(template,/notes\.map\(note/);
+ assert.match(template,/class="note-cover" data-song-index=\{track.index\}/);
+ assert.match(read('public/admin/config.yml'),/多条手记按此列表顺序依次展示，不自动轮播/);
+});
+
 test('fixed song references survive reorder and audio replacement; inactive songs are not played',()=>{
  const songs=[{id:'a',name:'A',src:'/a'},{id:'b',name:'B',src:'/b'},{id:'disabled',name:'C',src:''}];
  const original=musicLibrary(songs);

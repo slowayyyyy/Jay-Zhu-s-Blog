@@ -10,7 +10,19 @@ body:has([data-music-page="room"]) #main-grid { grid-template-columns:minmax(0,1
 body:has([data-music-page="room"]) #main-grid>div:not([id]) { grid-column:1/-1!important;min-width:0; }
 body:has([data-music-page="room"]) #content-wrapper { transform:none!important;animation:none!important;opacity:1!important; }
 @layer utilities {
- body.sticky-navbar:has([data-music-page="room"]) #top-row { max-width:1200px!important;position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;margin-inline:auto!important;transform:none!important;z-index:50!important; }
+ body.sticky-navbar:has([data-music-page="room"]) #top-row { max-width:none!important;position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;margin-inline:auto!important;transform:none!important;z-index:50!important; }
+}
+/* Navigation has its own width budget; the 1200px reading column is not it.
+   Query the shell, not the viewport, so zoom and shell padding cannot expose
+   the full menu before there is room for brand, links and tool controls. */
+body:has([data-music-page="room"]) #navbar.firefly-navbar > .firefly-nav-shell { container:music-navigation / inline-size; }
+@container music-navigation (max-width:1440px) {
+ #navbar.firefly-navbar .nav-container { grid-template-columns:minmax(0,1fr) auto;padding-inline:.75rem; }
+ #navbar.firefly-navbar .nav-links,#navbar.firefly-navbar #search-bar { display:none!important; }
+ #navbar.firefly-navbar .nav-actions { grid-column:2; }
+ #navbar.firefly-navbar .nav-actions > .menu-btn,#navbar.firefly-navbar #search-switch,#navbar.firefly-navbar .search-panel #search-bar-inside { display:flex!important; }
+ #navbar.firefly-navbar .nav-brand { min-width:0;overflow:hidden;padding-inline:.5rem; }
+ #navbar.firefly-navbar .brand-name { min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
 }
 body:has([data-music-page="room"]) #navbar-wrapper { opacity:1!important;visibility:visible!important;transform:none!important; }
 body:has([data-music-page="room"]) #canvas_sakura { display:none!important; }

@@ -319,6 +319,7 @@ collections:
             widget: list
             required: false
             summary: "{{fields.title}}"
+            hint: 多条手记按此列表顺序依次展示，不自动轮播，也不组成播放队列。点击封面或“听听”播放对应歌曲；后续按播放器当前模式播放。可拖动条目调整展示顺序。
             fields:
               - { label: 手记标题, name: title, widget: string }
               - { label: 手记正文, name: text, widget: text }
