@@ -101,3 +101,11 @@ test('room and manager retain the authored song order and default list mode', ()
   assert.match(config, /playMode: "list"/);
   assert.doesNotMatch(config, /\.sort\(|\.reverse\(/);
 });
+
+test('listening room cover is not obscured by a decorative spindle dot', () => {
+  const css = read('src/styles/music-room.css');
+  const spindle = css.split('\n').filter(line => line.includes('.music-record>div::after'));
+  assert.equal(spindle.length, 1);
+  assert.ok(spindle[0].startsWith('[data-player-variant="foyer"]'));
+  assert.doesNotMatch(spindle[0], /data-player-variant="room"/);
+});
