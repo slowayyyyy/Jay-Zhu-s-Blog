@@ -15,6 +15,14 @@
 /* 暗色模式选择器配置 */
 @custom-variant dark (&:where(.dark, .dark *));
 
+/* Unstyled headings, text and native controls inherit the active theme.
+   Component/utility colors and article syntax highlighting stay authoritative. */
+@layer base {
+  body {
+    color: var(--content-regular);
+  }
+}
+
 /* Tailwind v4 配置 - 从 tailwind.config.cjs 迁移 */
 @theme {
   --font-sans:
