@@ -1,0 +1,1985 @@
+{
+  "format": "karaoke-v1",
+  "title": "Innocence",
+  "artist": "Avril Lavigne",
+  "lines": [
+    {
+      "time": 8.069,
+      "end": 11.574,
+      "text": "Waking up I see that everything is ok",
+      "words": [
+        {
+          "text": "Waking ",
+          "start": 8.069,
+          "duration": 0.316
+        },
+        {
+          "text": "up ",
+          "start": 8.385,
+          "duration": 0.25
+        },
+        {
+          "text": "I ",
+          "start": 8.635,
+          "duration": 0.258
+        },
+        {
+          "text": "see ",
+          "start": 8.893,
+          "duration": 0.18
+        },
+        {
+          "text": "that ",
+          "start": 9.073,
+          "duration": 0.376
+        },
+        {
+          "text": "everything ",
+          "start": 9.449,
+          "duration": 0.688
+        },
+        {
+          "text": "is ",
+          "start": 10.137,
+          "duration": 0.25
+        },
+        {
+          "text": "ok",
+          "start": 10.387,
+          "duration": 1.187
+        }
+      ],
+      "translation": "睁开双眼 我发现 一切如期上演"
+    },
+    {
+      "time": 11.574,
+      "end": 13.14,
+      "text": "The first time in my life",
+      "words": [
+        {
+          "text": "The ",
+          "start": 11.574,
+          "duration": 0.187
+        },
+        {
+          "text": "first ",
+          "start": 11.761,
+          "duration": 0.313
+        },
+        {
+          "text": "time ",
+          "start": 12.074,
+          "duration": 0.255
+        },
+        {
+          "text": "in ",
+          "start": 12.329,
+          "duration": 0.182
+        },
+        {
+          "text": "my ",
+          "start": 12.511,
+          "duration": 0.377
+        },
+        {
+          "text": "life",
+          "start": 12.888,
+          "duration": 0.252
+        }
+      ],
+      "translation": "这是我生活中的第一次"
+    },
+    {
+      "time": 13.14,
+      "end": 15.136,
+      "text": "And now it's so great",
+      "words": [
+        {
+          "text": "And ",
+          "start": 13.14,
+          "duration": 0.247
+        },
+        {
+          "text": "now ",
+          "start": 13.387,
+          "duration": 0.314
+        },
+        {
+          "text": "it's ",
+          "start": 13.701,
+          "duration": 0.375
+        },
+        {
+          "text": "so ",
+          "start": 14.076,
+          "duration": 0.31
+        },
+        {
+          "text": "great",
+          "start": 14.386,
+          "duration": 0.75
+        }
+      ],
+      "translation": "第一次像现在这样如此美好的呈现"
+    },
+    {
+      "time": 15.136,
+      "end": 16.892,
+      "text": "Slowing down I look around",
+      "words": [
+        {
+          "text": "Slowing ",
+          "start": 15.136,
+          "duration": 0.446
+        },
+        {
+          "text": "down ",
+          "start": 15.582,
+          "duration": 0.366
+        },
+        {
+          "text": "I ",
+          "start": 15.948,
+          "duration": 0.25
+        },
+        {
+          "text": "look ",
+          "start": 16.198,
+          "duration": 0.251
+        },
+        {
+          "text": "around",
+          "start": 16.449,
+          "duration": 0.443
+        }
+      ],
+      "translation": "放慢脚步环顾四面"
+    },
+    {
+      "time": 16.892,
+      "end": 18.454,
+      "text": "And I am so amazed",
+      "words": [
+        {
+          "text": "And ",
+          "start": 16.892,
+          "duration": 0.251
+        },
+        {
+          "text": "I ",
+          "start": 17.143,
+          "duration": 0.189
+        },
+        {
+          "text": "am ",
+          "start": 17.332,
+          "duration": 0.183
+        },
+        {
+          "text": "so ",
+          "start": 17.515,
+          "duration": 0.249
+        },
+        {
+          "text": "amazed",
+          "start": 17.764,
+          "duration": 0.69
+        }
+      ],
+      "translation": "我感到惊艳"
+    },
+    {
+      "time": 18.454,
+      "end": 20.772,
+      "text": "I think about the little things",
+      "words": [
+        {
+          "text": "I ",
+          "start": 18.454,
+          "duration": 0.313
+        },
+        {
+          "text": "think ",
+          "start": 18.767,
+          "duration": 0.186
+        },
+        {
+          "text": "about ",
+          "start": 18.953,
+          "duration": 0.814
+        },
+        {
+          "text": "the ",
+          "start": 19.767,
+          "duration": 0.249
+        },
+        {
+          "text": "little ",
+          "start": 20.016,
+          "duration": 0.249
+        },
+        {
+          "text": "things",
+          "start": 20.265,
+          "duration": 0.507
+        }
+      ],
+      "translation": "我开始看到一些细节"
+    },
+    {
+      "time": 20.772,
+      "end": 23.272,
+      "text": "That make life great",
+      "words": [
+        {
+          "text": "That ",
+          "start": 20.772,
+          "duration": 0.18
+        },
+        {
+          "text": "make ",
+          "start": 20.952,
+          "duration": 0.253
+        },
+        {
+          "text": "life ",
+          "start": 21.205,
+          "duration": 0.562
+        },
+        {
+          "text": "great",
+          "start": 21.767,
+          "duration": 1.505
+        }
+      ],
+      "translation": "就是这些细节让生活变的美好"
+    },
+    {
+      "time": 23.272,
+      "end": 29.079,
+      "text": "I wouldn't change a thing about it",
+      "words": [
+        {
+          "text": "I ",
+          "start": 23.272,
+          "duration": 0.248
+        },
+        {
+          "text": "wouldn't ",
+          "start": 23.52,
+          "duration": 0.684
+        },
+        {
+          "text": "change ",
+          "start": 24.204,
+          "duration": 0.63
+        },
+        {
+          "text": "a ",
+          "start": 24.834,
+          "duration": 0.565
+        },
+        {
+          "text": "thing ",
+          "start": 25.399,
+          "duration": 1.054
+        },
+        {
+          "text": "about ",
+          "start": 26.453,
+          "duration": 0.316
+        },
+        {
+          "text": "it",
+          "start": 26.769,
+          "duration": 2.31
+        }
+      ],
+      "translation": "我不会让它改变"
+    },
+    {
+      "time": 29.079,
+      "end": 34.936,
+      "text": "This is the best feeling",
+      "words": [
+        {
+          "text": "This ",
+          "start": 29.079,
+          "duration": 0.438
+        },
+        {
+          "text": "is ",
+          "start": 29.517,
+          "duration": 0.439
+        },
+        {
+          "text": "the ",
+          "start": 29.956,
+          "duration": 0.437
+        },
+        {
+          "text": "best ",
+          "start": 30.393,
+          "duration": 0.873
+        },
+        {
+          "text": "feeling",
+          "start": 31.266,
+          "duration": 3.67
+        }
+      ],
+      "translation": "这感觉毫无缺陷"
+    },
+    {
+      "time": 36.309,
+      "end": 40.623,
+      "text": "This innocence is brilliant",
+      "words": [
+        {
+          "text": "This ",
+          "start": 36.309,
+          "duration": 0.256
+        },
+        {
+          "text": "innocence ",
+          "start": 36.565,
+          "duration": 1.308
+        },
+        {
+          "text": "is ",
+          "start": 37.873,
+          "duration": 0.312
+        },
+        {
+          "text": "brilliant",
+          "start": 38.185,
+          "duration": 2.438
+        }
+      ],
+      "translation": "这份纯真 如此迷人"
+    },
+    {
+      "time": 40.623,
+      "end": 43.126,
+      "text": "I hope that it will stay",
+      "words": [
+        {
+          "text": "I ",
+          "start": 40.623,
+          "duration": 0.187
+        },
+        {
+          "text": "hope ",
+          "start": 40.81,
+          "duration": 0.376
+        },
+        {
+          "text": "that ",
+          "start": 41.186,
+          "duration": 0.447
+        },
+        {
+          "text": "it ",
+          "start": 41.633,
+          "duration": 0.366
+        },
+        {
+          "text": "will ",
+          "start": 41.999,
+          "duration": 0.253
+        },
+        {
+          "text": "stay",
+          "start": 42.252,
+          "duration": 0.874
+        }
+      ],
+      "translation": "我希望它留存"
+    },
+    {
+      "time": 43.126,
+      "end": 47.504,
+      "text": "This moment is perfect",
+      "words": [
+        {
+          "text": "This ",
+          "start": 43.126,
+          "duration": 0.249
+        },
+        {
+          "text": "moment ",
+          "start": 43.375,
+          "duration": 1.25
+        },
+        {
+          "text": "is ",
+          "start": 44.625,
+          "duration": 0.44
+        },
+        {
+          "text": "perfect",
+          "start": 45.065,
+          "duration": 2.439
+        }
+      ],
+      "translation": "完美的一瞬"
+    },
+    {
+      "time": 47.504,
+      "end": 50.191,
+      "text": "Please don't go away",
+      "words": [
+        {
+          "text": "Please ",
+          "start": 47.504,
+          "duration": 0.434
+        },
+        {
+          "text": "don't ",
+          "start": 47.938,
+          "duration": 0.499
+        },
+        {
+          "text": "go ",
+          "start": 48.437,
+          "duration": 0.447
+        },
+        {
+          "text": "away",
+          "start": 48.884,
+          "duration": 1.307
+        }
+      ],
+      "translation": "请就此停顿"
+    },
+    {
+      "time": 50.191,
+      "end": 55.504,
+      "text": "I need you now",
+      "words": [
+        {
+          "text": "I ",
+          "start": 50.191,
+          "duration": 0.752
+        },
+        {
+          "text": "need ",
+          "start": 50.943,
+          "duration": 1.001
+        },
+        {
+          "text": "you ",
+          "start": 51.944,
+          "duration": 0.375
+        },
+        {
+          "text": "now",
+          "start": 52.319,
+          "duration": 3.185
+        }
+      ],
+      "translation": "现在是我需要你的时候"
+    },
+    {
+      "time": 55.504,
+      "end": 59.572,
+      "text": "And I'll hold on to it",
+      "words": [
+        {
+          "text": "And ",
+          "start": 55.504,
+          "duration": 0.25
+        },
+        {
+          "text": "I'll ",
+          "start": 55.754,
+          "duration": 0.506
+        },
+        {
+          "text": "hold ",
+          "start": 56.26,
+          "duration": 0.747
+        },
+        {
+          "text": "on ",
+          "start": 57.007,
+          "duration": 0.875
+        },
+        {
+          "text": "to ",
+          "start": 57.882,
+          "duration": 0.946
+        },
+        {
+          "text": "it",
+          "start": 58.828,
+          "duration": 0.744
+        }
+      ],
+      "translation": "我会深深留住这感受"
+    },
+    {
+      "time": 59.572,
+      "end": 64.64,
+      "text": "Don't you let it pass you by",
+      "words": [
+        {
+          "text": "Don't ",
+          "start": 59.572,
+          "duration": 0.879
+        },
+        {
+          "text": "you ",
+          "start": 60.451,
+          "duration": 0.806
+        },
+        {
+          "text": "let ",
+          "start": 61.257,
+          "duration": 0.253
+        },
+        {
+          "text": "it ",
+          "start": 61.51,
+          "duration": 0.437
+        },
+        {
+          "text": "pass ",
+          "start": 61.947,
+          "duration": 0.438
+        },
+        {
+          "text": "you ",
+          "start": 62.385,
+          "duration": 0.256
+        },
+        {
+          "text": "by",
+          "start": 62.641,
+          "duration": 1.999
+        }
+      ],
+      "translation": "别让它从你身边溜走"
+    },
+    {
+      "time": 70.521,
+      "end": 72.272,
+      "text": "I found a place so safe",
+      "words": [
+        {
+          "text": "I ",
+          "start": 70.521,
+          "duration": 0.253
+        },
+        {
+          "text": "found ",
+          "start": 70.774,
+          "duration": 0.253
+        },
+        {
+          "text": "a ",
+          "start": 71.027,
+          "duration": 0.18
+        },
+        {
+          "text": "place ",
+          "start": 71.207,
+          "duration": 0.251
+        },
+        {
+          "text": "so ",
+          "start": 71.458,
+          "duration": 0.374
+        },
+        {
+          "text": "safe",
+          "start": 71.832,
+          "duration": 0.44
+        }
+      ],
+      "translation": "这片空间很安全"
+    },
+    {
+      "time": 72.272,
+      "end": 73.898,
+      "text": "Not a single tear",
+      "words": [
+        {
+          "text": "Not ",
+          "start": 72.272,
+          "duration": 0.249
+        },
+        {
+          "text": "a ",
+          "start": 72.521,
+          "duration": 0.186
+        },
+        {
+          "text": "single ",
+          "start": 72.707,
+          "duration": 0.25
+        },
+        {
+          "text": "tear",
+          "start": 72.957,
+          "duration": 0.941
+        }
+      ],
+      "translation": "我不再有泪水"
+    },
+    {
+      "time": 73.898,
+      "end": 75.586,
+      "text": "The first time in my life",
+      "words": [
+        {
+          "text": "The ",
+          "start": 73.898,
+          "duration": 0.249
+        },
+        {
+          "text": "first ",
+          "start": 74.147,
+          "duration": 0.25
+        },
+        {
+          "text": "time ",
+          "start": 74.397,
+          "duration": 0.313
+        },
+        {
+          "text": "in ",
+          "start": 74.71,
+          "duration": 0.254
+        },
+        {
+          "text": "my ",
+          "start": 74.964,
+          "duration": 0.37
+        },
+        {
+          "text": "life",
+          "start": 75.334,
+          "duration": 0.252
+        }
+      ],
+      "translation": "这是我生活中的第一次"
+    },
+    {
+      "time": 75.586,
+      "end": 77.588,
+      "text": "And now it's so clear",
+      "words": [
+        {
+          "text": "And ",
+          "start": 75.586,
+          "duration": 0.188
+        },
+        {
+          "text": "now ",
+          "start": 75.774,
+          "duration": 0.254
+        },
+        {
+          "text": "it's ",
+          "start": 76.028,
+          "duration": 0.182
+        },
+        {
+          "text": "so ",
+          "start": 76.21,
+          "duration": 0.506
+        },
+        {
+          "text": "clear",
+          "start": 76.716,
+          "duration": 0.872
+        }
+      ],
+      "translation": "第一次像现在这样如此清晰的呈现"
+    },
+    {
+      "time": 77.588,
+      "end": 79.34,
+      "text": "Feel calm I belong",
+      "words": [
+        {
+          "text": "Feel ",
+          "start": 77.588,
+          "duration": 0.436
+        },
+        {
+          "text": "calm ",
+          "start": 78.024,
+          "duration": 0.381
+        },
+        {
+          "text": "I ",
+          "start": 78.405,
+          "duration": 0.243
+        },
+        {
+          "text": "belong",
+          "start": 78.648,
+          "duration": 0.692
+        }
+      ],
+      "translation": "不再狂躁开始留恋"
+    },
+    {
+      "time": 79.34,
+      "end": 80.898,
+      "text": "I'm so happy here",
+      "words": [
+        {
+          "text": "I'm ",
+          "start": 79.34,
+          "duration": 0.244
+        },
+        {
+          "text": "so ",
+          "start": 79.584,
+          "duration": 0.251
+        },
+        {
+          "text": "happy ",
+          "start": 79.835,
+          "duration": 0.193
+        },
+        {
+          "text": "here",
+          "start": 80.028,
+          "duration": 0.87
+        }
+      ],
+      "translation": "这是我的乐园"
+    },
+    {
+      "time": 80.898,
+      "end": 81.843,
+      "text": "It's so strong",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 80.898,
+          "duration": 0.249
+        },
+        {
+          "text": "so ",
+          "start": 81.147,
+          "duration": 0.376
+        },
+        {
+          "text": "strong",
+          "start": 81.523,
+          "duration": 0.32
+        }
+      ],
+      "translation": "强烈的震撼"
+    },
+    {
+      "time": 81.843,
+      "end": 85.782,
+      "text": "And now I let myself be sincere",
+      "words": [
+        {
+          "text": "And ",
+          "start": 81.843,
+          "duration": 0.245
+        },
+        {
+          "text": "now ",
+          "start": 82.088,
+          "duration": 0.312
+        },
+        {
+          "text": "I ",
+          "start": 82.4,
+          "duration": 0.255
+        },
+        {
+          "text": "let ",
+          "start": 82.655,
+          "duration": 0.252
+        },
+        {
+          "text": "myself ",
+          "start": 82.907,
+          "duration": 0.43
+        },
+        {
+          "text": "be ",
+          "start": 83.337,
+          "duration": 0.446
+        },
+        {
+          "text": "sincere",
+          "start": 83.783,
+          "duration": 1.999
+        }
+      ],
+      "translation": "现在我让自己变得虔诚"
+    },
+    {
+      "time": 85.782,
+      "end": 91.592,
+      "text": "I wouldn't change a thing about it",
+      "words": [
+        {
+          "text": "I ",
+          "start": 85.782,
+          "duration": 0.248
+        },
+        {
+          "text": "wouldn't ",
+          "start": 86.03,
+          "duration": 0.62
+        },
+        {
+          "text": "change ",
+          "start": 86.65,
+          "duration": 0.693
+        },
+        {
+          "text": "a ",
+          "start": 87.343,
+          "duration": 0.556
+        },
+        {
+          "text": "thing ",
+          "start": 87.899,
+          "duration": 1.006
+        },
+        {
+          "text": "about ",
+          "start": 88.905,
+          "duration": 0.307
+        },
+        {
+          "text": "it",
+          "start": 89.212,
+          "duration": 2.38
+        }
+      ],
+      "translation": "我不会让它改变"
+    },
+    {
+      "time": 91.592,
+      "end": 98.72,
+      "text": "This is the best feeling",
+      "words": [
+        {
+          "text": "This ",
+          "start": 91.592,
+          "duration": 0.501
+        },
+        {
+          "text": "is ",
+          "start": 92.093,
+          "duration": 0.38
+        },
+        {
+          "text": "the ",
+          "start": 92.473,
+          "duration": 0.494
+        },
+        {
+          "text": "best ",
+          "start": 92.967,
+          "duration": 0.753
+        },
+        {
+          "text": "feeling",
+          "start": 93.72,
+          "duration": 5
+        }
+      ],
+      "translation": "这感觉毫无缺陷"
+    },
+    {
+      "time": 98.72,
+      "end": 103.096,
+      "text": "This innocence is brilliant",
+      "words": [
+        {
+          "text": "This ",
+          "start": 98.72,
+          "duration": 0.312
+        },
+        {
+          "text": "innocence ",
+          "start": 99.032,
+          "duration": 1.321
+        },
+        {
+          "text": "is ",
+          "start": 100.353,
+          "duration": 0.37
+        },
+        {
+          "text": "brilliant",
+          "start": 100.723,
+          "duration": 2.373
+        }
+      ],
+      "translation": "这份纯真 如此迷人"
+    },
+    {
+      "time": 103.096,
+      "end": 105.413,
+      "text": "I hope that it will stay",
+      "words": [
+        {
+          "text": "I ",
+          "start": 103.096,
+          "duration": 0.249
+        },
+        {
+          "text": "hope ",
+          "start": 103.345,
+          "duration": 0.316
+        },
+        {
+          "text": "that ",
+          "start": 103.661,
+          "duration": 0.499
+        },
+        {
+          "text": "it ",
+          "start": 104.16,
+          "duration": 0.377
+        },
+        {
+          "text": "will ",
+          "start": 104.537,
+          "duration": 0.245
+        },
+        {
+          "text": "stay",
+          "start": 104.782,
+          "duration": 0.631
+        }
+      ],
+      "translation": "我希望它留存"
+    },
+    {
+      "time": 105.413,
+      "end": 109.975,
+      "text": "This moment is perfect",
+      "words": [
+        {
+          "text": "This ",
+          "start": 105.413,
+          "duration": 0.436
+        },
+        {
+          "text": "moment ",
+          "start": 105.849,
+          "duration": 1.253
+        },
+        {
+          "text": "is ",
+          "start": 107.102,
+          "duration": 0.436
+        },
+        {
+          "text": "perfect",
+          "start": 107.538,
+          "duration": 2.437
+        }
+      ],
+      "translation": "完美的一瞬"
+    },
+    {
+      "time": 109.975,
+      "end": 111.663,
+      "text": "Please don't go away",
+      "words": [
+        {
+          "text": "Please ",
+          "start": 109.975,
+          "duration": 0.503
+        },
+        {
+          "text": "don't ",
+          "start": 110.478,
+          "duration": 0.496
+        },
+        {
+          "text": "go ",
+          "start": 110.974,
+          "duration": 0.375
+        },
+        {
+          "text": "away",
+          "start": 111.349,
+          "duration": 1.341
+        }
+      ],
+      "translation": "请就此停顿"
+    },
+    {
+      "time": 112.69,
+      "end": 118.002,
+      "text": "'Cause I need you now",
+      "words": [
+        {
+          "text": "'Cause I ",
+          "start": 112.69,
+          "duration": 0.748
+        },
+        {
+          "text": "need ",
+          "start": 113.438,
+          "duration": 1.062
+        },
+        {
+          "text": "you ",
+          "start": 114.5,
+          "duration": 0.313
+        },
+        {
+          "text": "now",
+          "start": 114.813,
+          "duration": 3.189
+        }
+      ],
+      "translation": "因为现在是我需要你的时候"
+    },
+    {
+      "time": 118.002,
+      "end": 122.069,
+      "text": "And I'll hold on to it",
+      "words": [
+        {
+          "text": "And ",
+          "start": 118.002,
+          "duration": 0.195
+        },
+        {
+          "text": "I'll ",
+          "start": 118.197,
+          "duration": 0.491
+        },
+        {
+          "text": "hold ",
+          "start": 118.688,
+          "duration": 0.88
+        },
+        {
+          "text": "on ",
+          "start": 119.568,
+          "duration": 0.751
+        },
+        {
+          "text": "to ",
+          "start": 120.319,
+          "duration": 0.874
+        },
+        {
+          "text": "it",
+          "start": 121.193,
+          "duration": 0.876
+        }
+      ],
+      "translation": "我会深深留住这感受"
+    },
+    {
+      "time": 122.069,
+      "end": 126.318,
+      "text": "Don't you let it pass you by",
+      "words": [
+        {
+          "text": "Don't ",
+          "start": 122.069,
+          "duration": 0.812
+        },
+        {
+          "text": "you ",
+          "start": 122.881,
+          "duration": 0.875
+        },
+        {
+          "text": "let ",
+          "start": 123.756,
+          "duration": 0.252
+        },
+        {
+          "text": "it ",
+          "start": 124.008,
+          "duration": 0.436
+        },
+        {
+          "text": "pass ",
+          "start": 124.444,
+          "duration": 0.375
+        },
+        {
+          "text": "you ",
+          "start": 124.819,
+          "duration": 0.254
+        },
+        {
+          "text": "by",
+          "start": 125.073,
+          "duration": 1.245
+        }
+      ],
+      "translation": "别让它从你身边溜走"
+    },
+    {
+      "time": 126.318,
+      "end": 128.137,
+      "text": "It's the state of bliss you think",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 126.318,
+          "duration": 0.251
+        },
+        {
+          "text": "the ",
+          "start": 126.569,
+          "duration": 0.251
+        },
+        {
+          "text": "state ",
+          "start": 126.82,
+          "duration": 0.188
+        },
+        {
+          "text": "of ",
+          "start": 127.008,
+          "duration": 0.254
+        },
+        {
+          "text": "bliss ",
+          "start": 127.262,
+          "duration": 0.184
+        },
+        {
+          "text": "you ",
+          "start": 127.446,
+          "duration": 0.314
+        },
+        {
+          "text": "think",
+          "start": 127.76,
+          "duration": 0.377
+        }
+      ],
+      "translation": "这是命运对你的眷顾"
+    },
+    {
+      "time": 128.137,
+      "end": 129.321,
+      "text": "You're dreaming",
+      "words": [
+        {
+          "text": "You're ",
+          "start": 128.137,
+          "duration": 0.247
+        },
+        {
+          "text": "dreaming",
+          "start": 128.384,
+          "duration": 0.937
+        }
+      ],
+      "translation": "让你以为这是梦幻"
+    },
+    {
+      "time": 129.321,
+      "end": 130.571,
+      "text": "It's the happiness inside",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 129.321,
+          "duration": 0.317
+        },
+        {
+          "text": "the ",
+          "start": 129.638,
+          "duration": 0.246
+        },
+        {
+          "text": "happiness ",
+          "start": 129.884,
+          "duration": 0.383
+        },
+        {
+          "text": "inside",
+          "start": 130.267,
+          "duration": 0.304
+        }
+      ],
+      "translation": "这种幸福的浸染"
+    },
+    {
+      "time": 130.571,
+      "end": 132.765,
+      "text": "That you're feeling",
+      "words": [
+        {
+          "text": "That ",
+          "start": 130.571,
+          "duration": 0.564
+        },
+        {
+          "text": "you're ",
+          "start": 131.135,
+          "duration": 0.377
+        },
+        {
+          "text": "feeling",
+          "start": 131.512,
+          "duration": 1.253
+        }
+      ],
+      "translation": "会让你亲切的感受到"
+    },
+    {
+      "time": 132.765,
+      "end": 133.572,
+      "text": "It's so beautiful",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 132.765,
+          "duration": 0.252
+        },
+        {
+          "text": "so ",
+          "start": 133.017,
+          "duration": 0.244
+        },
+        {
+          "text": "beautiful",
+          "start": 133.261,
+          "duration": 0.311
+        }
+      ],
+      "translation": "如此美好"
+    },
+    {
+      "time": 133.572,
+      "end": 139.638,
+      "text": "It makes you wanna cry",
+      "words": [
+        {
+          "text": "It ",
+          "start": 133.572,
+          "duration": 0.439
+        },
+        {
+          "text": "makes ",
+          "start": 134.011,
+          "duration": 0.437
+        },
+        {
+          "text": "you ",
+          "start": 134.448,
+          "duration": 0.504
+        },
+        {
+          "text": "wanna ",
+          "start": 134.952,
+          "duration": 0.875
+        },
+        {
+          "text": "cry",
+          "start": 135.827,
+          "duration": 3.811
+        }
+      ],
+      "translation": "它会令你不禁泪眼潸然"
+    },
+    {
+      "time": 139.638,
+      "end": 141.331,
+      "text": "It's the state of bliss you think",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 139.638,
+          "duration": 0.259
+        },
+        {
+          "text": "the ",
+          "start": 139.897,
+          "duration": 0.241
+        },
+        {
+          "text": "state ",
+          "start": 140.138,
+          "duration": 0.188
+        },
+        {
+          "text": "of ",
+          "start": 140.326,
+          "duration": 0.252
+        },
+        {
+          "text": "bliss ",
+          "start": 140.578,
+          "duration": 0.185
+        },
+        {
+          "text": "you ",
+          "start": 140.763,
+          "duration": 0.252
+        },
+        {
+          "text": "think",
+          "start": 141.015,
+          "duration": 0.316
+        }
+      ],
+      "translation": "这是命运对你的眷顾"
+    },
+    {
+      "time": 141.331,
+      "end": 143.083,
+      "text": "You're dreaming",
+      "words": [
+        {
+          "text": "You're ",
+          "start": 141.331,
+          "duration": 0.437
+        },
+        {
+          "text": "dreaming",
+          "start": 141.768,
+          "duration": 1.315
+        }
+      ],
+      "translation": "让你以为这是梦幻"
+    },
+    {
+      "time": 143.083,
+      "end": 144.331,
+      "text": "It's the happiness inside",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 143.083,
+          "duration": 0.252
+        },
+        {
+          "text": "the ",
+          "start": 143.335,
+          "duration": 0.245
+        },
+        {
+          "text": "happiness ",
+          "start": 143.58,
+          "duration": 0.314
+        },
+        {
+          "text": "inside",
+          "start": 143.894,
+          "duration": 0.437
+        }
+      ],
+      "translation": "这种幸福的浸染"
+    },
+    {
+      "time": 144.331,
+      "end": 146.464,
+      "text": "That you're feeling",
+      "words": [
+        {
+          "text": "That ",
+          "start": 144.331,
+          "duration": 0.437
+        },
+        {
+          "text": "you're ",
+          "start": 144.768,
+          "duration": 0.444
+        },
+        {
+          "text": "feeling",
+          "start": 145.212,
+          "duration": 1.252
+        }
+      ],
+      "translation": "会让你亲切的感受到"
+    },
+    {
+      "time": 146.464,
+      "end": 147.397,
+      "text": "It's so beautiful",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 146.464,
+          "duration": 0.242
+        },
+        {
+          "text": "so ",
+          "start": 146.706,
+          "duration": 0.252
+        },
+        {
+          "text": "beautiful",
+          "start": 146.958,
+          "duration": 0.439
+        }
+      ],
+      "translation": "如此美好"
+    },
+    {
+      "time": 147.397,
+      "end": 152.96,
+      "text": "It makes you wanna cry",
+      "words": [
+        {
+          "text": "It ",
+          "start": 147.397,
+          "duration": 0.371
+        },
+        {
+          "text": "makes ",
+          "start": 147.768,
+          "duration": 0.445
+        },
+        {
+          "text": "you ",
+          "start": 148.213,
+          "duration": 0.68
+        },
+        {
+          "text": "wanna ",
+          "start": 148.893,
+          "duration": 1.252
+        },
+        {
+          "text": "cry",
+          "start": 150.145,
+          "duration": 2.815
+        }
+      ],
+      "translation": "它会令你不禁泪眼潸然"
+    },
+    {
+      "time": 152.96,
+      "end": 154.46,
+      "text": "It's so beautiful",
+      "words": [
+        {
+          "text": "It's ",
+          "start": 152.96,
+          "duration": 0.438
+        },
+        {
+          "text": "so ",
+          "start": 153.398,
+          "duration": 0.437
+        },
+        {
+          "text": "beautiful",
+          "start": 153.835,
+          "duration": 0.625
+        }
+      ],
+      "translation": "如此美好"
+    },
+    {
+      "time": 154.46,
+      "end": 157.336,
+      "text": "It makes you wanna cry",
+      "words": [
+        {
+          "text": "It ",
+          "start": 154.46,
+          "duration": 0.256
+        },
+        {
+          "text": "makes ",
+          "start": 154.716,
+          "duration": 0.373
+        },
+        {
+          "text": "you ",
+          "start": 155.089,
+          "duration": 0.499
+        },
+        {
+          "text": "wanna ",
+          "start": 156.086,
+          "duration": 0.249
+        },
+        {
+          "text": "cry",
+          "start": 156.335,
+          "duration": 1.001
+        }
+      ],
+      "translation": "它会令你不禁泪眼潸然"
+    },
+    {
+      "time": 157.336,
+      "end": 161.402,
+      "text": "This innocence is brilliant",
+      "words": [
+        {
+          "text": "This ",
+          "start": 157.336,
+          "duration": 0.25
+        },
+        {
+          "text": "innocence ",
+          "start": 157.586,
+          "duration": 1.065
+        },
+        {
+          "text": "is ",
+          "start": 158.651,
+          "duration": 0.313
+        },
+        {
+          "text": "brilliant",
+          "start": 158.964,
+          "duration": 2.438
+        }
+      ],
+      "translation": "这份纯真 如此灿烂"
+    },
+    {
+      "time": 161.402,
+      "end": 163.972,
+      "text": "It makes you wanna cry",
+      "words": [
+        {
+          "text": "It ",
+          "start": 161.402,
+          "duration": 0.187
+        },
+        {
+          "text": "makes ",
+          "start": 161.589,
+          "duration": 0.383
+        },
+        {
+          "text": "you ",
+          "start": 161.972,
+          "duration": 0.438
+        },
+        {
+          "text": "wanna ",
+          "start": 162.777,
+          "duration": 0.25
+        },
+        {
+          "text": "cry",
+          "start": 163.027,
+          "duration": 0.945
+        }
+      ],
+      "translation": "令你不禁泪眼潸然"
+    },
+    {
+      "time": 163.972,
+      "end": 168.224,
+      "text": "This innocence is brilliant",
+      "words": [
+        {
+          "text": "This ",
+          "start": 163.972,
+          "duration": 0.305
+        },
+        {
+          "text": "innocence ",
+          "start": 164.277,
+          "duration": 1.375
+        },
+        {
+          "text": "is ",
+          "start": 165.652,
+          "duration": 0.251
+        },
+        {
+          "text": "brilliant",
+          "start": 165.903,
+          "duration": 2.321
+        }
+      ],
+      "translation": "这份纯真 如此珍贵"
+    },
+    {
+      "time": 168.224,
+      "end": 170.848,
+      "text": "Please don't go away",
+      "words": [
+        {
+          "text": "Please ",
+          "start": 168.224,
+          "duration": 0.493
+        },
+        {
+          "text": "don't ",
+          "start": 168.717,
+          "duration": 0.501
+        },
+        {
+          "text": "go ",
+          "start": 169.218,
+          "duration": 0.436
+        },
+        {
+          "text": "away",
+          "start": 169.654,
+          "duration": 1.194
+        }
+      ],
+      "translation": "请不要消退"
+    },
+    {
+      "time": 170.848,
+      "end": 176.417,
+      "text": "Cause I need you now",
+      "words": [
+        {
+          "text": "Cause ",
+          "start": 170.848,
+          "duration": 0.307
+        },
+        {
+          "text": "I ",
+          "start": 171.155,
+          "duration": 0.186
+        },
+        {
+          "text": "need ",
+          "start": 171.341,
+          "duration": 1.188
+        },
+        {
+          "text": "you ",
+          "start": 172.529,
+          "duration": 0.379
+        },
+        {
+          "text": "now",
+          "start": 172.908,
+          "duration": 3.509
+        }
+      ],
+      "translation": "因为现在是我需要你的时候"
+    },
+    {
+      "time": 176.417,
+      "end": 180.351,
+      "text": "And I'll hold on to it",
+      "words": [
+        {
+          "text": "And ",
+          "start": 176.417,
+          "duration": 0.247
+        },
+        {
+          "text": "I'll ",
+          "start": 176.664,
+          "duration": 0.369
+        },
+        {
+          "text": "hold ",
+          "start": 177.033,
+          "duration": 0.812
+        },
+        {
+          "text": "on ",
+          "start": 177.845,
+          "duration": 0.875
+        },
+        {
+          "text": "to ",
+          "start": 178.72,
+          "duration": 0.818
+        },
+        {
+          "text": "it",
+          "start": 179.538,
+          "duration": 0.813
+        }
+      ],
+      "translation": "我会深深留住这感受"
+    },
+    {
+      "time": 180.351,
+      "end": 184.785,
+      "text": "Don't you let it pass you by",
+      "words": [
+        {
+          "text": "Don't ",
+          "start": 180.351,
+          "duration": 0.869
+        },
+        {
+          "text": "you ",
+          "start": 181.22,
+          "duration": 0.813
+        },
+        {
+          "text": "let ",
+          "start": 182.033,
+          "duration": 0.253
+        },
+        {
+          "text": "it ",
+          "start": 182.286,
+          "duration": 0.439
+        },
+        {
+          "text": "pass ",
+          "start": 182.725,
+          "duration": 0.435
+        },
+        {
+          "text": "you ",
+          "start": 183.16,
+          "duration": 0.248
+        },
+        {
+          "text": "by",
+          "start": 183.408,
+          "duration": 1.377
+        }
+      ],
+      "translation": "别让它从你身边溜走"
+    },
+    {
+      "time": 184.785,
+      "end": 188.977,
+      "text": "This innocence is brilliant",
+      "words": [
+        {
+          "text": "This ",
+          "start": 184.785,
+          "duration": 0.315
+        },
+        {
+          "text": "innocence ",
+          "start": 185.1,
+          "duration": 1.121
+        },
+        {
+          "text": "is ",
+          "start": 186.221,
+          "duration": 0.257
+        },
+        {
+          "text": "brilliant",
+          "start": 186.478,
+          "duration": 2.499
+        }
+      ],
+      "translation": "这份纯真 如此迷人"
+    },
+    {
+      "time": 188.977,
+      "end": 191.225,
+      "text": "I hope that it will stay",
+      "words": [
+        {
+          "text": "I ",
+          "start": 188.977,
+          "duration": 0.37
+        },
+        {
+          "text": "hope ",
+          "start": 189.347,
+          "duration": 0.505
+        },
+        {
+          "text": "that ",
+          "start": 189.852,
+          "duration": 0.376
+        },
+        {
+          "text": "it ",
+          "start": 190.228,
+          "duration": 0.184
+        },
+        {
+          "text": "will ",
+          "start": 190.412,
+          "duration": 0.188
+        },
+        {
+          "text": "stay",
+          "start": 190.6,
+          "duration": 0.625
+        }
+      ],
+      "translation": "我希望它留存"
+    },
+    {
+      "time": 191.225,
+      "end": 195.731,
+      "text": "This moment is perfect",
+      "words": [
+        {
+          "text": "This ",
+          "start": 191.225,
+          "duration": 0.32
+        },
+        {
+          "text": "moment ",
+          "start": 191.545,
+          "duration": 1.302
+        },
+        {
+          "text": "is ",
+          "start": 192.847,
+          "duration": 0.376
+        },
+        {
+          "text": "perfect",
+          "start": 193.223,
+          "duration": 2.508
+        }
+      ],
+      "translation": "完美的一瞬"
+    },
+    {
+      "time": 195.731,
+      "end": 198.418,
+      "text": "Please don't go away",
+      "words": [
+        {
+          "text": "Please ",
+          "start": 195.731,
+          "duration": 0.499
+        },
+        {
+          "text": "don't ",
+          "start": 196.23,
+          "duration": 0.439
+        },
+        {
+          "text": "go ",
+          "start": 196.669,
+          "duration": 0.435
+        },
+        {
+          "text": "away",
+          "start": 197.104,
+          "duration": 1.314
+        }
+      ],
+      "translation": "请就此停顿"
+    },
+    {
+      "time": 198.418,
+      "end": 203.859,
+      "text": "I need you now",
+      "words": [
+        {
+          "text": "I ",
+          "start": 198.418,
+          "duration": 0.687
+        },
+        {
+          "text": "need ",
+          "start": 199.105,
+          "duration": 1.062
+        },
+        {
+          "text": "you ",
+          "start": 200.167,
+          "duration": 0.313
+        },
+        {
+          "text": "now",
+          "start": 200.48,
+          "duration": 3.379
+        }
+      ],
+      "translation": "现在是我需要你的时候"
+    },
+    {
+      "time": 203.859,
+      "end": 207.733,
+      "text": "And I'll hold on to it",
+      "words": [
+        {
+          "text": "And ",
+          "start": 203.859,
+          "duration": 0.25
+        },
+        {
+          "text": "I'll ",
+          "start": 204.109,
+          "duration": 0.375
+        },
+        {
+          "text": "hold ",
+          "start": 204.484,
+          "duration": 0.75
+        },
+        {
+          "text": "on ",
+          "start": 205.234,
+          "duration": 0.875
+        },
+        {
+          "text": "to ",
+          "start": 206.109,
+          "duration": 0.812
+        },
+        {
+          "text": "it",
+          "start": 206.921,
+          "duration": 0.812
+        }
+      ],
+      "translation": "我会深深留住这感受"
+    },
+    {
+      "time": 207.733,
+      "end": 213.053,
+      "text": "Don't you let it pass you by",
+      "words": [
+        {
+          "text": "Don't ",
+          "start": 207.733,
+          "duration": 0.939
+        },
+        {
+          "text": "you ",
+          "start": 208.672,
+          "duration": 0.812
+        },
+        {
+          "text": "let ",
+          "start": 209.484,
+          "duration": 0.252
+        },
+        {
+          "text": "it ",
+          "start": 209.736,
+          "duration": 0.372
+        },
+        {
+          "text": "pass ",
+          "start": 210.108,
+          "duration": 0.444
+        },
+        {
+          "text": "you ",
+          "start": 210.552,
+          "duration": 0.376
+        },
+        {
+          "text": "by",
+          "start": 210.928,
+          "duration": 2.125
+        }
+      ],
+      "translation": "别让它从你身边溜走"
+    }
+  ]
+}

@@ -288,6 +288,22 @@
 			"src": "/assets/images/music-covers/11-tanya-next-love.png",
 			"usage": "乐境播放器《下一次爱情来的时候》唱片封面",
 			"note": "从站长提供的截图中精确截取圆盘内原图，外圈橙色背景已透明化。"
+		},
+		{
+			"id": "cover-avril-innocence",
+			"name": "Innocence 唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/12-avril-innocence.svg",
+			"usage": "乐境播放器《Innocence》唱片封面",
+			"note": "用 SVG 取景显示截图内圆，保留原图像素与文字，不重新绘制。"
+		},
+		{
+			"id": "cover-avril-innocence-original",
+			"name": "Innocence 封面原始截图",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/12-avril-innocence-original.png",
+			"usage": "站长提供的原始封面截图，供以后重新取景",
+			"note": "原文件完整保留，前台歌曲使用独立内圆取景版。"
 		}
 	]
 }

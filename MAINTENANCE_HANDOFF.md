@@ -1,6 +1,15 @@
 # 苍蓝回廊维护交接
 
-最后更新：2026-10-19
+最后更新：2026-10-20
+
+## 2026-10-20 新增 Avril Lavigne《Innocence》
+
+- 在歌单末尾追加第 12 首，固定 ID `avril-innocence`；此前 11 首的顺序、音频、封面、歌词、翻译和手记不变。
+- 用户 MP3 经现有 GitHub 所有者授权的 `/api/media/audio/` 上传到 R2，地址 `/media/audio/20261020-avril-innocence.mp3`。7897118 字节、约 233.038 秒；远端 ETag 与本地 MD5 一致，206 分段请求字节核验通过。无新密钥、无 R2 删除、无 MP3 入 Git。
+- KRC 转为 `/lyrics/avril-innocence.json`：61 行唱词及逐字时间，中文翻译直接取自用户 KRC 内嵌数据，并同步到后台歌曲的翻译列表。英文作词/作曲署名不作为唱词；翻译先按原始时间行对应再去署名，防止错位。不等长翻译表不推测配对。
+- 封面用 `/assets/images/music-covers/12-avril-innocence.svg` 对用户截图内圆取景；SVG 嵌入原 PNG 字节，不改绘、不重采样。完整原图 `/assets/images/music-covers/12-avril-innocence-original.png` 与取景版均登记素材库，可在后台复用。
+- 原 KRC 备份 `/Users/jayzhu/.codex/project-storage/canglan-blog/backups/add-avril-innocence-20261020.7cGuIZ/avril-innocence-original.krc`，不依赖酷狗缓存长期保留。恢复分支 `codex/restore-before-avril-innocence-20261020`、标签 `pre-avril-innocence-20261020` 指向 `caede695`。
+- 本地 105 项 Node 回归、Astro/TypeScript 检查和生产构建通过；歌曲上线以 Cloudflare 检查成功及正式站真实播放、翻译与逐字歌词验证为准。
 
 ## 2026-10-19 暗色正文可读性修复
 

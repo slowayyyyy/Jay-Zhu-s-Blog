@@ -33,6 +33,7 @@ function parseMeta(text) {
 function isCreditLine(text) {
 	return /\s[-—]\s.+$/.test(text)
 		|| /^(?:词|曲|编曲|作词|作曲|演唱|歌手)\s*[:：]/.test(text)
+		|| /^(?:Lyrics by|Composed by|Written by|Produced by|Arranged by)\s*[:：]/i.test(text)
 		|| /^(?:Gt|Guitar|Bass|Dr|Drums|Piano|Keyboard|Strings?)\.?\s*[:：]/i.test(text);
 }
 
@@ -40,10 +41,22 @@ function parseLyrics(text) {
 	const meta = parseMeta(text);
 	const globalOffset = Number(meta.offset || 0) + Number(meta.manualoffset || 0);
 	const lines = [];
+	const timedRows = text.split(/\r?\n/).filter((row) => /^\[\d+,\d+\]/.test(row));
+	let translations = [];
+	try {
+		const language = JSON.parse(Buffer.from(meta.language || "", "base64").toString("utf8"));
+		const translated = language.content?.find((entry) => entry.type === 1)?.lyricContent;
+		// Embedded translations include credits/blank rows. Pair before filtering;
+		// never guess the alignment when the source row counts disagree.
+		if (Array.isArray(translated) && translated.length === timedRows.length) translations = translated;
+	} catch { /* KRC without embedded translations remains valid. */ }
+	let rowIndex = 0;
 
-	for (const row of text.split(/\r?\n/)) {
+	for (const row of timedRows) {
 		const lineMatch = row.match(/^\[(\d+),(\d+)\](.*)$/);
 		if (!lineMatch) continue;
+		const translationRow = translations[rowIndex++];
+		const translation = Array.isArray(translationRow) ? translationRow.join("").trim() : "";
 
 		const lineStartMs = Number(lineMatch[1]) + globalOffset;
 		const lineDurationMs = Number(lineMatch[2]);
@@ -69,6 +82,7 @@ function parseLyrics(text) {
 			end: Math.max(0, lineStartMs + lineDurationMs) / 1000,
 			text: lineText,
 			words,
+			...(translation ? { translation } : {}),
 		});
 	}
 
