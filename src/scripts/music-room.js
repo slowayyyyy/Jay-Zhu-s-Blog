@@ -1,6 +1,7 @@
 // A view/controller for the persistent MusicManager, never a second audio engine.
 let filter = null;
-let foyerScroll = 0;
+let foyerScroll = null;
+let roomNavigation = null;
 let transfer = null;
 let boundSwup = null;
 let layoutActive = false;
@@ -24,6 +25,8 @@ function captureRecord(link) {
   clearTransfer();
   const options = transitionOptions();
   const returning = link.hasAttribute('data-music-return');
+  // Scroll intent must survive disabled/reduced/offscreen record animations.
+  roomNavigation = { returning, pathname:link.pathname, hash:link.hash };
   if (!returning) foyerScroll = window.scrollY;
   if (!options.enabled || reducedMotion()) return;
   const source = record();
@@ -47,8 +50,16 @@ function captureRecord(link) {
 
 function completeTransfer() {
   const options = transitionOptions();
-  if (page()?.dataset.musicPage === 'foyer' && options.rememberScroll) window.scrollTo({top:foyerScroll,behavior:'instant'});
-  if (transfer && !transfer.returning && !transfer.hash) window.scrollTo({top:0,behavior:'instant'});
+  const navigation = roomNavigation;
+  roomNavigation = null;
+  // Ordinary navbar visits and history restoration belong to the site router.
+  // Only an explicit room round-trip may override its content/anchor position.
+  if (navigation && navigation.pathname === window.location.pathname && !navigation.hash) {
+    if (navigation.returning && page()?.dataset.musicPage === 'foyer' && options.rememberScroll && foyerScroll !== null)
+      window.scrollTo({top:foyerScroll,behavior:'instant'});
+    if (!navigation.returning && page()?.dataset.musicPage === 'room')
+      window.scrollTo({top:0,behavior:'instant'});
+  }
   if (!transfer) return;
   const target = record();
   if (!target) { clearTransfer(); return; }
@@ -63,6 +74,11 @@ function completeTransfer() {
   ], {duration:Math.min(750,Math.max(450,Number(options.duration)||600)),easing:'cubic-bezier(.22,.68,.18,1)',fill:'forwards'});
   active.node.style.transformOrigin='top left';
   active.animation.finished.then(() => { if (transfer === active) clearTransfer(); }).catch(() => {});
+}
+
+function cancelTransfer() {
+  roomNavigation = null;
+  clearTransfer();
 }
 
 function applyFilter() {
@@ -197,8 +213,8 @@ function bindSwup() {
   boundSwup = window.swup;
   window.swup.hooks.on('page:view',initPage);
   window.swup.hooks.on('visit:end',completeTransfer);
-  window.swup.hooks.on('visit:abort',clearTransfer);
-  window.swup.hooks.on('fetch:error',clearTransfer);
+  window.swup.hooks.on('visit:abort',cancelTransfer);
+  window.swup.hooks.on('fetch:error',cancelTransfer);
 }
 document.addEventListener('swup:enable',bindSwup);
 document.addEventListener('astro:page-load',()=>{bindSwup();initPage();});
