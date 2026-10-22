@@ -304,6 +304,38 @@
 			"src": "/assets/images/music-covers/12-avril-innocence-original.png",
 			"usage": "站长提供的原始封面截图，供以后重新取景",
 			"note": "原文件完整保留，前台歌曲使用独立内圆取景版。"
+		},
+		{
+			"id": "cover-david-tao-liusha",
+			"name": "流沙 唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/13-david-tao-liusha.svg",
+			"usage": "乐境播放器《流沙》唱片封面",
+			"note": "对站长第一张截图内圆取景，保留原图像素、方向与文字，不重新绘制。"
+		},
+		{
+			"id": "cover-david-tao-liusha-original",
+			"name": "流沙 封面原始截图",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/13-david-tao-liusha-original.png",
+			"usage": "站长提供的完整原图，供以后重新取景",
+			"note": "不依赖剪贴板临时目录；前台使用独立内圆取景版。"
+		},
+		{
+			"id": "cover-david-tao-putong-pengyou",
+			"name": "普通朋友 唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/14-david-tao-putong-pengyou.svg",
+			"usage": "乐境播放器《普通朋友》唱片封面",
+			"note": "对站长第二张截图内圆取景，保留原图像素、方向与文字，不重新绘制。"
+		},
+		{
+			"id": "cover-david-tao-putong-pengyou-original",
+			"name": "普通朋友 封面原始截图",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/14-david-tao-putong-pengyou-original.png",
+			"usage": "站长提供的完整原图，供以后重新取景",
+			"note": "不依赖剪贴板临时目录；前台使用独立内圆取景版。"
 		}
 	]
 }

@@ -2,6 +2,14 @@
 
 最后更新：2026-10-22
 
+## 2026-10-22 新增陶喆《流沙》《普通朋友》
+
+- 在现有 12 首末尾按用户给定顺序追加《流沙》《普通朋友》，ID 分别为 `david-tao-liusha`、`david-tao-putong-pengyou`；此前所有歌曲字段与无关站点设置经语义比较完全一致。
+- 用户 MP3 经现有 GitHub 所有者授权上传 R2，地址 `/media/audio/20261022-david-tao-liusha.mp3`（7828154 字节、约 242.599 秒）及 `/media/audio/20261022-david-tao-putong-pengyou.mp3`（7921164 字节、约 255.164 秒）；MD5/ETag 一致且 HTTP 206 前 4096 字节校验通过。未把 MP3 或密钥写入仓库。
+- 用户 KRC 通过现有转换器生成 52 / 58 行逐字时间歌词，文件 `/lyrics/david-tao-liusha.json`、`/lyrics/david-tao-putong-pengyou.json`；均为中文歌曲，不额外编造翻译。原 KRC 持久备份在 `/Users/jayzhu/.codex/project-storage/canglan-blog/backups/add-david-tao-20261022.DC8nnM/`。
+- 两张截图按顺序取内圆，用原 PNG 字节嵌入 SVG，不改绘、不旋转，封面 `/assets/images/music-covers/13-david-tao-liusha.svg` 与 `/assets/images/music-covers/14-david-tao-putong-pengyou.svg`；对应 `-original.png` 完整保存。四项均登记后台视觉素材库，歌曲可在原歌单管理中编辑。
+- 恢复分支 `codex/restore-before-david-tao-20261022`、标签 `pre-david-tao-20261022` 指向 `9bb38649`。113 项 Node 回归、Astro（0 错误/警告/提示）、TypeScript 及 39 页生产构建通过，包含新增顺序、歌词计时、封面原字节及素材库配对回归；正式上线须检查 Cloudflare 成功和真实播放。
+
 ## 2026-10-22 乐境导航内容区定位修复
 
 - 根因：`music-room.js` 对所有进入门厅的导航执行滚动记忆恢复，首次默认值 0 覆盖全站路由的 `#main-grid` 定位，导致点击导航“乐境”回到顶部大图。

@@ -52,7 +52,7 @@ test('missing or mismatched translation tables never guess a shifted pairing', (
 test('Innocence keeps all timed words, supplied Chinese translations and original cover pixels', () => {
   const data = JSON.parse(read('src/data/azure-content.json'));
   const track = data.playlist.find(item=>item.id==='avril-innocence');
-  assert.equal(data.playlist.at(-1),track);
+  assert.equal(data.playlist[11],track);
   assert.equal(track.name,'Innocence'); assert.equal(track.artist,'Avril Lavigne');
   assert.equal(track.src,'/media/audio/20261020-avril-innocence.mp3');
   const lyrics = JSON.parse(read('public'+track.lrc));
@@ -78,4 +78,42 @@ test('Innocence keeps all timed words, supplied Chinese translations and origina
   const assets = JSON.parse(read('src/data/media-library.json')).assets;
   assert.ok(assets.some(asset=>asset.src===track.cover));
   assert.ok(assets.some(asset=>asset.src===originalPath));
+});
+
+test('David Tao songs append after the existing twelve without changing song order', () => {
+  const tracks = JSON.parse(read('src/data/azure-content.json')).playlist;
+  assert.deepEqual(tracks.slice(0,14).map(track=>track.id),[
+    'tabibito-no-uta','mebuki-no-uta','spiral','inori-owareba','kagekurabe-no-uta',
+    'musubime','mamoritai-mono','ketsui-no-uta','kaze-to-iku-michi','yoasobi-tabun',
+    'tanya-next-love','avril-innocence','david-tao-liusha','david-tao-putong-pengyou',
+  ]);
+});
+
+for(const entry of [
+  {id:'david-tao-liusha',number:13,title:'流沙',count:52,duration:242.6,first:'昨天晚上的事',last:'让我这样吧',box:'75 81 354 354'},
+  {id:'david-tao-putong-pengyou',number:14,title:'普通朋友',count:58,duration:255.165,first:'等待',last:'不能做普通朋友',box:'31 81 354 354'},
+])test(`${entry.title} keeps its MP3, precise KRC words and original disc artwork paired`, () => {
+  const track=JSON.parse(read('src/data/azure-content.json')).playlist.find(track=>track.id===entry.id);
+  assert.equal(track.name,entry.title); assert.equal(track.artist,'陶喆');
+  assert.equal(track.src,`/media/audio/20261022-${entry.id}.mp3`);
+  assert.equal(track.lrc,`/lyrics/${entry.id}.json`);
+  const lyrics=JSON.parse(read('public'+track.lrc));
+  assert.equal(lyrics.title,entry.title); assert.equal(lyrics.artist,'陶喆');
+  assert.equal(lyrics.format,'karaoke-v1'); assert.equal(lyrics.lines.length,entry.count);
+  assert.equal(lyrics.lines[0].text,entry.first); assert.equal(lyrics.lines.at(-1).text,entry.last);
+  for(const [index,line] of lyrics.lines.entries()){
+    assert.ok(line.time>=0&&line.end>line.time&&line.end<=entry.duration);
+    if(index)assert.ok(line.time>=lyrics.lines[index-1].time);
+    assert.ok(line.words.length>0);
+    assert.equal(line.words.map(word=>word.text).join('').trim(),line.text);
+    assert.ok(line.words.every(word=>word.start>=line.time&&word.start<line.end&&word.duration>=0));
+  }
+  assert.equal(track.cover,`/assets/images/music-covers/${entry.number}-${entry.id}.svg`);
+  const original=`/assets/images/music-covers/${entry.number}-${entry.id}-original.png`;
+  const svg=read('public'+track.cover);
+  assert.ok(svg.includes(`viewBox="${entry.box}"`));
+  assert.ok(Buffer.from(svg.match(/href="data:image\/png;base64,([^"]+)"/)[1],'base64').equals(readFileSync(new URL('public'+original,root))));
+  assert.doesNotMatch(svg,/<script|https?:\/\/(?!www\.w3\.org)/);
+  const assets=JSON.parse(read('src/data/media-library.json')).assets;
+  for(const path of [track.cover,original])assert.ok(assets.some(asset=>asset.src===path));
 });

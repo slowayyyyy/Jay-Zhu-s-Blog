@@ -1,0 +1,2018 @@
+{
+  "format": "karaoke-v1",
+  "title": "普通朋友",
+  "artist": "陶喆",
+  "lines": [
+    {
+      "time": 19.948,
+      "end": 20.948,
+      "text": "等待",
+      "words": [
+        {
+          "text": "等",
+          "start": 19.948,
+          "duration": 0.18
+        },
+        {
+          "text": "待",
+          "start": 20.128,
+          "duration": 0.82
+        }
+      ]
+    },
+    {
+      "time": 22.528,
+      "end": 25.928,
+      "text": "我随时随地在等待",
+      "words": [
+        {
+          "text": "我",
+          "start": 22.528,
+          "duration": 0.23
+        },
+        {
+          "text": "随",
+          "start": 22.758,
+          "duration": 0.33
+        },
+        {
+          "text": "时",
+          "start": 23.088,
+          "duration": 0.32
+        },
+        {
+          "text": "随",
+          "start": 23.408,
+          "duration": 0.39
+        },
+        {
+          "text": "地",
+          "start": 23.798,
+          "duration": 0.34
+        },
+        {
+          "text": "在",
+          "start": 24.138,
+          "duration": 0.69
+        },
+        {
+          "text": "等",
+          "start": 24.828,
+          "duration": 0.29
+        },
+        {
+          "text": "待",
+          "start": 25.118,
+          "duration": 0.81
+        }
+      ]
+    },
+    {
+      "time": 27.828,
+      "end": 31.408,
+      "text": "做你感情上的依赖",
+      "words": [
+        {
+          "text": "做",
+          "start": 27.828,
+          "duration": 0.34
+        },
+        {
+          "text": "你",
+          "start": 28.168,
+          "duration": 0.4
+        },
+        {
+          "text": "感",
+          "start": 28.568,
+          "duration": 0.29
+        },
+        {
+          "text": "情",
+          "start": 28.858,
+          "duration": 0.29
+        },
+        {
+          "text": "上",
+          "start": 29.148,
+          "duration": 0.39
+        },
+        {
+          "text": "的",
+          "start": 29.538,
+          "duration": 0.69
+        },
+        {
+          "text": "依",
+          "start": 30.228,
+          "duration": 0.35
+        },
+        {
+          "text": "赖",
+          "start": 30.578,
+          "duration": 0.83
+        }
+      ]
+    },
+    {
+      "time": 33.228,
+      "end": 36.998,
+      "text": "我没有任何的疑问",
+      "words": [
+        {
+          "text": "我",
+          "start": 33.228,
+          "duration": 0.29
+        },
+        {
+          "text": "没",
+          "start": 33.518,
+          "duration": 0.33
+        },
+        {
+          "text": "有",
+          "start": 33.848,
+          "duration": 0.35
+        },
+        {
+          "text": "任",
+          "start": 34.198,
+          "duration": 0.33
+        },
+        {
+          "text": "何",
+          "start": 34.528,
+          "duration": 0.38
+        },
+        {
+          "text": "的",
+          "start": 34.908,
+          "duration": 0.69
+        },
+        {
+          "text": "疑",
+          "start": 35.598,
+          "duration": 0.37
+        },
+        {
+          "text": "问",
+          "start": 35.968,
+          "duration": 1.03
+        }
+      ]
+    },
+    {
+      "time": 37.978,
+      "end": 39.598,
+      "text": "这是爱",
+      "words": [
+        {
+          "text": "这",
+          "start": 37.978,
+          "duration": 0.26
+        },
+        {
+          "text": "是",
+          "start": 38.238,
+          "duration": 0.33
+        },
+        {
+          "text": "爱",
+          "start": 38.568,
+          "duration": 1.03
+        }
+      ]
+    },
+    {
+      "time": 41.448,
+      "end": 42.548,
+      "text": "我猜",
+      "words": [
+        {
+          "text": "我",
+          "start": 41.448,
+          "duration": 0.21
+        },
+        {
+          "text": "猜",
+          "start": 41.658,
+          "duration": 0.89
+        }
+      ]
+    },
+    {
+      "time": 44.008,
+      "end": 47.938,
+      "text": "你早就想要说明白",
+      "words": [
+        {
+          "text": "你",
+          "start": 44.008,
+          "duration": 0.3
+        },
+        {
+          "text": "早",
+          "start": 44.308,
+          "duration": 0.31
+        },
+        {
+          "text": "就",
+          "start": 44.618,
+          "duration": 0.4
+        },
+        {
+          "text": "想",
+          "start": 45.018,
+          "duration": 0.32
+        },
+        {
+          "text": "要",
+          "start": 45.338,
+          "duration": 0.35
+        },
+        {
+          "text": "说",
+          "start": 45.688,
+          "duration": 0.7
+        },
+        {
+          "text": "明",
+          "start": 46.388,
+          "duration": 0.31
+        },
+        {
+          "text": "白",
+          "start": 46.698,
+          "duration": 1.24
+        }
+      ]
+    },
+    {
+      "time": 49.418,
+      "end": 53.808,
+      "text": "我觉得自己好失败",
+      "words": [
+        {
+          "text": "我",
+          "start": 49.418,
+          "duration": 0.31
+        },
+        {
+          "text": "觉",
+          "start": 49.728,
+          "duration": 0.31
+        },
+        {
+          "text": "得",
+          "start": 50.038,
+          "duration": 0.38
+        },
+        {
+          "text": "自",
+          "start": 50.418,
+          "duration": 0.31
+        },
+        {
+          "text": "己",
+          "start": 50.728,
+          "duration": 0.4
+        },
+        {
+          "text": "好",
+          "start": 51.128,
+          "duration": 0.66
+        },
+        {
+          "text": "失",
+          "start": 51.788,
+          "duration": 0.33
+        },
+        {
+          "text": "败",
+          "start": 52.118,
+          "duration": 1.69
+        }
+      ]
+    },
+    {
+      "time": 54.818,
+      "end": 58.588,
+      "text": "从天堂掉落到深渊",
+      "words": [
+        {
+          "text": "从",
+          "start": 54.818,
+          "duration": 0.33
+        },
+        {
+          "text": "天",
+          "start": 55.148,
+          "duration": 0.42
+        },
+        {
+          "text": "堂",
+          "start": 55.568,
+          "duration": 0.24
+        },
+        {
+          "text": "掉",
+          "start": 55.808,
+          "duration": 0.3
+        },
+        {
+          "text": "落",
+          "start": 56.108,
+          "duration": 0.36
+        },
+        {
+          "text": "到",
+          "start": 56.468,
+          "duration": 0.72
+        },
+        {
+          "text": "深",
+          "start": 57.188,
+          "duration": 0.29
+        },
+        {
+          "text": "渊",
+          "start": 57.478,
+          "duration": 1.11
+        }
+      ]
+    },
+    {
+      "time": 59.498,
+      "end": 61.218,
+      "text": "多无奈",
+      "words": [
+        {
+          "text": "多",
+          "start": 59.498,
+          "duration": 0.32
+        },
+        {
+          "text": "无",
+          "start": 59.818,
+          "duration": 0.39
+        },
+        {
+          "text": "奈",
+          "start": 60.208,
+          "duration": 1.01
+        }
+      ]
+    },
+    {
+      "time": 62.838,
+      "end": 65.997,
+      "text": "我愿意改变",
+      "words": [
+        {
+          "text": "我",
+          "start": 62.838,
+          "duration": 0.39
+        },
+        {
+          "text": "愿",
+          "start": 63.228,
+          "duration": 0.98
+        },
+        {
+          "text": "意",
+          "start": 64.208,
+          "duration": 0.82
+        },
+        {
+          "text": "改",
+          "start": 65.028,
+          "duration": 0.57
+        },
+        {
+          "text": "变",
+          "start": 65.598,
+          "duration": 0.399
+        }
+      ]
+    },
+    {
+      "time": 66.147,
+      "end": 67.287,
+      "text": "What can I do",
+      "words": [
+        {
+          "text": "What ",
+          "start": 66.147,
+          "duration": 0.16
+        },
+        {
+          "text": "can ",
+          "start": 66.307,
+          "duration": 0.17
+        },
+        {
+          "text": "I ",
+          "start": 66.477,
+          "duration": 0.45
+        },
+        {
+          "text": "do",
+          "start": 66.927,
+          "duration": 0.36
+        }
+      ]
+    },
+    {
+      "time": 68.407,
+      "end": 71.247,
+      "text": "重新再来一遍",
+      "words": [
+        {
+          "text": "重",
+          "start": 68.407,
+          "duration": 0.22
+        },
+        {
+          "text": "新",
+          "start": 68.627,
+          "duration": 0.81
+        },
+        {
+          "text": "再",
+          "start": 69.437,
+          "duration": 0.24
+        },
+        {
+          "text": "来",
+          "start": 69.677,
+          "duration": 0.76
+        },
+        {
+          "text": "一",
+          "start": 70.437,
+          "duration": 0.59
+        },
+        {
+          "text": "遍",
+          "start": 71.027,
+          "duration": 0.22
+        }
+      ]
+    },
+    {
+      "time": 71.377,
+      "end": 73.377,
+      "text": "Just give me a chance",
+      "words": [
+        {
+          "text": "Just ",
+          "start": 71.377,
+          "duration": 0.19
+        },
+        {
+          "text": "give ",
+          "start": 71.567,
+          "duration": 0.15
+        },
+        {
+          "text": "me ",
+          "start": 71.717,
+          "duration": 0.31
+        },
+        {
+          "text": "a ",
+          "start": 72.027,
+          "duration": 0.24
+        },
+        {
+          "text": "chance",
+          "start": 72.267,
+          "duration": 1.11
+        }
+      ]
+    },
+    {
+      "time": 73.887,
+      "end": 78.867,
+      "text": "我无法只是普通朋友",
+      "words": [
+        {
+          "text": "我",
+          "start": 73.887,
+          "duration": 0.18
+        },
+        {
+          "text": "无",
+          "start": 74.067,
+          "duration": 0.65
+        },
+        {
+          "text": "法",
+          "start": 74.717,
+          "duration": 0.32
+        },
+        {
+          "text": "只",
+          "start": 75.037,
+          "duration": 0.72
+        },
+        {
+          "text": "是",
+          "start": 75.757,
+          "duration": 0.7
+        },
+        {
+          "text": "普",
+          "start": 76.457,
+          "duration": 0.66
+        },
+        {
+          "text": "通",
+          "start": 77.117,
+          "duration": 0.33
+        },
+        {
+          "text": "朋",
+          "start": 77.447,
+          "duration": 0.31
+        },
+        {
+          "text": "友",
+          "start": 77.757,
+          "duration": 1.11
+        }
+      ]
+    },
+    {
+      "time": 79.127,
+      "end": 81.257,
+      "text": "感情已那么深",
+      "words": [
+        {
+          "text": "感",
+          "start": 79.127,
+          "duration": 0.29
+        },
+        {
+          "text": "情",
+          "start": 79.417,
+          "duration": 0.33
+        },
+        {
+          "text": "已",
+          "start": 79.747,
+          "duration": 0.35
+        },
+        {
+          "text": "那",
+          "start": 80.097,
+          "duration": 0.3
+        },
+        {
+          "text": "么",
+          "start": 80.397,
+          "duration": 0.33
+        },
+        {
+          "text": "深",
+          "start": 80.727,
+          "duration": 0.53
+        }
+      ]
+    },
+    {
+      "time": 81.387,
+      "end": 86.465,
+      "text": "叫我怎么能放手",
+      "words": [
+        {
+          "text": "叫",
+          "start": 81.387,
+          "duration": 0.36
+        },
+        {
+          "text": "我",
+          "start": 81.747,
+          "duration": 0.39
+        },
+        {
+          "text": "怎",
+          "start": 82.137,
+          "duration": 0.32
+        },
+        {
+          "text": "么",
+          "start": 82.457,
+          "duration": 0.33
+        },
+        {
+          "text": "能",
+          "start": 82.787,
+          "duration": 0.32
+        },
+        {
+          "text": "放",
+          "start": 83.107,
+          "duration": 0.38
+        },
+        {
+          "text": "手",
+          "start": 83.487,
+          "duration": 2.68
+        }
+      ]
+    },
+    {
+      "time": 86.465,
+      "end": 89.917,
+      "text": "但你说 I",
+      "words": [
+        {
+          "text": "但",
+          "start": 86.465,
+          "duration": 0.352
+        },
+        {
+          "text": "你",
+          "start": 86.817,
+          "duration": 0.322
+        },
+        {
+          "text": "说 ",
+          "start": 87.139,
+          "duration": 0.382
+        },
+        {
+          "text": "I",
+          "start": 87.521,
+          "duration": 2.16
+        }
+      ]
+    },
+    {
+      "time": 89.917,
+      "end": 93.789,
+      "text": "I only wanna be your friend",
+      "words": [
+        {
+          "text": "I ",
+          "start": 89.917,
+          "duration": 0.312
+        },
+        {
+          "text": "only ",
+          "start": 90.229,
+          "duration": 0.632
+        },
+        {
+          "text": "wanna ",
+          "start": 90.861,
+          "duration": 0.511
+        },
+        {
+          "text": "be ",
+          "start": 91.372,
+          "duration": 0.679
+        },
+        {
+          "text": "your ",
+          "start": 92.051,
+          "duration": 0.384
+        },
+        {
+          "text": "friend",
+          "start": 92.435,
+          "duration": 1.208
+        }
+      ]
+    },
+    {
+      "time": 94.636,
+      "end": 96.644,
+      "text": "做个朋友",
+      "words": [
+        {
+          "text": "做",
+          "start": 94.636,
+          "duration": 0.312
+        },
+        {
+          "text": "个",
+          "start": 94.948,
+          "duration": 0.32
+        },
+        {
+          "text": "朋",
+          "start": 95.268,
+          "duration": 0.664
+        },
+        {
+          "text": "友",
+          "start": 95.932,
+          "duration": 0.712
+        }
+      ]
+    },
+    {
+      "time": 97.903,
+      "end": 99.972,
+      "text": "我在",
+      "words": [
+        {
+          "text": "我",
+          "start": 97.903,
+          "duration": 0.405
+        },
+        {
+          "text": "在",
+          "start": 98.308,
+          "duration": 1.664
+        }
+      ]
+    },
+    {
+      "time": 100.684,
+      "end": 102.224,
+      "text": "你心中只是",
+      "words": [
+        {
+          "text": "你",
+          "start": 100.684,
+          "duration": 0.31
+        },
+        {
+          "text": "心",
+          "start": 100.994,
+          "duration": 0.33
+        },
+        {
+          "text": "中",
+          "start": 101.324,
+          "duration": 0.3
+        },
+        {
+          "text": "只",
+          "start": 101.624,
+          "duration": 0.33
+        },
+        {
+          "text": "是",
+          "start": 101.954,
+          "duration": 0.27
+        }
+      ]
+    },
+    {
+      "time": 102.394,
+      "end": 105.234,
+      "text": "Just a friend",
+      "words": [
+        {
+          "text": "Just ",
+          "start": 102.394,
+          "duration": 0.68
+        },
+        {
+          "text": "a ",
+          "start": 103.074,
+          "duration": 0.33
+        },
+        {
+          "text": "friend",
+          "start": 103.404,
+          "duration": 1.83
+        }
+      ]
+    },
+    {
+      "time": 105.404,
+      "end": 108.494,
+      "text": "不是情人",
+      "words": [
+        {
+          "text": "不",
+          "start": 105.404,
+          "duration": 0.32
+        },
+        {
+          "text": "是",
+          "start": 105.724,
+          "duration": 0.29
+        },
+        {
+          "text": "情",
+          "start": 106.014,
+          "duration": 1.54
+        },
+        {
+          "text": "人",
+          "start": 107.554,
+          "duration": 0.94
+        }
+      ]
+    },
+    {
+      "time": 108.804,
+      "end": 114.024,
+      "text": "我感激你对我这样的坦白",
+      "words": [
+        {
+          "text": "我",
+          "start": 108.804,
+          "duration": 0.28
+        },
+        {
+          "text": "感",
+          "start": 109.084,
+          "duration": 0.51
+        },
+        {
+          "text": "激",
+          "start": 109.594,
+          "duration": 0.21
+        },
+        {
+          "text": "你",
+          "start": 109.804,
+          "duration": 0.29
+        },
+        {
+          "text": "对",
+          "start": 110.094,
+          "duration": 0.67
+        },
+        {
+          "text": "我",
+          "start": 110.764,
+          "duration": 0.33
+        },
+        {
+          "text": "这",
+          "start": 111.094,
+          "duration": 0.29
+        },
+        {
+          "text": "样",
+          "start": 111.384,
+          "duration": 1.26
+        },
+        {
+          "text": "的",
+          "start": 112.644,
+          "duration": 0.2
+        },
+        {
+          "text": "坦",
+          "start": 112.844,
+          "duration": 0.74
+        },
+        {
+          "text": "白",
+          "start": 113.584,
+          "duration": 0.44
+        }
+      ]
+    },
+    {
+      "time": 114.254,
+      "end": 119.204,
+      "text": "但我给你的爱暂时收不回来",
+      "words": [
+        {
+          "text": "但",
+          "start": 114.254,
+          "duration": 0.29
+        },
+        {
+          "text": "我",
+          "start": 114.544,
+          "duration": 0.31
+        },
+        {
+          "text": "给",
+          "start": 114.854,
+          "duration": 0.32
+        },
+        {
+          "text": "你",
+          "start": 115.174,
+          "duration": 0.31
+        },
+        {
+          "text": "的",
+          "start": 115.484,
+          "duration": 0.73
+        },
+        {
+          "text": "爱",
+          "start": 116.214,
+          "duration": 0.42
+        },
+        {
+          "text": "暂",
+          "start": 116.634,
+          "duration": 0.23
+        },
+        {
+          "text": "时",
+          "start": 116.864,
+          "duration": 0.74
+        },
+        {
+          "text": "收",
+          "start": 117.604,
+          "duration": 0.25
+        },
+        {
+          "text": "不",
+          "start": 117.854,
+          "duration": 0.31
+        },
+        {
+          "text": "回",
+          "start": 118.164,
+          "duration": 0.49
+        },
+        {
+          "text": "来",
+          "start": 118.654,
+          "duration": 0.55
+        }
+      ]
+    },
+    {
+      "time": 119.584,
+      "end": 122.603,
+      "text": "So I",
+      "words": [
+        {
+          "text": "So ",
+          "start": 119.584,
+          "duration": 0.31
+        },
+        {
+          "text": "I",
+          "start": 119.894,
+          "duration": 2.709
+        }
+      ]
+    },
+    {
+      "time": 122.723,
+      "end": 123.873,
+      "text": "不能只是",
+      "words": [
+        {
+          "text": "不",
+          "start": 122.723,
+          "duration": 0.33
+        },
+        {
+          "text": "能",
+          "start": 123.053,
+          "duration": 0.25
+        },
+        {
+          "text": "只",
+          "start": 123.303,
+          "duration": 0.27
+        },
+        {
+          "text": "是",
+          "start": 123.573,
+          "duration": 0.3
+        }
+      ]
+    },
+    {
+      "time": 124.003,
+      "end": 126.192,
+      "text": "Be your friend",
+      "words": [
+        {
+          "text": "Be ",
+          "start": 124.003,
+          "duration": 0.619
+        },
+        {
+          "text": "your ",
+          "start": 124.622,
+          "duration": 0.33
+        },
+        {
+          "text": "friend",
+          "start": 124.952,
+          "duration": 1.24
+        }
+      ]
+    },
+    {
+      "time": 129.413,
+      "end": 132.128,
+      "text": "I just can't be your friend",
+      "words": [
+        {
+          "text": "I ",
+          "start": 129.413,
+          "duration": 0.132
+        },
+        {
+          "text": "just ",
+          "start": 129.545,
+          "duration": 0.182
+        },
+        {
+          "text": "can't ",
+          "start": 129.727,
+          "duration": 0.168
+        },
+        {
+          "text": "be ",
+          "start": 129.895,
+          "duration": 0.616
+        },
+        {
+          "text": "your ",
+          "start": 130.511,
+          "duration": 0.327
+        },
+        {
+          "text": "friend",
+          "start": 130.838,
+          "duration": 1.29
+        }
+      ]
+    },
+    {
+      "time": 135.947,
+      "end": 137.717,
+      "text": "我猜",
+      "words": [
+        {
+          "text": "我",
+          "start": 135.947,
+          "duration": 0.21
+        },
+        {
+          "text": "猜",
+          "start": 136.157,
+          "duration": 1.56
+        }
+      ]
+    },
+    {
+      "time": 138.407,
+      "end": 143.716,
+      "text": "你早就想要说明白",
+      "words": [
+        {
+          "text": "你",
+          "start": 138.407,
+          "duration": 0.32
+        },
+        {
+          "text": "早",
+          "start": 138.727,
+          "duration": 0.28
+        },
+        {
+          "text": "就",
+          "start": 139.007,
+          "duration": 0.37
+        },
+        {
+          "text": "想",
+          "start": 139.377,
+          "duration": 0.33
+        },
+        {
+          "text": "要",
+          "start": 139.707,
+          "duration": 0.35
+        },
+        {
+          "text": "说",
+          "start": 140.057,
+          "duration": 1.07
+        },
+        {
+          "text": "明",
+          "start": 141.127,
+          "duration": 0.649
+        },
+        {
+          "text": "白",
+          "start": 141.776,
+          "duration": 1.69
+        }
+      ]
+    },
+    {
+      "time": 143.716,
+      "end": 149.152,
+      "text": "我觉得自己好失败",
+      "words": [
+        {
+          "text": "我",
+          "start": 143.716,
+          "duration": 0.362
+        },
+        {
+          "text": "觉",
+          "start": 144.078,
+          "duration": 0.374
+        },
+        {
+          "text": "得",
+          "start": 144.452,
+          "duration": 0.312
+        },
+        {
+          "text": "自",
+          "start": 144.764,
+          "duration": 0.304
+        },
+        {
+          "text": "己",
+          "start": 145.068,
+          "duration": 0.36
+        },
+        {
+          "text": "好",
+          "start": 145.428,
+          "duration": 0.992
+        },
+        {
+          "text": "失",
+          "start": 146.42,
+          "duration": 0.744
+        },
+        {
+          "text": "败",
+          "start": 147.164,
+          "duration": 1.816
+        }
+      ]
+    },
+    {
+      "time": 149.152,
+      "end": 153.112,
+      "text": "从天堂掉落到深渊",
+      "words": [
+        {
+          "text": "从",
+          "start": 149.152,
+          "duration": 0.391
+        },
+        {
+          "text": "天",
+          "start": 149.543,
+          "duration": 0.354
+        },
+        {
+          "text": "堂",
+          "start": 149.897,
+          "duration": 0.302
+        },
+        {
+          "text": "掉",
+          "start": 150.199,
+          "duration": 0.329
+        },
+        {
+          "text": "落",
+          "start": 150.528,
+          "duration": 0.305
+        },
+        {
+          "text": "到",
+          "start": 150.833,
+          "duration": 0.391
+        },
+        {
+          "text": "深",
+          "start": 151.224,
+          "duration": 0.647
+        },
+        {
+          "text": "渊",
+          "start": 151.871,
+          "duration": 1.241
+        }
+      ]
+    },
+    {
+      "time": 153.934,
+      "end": 156.854,
+      "text": "多无奈",
+      "words": [
+        {
+          "text": "多",
+          "start": 153.934,
+          "duration": 0.33
+        },
+        {
+          "text": "无",
+          "start": 154.264,
+          "duration": 0.37
+        },
+        {
+          "text": "奈",
+          "start": 154.634,
+          "duration": 2.22
+        }
+      ]
+    },
+    {
+      "time": 157.294,
+      "end": 160.444,
+      "text": "我愿意改变",
+      "words": [
+        {
+          "text": "我",
+          "start": 157.294,
+          "duration": 0.33
+        },
+        {
+          "text": "愿",
+          "start": 157.624,
+          "duration": 0.95
+        },
+        {
+          "text": "意",
+          "start": 158.574,
+          "duration": 0.8
+        },
+        {
+          "text": "改",
+          "start": 159.374,
+          "duration": 0.57
+        },
+        {
+          "text": "变",
+          "start": 159.944,
+          "duration": 0.5
+        }
+      ]
+    },
+    {
+      "time": 160.564,
+      "end": 162.394,
+      "text": "What can I do",
+      "words": [
+        {
+          "text": "What ",
+          "start": 160.564,
+          "duration": 0.17
+        },
+        {
+          "text": "can ",
+          "start": 160.734,
+          "duration": 0.23
+        },
+        {
+          "text": "I ",
+          "start": 160.964,
+          "duration": 0.39
+        },
+        {
+          "text": "do",
+          "start": 161.354,
+          "duration": 1.04
+        }
+      ]
+    },
+    {
+      "time": 162.704,
+      "end": 165.663,
+      "text": "重新再来一遍",
+      "words": [
+        {
+          "text": "重",
+          "start": 162.704,
+          "duration": 0.33
+        },
+        {
+          "text": "新",
+          "start": 163.034,
+          "duration": 0.8
+        },
+        {
+          "text": "再",
+          "start": 163.834,
+          "duration": 0.22
+        },
+        {
+          "text": "来",
+          "start": 164.054,
+          "duration": 0.82
+        },
+        {
+          "text": "一",
+          "start": 164.874,
+          "duration": 0.389
+        },
+        {
+          "text": "遍",
+          "start": 165.263,
+          "duration": 0.4
+        }
+      ]
+    },
+    {
+      "time": 165.663,
+      "end": 167.753,
+      "text": "Just give me a chance",
+      "words": [
+        {
+          "text": "Just ",
+          "start": 165.663,
+          "duration": 0.16
+        },
+        {
+          "text": "give ",
+          "start": 165.823,
+          "duration": 0.18
+        },
+        {
+          "text": "me ",
+          "start": 166.003,
+          "duration": 0.34
+        },
+        {
+          "text": "a ",
+          "start": 166.343,
+          "duration": 0.42
+        },
+        {
+          "text": "chance",
+          "start": 166.763,
+          "duration": 0.99
+        }
+      ]
+    },
+    {
+      "time": 168.133,
+      "end": 173.032,
+      "text": "我无法只是普通朋友",
+      "words": [
+        {
+          "text": "我",
+          "start": 168.133,
+          "duration": 0.34
+        },
+        {
+          "text": "无",
+          "start": 168.473,
+          "duration": 0.66
+        },
+        {
+          "text": "法",
+          "start": 169.133,
+          "duration": 0.33
+        },
+        {
+          "text": "只",
+          "start": 169.463,
+          "duration": 0.69
+        },
+        {
+          "text": "是",
+          "start": 170.153,
+          "duration": 0.76
+        },
+        {
+          "text": "普",
+          "start": 170.913,
+          "duration": 0.559
+        },
+        {
+          "text": "通",
+          "start": 171.472,
+          "duration": 0.35
+        },
+        {
+          "text": "朋",
+          "start": 171.822,
+          "duration": 0.36
+        },
+        {
+          "text": "友",
+          "start": 172.182,
+          "duration": 0.85
+        }
+      ]
+    },
+    {
+      "time": 173.522,
+      "end": 175.882,
+      "text": "感情已那么深",
+      "words": [
+        {
+          "text": "感",
+          "start": 173.522,
+          "duration": 0.34
+        },
+        {
+          "text": "情",
+          "start": 173.862,
+          "duration": 0.5
+        },
+        {
+          "text": "已",
+          "start": 174.362,
+          "duration": 0.22
+        },
+        {
+          "text": "那",
+          "start": 174.582,
+          "duration": 0.25
+        },
+        {
+          "text": "么",
+          "start": 174.832,
+          "duration": 0.33
+        },
+        {
+          "text": "深",
+          "start": 175.162,
+          "duration": 0.72
+        }
+      ]
+    },
+    {
+      "time": 176.032,
+      "end": 180.852,
+      "text": "叫我怎么能放手",
+      "words": [
+        {
+          "text": "叫",
+          "start": 176.032,
+          "duration": 0.25
+        },
+        {
+          "text": "我",
+          "start": 176.282,
+          "duration": 0.28
+        },
+        {
+          "text": "怎",
+          "start": 176.562,
+          "duration": 0.28
+        },
+        {
+          "text": "么",
+          "start": 176.842,
+          "duration": 0.38
+        },
+        {
+          "text": "能",
+          "start": 177.222,
+          "duration": 0.32
+        },
+        {
+          "text": "放",
+          "start": 177.542,
+          "duration": 1.36
+        },
+        {
+          "text": "手",
+          "start": 178.902,
+          "duration": 0.53
+        }
+      ]
+    },
+    {
+      "time": 180.852,
+      "end": 184.26,
+      "text": "但你说 I",
+      "words": [
+        {
+          "text": "但",
+          "start": 180.852,
+          "duration": 0.319
+        },
+        {
+          "text": "你",
+          "start": 181.171,
+          "duration": 0.321
+        },
+        {
+          "text": "说 ",
+          "start": 181.492,
+          "duration": 0.383
+        },
+        {
+          "text": "I",
+          "start": 181.875,
+          "duration": 2.089
+        }
+      ]
+    },
+    {
+      "time": 184.26,
+      "end": 188.926,
+      "text": "I only wanna be your friend",
+      "words": [
+        {
+          "text": "I ",
+          "start": 184.26,
+          "duration": 0.32
+        },
+        {
+          "text": "only ",
+          "start": 184.58,
+          "duration": 0.656
+        },
+        {
+          "text": "wanna ",
+          "start": 185.236,
+          "duration": 0.672
+        },
+        {
+          "text": "be ",
+          "start": 185.908,
+          "duration": 0.689
+        },
+        {
+          "text": "your ",
+          "start": 186.597,
+          "duration": 0.375
+        },
+        {
+          "text": "friend",
+          "start": 186.972,
+          "duration": 1.504
+        }
+      ]
+    },
+    {
+      "time": 188.926,
+      "end": 192.028,
+      "text": "做个朋友",
+      "words": [
+        {
+          "text": "做",
+          "start": 188.926,
+          "duration": 0.358
+        },
+        {
+          "text": "个",
+          "start": 189.284,
+          "duration": 0.37
+        },
+        {
+          "text": "朋",
+          "start": 189.654,
+          "duration": 0.622
+        },
+        {
+          "text": "友",
+          "start": 190.276,
+          "duration": 1.752
+        }
+      ]
+    },
+    {
+      "time": 192.321,
+      "end": 194.891,
+      "text": "我在",
+      "words": [
+        {
+          "text": "我",
+          "start": 192.321,
+          "duration": 0.32
+        },
+        {
+          "text": "在",
+          "start": 192.641,
+          "duration": 2.25
+        }
+      ]
+    },
+    {
+      "time": 195.111,
+      "end": 196.601,
+      "text": "你心中只是",
+      "words": [
+        {
+          "text": "你",
+          "start": 195.111,
+          "duration": 0.29
+        },
+        {
+          "text": "心",
+          "start": 195.401,
+          "duration": 0.33
+        },
+        {
+          "text": "中",
+          "start": 195.731,
+          "duration": 0.31
+        },
+        {
+          "text": "只",
+          "start": 196.041,
+          "duration": 0.3
+        },
+        {
+          "text": "是",
+          "start": 196.341,
+          "duration": 0.26
+        }
+      ]
+    },
+    {
+      "time": 196.811,
+      "end": 199.671,
+      "text": "Just a friend",
+      "words": [
+        {
+          "text": "Just ",
+          "start": 196.811,
+          "duration": 0.63
+        },
+        {
+          "text": "a ",
+          "start": 197.441,
+          "duration": 0.37
+        },
+        {
+          "text": "friend",
+          "start": 197.811,
+          "duration": 1.86
+        }
+      ]
+    },
+    {
+      "time": 199.861,
+      "end": 202.691,
+      "text": "不是情人",
+      "words": [
+        {
+          "text": "不",
+          "start": 199.861,
+          "duration": 0.28
+        },
+        {
+          "text": "是",
+          "start": 200.141,
+          "duration": 0.34
+        },
+        {
+          "text": "情",
+          "start": 200.481,
+          "duration": 1.44
+        },
+        {
+          "text": "人",
+          "start": 201.921,
+          "duration": 0.77
+        }
+      ]
+    },
+    {
+      "time": 203.131,
+      "end": 208.409,
+      "text": "我感激你对我这样的坦白",
+      "words": [
+        {
+          "text": "我",
+          "start": 203.131,
+          "duration": 0.35
+        },
+        {
+          "text": "感",
+          "start": 203.481,
+          "duration": 0.45
+        },
+        {
+          "text": "激",
+          "start": 203.931,
+          "duration": 0.23
+        },
+        {
+          "text": "你",
+          "start": 204.161,
+          "duration": 0.31
+        },
+        {
+          "text": "对",
+          "start": 204.471,
+          "duration": 0.709
+        },
+        {
+          "text": "我",
+          "start": 205.18,
+          "duration": 0.32
+        },
+        {
+          "text": "这",
+          "start": 205.5,
+          "duration": 0.29
+        },
+        {
+          "text": "样",
+          "start": 205.79,
+          "duration": 1.369
+        },
+        {
+          "text": "的",
+          "start": 207.159,
+          "duration": 0.2
+        },
+        {
+          "text": "坦",
+          "start": 207.359,
+          "duration": 0.6
+        },
+        {
+          "text": "白",
+          "start": 207.959,
+          "duration": 0.45
+        }
+      ]
+    },
+    {
+      "time": 208.539,
+      "end": 213.749,
+      "text": "但我给你的爱暂时收不回来",
+      "words": [
+        {
+          "text": "但",
+          "start": 208.539,
+          "duration": 0.32
+        },
+        {
+          "text": "我",
+          "start": 208.859,
+          "duration": 0.34
+        },
+        {
+          "text": "给",
+          "start": 209.199,
+          "duration": 0.34
+        },
+        {
+          "text": "你",
+          "start": 209.539,
+          "duration": 0.32
+        },
+        {
+          "text": "的",
+          "start": 209.859,
+          "duration": 0.7
+        },
+        {
+          "text": "爱",
+          "start": 210.559,
+          "duration": 0.38
+        },
+        {
+          "text": "暂",
+          "start": 210.939,
+          "duration": 0.26
+        },
+        {
+          "text": "时",
+          "start": 211.199,
+          "duration": 0.72
+        },
+        {
+          "text": "收",
+          "start": 211.919,
+          "duration": 0.3
+        },
+        {
+          "text": "不",
+          "start": 212.219,
+          "duration": 0.29
+        },
+        {
+          "text": "回",
+          "start": 212.509,
+          "duration": 0.41
+        },
+        {
+          "text": "来",
+          "start": 212.919,
+          "duration": 0.83
+        }
+      ]
+    },
+    {
+      "time": 213.939,
+      "end": 216.559,
+      "text": "So I",
+      "words": [
+        {
+          "text": "So ",
+          "start": 213.939,
+          "duration": 0.34
+        },
+        {
+          "text": "I",
+          "start": 214.279,
+          "duration": 2.28
+        }
+      ]
+    },
+    {
+      "time": 216.689,
+      "end": 218.259,
+      "text": "我不能只是",
+      "words": [
+        {
+          "text": "我",
+          "start": 216.689,
+          "duration": 0.31
+        },
+        {
+          "text": "不",
+          "start": 216.999,
+          "duration": 0.31
+        },
+        {
+          "text": "能",
+          "start": 217.309,
+          "duration": 0.31
+        },
+        {
+          "text": "只",
+          "start": 217.619,
+          "duration": 0.33
+        },
+        {
+          "text": "是",
+          "start": 217.949,
+          "duration": 0.31
+        }
+      ]
+    },
+    {
+      "time": 218.379,
+      "end": 222.859,
+      "text": "Be your friend",
+      "words": [
+        {
+          "text": "Be ",
+          "start": 218.379,
+          "duration": 3.4
+        },
+        {
+          "text": "your ",
+          "start": 221.779,
+          "duration": 0.34
+        },
+        {
+          "text": "friend",
+          "start": 222.119,
+          "duration": 0.74
+        }
+      ]
+    },
+    {
+      "time": 226.479,
+      "end": 228.769,
+      "text": "I just can't be your friend",
+      "words": [
+        {
+          "text": "I ",
+          "start": 226.479,
+          "duration": 0.2
+        },
+        {
+          "text": "just ",
+          "start": 226.679,
+          "duration": 0.17
+        },
+        {
+          "text": "can't ",
+          "start": 226.849,
+          "duration": 0.32
+        },
+        {
+          "text": "be ",
+          "start": 227.169,
+          "duration": 0.47
+        },
+        {
+          "text": "your ",
+          "start": 227.639,
+          "duration": 0.34
+        },
+        {
+          "text": "friend",
+          "start": 227.979,
+          "duration": 0.79
+        }
+      ]
+    },
+    {
+      "time": 231.249,
+      "end": 236.595,
+      "text": "No",
+      "words": [
+        {
+          "text": "No ",
+          "start": 231.249,
+          "duration": 2.659
+        }
+      ]
+    },
+    {
+      "time": 236.595,
+      "end": 239.908,
+      "text": "不能只是做你的朋友",
+      "words": [
+        {
+          "text": "不",
+          "start": 236.595,
+          "duration": 0.288
+        },
+        {
+          "text": "能",
+          "start": 236.883,
+          "duration": 0.2
+        },
+        {
+          "text": "只",
+          "start": 237.083,
+          "duration": 0.28
+        },
+        {
+          "text": "是",
+          "start": 237.363,
+          "duration": 0.344
+        },
+        {
+          "text": "做",
+          "start": 237.707,
+          "duration": 0.513
+        },
+        {
+          "text": "你",
+          "start": 238.22,
+          "duration": 0.176
+        },
+        {
+          "text": "的",
+          "start": 238.396,
+          "duration": 0.2
+        },
+        {
+          "text": "朋",
+          "start": 238.596,
+          "duration": 0.336
+        },
+        {
+          "text": "友",
+          "start": 238.932,
+          "duration": 0.976
+        }
+      ]
+    },
+    {
+      "time": 243.107,
+      "end": 247.077,
+      "text": "不能做普通朋友",
+      "words": [
+        {
+          "text": "不",
+          "start": 243.107,
+          "duration": 0.2
+        },
+        {
+          "text": "能",
+          "start": 243.307,
+          "duration": 0.19
+        },
+        {
+          "text": "做",
+          "start": 243.497,
+          "duration": 1.02
+        },
+        {
+          "text": "普",
+          "start": 244.517,
+          "duration": 0.19
+        },
+        {
+          "text": "通",
+          "start": 244.707,
+          "duration": 1.74
+        },
+        {
+          "text": "朋",
+          "start": 246.447,
+          "duration": 0.2
+        },
+        {
+          "text": "友",
+          "start": 246.647,
+          "duration": 0.43
+        }
+      ]
+    }
+  ]
+}

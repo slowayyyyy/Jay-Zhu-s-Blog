@@ -595,6 +595,22 @@
         "别让它从你身边溜走"
       ],
       "id": "avril-innocence"
+    },
+    {
+      "name": "流沙",
+      "artist": "陶喆",
+      "src": "/media/audio/20261022-david-tao-liusha.mp3",
+      "cover": "/assets/images/music-covers/13-david-tao-liusha.svg",
+      "lrc": "/lyrics/david-tao-liusha.json",
+      "id": "david-tao-liusha"
+    },
+    {
+      "name": "普通朋友",
+      "artist": "陶喆",
+      "src": "/media/audio/20261022-david-tao-putong-pengyou.mp3",
+      "cover": "/assets/images/music-covers/14-david-tao-putong-pengyou.svg",
+      "lrc": "/lyrics/david-tao-putong-pengyou.json",
+      "id": "david-tao-putong-pengyou"
     }
   ],
   "visuals": {
