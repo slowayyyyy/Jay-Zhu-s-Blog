@@ -4,6 +4,7 @@ import { createRequire } from "node:module";
 import test from "node:test";
 import vm from "node:vm";
 import ts from "typescript";
+import { musicLibrary, selectTracks, listeningNotes } from "../../src/lib/music-library.mjs";
 import {
 	ADMIN_ACTIVITY_TYPES,
 	ADMIN_COLOR_OPTIONS,
@@ -32,6 +33,7 @@ function config(path, content) {
 	vm.runInNewContext(source, {
 		exports,
 		require(specifier) {
+			if (specifier.endsWith("music-library.mjs")) return { musicLibrary };
 			assert.match(specifier, /azure-content\.json$/);
 			return content;
 		},
@@ -84,6 +86,50 @@ test("music configuration excludes empty sources without disturbing track/cover/
 			.playlist.length,
 		0,
 	);
+});
+
+test("hiding songs filters every public selection and playback queue with matching indices, and restores without data loss", () => {
+	const content = structuredClone(data);
+	const original = structuredClone(content);
+	content.playlist[0].hidden = true;
+	content.playlist[3].hidden = true;
+	content.playlist.at(-1).hidden = true;
+	content.playlist[0].note = {text:"Hidden note"};
+	content.playlist[1].note = {text:"Visible note"};
+	const snapshot = structuredClone(content);
+	const visible = musicLibrary(content.playlist);
+	const queue = config("src/config/musicConfig.ts",content).musicPlayerConfig.local.playlist;
+	assert.equal(queue.length, original.playlist.length - 3);
+	assert.deepEqual(Array.from(queue,track=>track.url),visible.map(track=>track.src));
+	for (const [index,track] of visible.entries()) {
+		assert.equal(track.index,index);
+		assert.equal(queue[index].cover,track.cover);
+		assert.equal(queue[index].lrc,track.lrc);
+		assert.deepEqual(queue[index].translations,track.translations);
+	}
+	const ids=content.playlist.map(track=>track.id);
+	assert.deepEqual(selectTracks(visible,ids).map(track=>track.id),visible.map(track=>track.id));
+	assert.deepEqual(listeningNotes(visible).filter(note=>[ids[0],ids[1]].includes(note.id)).map(note=>note.id),[ids[1]]);
+	assert.deepEqual(content,snapshot,'filtering must never delete or mutate stored music data');
+	for (const track of content.playlist) delete track.hidden;
+	assert.deepEqual(musicLibrary(content.playlist).map(track=>track.id),original.playlist.map(track=>track.id));
+	const hiddenField=azureFields.find(field=>field.name==='playlist').fields.find(field=>field.name==='hidden');
+	assert.equal(hiddenField.widget,'boolean');
+	assert.equal(hiddenField.default,false);
+	assert.equal(hiddenField.required,false);
+});
+
+test("all songs may be hidden safely while legacy songs remain visible by default", () => {
+	const content = structuredClone(data);
+	content.playlist.forEach(track=>track.hidden=true);
+	assert.equal(musicLibrary(content.playlist).length,0);
+	assert.equal(config("src/config/musicConfig.ts",content).musicPlayerConfig.local.playlist.length,0);
+	assert.equal(listeningNotes(musicLibrary(content.playlist)).length,0);
+	content.playlist[2].hidden=false;
+	assert.deepEqual(musicLibrary(content.playlist).map(track=>track.index),[0]);
+	delete content.playlist[2].hidden;
+	assert.equal(musicLibrary(content.playlist)[0].id,content.playlist[2].id);
+	assert.doesNotMatch(read('src/components/features/MusicPlayer.astro'),/azureContent\.playlist\[0\]/);
 });
 
 test("YOASOBI たぶん keeps audio, cover, karaoke timing and translation lines paired", () => {

@@ -1,4 +1,5 @@
 import azureContent from "../data/azure-content.json";
+import { musicLibrary } from "../lib/music-library.mjs";
 import type { MusicPlayerConfig } from "../types/musicConfig";
 
 export const musicPlayerConfig: MusicPlayerConfig = {
@@ -16,7 +17,7 @@ export const musicPlayerConfig: MusicPlayerConfig = {
 		fallbackApis: [],
 	},
 	local: {
-		playlist: (azureContent.playlist || []).filter((track) => track.src?.trim()).map((track) => ({
+		playlist: musicLibrary(azureContent.playlist).map((track) => ({
 			name: track.name,
 			artist: track.artist,
 			url: track.src,

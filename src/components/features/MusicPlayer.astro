@@ -16,6 +16,7 @@ interface Props {
 const { class: className, style, id, variant = "default" } = Astro.props;
 
 const config = musicPlayerConfig;
+const initialCover = config.local?.playlist?.[0]?.cover;
 const showSleeve = variant === "room" && roomConfig.appearance?.showSleeve !== false;
 
 const viewConfigStr = JSON.stringify({
@@ -49,11 +50,11 @@ const widgetId =
 <div class="music-top flex items-center gap-2 mb-2 px-1">
     <!-- Circular Cover -->
     <div class="music-record relative shrink-0 w-14 h-14 group">
-            {showSleeve && <img class="music-jacket" src={azureContent.playlist[0]?.cover} alt="" aria-hidden="true" />}
+            {showSleeve && <img class="music-jacket" src={initialCover} alt="" aria-hidden="true" />}
             <div class="w-full h-full rounded-full overflow-hidden shadow-lg border-2 border-white dark:border-neutral-700 relative z-10 bg-(--primary)/10 flex items-center justify-center">
             {(variant === "room" || variant === "foyer") && <img class="music-record-texture" src={roomConfig.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" style={cropStyle(roomConfig.player.recordImage)} />}
             <Icon is:inline name="material-symbols:music-note-rounded" class="text-2xl text-(--primary) opacity-40 absolute" aria-hidden="true" />
-            <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src={azureContent.playlist[0]?.cover} alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
+            <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src={initialCover} alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
             </div>
             {variant === "room" && roomConfig.player.showTonearm && <img class="music-tonearm" src={roomConfig.player.tonearmImage?.src || "/assets/images/music-room/tonearm.webp"} alt="" aria-hidden="true" style={cropStyle(roomConfig.player.tonearmImage)} />}
     </div>
@@ -184,7 +185,7 @@ const widgetId =
 <template id={`playlist-item-template-${widgetId}`}>
 <div class="playlist-item flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-white/5 transition-colors group">
     <div class="w-8 h-8 rounded-md overflow-hidden shrink-0 relative bg-neutral-200 dark:bg-neutral-700">
-        <img src={azureContent.playlist[0]?.cover} class="item-cover w-full h-full object-cover" loading="lazy" alt="" />
+        <img src={initialCover} class="item-cover w-full h-full object-cover" loading="lazy" alt="" />
         <!-- Active Indicator overlay with animated equalizer / play icon -->
         <div class="item-active-overlay absolute inset-0 bg-(--primary)/20 hidden items-center justify-center">
             <div class="eq-bars flex items-end gap-[2px] h-3.5">

@@ -9,7 +9,7 @@ export function trackId(track) {
 }
 
 export function musicLibrary(playlist = []) {
-  return (playlist || []).filter((track) => String(track.src || '').trim()).map((track, index) => ({
+  return (playlist || []).filter((track) => track.hidden !== true && String(track.src || '').trim()).map((track, index) => ({
     ...track, id: trackId(track), index,
   }));
 }

@@ -38,7 +38,7 @@ export function setupMusicPicker() {
           h('input',{type:'search',value:this.state.query,placeholder:'查找歌名或歌手','aria-label':'查找歌曲',onChange:event=>this.setState({query:event.target.value}),style:{flex:1,minWidth:0,padding:10,border:'1px solid #b5c4cf',borderRadius:4}}),
           h('button',{type:'button',onClick:()=>this.refresh(),style:{padding:8,border:'1px solid #b5c4cf',borderRadius:4}},'刷新歌曲')),
         this.state.error?h('p',{role:'status',style:{color:'#aa442f'}},this.state.error):null,
-        ...selected.filter(id=>!this.state.tracks.some(track=>track.id===id)).map(id=>h('div',{key:id,style:{padding:8}},'已选但暂未找到：'+id,h('button',{type:'button',onClick:()=>change(id)},' 移除'))),
+        ...selected.filter(id=>!this.state.tracks.some(track=>track.id===id)).map(id=>h('div',{key:id,style:{padding:8}},'已选歌曲已隐藏或暂未找到：'+id+'（关联保留，恢复显示后自动生效）',h('button',{type:'button',onClick:()=>change(id)},' 移除'))),
         h('div',{style:{maxHeight:330,overflowY:'auto'}},...filtered.map(track=>h('label',{key:track.id,style:{display:'flex',alignItems:'center',gap:12,padding:8,borderBottom:'1px solid #e5ebef',cursor:'pointer'}},
           h('input',{type:multiple?'checkbox':'radio',name:this.props.forID,checked:selected.includes(track.id),onClick:()=>{if(!multiple&&selected.includes(track.id))change(track.id);},onChange:()=>change(track.id)}),
           track.cover?h('img',{src:track.cover,alt:'',style:{width:40,height:40,objectFit:'cover'}}):null,

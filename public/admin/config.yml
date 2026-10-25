@@ -634,12 +634,18 @@ collections:
             widget: list
             required: false
             default: []
-            hint: 一条记录对应一首歌。拖动可排序；删除整条记录才会移出歌单。清空音乐文件只停用该条目，云端原文件保留。保存其他文案不会删除或清理音乐。
+            hint: 一条记录对应一首歌。拖动可排序；临时下架请打开“隐藏这首歌”，恢复时关闭即可，原位置与文件保留。保存并部署完成后前台生效；已打开的页面需刷新。保存其他文案不会删除或清理音乐。
             summary: "{{fields.name}} · {{fields.artist}}"
             fields:
               - { label: 歌名, name: name, widget: string }
               - { label: 歌曲固定标识, name: id, widget: hidden, required: false }
               - { label: 歌手, name: artist, widget: string }
+              - label: 隐藏这首歌
+                name: hidden
+                widget: boolean
+                default: false
+                required: false
+                hint: 打开后不在前台展示，也不会被顺序播放或随机播放选中；精选、情境分类和听歌手记同步隐藏。音频、封面、歌词、翻译、手记及分类关联全部保留。关闭即可按原位置恢复；未设置的旧歌曲默认显示。
               - label: 听歌手记
                 name: note
                 widget: object

@@ -87,7 +87,9 @@ test('all configured selections and production images resolve; no authored media
  const ids=library.map(t=>t.id);
  assert.equal(ids.length,new Set(ids).size);
  const selected=[...room.foyer.tracks,...room.collections.flatMap(c=>c.tracks),...room.notes.map(n=>n.track)];
- for(const id of selected)assert.ok(ids.includes(id),id);
+ // Hidden songs may keep their selection references so showing them restores membership.
+ const storedIds=azure.playlist.map(track=>track.id);
+ for(const id of selected)assert.ok(storedIds.includes(id),id);
  for(const crop of [room.headerImage,room.player.recordImage,room.player.tonearmImage,...room.collections.map(c=>c.cover)])
   assert.ok(existsSync(new URL('public'+crop.src,root)),crop.src);
  const source=read('src/scripts/music-room.js');

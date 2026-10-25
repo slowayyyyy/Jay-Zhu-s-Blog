@@ -63,7 +63,7 @@ const roomStyle = `--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.ac
         </button>)}</div><p class="music-empty" data-library-empty hidden>{room.emptyMessage}</p>
         <nav class="library-pagination" aria-label="唱片架分页" data-library-pagination hidden={library.length <= appearance.libraryPageSize}>
           <button data-library-previous aria-controls="room-library-songs" disabled><Icon is:inline name="material-symbols:chevron-left-rounded" aria-hidden="true"/>{labels.previousPage}</button>
-          <span class="library-page-status" data-library-page-status role="status" aria-live="polite">1 / {Math.ceil(library.length / appearance.libraryPageSize)} 页 · {library.length} 首</span>
+          <span class="library-page-status" data-library-page-status role="status" aria-live="polite">1 / {Math.max(1,Math.ceil(library.length / appearance.libraryPageSize))} 页 · {library.length} 首</span>
           <select data-library-page-select aria-label="跳转到页" aria-controls="room-library-songs">{Array.from({length:Math.max(1,Math.ceil(library.length / appearance.libraryPageSize))},(_,index)=><option value={index}>第 {index + 1} 页</option>)}</select>
           <button data-library-next aria-controls="room-library-songs">{labels.nextPage}<Icon is:inline name="material-symbols:chevron-right-rounded" aria-hidden="true"/></button>
         </nav>
