@@ -121,7 +121,11 @@ test('CMS exposes every room setting and retains the incumbent audio widget',()=
  assert.equal(playlist.fields.find(f=>f.name==='note').widget,'object');
  assert.equal(playlist.fields.find(f=>f.name==='note').fields.find(f=>f.name==='text').widget,'text');
  assert.equal(fields.find(f=>f.name==='notes').widget,'hidden');
- assert.equal(fields.find(f=>f.name==='headerImage').widget,'image-crop');
+ assert.equal(fields.find(f=>f.name==='headerImage').widget,'hidden');
+ const appearance=fields.find(f=>f.name==='appearance').fields;
+ assert.equal(appearance.find(f=>f.name==='backgroundImage').widget,'image-crop');
+ assert.equal(appearance.find(f=>f.name==='darkBackgroundImage').widget,'image-crop');
+ assert.equal(appearance.find(f=>f.name==='recordSize').widget,'select');
 });
 
 test('song picker preserves unresolved ids until explicit removal, filters names, and supports single selection',()=>{

@@ -16,6 +16,7 @@ interface Props {
 const { class: className, style, id, variant = "default" } = Astro.props;
 
 const config = musicPlayerConfig;
+const showSleeve = variant === "room" && roomConfig.appearance?.showSleeve !== false;
 
 const viewConfigStr = JSON.stringify({
 	openLyrics: variant === "room" && roomConfig.player.openLyrics,
@@ -48,10 +49,11 @@ const widgetId =
 <div class="music-top flex items-center gap-2 mb-2 px-1">
     <!-- Circular Cover -->
     <div class="music-record relative shrink-0 w-14 h-14 group">
+            {showSleeve && <img class="music-jacket" src={azureContent.playlist[0]?.cover} alt="" aria-hidden="true" />}
             <div class="w-full h-full rounded-full overflow-hidden shadow-lg border-2 border-white dark:border-neutral-700 relative z-10 bg-(--primary)/10 flex items-center justify-center">
             {(variant === "room" || variant === "foyer") && <img class="music-record-texture" src={roomConfig.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" style={cropStyle(roomConfig.player.recordImage)} />}
             <Icon is:inline name="material-symbols:music-note-rounded" class="text-2xl text-(--primary) opacity-40 absolute" aria-hidden="true" />
-            <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src="" alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
+            <img class="music-cover w-full h-full object-cover animate-spin-slow relative z-10 opacity-0 transition-opacity duration-300" src={azureContent.playlist[0]?.cover} alt={i18n(I18nKey.musicCover)} style="animation-play-state: paused;" />
             </div>
             {variant === "room" && roomConfig.player.showTonearm && <img class="music-tonearm" src={roomConfig.player.tonearmImage?.src || "/assets/images/music-room/tonearm.webp"} alt="" aria-hidden="true" style={cropStyle(roomConfig.player.tonearmImage)} />}
     </div>
@@ -85,14 +87,14 @@ const widgetId =
 
         <!-- Time Display & Volume -->
         <div class="flex items-center gap-3 text-neutral-400 h-5">
-            <div class="text-[10px] font-mono flex items-center gap-1 shrink-0 h-full" aria-live="polite">
+            <div class="music-times text-[10px] font-mono flex items-center gap-1 shrink-0 h-full" aria-live="polite">
                 <span class="current-time">0:00</span>
                 <span class="opacity-50" aria-hidden="true">/</span>
                 <span class="total-time">0:00</span>
             </div>
 
             <!-- Volume (Always visible) -->
-            <div class="flex items-center gap-1 bg-transparent h-full ml-auto">
+            <div class="music-volume flex items-center gap-1 bg-transparent h-full ml-auto">
                 <button class="btn-mute hover:text-(--primary) transition-colors p-0.5 rounded-md flex items-center" title={i18n(I18nKey.musicVolume)} aria-label={i18n(I18nKey.musicVolume)}>
                     <Icon is:inline name="material-symbols:volume-up-rounded" class=" icon-vol-high text-lg" aria-hidden="true" />
                     <Icon is:inline name="material-symbols:volume-off-rounded" class="icon-vol-mute text-lg hidden" aria-hidden="true" />
@@ -148,7 +150,8 @@ const widgetId =
 </div>
 
 <!-- Lyrics Drawer -->
-<div id={`${widgetId}-lyrics`} inert aria-hidden="true" class="lrc-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
+<slot name="room-tabs" />
+<div id={`${widgetId}-lyrics`} role={variant === 'room' ? 'tabpanel' : undefined} aria-labelledby={variant === 'room' ? 'room-lyrics-tab' : undefined} inert aria-hidden="true" class="lrc-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
     <div class="overflow-hidden min-h-0">
         <div class="mt-2 pt-2 border-t border-neutral-100 dark:border-white/5 mx-1">
             <div class="lrc-container h-48 overflow-y-auto custom-scrollbar flex flex-col items-center gap-2 p-4 py-24 text-center relative scroll-smooth" role="listbox" aria-label={i18n(I18nKey.musicLyrics)}>
@@ -157,6 +160,7 @@ const widgetId =
         </div>
     </div>
 </div>
+<slot name="room-note" />
 
 <!-- Playlist Drawer (Accordion) -->
 <div id={`${widgetId}-playlist`} inert aria-hidden="true" class="playlist-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">
@@ -180,7 +184,7 @@ const widgetId =
 <template id={`playlist-item-template-${widgetId}`}>
 <div class="playlist-item flex items-center gap-3 p-2 rounded-lg cursor-pointer hover:bg-neutral-50 dark:hover:bg-white/5 transition-colors group">
     <div class="w-8 h-8 rounded-md overflow-hidden shrink-0 relative bg-neutral-200 dark:bg-neutral-700">
-        <img src="" class="item-cover w-full h-full object-cover" loading="lazy" alt="" />
+        <img src={azureContent.playlist[0]?.cover} class="item-cover w-full h-full object-cover" loading="lazy" alt="" />
         <!-- Active Indicator overlay with animated equalizer / play icon -->
         <div class="item-active-overlay absolute inset-0 bg-(--primary)/20 hidden items-center justify-center">
             <div class="eq-bars flex items-end gap-[2px] h-3.5">
@@ -364,6 +368,12 @@ const widgetId =
         ui.title.title = track.name;
         ui.artist.innerText = track.artist;
         ui.artist.title = track.artist;
+        var jacket = widget.querySelector('.music-jacket');
+        if (jacket) {
+            jacket.hidden = !track.pic;
+            if (track.pic) jacket.src = track.pic;
+            else jacket.removeAttribute('src');
+        }
 
         if (track.pic) {
             ui.cover.classList.add('opacity-0');

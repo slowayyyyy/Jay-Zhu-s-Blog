@@ -102,8 +102,50 @@
 			"example": true
 		}
 	],
-	"libraryTitle": "全部歌曲",
+	"libraryTitle": "唱片架",
 	"searchPlaceholder": "寻找歌名或歌手",
 	"emptyMessage": "这里还没有匹配的歌曲，换一个关键词试试。",
-	"defaultView": "list"
+	"defaultView": "covers",
+  "appearance": {
+    "showBackground": true,
+    "backgroundImage": {
+      "src": "/assets/images/music-room/windowlight-scene.webp",
+      "positionX": 50,
+      "positionY": 50,
+      "zoom": 1
+    },
+    "darkBackgroundImage": {
+      "src": "",
+      "positionX": 50,
+      "positionY": 50,
+      "zoom": 1
+    },
+    "backgroundOpacity": 90,
+    "darkBackgroundOpacity": 18,
+    "recordSize": 440,
+    "showSleeve": true,
+    "lyricFontSize": 24,
+    "translationFontSize": 16,
+    "lyricHeight": 380,
+    "showFocus": true,
+    "sleeveLibrary": true,
+    "miniMode": "auto",
+    "mobileBackgroundImage": {
+      "src": "/assets/images/music-room/windowlight-scene.webp",
+      "positionX": 0,
+      "positionY": 50,
+      "zoom": 1
+    }
+  },
+  "labels": {
+    "lyrics": "歌词",
+    "notes": "手记",
+    "focus": "专注聆听",
+    "exitFocus": "退出专注",
+    "allTracks": "全部",
+    "list": "列表",
+    "covers": "封面",
+    "openLyrics": "展开歌词",
+    "emptyNote": "这首歌还没有手记。"
+  }
 }

@@ -4,6 +4,15 @@
 	"kicker": "CHANGELOG / AZURE CORRIDOR",
 	"entries": [
 		{
+			"date": "2026-10-25",
+			"title": "窗光唱片室",
+			"description": "让黑胶、歌词与花影在同一个空间相遇。",
+			"tags": ["乐境", "后台管理"],
+			"icon": "material-symbols:music-note-rounded",
+			"accent": "#167eb3",
+			"changes": ["重新整理黑胶、歌词和唱片架，手机可横向翻阅唱片。", "加入专注聆听，主控件滚出屏幕后才显示迷你播放器。", "后台可调整背景取景、唱片大小、歌词排版与展示文案。"]
+		},
+		{
 			"date": "2026-10-13",
 			"title": "乐境与聆听室",
 			"description": "乐境保留轻量入口，新增可以慢慢听歌的聆听室。",

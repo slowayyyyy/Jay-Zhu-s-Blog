@@ -1,6 +1,17 @@
 # 苍蓝回廊维护交接
 
-最后更新：2026-10-22
+最后更新：2026-10-25
+
+## 2026-10-25 窗光唱片室
+
+- 按用户本轮批准概念图替换 `/music/room/` 的空间设计；保留 `/music/` 门厅、唱片共享过渡和唯一 MusicManager。14 首歌曲、顺序、真实封面、歌词、翻译与手记数据不改，文章和其他媒体不动。
+- 窗光与蓝花作为连贯背景，黑胶后的真实封套随歌曲更新；歌词/当前曲手记共用区域。桌面展开播放控制带和时间进度；手机唱片架横向翻阅，也可切列表、分类和搜索。
+- 后台“乐境门厅与聆听室”新增“窗光主画面与阅读排版”“聆听室按钮与提示文字”：桌面/手机独立取景、可选暗色图、背景浓度、唱片与封套、字号/歌词高度、专注开关、唱片架样式、迷你播放器出现时机。真实图片与取景直接写入同一 JSON，详见 `docs/BACKEND_CONTENT_MAP.md`。
+- 新图 `/assets/images/music-room/windowlight-scene.webp`（1600×900，35.1 KiB）登记为“聆听室 · 窗光花影”，45 项原素材索引保留；原生成图与完整提示词见 `docs/music-room/WINDOWLIGHT_ASSET.md`。旧顶部图、分类封面、手记归档保留为隐藏数据，不删除、不回填。
+- 默认迷你控件仅在主控件滚过视口上缘后显示；隐藏时 inert，专注时不显示。专注隐藏实际导航、完整页脚与返回顶部，进入归位、退出恢复位置；观察器在路由重建时清理，不叠加播放监听或更改队列。
+- 恢复分支 `codex/restore-before-windowlight-room-20261025`、标签 `pre-windowlight-room-20261025` 指向 `e06a74df`；实施分支 `codex/windowlight-listening-room-20261025`。工作树 `/Users/jayzhu/.codex/worktrees/add-tanya-song/个人博客`，不要混入文稿主检出的既有未提交工作或工作树内既有 `.impeccable/`。
+- 验收图与构建记录：`/Users/jayzhu/.codex/project-storage/canglan-blog/previews/windowlight-room-20261025/`。117 项 Node 回归已通过，包含旧配置兼容、CMS 范围、素材库、页签焦点、自动迷你控件、专注与清理；生产构建已通过。最终发布以 main 的 Cloudflare 成功检查与正式音频实测为准，不改 OAuth/R2/Cloudflare 配置。
+- 独立终审 `disposition: ship`，三项修正均 `resolved`：桌面三组双语歌词与控制带、手机横向唱片架、专注实际隐藏与视口归位。审阅代理 `01a1714e-9c77-7ed0-9ffb-40e00f6ada47`；最终剩余 `clear`。
 
 ## 2026-10-22 新增陶喆《流沙》《普通朋友》
 

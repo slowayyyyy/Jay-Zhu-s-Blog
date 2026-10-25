@@ -5,6 +5,7 @@ let roomNavigation = null;
 let transfer = null;
 let boundSwup = null;
 let layoutActive = false;
+let cleanupRoomView = () => {};
 const page = () => document.querySelector('[data-music-page]');
 const transitionOptions = () => {
   try { return JSON.parse(page()?.dataset.musicTransition || '{}'); } catch { return {}; }
@@ -129,6 +130,7 @@ function syncPlaying() {
   const state = window.__fireflyMusic?.getState();
   if (!state) return;
   syncCurrentNote(page(), state.currentIndex);
+  syncRoomPanel(page());
   page()?.querySelectorAll('[data-song-index]').forEach(button => {
     const active = Number(button.dataset.songIndex) === state.currentIndex;
     button.setAttribute('aria-current',String(active));
@@ -137,10 +139,86 @@ function syncPlaying() {
 }
 
 function initPage() {
+  cleanupRoomView();
   syncRoomLayout();
   filter = null;
   syncPlaying();
   applyFilter();
+  setupRoomView();
+}
+
+function syncRoomPanel(root) {
+  if (root?.dataset.musicPage !== 'room') return;
+  const panel = root.dataset.roomPanel || 'lyrics';
+  const lyrics = root.querySelector('#music-room-player .lrc-drawer');
+  const open = lyrics?.getAttribute('aria-hidden') === 'false';
+  if (lyrics) lyrics.inert = panel !== 'lyrics' || !open;
+  root.querySelectorAll('[data-room-tab]').forEach(button => {
+    const selected = button.dataset.roomTab === panel;
+    button.setAttribute('aria-selected', String(selected));
+    button.tabIndex = selected ? 0 : -1;
+  });
+  const notes = root.querySelector('[data-room-note-panel],#room-note-panel');
+  if (notes) { notes.hidden = panel !== 'note'; notes.inert = panel !== 'note'; }
+  const reopen = root.querySelector('[data-room-reopen]');
+  if (reopen) reopen.hidden = panel !== 'lyrics' || open;
+  const missing = root.querySelector('[data-note-missing]');
+  if (missing) missing.hidden = root.querySelector('[data-current-note]')?.hidden === false;
+}
+
+function setupRoomView() {
+  const root = page();
+  if (root?.dataset.musicPage !== 'room') return;
+  // Reuse the live controls, including their existing engine bindings.
+  const widget = root.querySelector('#music-room-player');
+  const times = widget?.querySelector('.music-times');
+  const progress = widget?.querySelector('.music-progress');
+  if (times && progress && times.parentElement !== progress) progress.prepend(times);
+  const volume = widget?.querySelector('.music-volume');
+  const controlRow = widget?.querySelector('.music-controls');
+  if (volume && controlRow && volume.parentElement !== controlRow) controlRow.insertBefore(volume, controlRow.querySelector('.btn-drawer-toggle'));
+  const translation = widget?.querySelector('.btn-translation-toggle');
+  if (translation && translation.parentElement !== widget) widget.append(translation);
+  const controls = root.querySelector('#music-room-player .music-controls');
+  const mini = root.querySelector('[data-room-mini]');
+  const navbar = document.getElementById('navbar-wrapper');
+  const previousInert = navbar?.inert;
+  let options = {};
+  try { options = JSON.parse(root.dataset.roomOptions || '{}'); } catch { /* defaults */ }
+  const syncMini = () => {
+    if (!mini || !controls) return;
+    const show = root.dataset.focus !== 'true' && (options.miniMode === 'always' || controls.getBoundingClientRect().bottom <= 88);
+    if (!show && mini.contains(document.activeElement)) controls.querySelector('.btn-play')?.focus({preventScroll:true});
+    mini.hidden = !show;
+    mini.inert = !show;
+    mini.setAttribute('aria-hidden', String(!show));
+  };
+  let beforeFocusScroll = 0;
+  const onFocus = () => {
+    const active = root.dataset.focus === 'true';
+    if (active) beforeFocusScroll = window.scrollY;
+    if (navbar) navbar.inert = active;
+    syncMini();
+    requestAnimationFrame(() => {
+      if (root.isConnected) window.scrollTo({top:active ? 0 : beforeFocusScroll,behavior:'instant'});
+    });
+  };
+  const observer = new IntersectionObserver(syncMini, {rootMargin:'-88px 0px 0px',threshold:0});
+  if (controls) observer.observe(controls);
+  const lyrics = root.querySelector('#music-room-player .lrc-drawer');
+  const panelObserver = new MutationObserver(() => syncRoomPanel(root));
+  if (lyrics) panelObserver.observe(lyrics,{attributes:true,attributeFilter:['aria-hidden']});
+  root.addEventListener('room:focus', onFocus);
+  window.addEventListener('resize',syncMini);
+  syncRoomPanel(root);
+  syncMini();
+  cleanupRoomView = () => {
+    observer.disconnect(); panelObserver.disconnect();
+    root.removeEventListener('room:focus',onFocus);
+    window.removeEventListener('resize',syncMini);
+    if (navbar) navbar.inert = previousInert || false;
+    cleanupRoomView = () => {};
+  };
 }
 
 // Incumbent wallpaper handlers use inline !important styles. Keep the room
@@ -172,6 +250,24 @@ document.addEventListener('click',async event => {
   if (link && !event.ctrlKey && !event.metaKey && !event.shiftKey && !event.altKey && event.button === 0) captureRecord(link);
   const root = page();
   if (!root || !target || !root.contains(target)) return;
+  const tab = target.closest('[data-room-tab]');
+  if (tab) {
+    root.dataset.roomPanel = tab.dataset.roomTab;
+    if (tab.dataset.roomTab === 'lyrics' && root.querySelector('#music-room-player .btn-lrc-toggle')?.getAttribute('aria-expanded') === 'false')
+      root.querySelector('#music-room-player .btn-lrc-toggle').click();
+    syncRoomPanel(root);
+  }
+  if (target.closest('[data-room-reopen]')) root.querySelector('[data-room-tab="lyrics"]')?.click();
+  const focus = target.closest('[data-room-focus]');
+  if (focus) {
+    const active = root.dataset.focus !== 'true';
+    root.dataset.focus = String(active);
+    focus.setAttribute('aria-pressed',String(active));
+    let options = {};
+    try { options = JSON.parse(root.dataset.roomOptions || '{}'); } catch { /* defaults */ }
+    focus.querySelector('span').textContent = active ? options.exitFocus || '退出专注' : options.focus || '专注聆听';
+    root.dispatchEvent(new Event('room:focus'));
+  }
   const song = target.closest('button[data-song-index]');
   if (song) {
     const manager = window.__fireflyMusic;
@@ -187,14 +283,15 @@ document.addEventListener('click',async event => {
     filter = JSON.parse(collection.dataset.members || '[]');
     root.querySelectorAll('[data-collection]').forEach(button=>button.setAttribute('aria-pressed',String(button===collection)));
     root.querySelector('[data-filter-label]').textContent = collection.querySelector('strong').textContent;
-    root.querySelector('.collection-filter').hidden = false;
+    root.querySelector('.collection-filter').hidden = filter === null;
     applyFilter();
-    root.querySelector('#library').scrollIntoView({behavior:reducedMotion()?'instant':'smooth',block:'start'});
+    // Shelf filters do not jump the page or mutate the playback queue.
+    if (!collection.closest('.room-collection-tabs')) root.querySelector('#library').scrollIntoView({behavior:reducedMotion()?'instant':'smooth',block:'start'});
   }
   if (target.closest('[data-clear-filter]')) {
     filter = null;
     root.querySelector('.collection-filter').hidden = true;
-    root.querySelectorAll('[data-collection]').forEach(button=>button.setAttribute('aria-pressed','false'));
+    root.querySelectorAll('[data-collection]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.collection==='all')));
     applyFilter();
   }
   const view = target.closest('[data-library-view-button]');
@@ -206,6 +303,20 @@ document.addEventListener('click',async event => {
 document.addEventListener('input',event => {
   if (event.target.matches?.('[data-song-search]')) applyFilter();
   if (event.target.matches?.('[data-note-search]')) filterNoteArchive(page());
+});
+document.addEventListener('keydown',event => {
+  const root = page();
+  if (!root) return;
+  if (event.key === 'Escape' && root.dataset.focus === 'true') {
+    root.querySelector('[data-room-focus]')?.click();
+    root.querySelector('[data-room-focus]')?.focus({preventScroll:true});
+  }
+  const tab = event.target?.closest?.('[data-room-tab]');
+  if (!tab || !root.contains(tab) || !['ArrowLeft','ArrowRight','Home','End'].includes(event.key)) return;
+  event.preventDefault();
+  const tabs = [...root.querySelectorAll('[data-room-tab]')];
+  const index = event.key === 'Home' ? 0 : event.key === 'End' ? tabs.length-1 : (tabs.indexOf(tab) + (event.key === 'ArrowRight' ? 1 : -1) + tabs.length) % tabs.length;
+  tabs[index].click(); tabs[index].focus();
 });
 ['fm:init','fm:track','fm:play-state'].forEach(name=>window.addEventListener(name,syncPlaying));
 function bindSwup() {
