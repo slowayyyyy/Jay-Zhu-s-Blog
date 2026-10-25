@@ -68,11 +68,64 @@
   ],
   "playlist": [
     {
-      "name": "旅人の唄",
-      "artist": "大原ゆい子",
-      "src": "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3",
-      "cover": "/assets/images/music-covers/01-tabibito-no-uta.png",
-      "lrc": "/lyrics/tabibito-no-uta.json",
+      "name": "time machine (feat. aren park)",
+      "artist": "mj apanay、aren park",
+      "src": "/media/audio/20261025-mj-apanay-time-machine.mp3",
+      "cover": "/assets/images/music-covers/15-mj-apanay-time-machine.svg",
+      "lrc": "/lyrics/mj-apanay-time-machine.json",
+      "id": "mj-apanay-time-machine",
+      "translations": [
+        "凝望着漫天繁星 注视着明月",
+        "希望有朝一日 它们会指引我来到你身边",
+        "每天晚上 静静等待 因为若星辰坠落天际",
+        "我会希望回到我那段我心爱的时光",
+        "那为什么天空里的星星闪烁着璀璨的光芒",
+        "倘若大多数人在夜晚时分酣眠",
+        "为什么我们一生之中只拥有一次机会",
+        "我希望我可以回到过去",
+        "Hmmm hmm hmmm",
+        "照片让我回想起那些早已忘却的事情",
+        "但也会让我回想起我失去的一切",
+        "无法挽回一切 也不会坠落天际",
+        "所以我试图忘记所有我热爱的时光",
+        "为什么我们会记得那些美丽的谎言",
+        "最终我们一生中的大部分时间都沉浸在懊悔之中",
+        "为什么我们只有一次尝试的机会",
+        "我希望我可以回到过去",
+        "每当我酣然入睡",
+        "我总是在我的梦中见到你",
+        "就像坐着时光机回到过去一样",
+        "我知道在我醒来之后 我们共处的时光将会画上句点",
+        "所以不要让我酣然入睡",
+        "我不想在我的梦中与你相见",
+        "我知道我们永远造不出时光机",
+        "现在该我勇敢尝试了 再次清醒过来",
+        "我酣然入睡",
+        "但说实话",
+        "我渴望在我的梦中见到你",
+        "我竭尽全力 再次清醒过来"
+      ]
+    },
+    {
+      "name": "流沙",
+      "artist": "陶喆",
+      "src": "/media/audio/20261022-david-tao-liusha.mp3",
+      "cover": "/assets/images/music-covers/13-david-tao-liusha.svg",
+      "lrc": "/lyrics/david-tao-liusha.json",
+      "id": "david-tao-liusha",
+      "note": {
+        "text": ""
+      }
+    },
+    {
+      "name": "普通朋友",
+      "artist": "陶喆",
+      "src": "/media/audio/20261022-david-tao-putong-pengyou.mp3",
+      "cover": "/assets/images/music-covers/14-david-tao-putong-pengyou.svg",
+      "lrc": "/lyrics/david-tao-putong-pengyou.json",
+      "id": "david-tao-putong-pengyou"
+    },
+    {
       "translations": [
         "止住恐惧 翻越崇山峻岭",
         "喷涌而出的水流",
@@ -96,12 +149,18 @@
         "心怀仁慈思慕",
         "爱意触手可得"
       ],
-      "id": "tabibito-no-uta",
+      "src": "/media/audio/20260901150506-bfc6980d-大原ゆい子-旅人の唄-旅人之歌-kgg-dec.mp3",
+      "artist": "大原ゆい子",
+      "hidden": true,
+      "name": "旅人の唄",
       "note": {
         "title": "在一首歌里停留",
         "text": "心怀仁慈思慕，爱意触手可得。",
         "example": true
-      }
+      },
+      "cover": "/assets/images/music-covers/01-tabibito-no-uta.png",
+      "id": "tabibito-no-uta",
+      "lrc": "/lyrics/tabibito-no-uta.json"
     },
     {
       "name": "芽吹の唄",
@@ -132,7 +191,8 @@
         "愿将其留存就此奔赴未来",
         "奔赴未来"
       ],
-      "id": "mebuki-no-uta"
+      "id": "mebuki-no-uta",
+      "hidden": true
     },
     {
       "name": "spiral",
@@ -239,7 +299,8 @@
         "希望你能温柔地抚过它",
         "希望你能爱怜地抚过它"
       ],
-      "id": "inori-owareba"
+      "id": "inori-owareba",
+      "hidden": true
     },
     {
       "name": "かげくらべの唄",
@@ -276,7 +337,8 @@
         "一路就此镌刻并留下那道轨迹",
         "我将朝着尽头迈步而行"
       ],
-      "id": "kagekurabe-no-uta"
+      "id": "kagekurabe-no-uta",
+      "hidden": true
     },
     {
       "name": "ムスビメ (联结)",
@@ -405,7 +467,8 @@
         "融化积压于心的冰雪",
         "脑海中浮现你的面容"
       ],
-      "id": "ketsui-no-uta"
+      "id": "ketsui-no-uta",
+      "hidden": true
     },
     {
       "name": "風と行く道 (随风而行的路)",
@@ -448,7 +511,8 @@
         "在我们身侧",
         "都有着一片不曾改变的光景"
       ],
-      "id": "kaze-to-iku-michi"
+      "id": "kaze-to-iku-michi",
+      "hidden": true
     },
     {
       "name": "たぶん (大概)",
@@ -605,64 +669,6 @@
         "别让它从你身边溜走"
       ],
       "id": "avril-innocence"
-    },
-    {
-      "name": "流沙",
-      "artist": "陶喆",
-      "src": "/media/audio/20261022-david-tao-liusha.mp3",
-      "cover": "/assets/images/music-covers/13-david-tao-liusha.svg",
-      "lrc": "/lyrics/david-tao-liusha.json",
-      "id": "david-tao-liusha",
-      "note": {
-        "text": ""
-      }
-    },
-    {
-      "name": "普通朋友",
-      "artist": "陶喆",
-      "src": "/media/audio/20261022-david-tao-putong-pengyou.mp3",
-      "cover": "/assets/images/music-covers/14-david-tao-putong-pengyou.svg",
-      "lrc": "/lyrics/david-tao-putong-pengyou.json",
-      "id": "david-tao-putong-pengyou"
-    },
-    {
-      "name": "time machine (feat. aren park)",
-      "artist": "mj apanay、aren park",
-      "src": "/media/audio/20261025-mj-apanay-time-machine.mp3",
-      "cover": "/assets/images/music-covers/15-mj-apanay-time-machine.svg",
-      "lrc": "/lyrics/mj-apanay-time-machine.json",
-      "id": "mj-apanay-time-machine",
-      "translations": [
-        "凝望着漫天繁星 注视着明月",
-        "希望有朝一日 它们会指引我来到你身边",
-        "每天晚上 静静等待 因为若星辰坠落天际",
-        "我会希望回到我那段我心爱的时光",
-        "那为什么天空里的星星闪烁着璀璨的光芒",
-        "倘若大多数人在夜晚时分酣眠",
-        "为什么我们一生之中只拥有一次机会",
-        "我希望我可以回到过去",
-        "Hmmm hmm hmmm",
-        "照片让我回想起那些早已忘却的事情",
-        "但也会让我回想起我失去的一切",
-        "无法挽回一切 也不会坠落天际",
-        "所以我试图忘记所有我热爱的时光",
-        "为什么我们会记得那些美丽的谎言",
-        "最终我们一生中的大部分时间都沉浸在懊悔之中",
-        "为什么我们只有一次尝试的机会",
-        "我希望我可以回到过去",
-        "每当我酣然入睡",
-        "我总是在我的梦中见到你",
-        "就像坐着时光机回到过去一样",
-        "我知道在我醒来之后 我们共处的时光将会画上句点",
-        "所以不要让我酣然入睡",
-        "我不想在我的梦中与你相见",
-        "我知道我们永远造不出时光机",
-        "现在该我勇敢尝试了 再次清醒过来",
-        "我酣然入睡",
-        "但说实话",
-        "我渴望在我的梦中见到你",
-        "我竭尽全力 再次清醒过来"
-      ]
     }
   ],
   "visuals": {
