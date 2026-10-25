@@ -283,6 +283,7 @@
       "artist": "大原ゆい子",
       "src": "/media/audio/20260901150825-4a04356c-大原ゆい子-ムスビメ-联结.mp3",
       "cover": "/assets/images/music-covers/06-musubime.png",
+      "shelfCrop": { "positionX": 50, "positionY": 50, "zoom": 1.45 },
       "lrc": "/lyrics/musubime.json",
       "translations": [
         "被回忆所染上色彩的脸颊",
@@ -450,6 +451,7 @@
       "artist": "YOASOBI",
       "src": "/media/audio/20260919-yoasobi-tabun.mp3",
       "cover": "/assets/images/music-covers/10-yoasobi-tabun.png",
+      "shelfCrop": { "positionX": 50, "positionY": 50, "zoom": 1.1 },
       "lrc": "/lyrics/yoasobi-tabun.json",
       "translations": [
         "一滴眼泪也未流过",

@@ -32,3 +32,15 @@ export function cropStyle(crop = {}) {
   const clamp = (value, min, max, fallback) => Number.isFinite(Number(value)) ? Math.min(max, Math.max(min, Number(value))) : fallback;
   return `object-position:${clamp(crop.positionX, 0, 100, 50)}% ${clamp(crop.positionY, 0, 100, 50)}%;transform:scale(${clamp(crop.zoom, 1, 3, 1)})`;
 }
+
+// The image moves inside a fixed circular mask; scaling never enlarges the disc.
+export function coverFocusStyle(crop = {}) {
+  const number = (key, fallback, min, max) => {
+    const raw = crop?.[key];
+    const value = raw == null || raw === '' ? fallback : Number(raw);
+    return Number.isFinite(value) ? Math.max(min, Math.min(max, value)) : fallback;
+  };
+  const x = number('positionX', 50, 0, 100);
+  const y = number('positionY', 50, 0, 100);
+  return `object-position:${x}% ${y}%;transform:scale(${number('zoom',1,1,2)});transform-origin:${x}% ${y}%`;
+}

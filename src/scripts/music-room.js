@@ -1,5 +1,6 @@
 // A view/controller for the persistent MusicManager, never a second audio engine.
 let filter = null;
+let libraryPageIndex = 0;
 let foyerScroll = null;
 let roomNavigation = null;
 let transfer = null;
@@ -82,17 +83,41 @@ function cancelTransfer() {
   clearTransfer();
 }
 
-function applyFilter() {
+function librarySlice(tracks, query = '', selected = null, pageIndex = 0, pageSize = 6) {
+  const size = [6,12,18,24].includes(Number(pageSize)) ? Number(pageSize) : 6;
+  const search = String(query).trim().toLocaleLowerCase();
+  const matches = tracks.filter(track => track.searchText.toLocaleLowerCase().includes(search) && (selected === null || selected.includes(track.index)));
+  const pages = Math.max(1, Math.ceil(matches.length / size));
+  const index = Math.max(0, Math.min(pages - 1, Math.floor(Number(pageIndex)) || 0));
+  return {items:matches.slice(index * size, (index + 1) * size),index,pages,total:matches.length};
+}
+
+function applyFilter(resetPage = false) {
   const root = page();
   if (!root) return;
   const query = root.querySelector('[data-song-search]')?.value.trim().toLocaleLowerCase() || '';
-  let visible = 0;
-  root.querySelectorAll('[data-song-search-text]').forEach(row => {
-    row.hidden = !row.dataset.songSearchText.includes(query) || (filter !== null && !filter.includes(Number(row.dataset.songIndex)));
-    if (!row.hidden) visible++;
-  });
+  const rows = [...root.querySelectorAll('[data-song-search-text]')];
+  const shelf = root.querySelector('[data-library-page-size]');
+  // The foyer keeps its existing selection; only the full library is paginated.
+  const result = librarySlice(rows.map(row=>({index:Number(row.dataset.songIndex),searchText:row.dataset.songSearchText,row})),query,filter,resetPage ? 0 : libraryPageIndex,shelf?.dataset.libraryPageSize);
+  const visible = shelf ? new Set(result.items.map(track=>track.row)) : new Set(rows.filter(row=>row.dataset.songSearchText.includes(query) && (filter === null || filter.includes(Number(row.dataset.songIndex)))));
+  rows.forEach(row=>{row.hidden = !visible.has(row);});
+  libraryPageIndex = result.index;
+  const pager = root.querySelector('[data-library-pagination]');
+  if (pager) {
+    pager.hidden = result.pages <= 1;
+    pager.querySelector('[data-library-previous]').disabled = result.index === 0;
+    pager.querySelector('[data-library-next]').disabled = result.index === result.pages - 1;
+    pager.querySelector('[data-library-page-status]').textContent = `${result.index + 1} / ${result.pages} 页 · ${result.total} 首`;
+    const select = pager.querySelector('[data-library-page-select]');
+    if (select.options.length !== result.pages) select.replaceChildren(...Array.from({length:result.pages},(_,index)=>{
+      const option = document.createElement('option');option.value=String(index);option.textContent=`第 ${index + 1} 页`;return option;
+    }));
+    select.value = String(result.index);
+  }
+  if (resetPage) root.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
   const empty = root.querySelector('[data-library-empty]');
-  if (empty) empty.hidden = visible !== 0;
+  if (empty) empty.hidden = visible.size !== 0;
 }
 
 function syncCurrentNote(root, currentIndex) {
@@ -142,6 +167,7 @@ function initPage() {
   cleanupRoomView();
   syncRoomLayout();
   filter = null;
+  libraryPageIndex = 0;
   syncPlaying();
   applyFilter();
   setupRoomView();
@@ -284,7 +310,7 @@ document.addEventListener('click',async event => {
     root.querySelectorAll('[data-collection]').forEach(button=>button.setAttribute('aria-pressed',String(button===collection)));
     root.querySelector('[data-filter-label]').textContent = collection.querySelector('strong').textContent;
     root.querySelector('.collection-filter').hidden = filter === null;
-    applyFilter();
+    applyFilter(true);
     // Shelf filters do not jump the page or mutate the playback queue.
     if (!collection.closest('.room-collection-tabs')) root.querySelector('#library').scrollIntoView({behavior:reducedMotion()?'instant':'smooth',block:'start'});
   }
@@ -292,17 +318,28 @@ document.addEventListener('click',async event => {
     filter = null;
     root.querySelector('.collection-filter').hidden = true;
     root.querySelectorAll('[data-collection]').forEach(button=>button.setAttribute('aria-pressed',String(button.dataset.collection==='all')));
-    applyFilter();
+    applyFilter(true);
   }
   const view = target.closest('[data-library-view-button]');
   if (view) {
     root.querySelector('.room-library').dataset.libraryView = view.dataset.libraryViewButton;
     root.querySelectorAll('[data-library-view-button]').forEach(button=>button.setAttribute('aria-pressed',String(button===view)));
   }
+  if (target.closest('[data-library-previous],[data-library-next]')) {
+    libraryPageIndex += target.closest('[data-library-next]') ? 1 : -1;
+    applyFilter();
+    root.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
+  }
 });
 document.addEventListener('input',event => {
-  if (event.target.matches?.('[data-song-search]')) applyFilter();
+  if (event.target.matches?.('[data-song-search]')) applyFilter(true);
   if (event.target.matches?.('[data-note-search]')) filterNoteArchive(page());
+});
+document.addEventListener('change',event => {
+  if (!event.target.matches?.('[data-library-page-select]')) return;
+  libraryPageIndex = Number(event.target.value);
+  applyFilter();
+  page()?.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
 });
 document.addEventListener('keydown',event => {
   const root = page();

@@ -20,11 +20,13 @@ export function roomPresentation(room = {}) {
     lyricHeight: number('lyricHeight', 380, 280, 520),
     showFocus: values.showFocus !== false,
     sleeveLibrary: values.sleeveLibrary !== false,
+    libraryPageSize: [6, 12, 18, 24].includes(Number(values.libraryPageSize)) ? Number(values.libraryPageSize) : 6,
     miniMode: ['auto', 'always'].includes(values.miniMode) ? values.miniMode : 'auto',
     labels: {
       lyrics: '歌词', notes: '手记', focus: '专注聆听', exitFocus: '退出专注',
       allTracks: '全部', list: '列表', covers: '封面',
       openLyrics: '展开歌词', emptyNote: '这首歌还没有手记。',
+      previousPage: '上一页', nextPage: '下一页',
       ...Object.fromEntries(Object.entries(room.labels || {}).filter(([, value]) => typeof value === 'string' && value.trim())),
     },
   };

@@ -316,7 +316,7 @@ collections:
                   - { label: 舒适（16 像素，推荐）, value: 16 }
                   - { label: 较大（18 像素）, value: 18 }
                   - { label: 大字（20 像素）, value: 20 }
-              - label: 歌词区域高度
+              - label: 歌词面板高度（含上方页签）
                 name: lyricHeight
                 widget: select
                 default: 380
@@ -327,7 +327,17 @@ collections:
                   - { label: 更多歌词（440 像素）, value: 440 }
                   - { label: 最多歌词（520 像素）, value: 520 }
               - { label: 显示“专注聆听”入口, name: showFocus, widget: boolean, default: true, hint: 开启专注时暂收导航和唱片架；再次点击或按 Esc 退出，不影响播放。 }
-              - { label: 唱片架显示露出的黑胶, name: sleeveLibrary, widget: boolean, default: true, hint: 只影响封面展示模式，关闭后显示简洁的真实封面。 }
+              - { label: 唱片架显示黑胶外圈, name: sleeveLibrary, widget: boolean, default: true, hint: 封面统一按圆形显示；关闭后显示简洁的圆形封面。 }
+              - label: 唱片架每页歌曲数量
+                name: libraryPageSize
+                widget: select
+                default: 6
+                options:
+                  - { label: 6 首（紧凑，推荐）, value: 6 }
+                  - { label: 12 首, value: 12 }
+                  - { label: 18 首, value: 18 }
+                  - { label: 24 首, value: 24 }
+                hint: 唱片与列表视图共用分页；搜索、分类覆盖所有歌曲，不改变播放顺序。手机可横向翻阅当前页。
               - label: 底部迷你播放器出现时机
                 name: miniMode
                 widget: select
@@ -349,6 +359,8 @@ collections:
               - { label: 封面视图, name: covers, widget: string, default: 封面 }
               - { label: 歌词收起时的展开按钮, name: openLyrics, widget: string, default: 展开歌词 }
               - { label: 当前歌曲未填写手记时提示, name: emptyNote, widget: text, default: 这首歌还没有手记。 }
+              - { label: 上一页按钮, name: previousPage, widget: string, default: 上一页 }
+              - { label: 下一页按钮, name: nextPage, widget: string, default: 下一页 }
           - label: 门厅精选歌曲
             name: foyer
             widget: object
@@ -652,6 +664,49 @@ collections:
                   required: false,
                   hint: "在同一条曲目内上传，播放器会自动与该音乐对应。建议使用 1:1 正方形图片。",
                 }
+              - label: 唱片架封面取景（去白边）
+                name: shelfCrop
+                widget: object
+                required: false
+                collapsed: true
+                hint: 唱片架统一显示圆形，默认使用上方封面。图片自带白边时提高放大比例，再选择焦点；原始封面文件保留。
+                fields:
+                  - label: 画面放大比例
+                    name: zoom
+                    widget: select
+                    default: 1
+                    required: false
+                    options:
+                      - { label: 完整画面（100%，默认）, value: 1 }
+                      - { label: 轻微放大（110%）, value: 1.1 }
+                      - { label: 放大（120%）, value: 1.2 }
+                      - { label: 去除中等白边（130%）, value: 1.3 }
+                      - { label: 去除较宽白边（145%）, value: 1.45 }
+                      - { label: 更大（160%）, value: 1.6 }
+                      - { label: 特写（180%）, value: 1.8 }
+                      - { label: 最大特写（200%）, value: 2 }
+                  - label: 横向焦点
+                    name: positionX
+                    widget: select
+                    default: 50
+                    required: false
+                    options:
+                      - { label: 最左, value: 0 }
+                      - { label: 偏左, value: 25 }
+                      - { label: 居中（推荐）, value: 50 }
+                      - { label: 偏右, value: 75 }
+                      - { label: 最右, value: 100 }
+                  - label: 纵向焦点
+                    name: positionY
+                    widget: select
+                    default: 50
+                    required: false
+                    options:
+                      - { label: 顶部, value: 0 }
+                      - { label: 偏上, value: 25 }
+                      - { label: 居中（推荐）, value: 50 }
+                      - { label: 偏下, value: 75 }
+                      - { label: 底部, value: 100 }
               - {
                   label: LRC 歌词或歌词地址,
                   name: lrc,

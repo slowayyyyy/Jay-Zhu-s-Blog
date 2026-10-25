@@ -130,6 +130,7 @@
     "showFocus": true,
     "sleeveLibrary": true,
     "miniMode": "auto",
+    "libraryPageSize": 6,
     "mobileBackgroundImage": {
       "src": "/assets/images/music-room/windowlight-scene.webp",
       "positionX": 0,
@@ -144,8 +145,10 @@
     "exitFocus": "退出专注",
     "allTracks": "全部",
     "list": "列表",
-    "covers": "封面",
+    "covers": "唱片",
     "openLyrics": "展开歌词",
-    "emptyNote": "这首歌还没有手记。"
+    "emptyNote": "这首歌还没有手记。",
+    "previousPage": "上一页",
+    "nextPage": "下一页"
   }
 }

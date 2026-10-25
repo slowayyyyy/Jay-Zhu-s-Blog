@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-25T04:52:22.725Z",
+  "generatedAt": "2026-10-25T05:36:09.990Z",
   "title": "Design System: 苍蓝回廊 · 乐境与聆听室",
   "extensions": {
     "colorMeta": {
@@ -201,8 +201,8 @@
       },
       {
         "name": "shelf-cover",
-        "value": "2px 5px 10px rgb(24 55 75/.13)",
-        "purpose": "唱片架的实体封面。"
+        "value": "drop-shadow(2px 5px 6px rgb(24 55 75/.13))",
+        "purpose": "圆形唱片架的真实黑胶材质投影。"
       },
       {
         "name": "tonearm-filter",
@@ -260,7 +260,22 @@
         "name": "room-mobile-max",
         "value": "760px"
       }
-    ]
+    ],
+    "musicShelf": {
+      "shape": "circle",
+      "labelInset": "14%",
+      "pageSize": 6,
+      "allowedPageSizes": [
+        6,
+        12,
+        18,
+        24
+      ],
+      "filterOrder": "search and collection before pagination",
+      "crop": "playlist[].shelfCrop; focus and scale within circle; original image retained",
+      "lyricsHeader": "separate grid row outside scrolling panel",
+      "mobileBackToTop": "translate up 6rem while mini player is visible"
+    }
   },
   "components": [
     {

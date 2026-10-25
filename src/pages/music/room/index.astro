@@ -4,7 +4,7 @@ import MusicPlayer from "@/components/features/MusicPlayer.astro";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import azureContent from "@/data/azure-content.json";
 import room from "@/data/music-room.json";
-import { musicLibrary, selectTracks, cropStyle, listeningNotes } from "@/lib/music-library.mjs";
+import { musicLibrary, selectTracks, cropStyle, coverFocusStyle, listeningNotes } from "@/lib/music-library.mjs";
 import { roomPresentation } from "@/lib/music-room-settings.mjs";
 const library = musicLibrary(azureContent.playlist);
 const collections = room.collections || [];
@@ -51,16 +51,22 @@ const roomStyle = `--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.ac
       <button class="room-lyrics-reopen" data-room-reopen hidden>{labels.openLyrics}</button>
       {appearance.showFocus && <button class="room-focus" data-room-focus aria-pressed="false"><Icon is:inline name="material-symbols:filter-center-focus-outline-rounded" aria-hidden="true"/><span>{labels.focus}</span></button>}
       </div>
-      <section id="library" class="room-library" data-library-view={room.defaultView}>
+      <section id="library" class="room-library" data-library-view={room.defaultView} data-library-page-size={appearance.libraryPageSize}>
         <div class="music-section-head library-heading"><h2>{room.libraryTitle}<small>{library.length} 首</small></h2><label class="music-search"><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true"/><span class="sr-only">{room.searchPlaceholder}</span><input type="search" placeholder={room.searchPlaceholder} data-song-search /></label><div class="library-view-switch" aria-label="歌曲展示方式"><button data-library-view-button="covers" aria-pressed={room.defaultView === "covers"}>{labels.covers}</button><button data-library-view-button="list" aria-pressed={room.defaultView === "list"}>{labels.list}</button></div></div>
         {room.showCollections && <nav class="room-collection-tabs" aria-label={room.collectionsTitle}>
           <button data-collection="all" data-members="null" aria-pressed="true"><strong>{labels.allTracks}</strong></button>
           {collections.map((collection,index) => <button data-collection={index} data-members={JSON.stringify(selectTracks(library,collection.tracks).map(track=>track.index))} aria-pressed="false" title={collection.description}><strong>{collection.name}</strong></button>)}
         </nav>}
         <div class="collection-filter" hidden><span data-filter-label></span><button data-clear-filter>显示全部 ×</button></div>
-        <div class="library-songs">{library.map((track,index)=><button class="song-row" data-song-index={track.index} data-song-search-text={`${track.name} ${track.artist}`.toLocaleLowerCase()} aria-label={`播放 ${track.name}`}>
-          <span class="song-number">{String(index+1).padStart(2,"0")}</span><span class="song-art"><img class="shelf-vinyl" src={room.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" loading="lazy"/><img class="shelf-cover" src={track.cover} alt="" loading="lazy"/></span><span class="song-caption"><strong>{track.name}</strong><small>{track.artist}</small></span><span class="song-play" aria-hidden="true"><Icon is:inline name="material-symbols:play-arrow-rounded" class="song-play-icon"/><Icon is:inline name="material-symbols:pause-rounded" class="song-pause-icon"/></span>
+        <div class="library-songs" id="room-library-songs">{library.map((track,index)=><button class="song-row" data-song-index={track.index} data-song-search-text={`${track.name} ${track.artist}`.toLocaleLowerCase()} aria-label={`播放 ${track.name}`} title={`${track.name} · ${track.artist}`} hidden={index >= appearance.libraryPageSize}>
+          <span class="song-number">{String(index+1).padStart(2,"0")}</span><span class="song-art"><img class="shelf-vinyl" src={room.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" loading="lazy"/><span class="shelf-cover-window">{track.cover ? <img class="shelf-cover" src={track.cover} style={coverFocusStyle(track.shelfCrop)} alt="" loading="lazy"/> : <Icon is:inline name="material-symbols:music-note-rounded" class="shelf-empty-icon" aria-hidden="true"/>}</span></span><span class="song-caption"><strong>{track.name}</strong><small>{track.artist}</small></span><span class="song-play" aria-hidden="true"><Icon is:inline name="material-symbols:play-arrow-rounded" class="song-play-icon"/><Icon is:inline name="material-symbols:pause-rounded" class="song-pause-icon"/></span>
         </button>)}</div><p class="music-empty" data-library-empty hidden>{room.emptyMessage}</p>
+        <nav class="library-pagination" aria-label="唱片架分页" data-library-pagination hidden={library.length <= appearance.libraryPageSize}>
+          <button data-library-previous aria-controls="room-library-songs" disabled><Icon is:inline name="material-symbols:chevron-left-rounded" aria-hidden="true"/>{labels.previousPage}</button>
+          <span class="library-page-status" data-library-page-status role="status" aria-live="polite">1 / {Math.ceil(library.length / appearance.libraryPageSize)} 页 · {library.length} 首</span>
+          <select data-library-page-select aria-label="跳转到页" aria-controls="room-library-songs">{Array.from({length:Math.max(1,Math.ceil(library.length / appearance.libraryPageSize))},(_,index)=><option value={index}>第 {index + 1} 页</option>)}</select>
+          <button data-library-next aria-controls="room-library-songs">{labels.nextPage}<Icon is:inline name="material-symbols:chevron-right-rounded" aria-hidden="true"/></button>
+        </nav>
       </section>
       {room.player.showMini && <div class="room-mini" data-room-mini hidden={appearance.miniMode === 'auto'} inert={appearance.miniMode === 'auto'}><MusicPlayer id="music-room-mini" variant="mini"/></div>}
     </> : <div class="room-disabled"><h1>{room.title}</h1><p>聆听室暂未开放，仍可在乐境听歌。</p><a href="/music/">{room.backLabel} →</a></div>}
