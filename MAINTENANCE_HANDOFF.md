@@ -12,6 +12,7 @@
 - 恢复分支 `codex/restore-before-windowlight-room-20261025`、标签 `pre-windowlight-room-20261025` 指向 `e06a74df`；实施分支 `codex/windowlight-listening-room-20261025`。工作树 `/Users/jayzhu/.codex/worktrees/add-tanya-song/个人博客`，不要混入文稿主检出的既有未提交工作或工作树内既有 `.impeccable/`。
 - 验收图与构建记录：`/Users/jayzhu/.codex/project-storage/canglan-blog/previews/windowlight-room-20261025/`。117 项 Node 回归已通过，包含旧配置兼容、CMS 范围、素材库、页签焦点、自动迷你控件、专注与清理；生产构建已通过。最终发布以 main 的 Cloudflare 成功检查与正式音频实测为准，不改 OAuth/R2/Cloudflare 配置。
 - 独立终审 `disposition: ship`，三项修正均 `resolved`：桌面三组双语歌词与控制带、手机横向唱片架、专注实际隐藏与视口归位。审阅代理 `01a1714e-9c77-7ed0-9ffb-40e00f6ada47`；最终剩余 `clear`。
+- 正式站点实测：14 首音频同站 Range 均 HTTP 206；共享 audio 在聆听室→门厅→聆听室持续 44.20→55.03→77.43 秒且封面一致。页脚原有叠层曾遮挡页末迷你控制，已将聆听室内容层放到页脚层之上，保留导航菜单更高层级；须以按钮中心实际命中与真实暂停/下一首验证，不能仅看 aria 或可见性。
 
 ## 2026-10-22 新增陶喆《流沙》《普通朋友》
 

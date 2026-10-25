@@ -8,7 +8,8 @@ body:has([data-music-page="room"]) #main-content-shell { position:relative!impor
 body:has([data-music-page="room"]) #main-content-shell>div { width:100%;max-width:1200px; }
 body:has([data-music-page="room"]) #main-grid { grid-template-columns:minmax(0,1fr)!important;gap:0;transform:none!important; }
 body:has([data-music-page="room"]) #main-grid>div:not([id]) { grid-column:1/-1!important;min-width:0; }
-body:has([data-music-page="room"]) #content-wrapper { transform:none!important;animation:none!important;opacity:1!important; }
+/* Keep the viewport dock above the footer's own stacking contexts. */
+body:has([data-music-page="room"]) #content-wrapper { transform:none!important;animation:none!important;opacity:1!important;position:relative;z-index:3; }
 @layer utilities {
  body.sticky-navbar:has([data-music-page="room"]) #top-row { max-width:none!important;position:fixed!important;top:0!important;left:0!important;right:0!important;width:100%!important;margin-inline:auto!important;transform:none!important;z-index:50!important; }
 }
