@@ -2,6 +2,14 @@
 
 最后更新：2026-10-25
 
+## 2026-10-25 新增《time machine》
+
+- 原 14 首顺序与全部字段不变，末尾追加第 15 首，ID `mj-apanay-time-machine`，歌手 mj apanay、aren park。
+- 用户原 MP3 上传至 `/media/audio/20261025-mj-apanay-time-machine.mp3`（6535194 字节，约 225.959 秒）；R2 ETag 与本地 MD5 一致，HTTP 206 前 4096 字节一致，无 MP3 或密钥入 Git。
+- 原 KRC 转换为 `/lyrics/mj-apanay-time-machine.json`，保留 29 行逐词时间及内嵌中文翻译，未自行改译。原 KRC 备份：`/Users/jayzhu/.codex/project-storage/canglan-blog/backups/add-time-machine-20261025/time-machine-original.krc`。
+- 封面 `/assets/images/music-covers/15-mj-apanay-time-machine.svg` 使用原 PNG 内圆取景，完整原图保存为同目录 `15-mj-apanay-time-machine-original.png`；两项均登记后台素材库。已有歌单、素材库编辑入口自动支持此曲。
+- 发布前基线为 `bfe2743f`；验证记录位于 `/Users/jayzhu/.codex/project-storage/canglan-blog/previews/add-time-machine-20261025/`。
+
 ## 2026-10-25 唱片架取景、分页与歌词遮挡修复
 
 - 唱片架与列表缩略图统一圆形遮罩；唱片模式复用现有黑胶作为外圈，移除方形底板与侧向露盘。原始 PNG / SVG 不改、不删除。仅《ムスビメ》《たぶん》增加 `shelfCrop` 去掉原图白边，其他既有歌曲字段及顺序不变。

@@ -344,6 +344,22 @@
 			"src": "/assets/images/music-room/windowlight-scene.webp",
 			"usage": "聆听室原生唱片与播放控件后方的窗光背景，蓝花集中左缘，中右侧保留留白",
 			"note": "使用 AI 生成的摄影风冷白窗墙、斜向窗影、蓝花与透明花瓶场景；非实拍，未从概念图裁切。1600×900 WebP，底部渐淡接近 #f3f8fc；提示词与来源见 docs/music-room/WINDOWLIGHT_ASSET.md。"
+		},
+		{
+			"id": "cover-mj-apanay-time-machine",
+			"name": "time machine 唱片封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/15-mj-apanay-time-machine.svg",
+			"usage": "乐境播放器《time machine》唱片封面",
+			"note": "对站长截图内圆取景，保留原图像素、方向与文字，不重新绘制。"
+		},
+		{
+			"id": "cover-mj-apanay-time-machine-original",
+			"name": "time machine 封面原始截图",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/15-mj-apanay-time-machine-original.png",
+			"usage": "站长提供的完整原图，供以后重新取景",
+			"note": "不依赖剪贴板临时目录；前台使用独立内圆取景版。"
 		}
 	]
 }
