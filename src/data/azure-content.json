@@ -283,7 +283,11 @@
       "artist": "大原ゆい子",
       "src": "/media/audio/20260901150825-4a04356c-大原ゆい子-ムスビメ-联结.mp3",
       "cover": "/assets/images/music-covers/06-musubime.png",
-      "shelfCrop": { "positionX": 50, "positionY": 50, "zoom": 1.45 },
+      "shelfCrop": {
+        "positionX": 50,
+        "positionY": 50,
+        "zoom": 1.45
+      },
       "lrc": "/lyrics/musubime.json",
       "translations": [
         "被回忆所染上色彩的脸颊",
@@ -451,7 +455,11 @@
       "artist": "YOASOBI",
       "src": "/media/audio/20260919-yoasobi-tabun.mp3",
       "cover": "/assets/images/music-covers/10-yoasobi-tabun.png",
-      "shelfCrop": { "positionX": 50, "positionY": 50, "zoom": 1.1 },
+      "shelfCrop": {
+        "positionX": 50,
+        "positionY": 50,
+        "zoom": 1.1
+      },
       "lrc": "/lyrics/yoasobi-tabun.json",
       "translations": [
         "一滴眼泪也未流过",
@@ -604,7 +612,10 @@
       "src": "/media/audio/20261022-david-tao-liusha.mp3",
       "cover": "/assets/images/music-covers/13-david-tao-liusha.svg",
       "lrc": "/lyrics/david-tao-liusha.json",
-      "id": "david-tao-liusha"
+      "id": "david-tao-liusha",
+      "note": {
+        "text": ""
+      }
     },
     {
       "name": "普通朋友",
@@ -777,9 +788,12 @@
     "primaryCta": "阅读近作",
     "secondaryCta": "认识我"
   },
+  "dynamic": {
+    "title": "说说",
+    "description": "不必展开成文章，也值得被认真记住。",
+    "layout": "timeline"
+  },
   "home": {
-    "immersive": true,
-    "navigationOnDemand": true,
     "branchesKicker": "BEYOND THE NOTES",
     "animeTitle": "故事世界的观影手记",
     "animeStatus": "档案正在生长",
@@ -795,14 +809,11 @@
       "所谓的自由，就是被人讨厌。",
       "人生中最大的谎言就是不活在“此时此刻”。"
     ],
+    "immersive": true,
     "branchesIntro": "文字之外，还有旋律、光影和偶尔浮上水面的日常。它们从不同方向汇进同一段私人记忆。",
     "recentTitle": "最近写下",
-    "dynamicQuote": "短一些的念头，也值得拥有自己的停靠处。"
-  },
-  "dynamic": {
-    "title": "说说",
-    "description": "不必展开成文章，也值得被认真记住。",
-    "layout": "timeline"
+    "dynamicQuote": "短一些的念头，也值得拥有自己的停靠处。",
+    "navigationOnDemand": true
   },
   "integrations": {
     "bilibiliUid": "398487766",
