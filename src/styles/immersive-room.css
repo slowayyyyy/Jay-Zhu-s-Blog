@@ -1,0 +1,195 @@
+/* Approved comp 20261026: one night scene, a record, lyrics and a closable library. */
+.music-transport,.music-core-controls { display:contents; }
+html:has(.immersive-room),body:has(.immersive-room) { background:#0c0913!important;overflow:hidden!important; }
+body:has(.immersive-room) :is(#top-row,#navbar-wrapper,#wallpaper-wrapper,#page-background-decoration,#wallpaper-gradient,.top-gradient-highlight,#canvas_sakura,#back-to-top-btn,.reading-progress-bar,#main-grid>.footer,#mobile-bottom-sidebar,.live2d-widget-container,#spine-model-container,#back-to-home-btn,welcome-toast,#toc-fab,#floating-toc-btn) { display:none!important; }
+body:has(.immersive-room) #main-content-shell { padding:0!important;min-height:0; }
+body:has(.immersive-room) #main-content-shell>div { max-width:none;width:100%;padding:0; }
+body:has(.immersive-room) #main-grid { margin:0;padding:0; }
+body:has(.immersive-room) #content-wrapper { position:static; }
+.listening-room.immersive-room { --room-paper:#100c19;--primary:var(--room-accent);--line-divider:rgb(236 218 248/.15);--content-regular:var(--room-ink);--content-meta:var(--room-muted);--room-dock-height:96px;--room-header-height:70px;position:fixed;inset:0;z-index:51;height:100dvh;min-height:0;padding:0;overflow:hidden;color-scheme:dark;background:#0c0913;color:var(--room-ink);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif;isolation:isolate; }
+.immersive-room .room-scene { position:absolute;inset:-2%;height:auto;z-index:-2; }
+.immersive-room .room-scene img { opacity:var(--room-scene-opacity,1);filter:none; }
+.dark .immersive-room .room-scene img { opacity:var(--room-dark-scene-opacity,1); }
+.immersive-room .room-scene::after { background:rgb(7 5 14/var(--room-dim,.32)); }
+.immersive-room .room-motes { position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none; }
+.immersive-room[data-motion="true"][data-scene-paused="false"] .room-scene { animation:room-tide 24s ease-in-out infinite alternate; }
+@keyframes room-tide { from {transform:translate3d(-.3%,.4%,0) scale(1);} to {transform:translate3d(.5%,-.7%,0) scale(1.035);} }
+.immersive-room .room-header { position:absolute;inset:0 0 auto;min-height:var(--room-header-height);margin:0;padding:.5rem 1.25rem;z-index:8;gap:1rem; }
+.immersive-room .room-header-copy,.room-header-actions { display:flex;align-items:center;gap:1rem;min-width:0; }
+.immersive-room .room-back { color:var(--room-ink);font-size:1rem;gap:.6rem; }
+.immersive-room .room-back svg { width:25px;height:25px; }
+.room-header-divider { height:20px;width:1px;background:var(--line-divider); }
+.immersive-room .room-header h1 { font-size:1rem;font-weight:400;line-height:1.4;margin:0;white-space:nowrap; }
+.immersive-room .room-header button { display:grid;place-items:center;width:44px;height:44px;color:var(--room-muted);border-radius:50%; }
+.immersive-room .room-header button:hover { color:var(--room-ink);background:rgb(255 255 255/.07); }
+.immersive-room .room-header button svg { width:24px;height:24px; }
+.immersive-room .room-turntable { position:absolute;inset:var(--room-header-height) 0 var(--room-dock-height);padding:0;min-height:0;transition:right .5s cubic-bezier(.22,.68,.18,1); }
+.immersive-room[data-library-open="true"] .room-turntable { right:calc(var(--room-drawer-width) + 1.5rem); }
+.immersive-room [data-player-variant="room"] { display:grid;height:100%;grid-template-columns:minmax(0,48%) minmax(0,52%);grid-template-rows:minmax(0,1fr) auto;gap:0;align-content:center;align-items:center;padding:2.5vh clamp(1.5rem,4vw,5rem) 3.5vh; }
+.immersive-room [data-player-variant="room"] .music-record { grid-column:1;grid-row:1;justify-self:center;align-self:end;width:min(var(--room-record-size),calc(100% - 1rem),calc(100dvh - 310px));margin:0 0 1.2rem;height:auto;aspect-ratio:1;filter:drop-shadow(4px 15px 25px rgb(0 0 0/.4)); }
+.immersive-room .music-record>div { isolation:isolate; }
+.immersive-room .music-record-texture { width:100%;height:100%; }
+.immersive-room .music-cover { width:53%;height:53%;border:0; }
+.immersive-room .music-tonearm { right:auto;left:-11%;top:-4%;width:44%;height:88%;transform:scaleX(-1)!important;transform-origin:center; }
+.immersive-room [data-tonearm="false"] .music-tonearm { display:none; }
+.immersive-room .music-jacket { width:70%;height:87%;left:48%;opacity:.7; }
+.immersive-room [data-player-variant="room"] .music-info { grid-column:1;grid-row:2;text-align:center;align-self:start;margin:0;max-width:100%;padding:0 1rem; }
+.immersive-room .music-info>div:first-child { display:block; }
+.immersive-room [data-player-variant="room"] .music-title { font-family:inherit;font-weight:400;font-size:clamp(1.3rem,2vw,1.9rem);color:var(--room-ink);line-height:1.4; }
+.immersive-room [data-player-variant="room"] .music-artist { font-size:.95rem;font-weight:400;line-height:1.6;color:var(--room-muted);white-space:normal;margin:.4rem 0; }
+.immersive-room .room-tabs { grid-column:2;grid-row:1;align-self:start;justify-self:stretch;margin:0 0 0 clamp(1rem,4vw,4rem);padding:0 0 .8rem;gap:1rem;z-index:3; }
+.immersive-room .room-tabs button { color:var(--room-muted);background:none;border-radius:0;padding:.3rem .3rem;min-height:44px;border-bottom:1px solid transparent; }
+.immersive-room .room-tabs button[aria-selected="true"] { color:var(--room-ink);background:none;border-bottom-color:var(--room-accent); }
+.immersive-room [data-player-variant="room"] .btn-translation-toggle { position:static;margin-left:auto;justify-self:end;color:var(--room-muted); }
+.immersive-room .btn-translation-toggle[aria-pressed="true"] { color:var(--room-accent); }
+.immersive-room [data-player-variant="room"] .lrc-drawer,.immersive-room .room-note-panel { grid-column:2;grid-row:1/3;align-self:stretch;margin:65px 0 0 clamp(1rem,4vw,4rem);min-height:0;max-height:var(--room-lyric-height);height:calc(100% - 65px);padding:0; }
+.immersive-room .lrc-drawer>div,.immersive-room .lrc-drawer>div>div { min-height:0;height:100%;overflow:hidden;margin:0;padding:0;border:0; }
+.immersive-room [data-player-variant="room"] .lrc-container { height:100%;padding:1.3rem .4rem 42%;gap:1.7rem;text-align:center;mask-image:linear-gradient(transparent,#000 8%,#000 85%,transparent);scrollbar-width:none; }
+.immersive-room .lrc-line { font-family:Georgia,'LXGW WenKai Screen R',serif;font-size:var(--room-lyric-size);line-height:1.65;font-weight:400;color:var(--room-muted);opacity:1; }
+.immersive-room .lrc-original { line-height:1.65; }
+.immersive-room .lrc-line[aria-selected="true"] { color:var(--room-accent);font-weight:400; }
+.immersive-room .karaoke-word { --karaoke-base:var(--room-muted); }
+.immersive-room .lrc-translation { font-family:inherit;font-size:var(--room-translation-size);line-height:1.7;margin-top:.4rem;color:var(--room-muted); }
+.immersive-room .lrc-line[aria-selected="true"] .lrc-translation { color:var(--room-ink); }
+.immersive-room .room-note-panel { overflow:auto;padding:1rem .5rem;scrollbar-width:thin;scrollbar-color:#776482 transparent; }
+.immersive-room .room-note-panel .music-section-head { margin:0 0 1rem; }
+.immersive-room .room-note-panel h2 { font-size:1.15rem;font-weight:400;line-height:1.6; }
+.immersive-room .room-note-panel p { color:var(--room-ink); }
+.immersive-room .room-focus,.immersive-room .room-lyrics-reopen { position:absolute;right:1.5rem;bottom:1rem;margin:0;padding:.35rem .6rem;z-index:5;font-size:.8rem; }
+.immersive-room .room-focus { border:0; }
+.immersive-room[data-focus="true"] .room-header { display:flex; }
+.immersive-room[data-focus="true"] .room-library { display:flex; }
+.immersive-room[data-focus="true"] .room-turntable { min-height:0;display:block; }
+.immersive-room[data-focus="true"] .room-focus { position:absolute;top:auto;background:none; }
+/* A single transport made from the original bound widget controls. */
+.immersive-room .music-transport { position:fixed;inset:auto 0 0;display:grid;grid-template-columns:minmax(150px,1fr) 260px minmax(100px,1fr) 110px;align-items:center;column-gap:1rem;height:var(--room-dock-height);padding:.8rem 1.5rem max(.7rem,env(safe-area-inset-bottom));background:rgb(11 8 18/.92);z-index:20; }
+.immersive-room .room-dock-track { grid-column:1;grid-row:1;display:flex;align-items:center;gap:.8rem;min-width:0; }
+.room-dock-track img { width:52px;height:52px;flex-shrink:0;border-radius:50%;object-fit:cover; }
+.room-dock-track>div { min-width:0; }
+.room-dock-track strong,.room-dock-track small { display:block;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:400; }
+.room-dock-track strong { font-size:.95rem;color:var(--room-accent); }
+.room-dock-track small { margin-top:.25rem;font-size:.78rem;color:var(--room-muted); }
+.immersive-room [data-player-variant="room"] .music-controls { display:contents; }
+.immersive-room .music-core-controls { grid-column:2;grid-row:1;display:flex;align-items:center;justify-content:center;gap:1.1rem; }
+.immersive-room .music-core-controls button { color:var(--room-ink);background:none;min-width:44px;min-height:44px; }
+.immersive-room .music-core-controls .btn-repeat { color:var(--room-muted); }
+.immersive-room .music-core-controls .btn-repeat:is([data-mode="1"],[data-mode="2"]) { color:var(--room-accent); }
+.immersive-room .music-core-controls .btn-play { width:56px;height:56px;border:1px solid color-mix(in srgb,var(--room-accent) 65%,transparent);border-radius:50%;background:none!important;color:var(--room-ink)!important; }
+.immersive-room .music-core-controls button:hover { color:var(--room-accent); }
+.immersive-room .music-volume { grid-column:3;grid-row:1;justify-self:end;display:flex;align-items:center;gap:.5rem;margin:0;height:auto; }
+.immersive-room .music-volume button { width:44px;height:44px;color:var(--room-ink); }
+.immersive-room .vol-container { width:110px;background:rgb(217 194 232/.2); }
+.immersive-room .vol-container>div { background:var(--room-accent); }
+.immersive-room [data-player-variant="room"] .music-times { position:absolute;inset:10px 145px auto auto;display:flex;gap:.5rem;font-size:.72rem;color:var(--room-muted);height:auto; }
+.immersive-room .music-times>.total-time { text-align:left; }
+.immersive-room .music-times> :not(.current-time,.total-time) { display:block; }
+.immersive-room [data-player-variant="room"] .music-progress { position:absolute;grid-area:auto;inset:-10px 0 auto;display:block;padding:0;height:20px;z-index:2; }
+.immersive-room [data-player-variant="room"] .progress-container { height:20px;min-height:0;margin:0;background:transparent;border-radius:0; }
+.immersive-room .progress-container::before { content:"";position:absolute;left:0;right:0;top:9px;height:2px;background:rgb(220 196 238/.25); }
+.immersive-room .progress-container .progress-bar { top:9px;height:2px;background:var(--room-accent); }
+.immersive-room .progress-thumb { background:var(--room-accent);box-shadow:none;--tw-ring-shadow:none;transform:scale(.7); }
+.immersive-room .room-library-toggle { grid-column:4;grid-row:1;display:flex;align-items:center;justify-content:center;gap:.5rem;min-height:44px;color:var(--room-muted);border-left:1px solid var(--line-divider); }
+.immersive-room .room-library-toggle[aria-expanded="true"] { color:var(--room-accent); }
+.immersive-room .room-library-toggle svg { width:25px;height:25px; }
+.immersive-room :is(.playlist-drawer,.btn-drawer-toggle) { display:none!important; }
+.immersive-room .music-loading { inset:auto 1.5rem calc(var(--room-dock-height) + .6rem) auto;width:22px;height:22px;background:none;backdrop-filter:none;border-radius:0; }
+.immersive-room .music-loading>div { width:20px;height:20px; }
+/* The library's height is independent of its song count. */
+.immersive-room .room-library { position:absolute;inset:var(--room-header-height) 0 var(--room-dock-height) auto;width:var(--room-drawer-width);padding:1.25rem 1.25rem 0;display:flex;flex-direction:column;gap:.9rem;border:0;border-top:1px solid var(--line-divider);border-left:1px solid var(--line-divider);border-top-left-radius:10px;background:rgb(13 10 22/.9);z-index:10;transform:translateX(101%);transition:transform .5s cubic-bezier(.22,.68,.18,1);visibility:hidden; }
+.immersive-room[data-library-open="true"] .room-library { transform:none;visibility:visible; }
+.room-library-title { display:flex;justify-content:space-between;align-items:center;flex-shrink:0; }
+.room-library-title h2 { font-size:1.1rem;font-weight:500; }
+.room-library-title button { display:grid;place-items:center;width:44px;height:44px;color:var(--room-muted); }
+.immersive-room .music-search { max-width:none;flex-shrink:0;border-radius:12px;border-color:rgb(230 213 241/.24);padding:.1rem .7rem; }
+.immersive-room .music-search input { font-size:.85rem;color:var(--room-ink);min-height:44px; }
+.immersive-room .music-search input::placeholder { color:var(--room-muted);opacity:1; }
+.room-library-scopes { display:flex;gap:1.4rem;flex-shrink:0; }
+.room-library-scopes button { min-height:44px;font-size:.85rem;color:var(--room-muted);padding:.3rem .4rem;border-bottom:1px solid transparent; }
+.room-library-scopes [aria-pressed="true"] { color:var(--room-ink);border-bottom-color:var(--room-accent); }
+.immersive-room .room-collection-tabs { flex-shrink:0;margin:0;gap:.5rem;font-size:.8rem; }
+.immersive-room .room-collection-tabs button { min-height:36px;padding:.25rem .5rem; }
+.immersive-room .room-collection-tabs strong { font-size:.8rem; }
+.immersive-room .collection-filter { display:none; }
+.immersive-room .library-songs { display:flex;flex-direction:column;gap:.3rem;overflow:auto;overscroll-behavior:contain;min-height:0;flex:1;scrollbar-width:thin;scrollbar-color:#776482 transparent;padding-right:.5rem; }
+.immersive-room .song-row { display:grid;grid-template-columns:50px minmax(0,1fr) 28px;gap:.8rem;min-height:78px;padding:.65rem .5rem;border:0;border-radius:5px;flex-shrink:0; }
+.immersive-room .song-number,.immersive-room .shelf-vinyl { display:none; }
+.immersive-room .song-art { width:50px;height:50px; }
+.immersive-room .shelf-cover-window { background:transparent; }
+.immersive-room .song-row strong { font-size:.9rem;color:var(--room-ink);font-family:inherit; }
+.immersive-room .song-row small { font-size:.78rem;color:var(--room-muted);margin-top:.25rem; }
+.immersive-room .song-row:is(:hover,[aria-current="true"]) { background:rgb(217 187 231/.11); }
+.immersive-room .song-row[aria-current="true"] strong { color:var(--room-accent); }
+.immersive-room .song-play { font-size:1.3rem;color:var(--room-muted); }
+.immersive-room .song-row[data-playing="true"] .song-play { color:var(--room-accent); }
+.room-library-close { display:flex;align-items:center;justify-content:center;gap:.4rem;min-height:52px;border-top:1px solid var(--line-divider);color:var(--room-muted);font-size:.78rem;flex-shrink:0; }
+.room-library-close svg { width:22px;height:22px; }
+.room-library-scrim { position:absolute;inset:var(--room-header-height) 0 var(--room-dock-height);background:rgb(0 0 0/.5);z-index:9; }
+.immersive-room .music-empty { color:var(--room-muted);font-size:.9rem;line-height:1.8; }
+.immersive-room [data-library-empty],.immersive-room [data-recent-empty] { flex:1; }
+.immersive-room .room-disabled { height:100%;padding:2rem;text-align:center; }
+@media(min-width:1600px) { .immersive-room [data-player-variant="room"] { padding-block:5vh 8vh; } }
+@media(max-width:1150px) and (min-width:901px) {
+ .immersive-room { --room-drawer-width:310px!important; }
+ .immersive-room [data-player-variant="room"] { padding-inline:1.25rem;grid-template-columns:minmax(0,43%) minmax(0,57%); }
+ .immersive-room [data-player-variant="room"] .music-record { width:min(var(--room-record-size),100%,calc(100dvh - 310px)); }
+ .immersive-room .room-tabs,.immersive-room [data-player-variant="room"] .lrc-drawer,.immersive-room .room-note-panel { margin-left:1.25rem; }
+}
+@media(max-width:900px) {
+ .immersive-room .room-turntable,.immersive-room[data-library-open="true"] .room-turntable { right:0; }
+ .immersive-room .room-library { width:min(440px,92vw);box-shadow:-15px 0 40px rgb(0 0 0/.3); }
+ .immersive-room .music-transport { grid-template-columns:minmax(120px,1fr) 230px auto;gap:.5rem;padding-inline:1rem; }
+ .immersive-room .room-library-toggle { grid-column:3; }
+ .immersive-room .music-volume { display:none; }
+ .immersive-room [data-player-variant="room"] .music-times { right:1rem;top:6px; }
+ .immersive-room .music-core-controls { gap:.5rem; }
+}
+@media(max-width:600px) {
+ .listening-room.immersive-room { --room-header-height:60px;--room-dock-height:calc(126px + env(safe-area-inset-bottom)); }
+ .immersive-room .room-header { padding:.25rem .5rem; }
+ .immersive-room .room-header-copy,.room-header-actions { gap:.5rem; }
+ .immersive-room .room-back,.immersive-room .room-header h1 { font-size:.85rem; }
+ .immersive-room .room-header-actions button { width:40px;height:44px; }
+ .immersive-room [data-player-variant="room"] { display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto 46px minmax(0,1fr);align-content:start;padding:.3rem 1.25rem .5rem; }
+ .immersive-room [data-player-variant="room"] .music-record { grid-column:1;grid-row:1;width:min(43vw,calc(100dvh * .24),230px);align-self:center;margin:0 auto .65rem; }
+ .immersive-room [data-player-variant="room"] .music-info { grid-column:1;grid-row:2;padding:0; }
+ .immersive-room [data-player-variant="room"] .music-title { font-size:1.2rem;line-height:1.35; }
+ .immersive-room [data-player-variant="room"] .music-artist { font-size:.78rem;margin:.25rem 0 .5rem; }
+ .immersive-room .music-jacket { display:none; }
+ .immersive-room .room-tabs { grid-column:1;grid-row:3;margin:0;align-self:start;padding:0;gap:.9rem; }
+ .immersive-room .room-tabs button { font-size:.85rem; }
+ .immersive-room [data-player-variant="room"] .lrc-drawer,.immersive-room .room-note-panel { grid-column:1;grid-row:4;margin:0;max-height:none;height:100%; }
+ .immersive-room [data-player-variant="room"] .lrc-container { padding:.5rem .3rem 40%;gap:1rem; }
+ .immersive-room .lrc-line { font-size:min(var(--room-lyric-size),21px); }
+ .immersive-room .lrc-translation { font-size:min(var(--room-translation-size),15px); }
+ .immersive-room .room-focus { display:none; }
+ .immersive-room .room-lyrics-reopen { right:2rem;bottom:20%; }
+ .immersive-room .music-transport { grid-template-columns:minmax(0,1fr) auto;grid-template-rows:30px 58px;height:var(--room-dock-height);padding:.5rem .8rem max(.3rem,env(safe-area-inset-bottom));gap:.1rem .5rem; }
+ .immersive-room .room-dock-track { grid-column:1;grid-row:1; }
+ .room-dock-track img { display:none; }
+ .room-dock-track strong { font-size:.8rem; }
+ .room-dock-track small { display:none; }
+ .immersive-room .music-core-controls { grid-column:1/-1;grid-row:2;gap:1.5rem; }
+ .immersive-room .room-library-toggle { grid-column:2;grid-row:1;min-height:44px;border:0;font-size:.8rem; }
+ .immersive-room .room-library-toggle svg { width:22px; }
+ .immersive-room [data-player-variant="room"] .music-times { top:auto;bottom:1.1rem;left:auto;right:.8rem;font-size:.65rem;display:none; }
+ .immersive-room .room-library { padding:.5rem 1rem 0;gap:.6rem; }
+ .immersive-room .song-row { min-height:72px; }
+ .immersive-room .room-library-scopes { gap:1rem; }
+ .immersive-room .room-note-panel .note-body { max-height:none; }
+ .immersive-room .room-back span { max-width:6rem;overflow:hidden;text-overflow:ellipsis;white-space:nowrap; }
+}
+@media(max-height:560px) and (min-width:601px) {
+ .listening-room.immersive-room { --room-header-height:50px;--room-dock-height:76px; }
+ .immersive-room [data-player-variant="room"] { padding-block:.5rem 1rem; }
+ .immersive-room [data-player-variant="room"] .music-record { width:min(100%,calc(100dvh - 210px)); }
+ .immersive-room .room-tabs { margin-bottom:0;padding:0; }
+ .immersive-room [data-player-variant="room"] .lrc-drawer,.immersive-room .room-note-panel { margin-top:48px;height:calc(100% - 48px); }
+ .immersive-room .room-library { padding-top:.3rem;gap:.3rem; }
+ .immersive-room .song-row { min-height:62px;padding:.3rem; }
+ .immersive-room .room-library-close { min-height:44px; }
+}
+@media(prefers-reduced-motion:reduce) {
+ .immersive-room .room-scene { animation:none!important; }
+ .immersive-room .room-motes { display:none; }
+ .immersive-room .room-turntable,.immersive-room .room-library { transition:none; }
+}

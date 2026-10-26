@@ -1,5 +1,5 @@
 import { getIconSvg } from '../constants/icons';
-import { ADMIN_COLOR_OPTIONS, ADMIN_ICON_OPTIONS } from './admin-choice-options.js';
+import { ADMIN_COLOR_OPTIONS, ADMIN_ICON_OPTIONS, ROOM_COLOR_OPTIONS } from './admin-choice-options.js';
 
 const readValue = (value) => String(value ?? '').trim();
 const normalizeHex = (value) => {
@@ -251,7 +251,9 @@ export function setupChoiceWidgets() {
 
 		render() {
 			const value = normalizeHex(this.props.value) || '#38bdf8';
-			const selected = ADMIN_COLOR_OPTIONS.find((option) => option.value === value);
+			const night = this.props.field?.get?.('night_palette') === true;
+			const colors = night ? ROOM_COLOR_OPTIONS : ADMIN_COLOR_OPTIONS;
+			const selected = colors.find((option) => option.value === value);
 			const invalidDraft = Boolean(this.state.draft) && !normalizeHex(this.state.draft);
 
 			return h(
@@ -304,7 +306,7 @@ export function setupChoiceWidgets() {
 							lineHeight: 1.55,
 						},
 					},
-					'选择颜色即可同步到前台。苍蓝与晴空蓝适合大多数内容，其余颜色已标注推荐用途。',
+					night ? '夜色背景推荐浅色文字，下面可直接选择；也可使用自定义颜色。' : '选择颜色即可同步到前台。苍蓝与晴空蓝适合大多数内容，其余颜色已标注推荐用途。',
 				),
 				h(
 					'div',
@@ -315,7 +317,7 @@ export function setupChoiceWidgets() {
 							gap: '8px',
 						},
 					},
-					...ADMIN_COLOR_OPTIONS.map((option) => {
+					...colors.map((option) => {
 						const active = option.value === value;
 						return h(
 							'button',

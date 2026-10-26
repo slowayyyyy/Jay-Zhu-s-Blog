@@ -12,21 +12,25 @@ const notes = listeningNotes(library);
 const firstNote = notes.find(note=>note.index===0);
 const appearance = roomPresentation(room);
 const labels = appearance.labels;
-const roomStyle = `--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.accent : "#167eb3"};--room-record-size:${appearance.recordSize}px;--room-lyric-size:${appearance.lyricFontSize}px;--room-translation-size:${appearance.translationFontSize}px;--room-lyric-height:${appearance.lyricHeight}px;--room-scene-opacity:${appearance.backgroundOpacity / 100};--room-dark-scene-opacity:${appearance.darkBackgroundOpacity / 100}`;
+const roomStyle = `--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.accent : "#167eb3"};--room-record-size:${appearance.recordSize}px;--room-lyric-size:${appearance.lyricFontSize}px;--room-translation-size:${appearance.translationFontSize}px;--room-lyric-height:${appearance.lyricHeight}px;--room-scene-opacity:${appearance.backgroundOpacity / 100};--room-dark-scene-opacity:${appearance.darkBackgroundOpacity / 100};--room-dim:${appearance.backgroundDim / 100};--room-drawer-width:${appearance.drawerWidth}px;--room-ink:${appearance.textColor};--room-muted:${appearance.mutedColor}`;
 ---
 <MainGridLayout title={room.title} description={room.intro}>
-  <section class="listening-room windowlight-room" data-music-page="room" data-music-transition={JSON.stringify(room.transition)} data-room-panel="lyrics" data-room-options={JSON.stringify({miniMode:appearance.miniMode,focus:labels.focus,exitFocus:labels.exitFocus})} data-sleeve-library={appearance.sleeveLibrary} style={roomStyle}>
+  <section class="listening-room immersive-room" data-music-page="room" data-music-transition={JSON.stringify(room.transition)} data-room-panel="lyrics" data-room-options={JSON.stringify({focus:labels.focus,exitFocus:labels.exitFocus})} data-library-open="false" data-motion={appearance.backgroundMotion} data-particles={appearance.showParticles} data-default-library-open={appearance.drawerOpen} data-sleeve-library={appearance.sleeveLibrary} style={roomStyle}>
     {room.enabled ? <>
       {appearance.showBackground && appearance.backgroundImage.src && <div class:list={["room-scene", {"has-dark-scene":Boolean(appearance.darkBackgroundImage.src)}]} aria-hidden="true"><img class="room-scene-light room-scene-desktop" src={appearance.backgroundImage.src} alt="" style={cropStyle(appearance.backgroundImage)} fetchpriority="high" /><img class="room-scene-light room-scene-mobile" src={appearance.mobileBackgroundImage.src} alt="" style={cropStyle(appearance.mobileBackgroundImage)} />{appearance.darkBackgroundImage.src && <img class="room-scene-dark" src={appearance.darkBackgroundImage.src} alt="" style={cropStyle(appearance.darkBackgroundImage)} />}</div>}
+      <canvas class="room-motes" data-room-motes aria-hidden="true"></canvas>
       <header class="room-header">
-        <div class="room-header-copy"><h1>{room.title}</h1><p>{room.intro}</p></div>
-        <a href="/music/" data-music-return class="room-back"><Icon is:inline name="material-symbols:arrow-back-rounded" aria-hidden="true"/> {room.backLabel}</a>
+        <div class="room-header-copy"><a href="/music/" data-music-return class="room-back" aria-label={room.backLabel}><Icon is:inline name="material-symbols:chevron-left-rounded" aria-hidden="true"/><span>{room.backLabel}</span></a><span class="room-header-divider" aria-hidden="true"></span><h1>{room.title}</h1></div>
+        <div class="room-header-actions">
+          <button data-room-motion aria-pressed={appearance.backgroundMotion} aria-label="暂停背景动态" title="暂停背景动态"><Icon is:inline name="material-symbols:motion-photos-on-outline-rounded" aria-hidden="true"/></button>
+          <button data-room-fullscreen aria-pressed="false" aria-label="全屏聆听" title="全屏聆听"><Icon is:inline name="material-symbols:fullscreen-rounded" aria-hidden="true"/></button>
+        </div>
       </header>
       <div class="room-turntable">
         <MusicPlayer id="music-room-player" variant="room">
         <div slot="room-tabs" class="room-tabs" role="tablist" aria-label="聆听内容">
           <button id="room-lyrics-tab" role="tab" aria-selected="true" aria-controls="music-room-player-lyrics" data-room-tab="lyrics">{labels.lyrics}</button>
-          {room.showNotes && notes.length > 0 && <button id="room-note-tab" role="tab" aria-selected="false" aria-controls="room-note-panel" tabindex="-1" data-room-tab="note">{labels.notes}</button>}
+          {room.showNotes && <button id="room-note-tab" role="tab" aria-selected="false" aria-controls="room-note-panel" tabindex="-1" data-room-tab="note">{labels.notes}</button>}
         </div>
         <div slot="room-note" id="room-note-panel" class="room-note-panel" role="tabpanel" aria-labelledby="room-note-tab" tabindex="0" hidden>
         <section class="room-notes" data-current-note data-note-entries={JSON.stringify(notes)} aria-label={room.notesTitle} hidden={!firstNote}>
@@ -49,26 +53,27 @@ const roomStyle = `--room-accent:${/^#[0-9a-f]{6}$/i.test(room.accent) ? room.ac
       </div>
       </MusicPlayer>
       <button class="room-lyrics-reopen" data-room-reopen hidden>{labels.openLyrics}</button>
-      {appearance.showFocus && <button class="room-focus" data-room-focus aria-pressed="false"><Icon is:inline name="material-symbols:filter-center-focus-outline-rounded" aria-hidden="true"/><span>{labels.focus}</span></button>}
       </div>
-      <section id="library" class="room-library" data-library-view={room.defaultView} data-library-page-size={appearance.libraryPageSize}>
-        <div class="music-section-head library-heading"><h2>{room.libraryTitle}<small>{library.length} 首</small></h2><label class="music-search"><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true"/><span class="sr-only">{room.searchPlaceholder}</span><input type="search" placeholder={room.searchPlaceholder} data-song-search /></label><div class="library-view-switch" aria-label="歌曲展示方式"><button data-library-view-button="covers" aria-pressed={room.defaultView === "covers"}>{labels.covers}</button><button data-library-view-button="list" aria-pressed={room.defaultView === "list"}>{labels.list}</button></div></div>
-        {room.showCollections && <nav class="room-collection-tabs" aria-label={room.collectionsTitle}>
+      <button class="room-library-scrim" data-close-library tabindex="-1" aria-label="收起曲库" hidden></button>
+      <aside id="library" class="room-library" data-library-view="list" data-library-scroll="true" aria-label={labels.library} inert>
+        <div class="room-library-title"><h2>{room.libraryTitle}</h2><button data-close-library aria-label="收起曲库"><Icon is:inline name="material-symbols:close-rounded" aria-hidden="true"/></button></div>
+        <label class="music-search"><Icon is:inline name="material-symbols:search-rounded" aria-hidden="true"/><span class="sr-only">{room.searchPlaceholder}</span><input type="search" placeholder={room.searchPlaceholder} data-song-search /></label>
+        <nav class="room-library-scopes" aria-label="曲库范围">
+          <button data-library-scope="all" aria-pressed="true">{labels.allTracks}</button>
+          {room.showCollections && <button data-library-scope="playlists" aria-pressed="false">{labels.playlists}</button>}
+          {appearance.showRecent && <button data-library-scope="recent" aria-pressed="false">{labels.recent}</button>}
+        </nav>
+        {room.showCollections && <nav class="room-collection-tabs" aria-label={room.collectionsTitle} hidden>
           <button data-collection="all" data-members="null" aria-pressed="true"><strong>{labels.allTracks}</strong></button>
           {collections.map((collection,index) => <button data-collection={index} data-members={JSON.stringify(selectTracks(library,collection.tracks).map(track=>track.index))} aria-pressed="false" title={collection.description}><strong>{collection.name}</strong></button>)}
         </nav>}
         <div class="collection-filter" hidden><span data-filter-label></span><button data-clear-filter>显示全部 ×</button></div>
-        <div class="library-songs" id="room-library-songs">{library.map((track,index)=><button class="song-row" data-song-index={track.index} data-song-search-text={`${track.name} ${track.artist}`.toLocaleLowerCase()} aria-label={`播放 ${track.name}`} title={`${track.name} · ${track.artist}`} hidden={index >= appearance.libraryPageSize}>
+        <div class="library-songs" id="room-library-songs" tabindex="0" aria-label="歌曲列表">{library.map((track,index)=><button class="song-row" data-track-id={track.id} data-song-index={track.index} data-song-search-text={`${track.name} ${track.artist}`.toLocaleLowerCase()} aria-label={`播放 ${track.name}`} title={`${track.name} · ${track.artist}`} >
           <span class="song-number">{String(index+1).padStart(2,"0")}</span><span class="song-art"><img class="shelf-vinyl" src={room.player.recordImage?.src || "/assets/images/music-room/vinyl.webp"} alt="" loading="lazy"/><span class="shelf-cover-window">{track.cover ? <img class="shelf-cover" src={track.cover} style={coverFocusStyle(track.shelfCrop)} alt="" loading="lazy"/> : <Icon is:inline name="material-symbols:music-note-rounded" class="shelf-empty-icon" aria-hidden="true"/>}</span></span><span class="song-caption"><strong>{track.name}</strong><small>{track.artist}</small></span><span class="song-play" aria-hidden="true"><Icon is:inline name="material-symbols:play-arrow-rounded" class="song-play-icon"/><Icon is:inline name="material-symbols:pause-rounded" class="song-pause-icon"/></span>
         </button>)}</div><p class="music-empty" data-library-empty hidden>{room.emptyMessage}</p>
-        <nav class="library-pagination" aria-label="唱片架分页" data-library-pagination hidden={library.length <= appearance.libraryPageSize}>
-          <button data-library-previous aria-controls="room-library-songs" disabled><Icon is:inline name="material-symbols:chevron-left-rounded" aria-hidden="true"/>{labels.previousPage}</button>
-          <span class="library-page-status" data-library-page-status role="status" aria-live="polite">1 / {Math.max(1,Math.ceil(library.length / appearance.libraryPageSize))} 页 · {library.length} 首</span>
-          <select data-library-page-select aria-label="跳转到页" aria-controls="room-library-songs">{Array.from({length:Math.max(1,Math.ceil(library.length / appearance.libraryPageSize))},(_,index)=><option value={index}>第 {index + 1} 页</option>)}</select>
-          <button data-library-next aria-controls="room-library-songs">{labels.nextPage}<Icon is:inline name="material-symbols:chevron-right-rounded" aria-hidden="true"/></button>
-        </nav>
-      </section>
-      {room.player.showMini && <div class="room-mini" data-room-mini hidden={appearance.miniMode === 'auto'} inert={appearance.miniMode === 'auto'}><MusicPlayer id="music-room-mini" variant="mini"/></div>}
+        <p class="music-empty" data-recent-empty hidden>{labels.recentEmpty}</p>
+        <button class="room-library-close" data-close-library><Icon is:inline name="material-symbols:expand-more-rounded" aria-hidden="true"/>{labels.closeLibrary}</button>
+      </aside>
     </> : <div class="room-disabled"><h1>{room.title}</h1><p>聆听室暂未开放，仍可在乐境听歌。</p><a href="/music/">{room.backLabel} →</a></div>}
   </section>
 </MainGridLayout>

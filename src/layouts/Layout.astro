@@ -34,6 +34,7 @@ import { url } from "@/utils/url-utils";
 
 import "@/styles/main.css";
 import "@/styles/music-room.css";
+import "@/styles/immersive-room.css";
 import "@/styles/variables.styl";
 import "@/styles/markdown-extend.styl";
 import "@/styles/mouse.css";
@@ -597,11 +598,11 @@ const siteLang = lang.replace("_", "-");
     ]}
   >
     {Astro.url.pathname.startsWith("/music/") && <Fragment set:html={`<!--
-THESIS: Window light joins a real record and a page of lyrics; no detached photo banner or duplicate playback dock.
-OWN-WORLD: Cool white and azure, edge flowers and natural shadows, user cover sleeves, real vinyl and metal tonearm; no character wallpaper.
-STORY: Listen with lyrics or the song's own note, then browse the searchable, filterable record shelf; one persistent audio engine.
-FIRST VIEWPORT: Large record and cover sleeve at left, generous lyrics at right, metadata and one control group below; a vertical player on phones. Mini controls appear after the main controls leave view.
-FORM: User-approved windowlight comp 20261025, seed 266efb2f; existing room entry transition, reduced-motion respected.
+THESIS: A full-viewport night sea puts the record and lyrics in one immersive scene, with a library that closes instead of extending the page.
+OWN-WORLD: Midnight plum, organic jellyfish, soft lavender type, actual song art on real vinyl and a metal tonearm; restrained edge controls.
+STORY: Listen to real synchronized lyrics or the current song's note; open the searchable library, collections and local recent history without changing queue order.
+FIRST VIEWPORT: Record left, lyrics right, closable library at the edge and one fixed transport below. Phones retain the same scene with a vertical player and overlay library.
+FORM: User-approved concept 20261026, exec-7ddedb14; the pinned composition supersedes the windowlight world only in the listening room.
 FINISH: unreviewed and undocumented is unfinished; this build ends with the finish review, the verdict, and DESIGN.md
 -->`} />}
     <!-- 页面顶部渐变高光效果 - 只在full和semifull模式下显示 -->

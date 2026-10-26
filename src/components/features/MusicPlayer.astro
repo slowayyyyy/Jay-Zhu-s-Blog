@@ -110,6 +110,8 @@ const widgetId =
     </div>
 </div>
 
+<div class="music-transport">
+{variant === "room" && <div class="room-dock-track"><img data-dock-cover src={initialCover} alt=""/><div><strong data-dock-title>{config.local?.playlist?.[0]?.name || "尚未选择歌曲"}</strong><small data-dock-artist>{config.local?.playlist?.[0]?.artist || "从曲库选择一首歌"}</small></div></div>}
 <!-- Progress Bar (Slim) -->
 <div class="music-progress px-1">
     <div class="progress-container relative w-full h-1 bg-neutral-300/60 dark:bg-neutral-500/40 rounded-full cursor-pointer touch-none mb-2 group mt-2" tabindex="0" role="slider" aria-label={i18n(I18nKey.musicProgress)} aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
@@ -121,6 +123,7 @@ const widgetId =
 
 <!-- Controls Row -->
 <div class="music-controls flex items-center justify-between px-1 select-none">
+    <div class="music-core-controls">
     <!-- Repeat Mode -->
     <button class="btn-repeat text-neutral-300 dark:text-neutral-600 hover:text-(--primary) transition-colors p-2 active:scale-95" title={i18n(I18nKey.musicPlayMode)} aria-label={i18n(I18nKey.musicPlayMode)}>
         <Icon is:inline name="material-symbols:repeat-rounded" class="icon-repeat text-xl" aria-hidden="true" />
@@ -144,12 +147,15 @@ const widgetId =
         <Icon is:inline name="material-symbols:skip-next-rounded" class="text-3xl" aria-hidden="true" />
     </button>
 
+    </div>
     <!-- Playlist Toggle Arrow -->
     <button class="btn-drawer-toggle text-neutral-400 hover:text-(--primary) transition-all duration-300 p-2 transform active:scale-95" title={i18n(I18nKey.musicPlaylist)} aria-label={i18n(I18nKey.musicPlaylist)} aria-expanded="false" aria-controls={`${widgetId}-playlist`}>
         <Icon is:inline name="mdi:playlist-music" class="text-xl" aria-hidden="true" />
     </button>
 </div>
 
+{variant === "room" && <button class="room-library-toggle" data-toggle-library aria-controls="library" aria-expanded="false"><Icon is:inline name="mdi:playlist-music" aria-hidden="true"/><span>{roomConfig.labels?.library || "曲库"}</span></button>}
+</div>
 <!-- Lyrics Drawer -->
 <slot name="room-tabs" />
 <div id={`${widgetId}-lyrics`} role={variant === 'room' ? 'tabpanel' : undefined} aria-labelledby={variant === 'room' ? 'room-lyrics-tab' : undefined} inert aria-hidden="true" class="lrc-drawer grid transition-all duration-300 ease-[cubic-bezier(0.4,0,0.2,1)] grid-rows-[0fr] opacity-0">

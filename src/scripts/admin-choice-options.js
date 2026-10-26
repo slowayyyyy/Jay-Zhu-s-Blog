@@ -309,3 +309,19 @@ export const ADMIN_ACTIVITY_TYPES = [
 	'工具',
 	'公告',
 ];
+
+// Light inks for the midnight listening room; other surfaces retain their palette.
+export const ROOM_COLOR_OPTIONS = [
+ {label:'月白',value:'#f4edf8',usage:'正文与当前翻译，推荐',recommended:true},
+ {label:'雾紫',value:'#c9bdd3',usage:'歌手与未唱歌词，推荐',recommended:true},
+ {label:'淡紫',value:'#e9bff1',usage:'夜海歌词高亮，推荐',recommended:true},
+ {label:'银白',value:'#eeeeee',usage:'简洁中性文字'},
+ {label:'珍珠灰',value:'#c8c8d4',usage:'较柔和的次级文字'},
+ {label:'玫瑰粉',value:'#f1c3d7',usage:'温柔的歌词高亮'},
+ {label:'薄荷白',value:'#c5e8dc',usage:'清凉的浅色强调'},
+ {label:'冰蓝',value:'#c1ddf3',usage:'蓝调背景与歌词'},
+ {label:'香槟白',value:'#f2dfbd',usage:'暖色背景与歌词'},
+ {label:'浅藤紫',value:'#d3c3f4',usage:'柔和的夜间强调'},
+ {label:'水光青',value:'#b7e8ea',usage:'海洋氛围的浅色强调'},
+ {label:'纯白',value:'#ffffff',usage:'对比更清晰的正文'},
+];

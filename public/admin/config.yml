@@ -259,35 +259,53 @@ collections:
         name: music_room
         file: src/data/music-room.json
         format: json
-        description: 窗光唱片室：主画面、取景、歌词字号、唱片架、手记和播放器策略均在这里配置。歌曲、真实封面、KRC 和每首手记仍在“全部前台文案与歌单 → 音乐歌单”管理。保存后等待部署更新，不清理音乐缓存。
+        description: 全屏聆听室：夜海背景、桌面与手机取景、动态微光、歌词字号和曲库抽屉均在这里配置。歌曲、真实封面、KRC 和每首手记仍在“全部前台文案与歌单 → 音乐歌单”管理。保存后等待部署更新，不清理音乐缓存。
         fields:
           - { label: 开放聆听室入口, name: enabled, widget: boolean, default: true }
           - { label: 聆听室标题, name: title, widget: string }
-          - { label: 聆听室介绍, name: intro, widget: text }
+          - { label: 聆听室页面描述, name: intro, widget: text }
           - { label: 门厅入口按钮文字, name: entryLabel, widget: string }
           - { label: 门厅入口说明, name: entryDescription, widget: text }
           - { label: 返回门厅按钮文字, name: backLabel, widget: string }
           - { label: 旧顶部照片（保留，不参与新版展示）, name: headerImage, widget: hidden, required: false }
           - { label: 旧顶部照片说明（保留）, name: headerImageAlt, widget: hidden, required: false }
-          - { label: 聆听室强调色, name: accent, widget: color-palette, hint: "推荐苍蓝色 #167eb3。同步作用于播放按钮、进度条、歌词高亮和歌单选择；保留自定义颜色。" }
-          - label: 窗光主画面与阅读排版
+          - { label: 聆听室强调色, name: accent, widget: color-palette, night_palette: true, hint: "夜海概念图推荐淡紫 #e9bff1。同步作用于进度、歌词高亮和曲库状态；建议选择与深色背景对比清晰的浅色。" }
+          - label: 沉浸背景与展示设置
             name: appearance
             widget: object
             hint: 图片、取景与数据直接对应前台；选用已有素材不会重复上传。曲目封面不在这里更换。
             fields:
-              - { label: 显示窗光与花卉背景, name: showBackground, widget: boolean, default: true }
-              - { label: 亮色主画面与取景, name: backgroundImage, widget: image-crop, preview_aspect: "16 / 9", required: false, crop_hint: 推荐左边缘留花卉，右侧留白给歌词。可从素材库选择“聆听室 · 窗光花影”，或上传自己的图片。这里只改变展示取景，原图保留。 }
-              - { label: 手机主画面与取景, name: mobileBackgroundImage, widget: image-crop, preview_aspect: "9 / 16", required: false, crop_hint: 手机单独取景，推荐保留左侧花卉。留空则使用亮色主画面；可选择同一张素材，无需重复上传。 }
-              - { label: 暗色专用主画面与取景（可留空）, name: darkBackgroundImage, widget: image-crop, preview_aspect: "16 / 9", required: false, crop_hint: 留空时使用亮色图片并降低亮度；也可单独选择暗色素材。 }
-              - label: 亮色背景浓度
+              - { label: 显示全屏背景, name: showBackground, widget: boolean, default: true }
+              - { label: 桌面背景与取景, name: backgroundImage, widget: image-crop, preview_aspect: "16 / 9", required: false, crop_hint: 概念图使用“聆听室 · 夜海水母”。可直接从素材库选择或上传图片、GIF；桌面全屏铺满，建议 1920×1080 或更大。避开过亮文字区域，原图保留。 }
+              - { label: 手机主画面与取景, name: mobileBackgroundImage, widget: image-crop, preview_aspect: "9 / 16", required: false, crop_hint: 手机独立取景。留空使用桌面背景；可选择同一素材并拖动焦点，无需重复上传。 }
+              - { label: 暗色专用主画面与取景（可留空）, name: darkBackgroundImage, widget: image-crop, preview_aspect: "16 / 9", required: false, crop_hint: 跟随全站暗色偏好时可切换此图。留空使用桌面背景；房间始终保留深色阅读界面。 }
+              - label: 默认背景浓度
                 name: backgroundOpacity
                 widget: number
                 value_type: int
                 min: 0
                 max: 100
-                default: 90
-                hint: 0 为隐藏，100 为原图浓度；推荐 70–90，避免影响歌词阅读。
-              - { label: 暗色背景浓度, name: darkBackgroundOpacity, widget: number, value_type: int, min: 0, max: 100, default: 18, hint: 推荐 10–25。调整后请在前台切到暗色检查文字对比。 }
+                default: 100
+                hint: 100 保留原图颜色；降低后融入夜色底。阅读对比可通过下方背景压暗调整。
+              - { label: 暗色背景浓度, name: darkBackgroundOpacity, widget: number, value_type: int, min: 0, max: 100, default: 100, hint: 跟随全站暗色偏好时的图片浓度；房间文字保持浅色。 }
+              - { label: 背景压暗程度, name: backgroundDim, widget: number, value_type: int, min: 0, max: 85, default: 32, hint: 数字越大越暗。夜海背景推荐 32；明亮照片可设 45–65，保证歌词清晰。 }
+              - { label: 背景缓慢漂移动效, name: backgroundMotion, widget: boolean, default: true, hint: 让背景轻轻漂移。前台可临时暂停；系统减少动态、节省流量及切到后台时自动暂停。 }
+              - { label: 显示漂浮微光, name: showParticles, widget: boolean, default: true, hint: 少量动态光点，随背景动态开关一起暂停；手机自动减少数量。 }
+              - { label: 正文与当前翻译颜色, name: textColor, widget: color-palette, night_palette: true, default: '#f4edf8', hint: "推荐浅白 #f4edf8，避免在夜色背景使用深色字。" }
+              - { label: 歌手与未唱歌词颜色, name: mutedColor, widget: color-palette, night_palette: true, default: '#c9bdd3', hint: "推荐浅灰紫 #c9bdd3；请保持歌词能看清。" }
+              - { label: 桌面进入时默认展开曲库, name: drawerOpen, widget: boolean, default: true, hint: 首次进入生效。访客手动收起或展开后本机记住；手机始终先收起。 }
+              - label: 桌面曲库宽度
+                name: drawerWidth
+                widget: select
+                default: 380
+                options:
+                  - { label: 紧凑（320 像素）, value: 320 }
+                  - { label: 适中（360 像素）, value: 360 }
+                  - { label: 概念图（380 像素，推荐）, value: 380 }
+                  - { label: 宽松（420 像素）, value: 420 }
+                  - { label: 更宽（460 像素）, value: 460 }
+                hint: 小屏自动缩窄或切换覆盖抽屉，曲库独立滚动，不增加页面长度。
+              - { label: 曲库显示最近播放, name: showRecent, widget: boolean, default: true, hint: 只在访客自己的浏览器保存最近 50 首，不上传账号数据；已隐藏歌曲自动排除。 }
               - label: 桌面黑胶大小
                 name: recordSize
                 widget: select
@@ -299,7 +317,7 @@ collections:
                   - { label: 更醒目（480 像素）, value: 480 }
                   - { label: 最大（520 像素）, value: 520 }
                 hint: 屏幕较小时自动缩小，不会溢出。手机使用单独的自适应比例。
-              - { label: 黑胶后显示当前歌曲封套, name: showSleeve, widget: boolean, default: true, hint: 自动跟随当前歌曲真实封面，不需要重复配置。手机自动收起封套。 }
+              - { label: 黑胶后显示当前歌曲封套, name: showSleeve, widget: boolean, default: false, hint: 自动跟随当前歌曲真实封面，不需要重复配置。手机自动收起封套。 }
               - label: 歌词原文字号
                 name: lyricFontSize
                 widget: select
@@ -319,51 +337,40 @@ collections:
                   - { label: 舒适（16 像素，推荐）, value: 16 }
                   - { label: 较大（18 像素）, value: 18 }
                   - { label: 大字（20 像素）, value: 20 }
-              - label: 歌词面板高度（含上方页签）
+              - label: 桌面歌词区域最大高度
                 name: lyricHeight
                 widget: select
-                default: 380
+                default: 520
                 options:
                   - { label: 少量歌词（280 像素）, value: 280 }
                   - { label: 适中（320 像素）, value: 320 }
-                  - { label: 概念图比例（380 像素，推荐）, value: 380 }
+                  - { label: 适中（380 像素）, value: 380 }
                   - { label: 更多歌词（440 像素）, value: 440 }
-                  - { label: 最多歌词（520 像素）, value: 520 }
-              - { label: 显示“专注聆听”入口, name: showFocus, widget: boolean, default: true, hint: 开启专注时暂收导航和唱片架；再次点击或按 Esc 退出，不影响播放。 }
-              - { label: 唱片架显示黑胶外圈, name: sleeveLibrary, widget: boolean, default: true, hint: 封面统一按圆形显示；关闭后显示简洁的圆形封面。 }
-              - label: 唱片架每页歌曲数量
-                name: libraryPageSize
-                widget: select
-                default: 6
-                options:
-                  - { label: 6 首（紧凑，推荐）, value: 6 }
-                  - { label: 12 首, value: 12 }
-                  - { label: 18 首, value: 18 }
-                  - { label: 24 首, value: 24 }
-                hint: 唱片与列表视图共用分页；搜索、分类覆盖所有歌曲，不改变播放顺序。手机可横向翻阅当前页。
-              - label: 底部迷你播放器出现时机
-                name: miniMode
-                widget: select
-                default: auto
-                options:
-                  - { label: 主控制滚出屏幕后出现（推荐）, value: auto }
-                  - { label: 始终显示（保留旧版习惯）, value: always }
-                hint: 如需完全关闭，请在下方“播放器展示”关闭底部迷你播放器。
+                  - { label: 概念图（520 像素，推荐）, value: 520 }
+              - { label: 旧专注入口（新版默认全屏沉浸）, name: showFocus, widget: hidden, required: false }
+              - { label: 旧唱片架外圈配置, name: sleeveLibrary, widget: hidden, required: false }
+              - { label: 旧唱片架分页配置, name: libraryPageSize, widget: hidden, required: false }
+              - { label: 旧迷你播放器策略, name: miniMode, widget: hidden, required: false }
           - label: 聆听室按钮与提示文字
             name: labels
             widget: object
             fields:
+              - { label: 底部曲库入口, name: library, widget: string, default: 曲库 }
+              - { label: 歌单范围文字, name: playlists, widget: string, default: 歌单 }
+              - { label: 最近范围文字, name: recent, widget: string, default: 最近 }
+              - { label: 曲库底部收起按钮, name: closeLibrary, widget: string, default: '收起曲库，专注聆听' }
+              - { label: 最近播放为空时提示, name: recentEmpty, widget: text, default: '还没有最近播放，选一首喜欢的歌吧。' }
               - { label: 歌词页签, name: lyrics, widget: string, default: 歌词 }
               - { label: 手记页签, name: notes, widget: string, default: 手记 }
-              - { label: 开始专注, name: focus, widget: string, default: 专注聆听 }
-              - { label: 退出专注, name: exitFocus, widget: string, default: 退出专注 }
+              - { label: 开始专注, name: focus, widget: hidden, required: false }
+              - { label: 退出专注, name: exitFocus, widget: hidden, required: false }
               - { label: 全部歌曲筛选, name: allTracks, widget: string, default: 全部 }
-              - { label: 列表视图, name: list, widget: string, default: 列表 }
-              - { label: 封面视图, name: covers, widget: string, default: 封面 }
+              - { label: 列表视图, name: list, widget: hidden, required: false }
+              - { label: 封面视图, name: covers, widget: hidden, required: false }
               - { label: 歌词收起时的展开按钮, name: openLyrics, widget: string, default: 展开歌词 }
               - { label: 当前歌曲未填写手记时提示, name: emptyNote, widget: text, default: 这首歌还没有手记。 }
-              - { label: 上一页按钮, name: previousPage, widget: string, default: 上一页 }
-              - { label: 下一页按钮, name: nextPage, widget: string, default: 下一页 }
+              - { label: 上一页按钮, name: previousPage, widget: hidden, required: false }
+              - { label: 下一页按钮, name: nextPage, widget: hidden, required: false }
           - label: 门厅精选歌曲
             name: foyer
             widget: object
@@ -381,7 +388,7 @@ collections:
               - { label: 默认显示翻译, name: defaultTranslation, widget: boolean, default: false, hint: 已经手动选择过的访客沿用自己的选择。没有翻译的歌曲不显示翻译按钮。 }
               - { label: 播放时旋转唱片封面, name: rotateRecord, widget: boolean, default: true, hint: 系统开启减少动态效果时自动停用。 }
               - { label: 显示唱臂, name: showTonearm, widget: boolean, default: true }
-              - { label: 显示底部迷你播放器, name: showMini, widget: boolean, default: true }
+              - { label: 旧迷你控件开关（新版始终只有一组底部控制）, name: showMini, widget: hidden, required: false }
           - label: 门厅与聆听室过渡
             name: transition
             widget: object
@@ -396,7 +403,7 @@ collections:
                   - { label: 舒缓（0.75 秒）, value: 750 }
               - { label: 返回时记住门厅滚动位置, name: rememberScroll, widget: boolean, default: true }
           - { label: 显示唱片架情境分类, name: showCollections, widget: boolean, default: true }
-          - { label: 分类导航辅助名称, name: collectionsTitle, widget: string, hint: 用于屏幕阅读器识别分类区，不作为页面可见标题；页面标题在下方“唱片架区域标题”调整。 }
+          - { label: 分类导航辅助名称, name: collectionsTitle, widget: string, hint: 用于屏幕阅读器识别分类区，不作为页面可见标题；抽屉标题在下方“曲库抽屉标题”调整。 }
           - label: 情境歌单
             name: collections
             widget: list
@@ -415,15 +422,10 @@ collections:
           - { label: 手记检索提示, name: notesSearchPlaceholder, widget: string, default: 寻找歌名、歌手或手记 }
           - { label: 手记检索无结果提示, name: notesEmptyMessage, widget: text, default: 没有找到对应的手记，换个关键词试试。 }
           - { label: 迁移前手记归档（不参与展示）, name: notes, widget: hidden, required: false }
-          - { label: 唱片架区域标题, name: libraryTitle, widget: string }
+          - { label: 曲库抽屉标题, name: libraryTitle, widget: string }
           - { label: 搜索框提示, name: searchPlaceholder, widget: string }
           - { label: 无匹配歌曲提示, name: emptyMessage, widget: text }
-          - label: 曲库默认展示
-            name: defaultView
-            widget: select
-            options:
-              - { label: 唱片架（真实封面，推荐）, value: covers }
-              - { label: 简洁歌曲列表, value: list }
+          - { label: 旧曲库视图（新版使用独立滚动列表）, name: defaultView, widget: hidden, required: false }
       - label: 全部前台文案与歌单
         name: azure
         file: src/data/azure-content.json

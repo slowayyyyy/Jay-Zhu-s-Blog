@@ -1,115 +1,125 @@
 {
-	"enabled": true,
-	"title": "聆听室",
-	"intro": "把时间留给一首歌。",
-	"entryLabel": "进入聆听室",
-	"entryDescription": "展开唱片、歌词与收藏，在这里慢慢听。",
-	"backLabel": "回到乐境",
-	"headerImage": {
-		"src": "/assets/images/music-room/listening-corner.webp",
-		"positionX": 50,
-		"positionY": 50,
-		"zoom": 1,
-		"alt": "窗边的浅蓝花束与唱片"
-	},
-	"headerImageAlt": "窗边的浅蓝花束与唱片",
-	"accent": "#167eb3",
-	"foyer": {
-		"title": "停一会儿，听一首歌",
-		"description": "从熟悉的旋律开始。",
-		"tracks": [
-			"tabibito-no-uta",
-			"yoasobi-tabun",
-			"tanya-next-love"
-		]
-	},
-	"player": {
-		"recordImage": { "src": "/assets/images/music-room/vinyl.webp", "positionX": 50, "positionY": 50, "zoom": 1 },
-		"tonearmImage": { "src": "/assets/images/music-room/tonearm.webp", "positionX": 50, "positionY": 50, "zoom": 1 },
-		"openLyrics": true,
-		"defaultTranslation": false,
-		"rotateRecord": true,
-		"showTonearm": true,
-		"showMini": true
-	},
-	"transition": {
-		"enabled": true,
-		"duration": 600,
-		"rememberScroll": true
-	},
-	"collectionsTitle": "此刻，想听",
-	"showCollections": true,
-	"collections": [
-		{
-			"name": "写作时",
-			"description": "安静地陪伴一页文字",
-			"cover": {
-				"src": "/assets/images/music-covers/01-tabibito-no-uta.png",
-				"positionX": 50,
-				"positionY": 50,
-				"zoom": 1
-			},
-			"tracks": [
-				"tabibito-no-uta",
-				"mebuki-no-uta",
-				"kaze-to-iku-michi"
-			],
-			"example": true
-		},
-		{
-			"name": "归途",
-			"description": "让熟悉的声音陪你回家",
-			"cover": {
-				"src": "/assets/images/music-covers/10-yoasobi-tabun.png",
-				"positionX": 50,
-				"positionY": 50,
-				"zoom": 1
-			},
-			"tracks": [
-				"kaze-to-iku-michi",
-				"yoasobi-tabun",
-				"mamoritai-mono"
-			],
-			"example": true
-		},
-		{
-			"name": "夜里",
-			"description": "留给夜晚的一点温柔",
-			"cover": {
-				"src": "/assets/images/music-covers/11-tanya-next-love.png",
-				"positionX": 50,
-				"positionY": 50,
-				"zoom": 1
-			},
-			"tracks": [
-				"tanya-next-love",
-				"inori-owareba",
-				"musubime"
-			],
-			"example": true
-		}
-	],
-	"notesTitle": "听歌手记",
-	"showNotes": true,
-	"allNotesLabel": "查看全部手记",
-	"notesSearchPlaceholder": "寻找歌名、歌手或手记",
-	"notesEmptyMessage": "没有找到对应的手记，换个关键词试试。",
-	"notes": [
-		{
-			"title": "在一首歌里停留",
-			"text": "心怀仁慈思慕，爱意触手可得。",
-			"track": "tabibito-no-uta",
-			"example": true
-		}
-	],
-	"libraryTitle": "唱片架",
-	"searchPlaceholder": "寻找歌名或歌手",
-	"emptyMessage": "这里还没有匹配的歌曲，换一个关键词试试。",
-	"defaultView": "covers",
+  "enabled": true,
+  "title": "聆听室",
+  "intro": "把时间留给一首歌。",
+  "entryLabel": "进入聆听室",
+  "entryDescription": "展开唱片、歌词与收藏，在这里慢慢听。",
+  "backLabel": "回到乐境",
+  "headerImage": {
+    "src": "/assets/images/music-room/listening-corner.webp",
+    "positionX": 50,
+    "positionY": 50,
+    "zoom": 1,
+    "alt": "窗边的浅蓝花束与唱片"
+  },
+  "headerImageAlt": "窗边的浅蓝花束与唱片",
+  "accent": "#e9bff1",
+  "foyer": {
+    "title": "停一会儿，听一首歌",
+    "description": "从熟悉的旋律开始。",
+    "tracks": [
+      "tabibito-no-uta",
+      "yoasobi-tabun",
+      "tanya-next-love"
+    ]
+  },
+  "player": {
+    "recordImage": {
+      "src": "/assets/images/music-room/vinyl.webp",
+      "positionX": 50,
+      "positionY": 50,
+      "zoom": 1
+    },
+    "tonearmImage": {
+      "src": "/assets/images/music-room/tonearm.webp",
+      "positionX": 50,
+      "positionY": 50,
+      "zoom": 1
+    },
+    "openLyrics": true,
+    "defaultTranslation": false,
+    "rotateRecord": true,
+    "showTonearm": true,
+    "showMini": true
+  },
+  "transition": {
+    "enabled": true,
+    "duration": 600,
+    "rememberScroll": true
+  },
+  "collectionsTitle": "此刻，想听",
+  "showCollections": true,
+  "collections": [
+    {
+      "name": "写作时",
+      "description": "安静地陪伴一页文字",
+      "cover": {
+        "src": "/assets/images/music-covers/01-tabibito-no-uta.png",
+        "positionX": 50,
+        "positionY": 50,
+        "zoom": 1
+      },
+      "tracks": [
+        "tabibito-no-uta",
+        "mebuki-no-uta",
+        "kaze-to-iku-michi"
+      ],
+      "example": true
+    },
+    {
+      "name": "归途",
+      "description": "让熟悉的声音陪你回家",
+      "cover": {
+        "src": "/assets/images/music-covers/10-yoasobi-tabun.png",
+        "positionX": 50,
+        "positionY": 50,
+        "zoom": 1
+      },
+      "tracks": [
+        "kaze-to-iku-michi",
+        "yoasobi-tabun",
+        "mamoritai-mono"
+      ],
+      "example": true
+    },
+    {
+      "name": "夜里",
+      "description": "留给夜晚的一点温柔",
+      "cover": {
+        "src": "/assets/images/music-covers/11-tanya-next-love.png",
+        "positionX": 50,
+        "positionY": 50,
+        "zoom": 1
+      },
+      "tracks": [
+        "tanya-next-love",
+        "inori-owareba",
+        "musubime"
+      ],
+      "example": true
+    }
+  ],
+  "notesTitle": "听歌手记",
+  "showNotes": true,
+  "allNotesLabel": "查看全部手记",
+  "notesSearchPlaceholder": "寻找歌名、歌手或手记",
+  "notesEmptyMessage": "没有找到对应的手记，换个关键词试试。",
+  "notes": [
+    {
+      "title": "在一首歌里停留",
+      "text": "心怀仁慈思慕，爱意触手可得。",
+      "track": "tabibito-no-uta",
+      "example": true
+    }
+  ],
+  "libraryTitle": "曲库",
+  "searchPlaceholder": "寻找歌名或歌手",
+  "emptyMessage": "这里还没有匹配的歌曲，换一个关键词试试。",
+  "defaultView": "list",
   "appearance": {
     "showBackground": true,
     "backgroundImage": {
-      "src": "/assets/images/music-room/windowlight-scene.webp",
+      "src": "/assets/images/music-room/jellyfish-night.webp",
       "positionX": 50,
       "positionY": 50,
       "zoom": 1
@@ -120,23 +130,31 @@
       "positionY": 50,
       "zoom": 1
     },
-    "backgroundOpacity": 90,
-    "darkBackgroundOpacity": 18,
+    "backgroundOpacity": 100,
+    "darkBackgroundOpacity": 100,
     "recordSize": 440,
-    "showSleeve": true,
+    "showSleeve": false,
     "lyricFontSize": 24,
     "translationFontSize": 16,
-    "lyricHeight": 380,
+    "lyricHeight": 520,
     "showFocus": true,
     "sleeveLibrary": true,
     "miniMode": "auto",
     "libraryPageSize": 6,
     "mobileBackgroundImage": {
-      "src": "/assets/images/music-room/windowlight-scene.webp",
-      "positionX": 0,
+      "src": "/assets/images/music-room/jellyfish-night.webp",
+      "positionX": 58,
       "positionY": 50,
       "zoom": 1
-    }
+    },
+    "backgroundDim": 32,
+    "backgroundMotion": true,
+    "showParticles": true,
+    "drawerOpen": true,
+    "drawerWidth": 380,
+    "showRecent": true,
+    "textColor": "#f4edf8",
+    "mutedColor": "#c9bdd3"
   },
   "labels": {
     "lyrics": "歌词",
@@ -149,6 +167,11 @@
     "openLyrics": "展开歌词",
     "emptyNote": "这首歌还没有手记。",
     "previousPage": "上一页",
-    "nextPage": "下一页"
+    "nextPage": "下一页",
+    "library": "曲库",
+    "playlists": "歌单",
+    "recent": "最近",
+    "closeLibrary": "收起曲库，专注聆听",
+    "recentEmpty": "还没有最近播放，选一首喜欢的歌吧。"
   }
 }

@@ -5,7 +5,7 @@ import vm from 'node:vm';
 
 const source = readFileSync(new URL('../../src/scripts/music-room.js', import.meta.url), 'utf8');
 // Execute the actual transition controller, without mounting audio or the page UI.
-const controller = source.slice(0, source.indexOf('function applyFilter('));
+const controller = source.slice(source.indexOf('// A view/controller'), source.indexOf('function applyFilter('));
 function mount({ enabled = true, rememberScroll = true, reduced = false, offscreen = false } = {}) {
   const scrolls = [];
   const options = { enabled, rememberScroll };

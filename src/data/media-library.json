@@ -3,6 +3,14 @@
 	"description": "这里统一索引当前博客使用和保留的洛琪希图片、动图。新增素材后，可在图库与相册、壁纸、时间问候或其他对应模块中选择；替换前请先查看“当前用途”，避免误改多个页面共同使用的素材。",
 	"assets": [
 		{
+			"id": "music-room-jellyfish-night",
+			"name": "聆听室 · 夜海水母",
+			"kind": "图片",
+			"src": "/assets/images/music-room/jellyfish-night.webp",
+			"usage": "全屏聆听室桌面与手机默认背景，可从后台素材库选择并独立取景",
+			"note": "为本次聆听室生成的夜海水母氛围背景；动态漂移与微光可在后台关闭。原窗光素材仍保留。"
+		},
+		{
 			"id": "music-room-tonearm",
 			"name": "聆听室 · 透明金属唱臂",
 			"kind": "图片",

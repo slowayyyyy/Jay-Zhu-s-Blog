@@ -1,3 +1,5 @@
+import {setupImmersiveRoom} from "./immersive-room.js";
+import {recentTracks,rememberTrack} from "../lib/recent-tracks.mjs";
 // A view/controller for the persistent MusicManager, never a second audio engine.
 let filter = null;
 let libraryPageIndex = 0;
@@ -97,11 +99,24 @@ function applyFilter(resetPage = false) {
   if (!root) return;
   const query = root.querySelector('[data-song-search]')?.value.trim().toLocaleLowerCase() || '';
   const rows = [...root.querySelectorAll('[data-song-search-text]')];
+  const immersive = Boolean(root.matches?.('.immersive-room'));
+  const scope = root.dataset?.libraryScope || 'all';
+  let selected = immersive && scope !== 'playlists' ? null : filter;
+  let recent = [];
+  if (immersive && scope === 'recent') {
+    try { recent = recentTracks(localStorage,rows.map(row=>row.dataset.trackId)); } catch { /* private mode */ }
+    selected = rows.filter(row=>recent.includes(row.dataset.trackId)).map(row=>Number(row.dataset.songIndex));
+  }
   const shelf = root.querySelector('[data-library-page-size]');
   // The foyer keeps its existing selection; only the full library is paginated.
-  const result = librarySlice(rows.map(row=>({index:Number(row.dataset.songIndex),searchText:row.dataset.songSearchText,row})),query,filter,resetPage ? 0 : libraryPageIndex,shelf?.dataset.libraryPageSize);
-  const visible = shelf ? new Set(result.items.map(track=>track.row)) : new Set(rows.filter(row=>row.dataset.songSearchText.includes(query) && (filter === null || filter.includes(Number(row.dataset.songIndex)))));
-  rows.forEach(row=>{row.hidden = !visible.has(row);});
+  const result = librarySlice(rows.map(row=>({index:Number(row.dataset.songIndex),searchText:row.dataset.songSearchText,row})),query,selected,resetPage ? 0 : libraryPageIndex,shelf?.dataset.libraryPageSize);
+  const visible = shelf ? new Set(result.items.map(track=>track.row)) : new Set(rows.filter(row=>row.dataset.songSearchText.includes(query) && (selected === null || selected.includes(Number(row.dataset.songIndex)))));
+  rows.forEach(row=>{
+    row.hidden = !visible.has(row);
+    if (immersive) row.style.order = scope === 'recent' ? String(recent.indexOf(row.dataset.trackId)) : '';
+  });
+  const recentEmpty = root.querySelector('[data-recent-empty]');
+  if (recentEmpty) recentEmpty.hidden = scope !== 'recent' || visible.size !== 0;
   libraryPageIndex = result.index;
   const pager = root.querySelector('[data-library-pagination]');
   if (pager) {
@@ -115,9 +130,9 @@ function applyFilter(resetPage = false) {
     }));
     select.value = String(result.index);
   }
-  if (resetPage) root.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
+  if (resetPage) root.querySelector('.library-songs')?.scrollTo({left:0,top:0,behavior:'instant'});
   const empty = root.querySelector('[data-library-empty]');
-  if (empty) empty.hidden = visible.size !== 0;
+  if (empty) empty.hidden = visible.size !== 0 || (immersive && scope === 'recent');
 }
 
 function syncCurrentNote(root, currentIndex) {
@@ -156,6 +171,19 @@ function syncPlaying() {
   if (!state) return;
   syncCurrentNote(page(), state.currentIndex);
   syncRoomPanel(page());
+  const root = page();
+  if (root?.matches('.immersive-room') && state.track) {
+    const title=root.querySelector('[data-dock-title]'),artist=root.querySelector('[data-dock-artist]'),cover=root.querySelector('[data-dock-cover]');
+    if(title)title.textContent=state.track.name;
+    if(artist)artist.textContent=state.track.artist;
+    if(cover){cover.hidden=!state.track.pic;if(state.track.pic && cover.getAttribute('src')!==state.track.pic)cover.src=state.track.pic;}
+    if(state.isPlaying){
+      const rows=[...root.querySelectorAll('[data-track-id]')];
+      const id=rows.find(row=>Number(row.dataset.songIndex)===state.currentIndex)?.dataset.trackId;
+      try { rememberTrack(localStorage,id,rows.map(row=>row.dataset.trackId)); } catch { /* private mode */ }
+      if(root.dataset.libraryScope==='recent')applyFilter();
+    }
+  }
   page()?.querySelectorAll('[data-song-index]').forEach(button => {
     const active = Number(button.dataset.songIndex) === state.currentIndex;
     button.setAttribute('aria-current',String(active));
@@ -205,6 +233,15 @@ function setupRoomView() {
   if (volume && controlRow && volume.parentElement !== controlRow) controlRow.insertBefore(volume, controlRow.querySelector('.btn-drawer-toggle'));
   const translation = widget?.querySelector('.btn-translation-toggle');
   if (translation && translation.parentElement !== widget) widget.append(translation);
+  if (root.matches?.('.immersive-room')) {
+    const teardown = setupImmersiveRoom(root,applyFilter);
+    const lyrics = root.querySelector('#music-room-player .lrc-drawer');
+    const panelObserver = new MutationObserver(() => syncRoomPanel(root));
+    if (lyrics) panelObserver.observe(lyrics,{attributes:true,attributeFilter:['aria-hidden']});
+    syncRoomPanel(root);
+    cleanupRoomView = () => {teardown();panelObserver.disconnect();cleanupRoomView=()=>{};};
+    return;
+  }
   const controls = root.querySelector('#music-room-player .music-controls');
   const mini = root.querySelector('[data-room-mini]');
   const navbar = document.getElementById('navbar-wrapper');
@@ -328,7 +365,7 @@ document.addEventListener('click',async event => {
   if (target.closest('[data-library-previous],[data-library-next]')) {
     libraryPageIndex += target.closest('[data-library-next]') ? 1 : -1;
     applyFilter();
-    root.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
+    root.querySelector('.library-songs')?.scrollTo({left:0,top:0,behavior:'instant'});
   }
 });
 document.addEventListener('input',event => {
@@ -339,7 +376,7 @@ document.addEventListener('change',event => {
   if (!event.target.matches?.('[data-library-page-select]')) return;
   libraryPageIndex = Number(event.target.value);
   applyFilter();
-  page()?.querySelector('.library-songs')?.scrollTo({left:0,behavior:'instant'});
+  page()?.querySelector('.library-songs')?.scrollTo({left:0,top:0,behavior:'instant'});
 });
 document.addEventListener('keydown',event => {
   const root = page();
