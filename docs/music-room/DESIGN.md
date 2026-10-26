@@ -1,273 +1,173 @@
 ---
-name: "苍蓝回廊 · 乐境与聆听室"
-description: "窗边聆听手记：冷白浅蓝窗光、真实黑胶与随曲封套。"
+name: "苍蓝回廊 · 夜海聆听室"
+description: "全屏夜海、真实黑胶与同步歌词，曲库按需展开。"
 colors:
-  primary: "#167eb3"
-  ink: "#163c65"
-  muted: "#486986"
-  paper: "#f3f8fc"
-  ink-dark: "#dbe8f5"
-  muted-dark: "#afc5da"
-  paper-dark: "#101d2b"
-  surface: "white"
-  surface-dark: "oklch(0.23 0.015 var(--hue))"
-  divider: "rgba(0, 0, 0, 0.08)"
-  divider-dark: "rgba(255, 255, 255, 0.08)"
+  primary: "#e9bff1"
+  ink: "#f4edf8"
+  muted: "#c9bdd3"
+  night: "#0c0913"
+  paper: "#100c19"
+  dock: "rgb(11 8 18/.92)"
+  library: "rgb(13 10 22/.9)"
+  divider: "rgb(236 218 248/.15)"
+  row-active: "rgb(217 187 231/.11)"
+  search-border: "rgb(230 213 241/.24)"
 typography:
-  display:
-    fontFamily: "'LXGW WenKai Screen R', serif"
-    fontSize: "2rem"
+  title:
+    fontFamily: "-apple-system,BlinkMacSystemFont,'Segoe UI','PingFang SC','Microsoft YaHei',sans-serif"
+    fontSize: "clamp(1.3rem,2vw,1.9rem)"
     fontWeight: 400
     lineHeight: 1.4
-  headline:
-    fontFamily: "'LXGW WenKai Screen R', serif"
-    fontSize: "1.4rem"
+  lyric:
+    fontFamily: "Georgia,'LXGW WenKai Screen R',serif"
+    fontSize: "var(--room-lyric-size)"
     fontWeight: 400
-    letterSpacing: "0.02em"
-  title:
-    fontFamily: "'LXGW WenKai Screen R', serif"
-    fontSize: "1.7rem"
-    fontWeight: 400
-    lineHeight: 1.45
-  body:
-    fontFamily: "var(--font-sans)"
+    lineHeight: 1.65
+  translation:
+    fontSize: "var(--room-translation-size)"
+    lineHeight: 1.7
+  note:
     fontSize: "1rem"
     lineHeight: 1.9
   label:
-    fontFamily: "var(--font-sans)"
     fontSize: "0.85rem"
-  lyric:
-    fontFamily: "'LXGW WenKai Screen R', serif"
-    fontSize: "var(--room-lyric-size,24px)"
-    lineHeight: 1.7
-  translation:
-    fontSize: "var(--room-translation-size,16px)"
-    fontWeight: 500
-    lineHeight: 1.7
-  time:
-    fontFamily: "var(--font-mono)"
-    fontSize: "0.8rem"
 rounded:
-  lg: "8px"
-  mini: "12px"
-  pill: "30px"
   round: "50%"
+  search: "12px"
+  song-row: "5px"
 spacing:
   sm: "0.5rem"
   md: "1rem"
-  lg: "1.5rem"
-  xl: "1.75rem"
-  section: "2rem"
+  panel: "1.25rem"
 components:
-  button-primary:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.surface}"
+  button-play:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
     rounded: "{rounded.round}"
-    width: "54px"
-    height: "54px"
-  button-ghost:
-    textColor: "{colors.muted}"
-    padding: "{spacing.sm}"
-  button-text:
-    textColor: "{colors.primary}"
-    padding: "0.5rem 0"
-  panel-tab:
-    textColor: "{colors.muted}"
-    rounded: "{rounded.pill}"
-    padding: "0.35rem 1.1rem"
-  panel-tab-selected:
-    backgroundColor: "{colors.primary}"
-    textColor: "{colors.surface}"
+    width: "56px"
+    height: "56px"
   input-search:
     textColor: "{colors.ink}"
-    rounded: "{rounded.pill}"
-    padding: "0 0.65rem"
-  listening-note:
-    textColor: "{colors.ink}"
-    typography: "{typography.body}"
-    padding: "0.5rem 0"
+    rounded: "{rounded.search}"
+    padding: "0.1rem 0.7rem"
   song-row:
-    textColor: "{colors.ink}"
-    padding: "0.75rem 0.45rem"
+    rounded: "{rounded.song-row}"
+    padding: "0.65rem 0.5rem"
   song-row-current:
-    backgroundColor: "color-mix(in srgb,var(--room-accent,var(--primary)) 7%,transparent)"
-  room-entry:
-    backgroundColor: "color-mix(in srgb,var(--primary) 5%,var(--card-bg))"
-    rounded: "{rounded.lg}"
-    padding: "1.15rem"
-  room-mini:
-    backgroundColor: "var(--card-bg)"
-    rounded: "{rounded.mini}"
-    padding: "0.6rem 1rem"
+    backgroundColor: "{colors.row-active}"
+    textColor: "{colors.primary}"
 ---
 
-# Design System: 苍蓝回廊 · 乐境与聆听室
+# Design System: 苍蓝回廊 · 夜海聆听室
 
 ## Overview
 
-**Creative North Star: "窗边聆听手记"**
+**Creative North Star: "夜海中的一张唱片"**
 
-冷白纸面、浅蓝窗光与左缘花影组成安静、浪漫的聆听空间。真实黑胶、透明金属唱臂和随当前歌曲切换的封套承担主要视觉身份；常规字重文楷与宽松歌词让界面保持自然、疏朗。
+深紫黑夜海、自然水母与浅紫白文字构成连续视口；真实黑胶、金属唱臂和当前歌曲封面是前景实物。歌词与手记直接落在场景上，操作退到顶部、底部与曲库边缘。本文件记录已实现的视觉系统，取代旧聆听室的窗光花卉设计。
 
-本系统仅约束 `/music/` 门厅与 `/music/room/` 聆听室。门厅保留博客卡片语境、共享播放器和进出过渡；宽版窗光空间及其主题覆盖仅在房间生效。全站导航、字体偏好、主题和页脚继续由博客系统管理。
+范围以 [PRODUCT.md](PRODUCT.md)、[BRIEF.md](BRIEF.md) 为准：`/music/` 门厅继续使用博客卡片、主题色、圆形主图、小唱片与精选歌曲；夜海覆盖仅作用于 `/music/room/`。两处共用播放器引擎与唱片进出过渡，门厅身份不随房间换肤。
 
-本次刷新以 `src/styles/music-room.css`、房间页面、共享 MusicPlayer、music-room 脚本及配置为准，承接 [PRODUCT.md](PRODUCT.md)、[BRIEF.md](BRIEF.md) 与已给定的 finish 结论（ship，三项 material fixes 已解决）。`Layout.astro` body 中的 THESIS / OWN-WORLD / STORY / FIRST VIEWPORT / FORM 五块契约对应批准概念 comp20261025、seed 266efb2f。桌面、手机、两种暗色及专注截图已核对；此文档记录实现，不承担发布状态。
+批准契约（2026-10-26，exec-7ddedb14；模式 Experience）：
+
+- **THESIS**：全屏夜海中呈现唱片、歌词与可收起曲库。
+- **OWN-WORLD**：midnight plum 深紫黑、自然水母、lavender 浅紫文字、真实黑胶／金属唱臂／歌曲封面；曲库封面统一圆形。
+- **STORY**：听当前歌词、翻译或手记 → 打开曲库搜索、情境歌单或最近播放 → 随时收起；始终保留原队列。
+- **FIRST VIEWPORT**：桌面左唱片、右歌词、右缘曲库、底部一组固定控制；手机纵向播放器与覆盖曲库。页签独立于歌词滚动区。
+- **FORM**：2026-10-26 用户批准并钉定概念图 exec-7ddedb14，作为当前视觉权威；使用现有真实封面／歌词，背景与展示由 CMS 管理。
 
 **Key Characteristics:**
 
-- 冷白浅蓝底、深蓝文字与单一配置强调色。
-- 原生窗光花卉图像、真实唱片与歌曲原有封面共同构成空间。
-- 桌面左唱片、右歌词或当前曲手记，下方一组完整控制与进度。
-- 手机纵向播放器与横向滚动唱片架；迷你条按需出现，专注模式收起共享站点界面。
+- 全屏深色阅读环境，水母场景缓慢漂移并带少量微光。
+- 唱片与歌词并重，单组控制始终固定在底部。
+- 曲库内部滚动，歌曲数量不增加页面长度。
+
+实现依据：`src/styles/immersive-room.css` 对 `music-room.css` 的覆盖、`src/scripts/immersive-room.js`、`music-room.js`、房间页面、`MusicPlayer.astro`、`src/data/music-room.json` 与 `public/admin/config.yml`。参考截图位于 `/Users/jayzhu/.codex/project-storage/canglan-blog/previews/immersive-room-20261026/`：`desktop-final.png`、`mobile-final.png`、`mobile-library.png`、`admin-library.png`。最终桌面与手机截图已确认进度条和返回文案修正；冲突处以当前源码为准。
+
+交付核验（2026-10-26）：实现、构建与独立 finish review 已完成，disposition 为 **ship**，两项 material fixes 均已解决；本文记录最终实现。推送已获授权，部署完成状态尚未在本记录中确认。
 
 ## Colors
 
-前言记录实际基础值；配置强调色负责状态，冷白与蓝黑纸面负责明暗环境，实物素材保留自身颜色。
+前言记录当前配置与实际 CSS；CMS 可改强调色、正文色和次级文字色，由页面注入房间变量。门厅继续使用博客自身颜色。
 
 ### Primary
 
-- **窗光浅蓝（primary）**：来自 `music-room.json` 的 `accent`，映射到 `--room-accent`，并在房间内绑定 `--primary`。播放按钮、前后曲、进度、音量、活动歌词、页签和筛选共用它；明暗主题沿用同一配置值。
+- **浅紫微光（primary）**：当前歌词、逐字高亮、进度、音量填充、当前曲名与曲库选中状态。选中页签用细下划线，播放按钮使用浅紫描边。
 
 ### Neutral
 
-- **深蓝墨色（ink / ink-dark）**：房间标题、曲名和正文；暗色切换为浅蓝白。
-- **蓝灰注释（muted / muted-dark）**：歌手、时间、辅助控制与未选中歌词。
-- **冷白纸面（paper / paper-dark）**：房间的 html、body 与背景渐隐终点；暗色为蓝黑纸面。
-- **主题卡片面（surface / surface-dark）**：迷你条沿用博客 `--card-bg`；浅色默认白，开启全站随色相选项时跟随既有 OKLCH 映射。主播放区和手记不再另铺卡片底。
-- **轻分隔线（divider / divider-dark）**：沿用 `--line-divider`，用于唱片架入口、列表、搜索和专注入口边界。
+- **浅紫白（ink）／灰紫（muted）**：正文及当前翻译／歌手、未唱歌词、辅助控件；活动歌词保持常规字重。
+- **夜海底（night）／深梅纸面（paper）**：视口背景与房间纸面变量。站点明暗偏好均保留深色阅读界面。
+- **底部夜幕（dock）／曲库夜幕（library）**：高不透明度深色面，保留背景联系并承载操作。
+- **微光分隔（divider）／搜索边线（search-border）**：细边界；**灰紫选中面（row-active）**用于歌曲行悬停和当前曲。
 
-**The Room Accent Rule.** 房间的播放、进度、音量、歌词和选择状态共用配置强调色。
+**The Room Accent Rule.** 房间状态共用配置强调色，不为播放、歌词或曲库另建互不关联的色系。
 
-暗色背景使用独立浓度；未配置暗色专图时，沿用当前桌面或手机亮色取景并降低浓度、应用 `saturate(.7)`。配置暗色专图后以该图替代亮色图并移除饱和度滤镜。歌曲封面、黑胶和唱臂不套用背景暗化。导航与页脚保留全站主题表现，不把截图中的页脚装饰吸收为房间暗色令牌。
+当前桌面与手机共用 `jellyfish-night.webp`；桌面焦点（50% / 50%），手机焦点（58% / 50%），缩放均为（1）。两种背景浓度均为（100%），压暗为（32%）；覆盖层使用 `rgb(7 5 14/var(--room-dim,.32))`。暗色专图当前留空，沿用当前桌面／手机取景；配置专图后随全站暗色偏好切换。新版背景不沿用旧窗光的去饱和滤镜。
 
 ## Typography
 
-**Display Font:** 自托管 `LXGW WenKai Screen R`，serif 回退；由音乐样式导入已有字体包。
+界面与曲名使用前言 title 的系统无衬线栈；房间标题、手记标题沿用已有自托管文楷。歌词采用 Georgia 与文楷衬线组合，英文与中文按字形回退；翻译继承歌词字体。时间保留共享组件的等宽字体。
 
-**Body Font:** 继承博客 `--font-sans` 与 `firefly-font-mode`；默认文楷和访客选择的原字体均保留。
-
-**Label/Mono Font:** 标签继承正文，时间沿用 `--font-mono`。
-
-**Character:** 标题依靠字形和比例建立身份；歌词原文大于翻译，曲名可换行，辅助信息保持次级层级。
-
-- **Display**：房间标题采用前言 display；手机为（1.7rem），没有旧版标题字距。
-- **Headline**：章节标题采用前言 headline；手记小标题为（1.25rem、400）。
-- **Title**：当前曲名采用前言 title；1000px 及以下为（1.45rem），760px 及以下恢复（1.7rem）。歌手桌面为（1rem、行高 1.6），手机为（0.95rem）。
-- **Body**：手记正文采用前言 body，保留换行并允许长词折行，无额外 ch 宽度限制。
-- **Lyric / Translation**：使用 CMS 注入字号与前言行高；当前原文为强调色、字重（500），翻译保持蓝灰次级层级。页签文字为（0.95rem）。
-- **Label / Time**：常用辅助信息采用前言 label；时间采用前言 time。迷你条曲名与歌手分别为（0.8rem / 0.65rem）。
-
-**The Regular Wenkai Rule.** 房间标题、当前曲名、章节标题与手记标题使用自托管文楷常规字重（400）；活动歌词的状态字重独立处理。
+- **当前曲名**：桌面采用前言 title；手机为（1.2rem、行高 1.35）。歌手桌面为（0.95rem），手机为（0.78rem）。
+- **歌词／翻译**：当前 CMS 为（24px / 16px）；手机分别封顶（21px / 15px）。原文行高采用前言 lyric；当前翻译由灰紫转浅紫白，显示开关保留访客偏好。
+- **辅助信息**：页签与范围按钮约（0.85–0.95rem）；曲库曲名／歌手为（0.9rem / 0.78rem），底部时间为（0.72rem）。
+- **手记**：正文采用前言 note，保留换行；当前手记和全部手记按需阅读，不自动轮播。
 
 ## Layout
 
-聆听室内容层须高于页脚装饰层，低于共享导航及其弹层；固定迷你控件不能被后方页脚覆盖。验收需检查实际点击命中，不能只依据控件可见或 ARIA 状态。
+房间固定铺满视口（`inset:0; height:100dvh`），页面禁止外层滚动。博客导航、页脚、侧栏、壁纸、樱花、人物挂件和浮动目录在该路由收起；房间自己的返回、动态开关和全屏入口留在顶部。
 
-房间复用博客结构，收起该路由的壁纸、侧栏、樱花及人物挂件。主内容最大宽（1200px），顶部留（6.5rem）；房间水平内边距（2rem）。窗光背景独立铺到视口两边，高（720px），底部从（72%）开始渐隐至纸面。它是播放区背景，不是照片横幅。
+桌面头部高（70px）、底部控制带高（96px）。中间播放器采用（48% / 52%）两列：唱片及其下方曲名在左，页签与歌词／手记在右。唱片配置宽（440px），受列宽和 `100dvh - 310px` 限制；歌词区最大高度当前为（520px），顶部给页签预留（65px），歌词自身滚动且上下渐隐。
 
-桌面播放器为十二列网格，列距（1rem）、行距（0.8rem）。唱片占第 1–7 列、前两行；右侧页签独占第一行；歌词或当前曲手记占第 9–12 列第二行，内部滚动不能越过页签。唱片宽度为 `min(73%,var(--room-record-size,440px),max(300px,calc(100svh - 350px)))`。第三、四行构成下方完整播放带：第 1–3 列显示曲名与歌手，第 4 列起显示单组控制和进度；时间分列于进度两端。脚本移动既有时间、音量及翻译节点，保留其共享引擎绑定。
+曲库当前宽（380px），位于头部和控制带之间。宽屏展开时播放区右侧让出「曲库宽 + 1.5rem」；（901–1150px）曲库改为（310px），播放器列比为（43% / 57%）。关闭时曲库移出右缘，播放区恢复宽度。
 
-1000px 及以下，列距变为（0.65rem），信息占前两列，控制与进度从第三列开始；封面架由六列变四列。760px 及以下，房间内边距为（1rem）、主内容顶部为（5.2rem）、背景高为（610px），启用手机单独取景。播放器依次排为唱片、居中歌曲信息、控制、进度、页签与翻译、歌词或手记、按需展开的曲库抽屉。唱片宽为 `min(80vw,calc(var(--room-record-size,440px) * .8))`，收起后方大封套；控制宽上限（360px），音量滑杆收起，静音按钮保留。
+（900px）及以下，曲库成为宽 `min(440px,92vw)` 的覆盖抽屉，播放区不再缩窄；遮罩覆盖中间播放区。底部音量区域隐藏。（600px）及以下，主区依次为唱片、曲名／歌手、固定页签行、歌词／手记；唱片宽 `min(43vw,calc(100dvh * .24),230px)`，封套收起。头部高（60px），底部高 `calc(126px + env(safe-area-inset-bottom))`；第一行显示曲名与曲库入口，第二行显示核心控制，隐藏时间、底部封面及歌手。背景手机取景沿用基础样式的（760px）切换点，区别于纵向布局断点。
 
-唱片架默认圆形唱片视图，每页默认 6 首，可选 6 / 12 / 18 / 24；前后页与原生跳页可用。搜索、分类先匹配全库再分页，条件变化归第一页，播放队列保持原顺序。桌面六列，间距（2rem 2.25rem）；手机改为横向滚动，每项宽 `min(42vw,180px)`，间距（1.25rem），采用 proximity 吸附。所有曲名可换行；搜索在手机另占满一行。列表视图保留横排歌曲行，不转为封面网格。
-
-共享导航以自身 shell 的容器宽为依据：不超过（1440px）时收起完整链接和内联搜索，保留品牌及菜单、搜索入口。它与房间内容宽度分别计算。
-
-迷你条宽上限（1136px），桌面宽 `calc(100% - 2rem)`、底距 `max(.75rem,env(safe-area-inset-bottom))`；手机宽 `calc(100% - 1rem)`、底距 `max(.5rem,env(safe-area-inset-bottom))`，进度独占第二行。存在迷你条节点时底部预留（7rem），即使其当前隐藏也保留此空间。
+高度不超过（560px）且宽于（600px）时，头部／底部压缩为（50px / 76px），唱片与曲库行同步缩小。歌词、手记、曲库各自滚动，不能推动底部控制或页签。
 
 ## Elevation & Depth
 
-空间感来自窗光图像、实体封套与透明唱臂的柔和投影，内容通过留白和细线分层。当前手记为开放正文，唱片架不套通用卡片容器。投影的准确值见 sidecar：后方封套（`5px 9px 20px rgb(19 47 72/.16)`）、架上圆形唱片（`drop-shadow(2px 5px 6px rgb(24 55 75/.13))`）、唱臂滤镜（`drop-shadow(2px 4px 3px rgb(15 25 35/.18))`）、迷你条（`0 5px 25px rgb(30 60 80/.16)`）。迷你条层级（45），共享导航（50），专注退出入口（60），唱片转场装饰（120）。
+深度来自背景水母、压暗层、微光与实物阴影；主唱片／歌词区保持通透。唱片投影为 `drop-shadow(4px 15px 25px rgb(0 0 0/.4))`；窄屏曲库使用 `-15px 0 40px rgb(0 0 0/.3)` 投影。房间自身层级为（51），内部头部／遮罩／曲库／底部依次为（8 / 9 / 10 / 20）。
 
-**The Material Depth Rule.** 投影用于实体封套、唱臂和固定控制层，不扩展为每个内容区的卡片效果。
+背景漂移为（24s、ease-in-out、往返循环），播放区让位与抽屉滑动为（0.5s、cubic-bezier(.22,.68,.18,1)）。Canvas 微光初始数量为宽屏（32）／窄屏（16），绘制间隔至少（40ms）。动态开关、减少动态、节省流量与标签页隐藏共同决定背景动画是否运行；减少动态同时停用抽屉过渡及唱片封面旋转。
 
 ## Shapes
 
-黑胶、唱片中心封面与播放按钮采用圆形；页签、主搜索和专注入口采用前言 pill。门厅入口与手记归档搜索保留前言 lg，迷你条使用前言 mini。唱片架与列表缩略图统一圆形遮罩，PNG 和 SVG 沿用同一显示规格，不渲染方形底板或白色四角。
-
-唱片中心的歌曲封面占直径（53%），以（3px、#111519）圆边裁切。后方封套采用当前曲真实封面、轻旋转（−3deg）；唱臂固定在右上方，透明边缘完整，不跟随封面旋转。唱片架开启黑胶外圈时，黑胶填满唱片区域，封面圆形窗口内缩（14%）；关闭后仍为圆形封面。`shelfCrop` 的焦点和缩放只作用于窗口内图片，原图保留，外圈尺寸不变。
+黑胶、中心歌曲封面、底部小封面与曲库小封面均为圆形；中心封面直径占唱片（53%）。透明金属唱臂放在唱片左侧，保留真实轮廓；背后封套可配置，当前关闭，手机始终隐藏。曲库左上角为（10px），搜索与歌曲行使用前言圆角；页签采用直线下划线。边界以细线和夜幕色面建立。
 
 ## Components
 
-### Buttons
+### 顶部与底部控制
 
-主播放按钮为浅蓝实心、白色 SVG 图标，房间尺寸（54px），手机沿用；控制行按钮至少（44px × 44px）。主按钮 hover 为 `brightness(.92)`，继承（300ms）状态过渡；辅助按钮以蓝灰或强调色表示状态，既有辅助 active 缩放（.95）。迷你播放按钮为（34px），门厅播放按钮保留（48px）。
+返回链接始终指向 `/music/`，可见文字与辅助名称均绑定 `room.backLabel`，当前为「回到乐境」。顶部另有背景动态与浏览器全屏按钮；不支持全屏时隐藏该按钮。控件提供明确辅助名称、状态属性和可见焦点；常用按钮最小点击尺寸为（44px）。
 
-房间和门厅的按钮、链接、输入，以及房间 summary 与手记正文区域，沿用强调色键盘轮廓（2px、偏移 4px）。图标为内联 SVG，控制保留可读标签、ARIA 展开或选中状态。
+底部仅一组既有引擎绑定控件：循环模式、前曲、播放／暂停、后曲，以及桌面音量、曲库入口。播放按钮采用前言 button-play 的空心圆。进度在控制带上缘贯穿全宽，细线高（2px）、交互区高（20px）；当前源码明确用 `grid-area:auto` 清除旧网格定位，不能按旧截图记录为右侧局部进度条。时间与音量节点由脚本移入底部，沿用原绑定。
 
-### Cards / Containers
+### 歌词与手记
 
-门厅入口继续使用细边、轻主题混色与（1.15rem）内边距。房间主播放区、歌词和手记不再铺独立卡片底。手记位于歌词同侧、同高度的切换面板；只显示当前歌曲的 `note`，无内容时显示配置空状态，正文限高（18rem）。旧手记封面节点在新版隐藏。
+歌词／手记页签及翻译开关固定在内容区上方。同步歌词使用已有原文、逐字时间与中文翻译；无翻译时不显示翻译按钮。当前曲手记随播放曲目切换，缺失时展示配置提示；全部手记为可展开、可搜索的档案。无歌词、加载失败、无匹配歌曲及最近为空均使用真实状态提示。
 
-全部手记是默认收起的原生 details，支持按歌名、歌手和正文搜索，列表限高（24rem）；条目按需展开，仅“听听”按钮触发播放。保留歌曲手记的参考标记。旧房间 `notes` 仅迁移归档，不恢复为展示数据源。
+### 曲库与歌曲行
 
-### Inputs / Fields
+抽屉由标题／关闭按钮、搜索、全部／歌单／最近范围、按需显示的情境分类、内部滚动歌曲行、底部收起按钮组成。歌曲行是「圆封面 + 曲名／歌手 + 播放状态」：封面（50px），桌面行最小高（78px），手机为（72px）。长曲名省略显示，按钮名称和 title 保留曲名信息。悬停／当前曲使用前言选中面，播放中图标转暂停。
 
-主搜索为透明底、主题细边和胶囊形，外框内边距（0 .65rem）、宽上限（240px），内部输入为（1rem）字、内边距（.6rem .25rem）。归档搜索改用（8px）圆角并填满面板。搜索与分类同时过滤，不改变队列顺序；零结果使用配置说明。未实现独立错误或禁用视觉，不新增默认样式。
+初次桌面展开状态来自 `drawerOpen`，之后记住本机选择；窄屏进入默认收起，显式 `#library` 入口可直接打开。关闭、遮罩与 Escape 均可收起；关闭时移出键盘遍历，覆盖展开时键盘焦点限制在抽屉内，收起后按需返回入口。
 
-### Navigation
+**The One Engine Rule.** 曲库只是唯一 MusicManager 的视图。搜索与情境分类只筛选显示；最近视图按本机记录排列，但不改作者原队列、隐藏状态或当前播放。点当前曲为播放／暂停，点其他曲使用原索引。最近播放以稳定 ID 存在访客本机，最多（50 首），排除隐藏／删除歌曲。
 
-歌词与手记共用独立于内部滚动区的页签行：活动项为强调色实心胶囊、白字，其他项为蓝灰文字；支持方向键、Home / End 与单一页签焦点。未显示面板隐藏并 inert，歌词收起时提供重新展开入口。
+### CMS 与素材
 
-情境分类现为文字筛选，活动项使用强调色与（2px）底线；不再渲染三张情境封面横幅。封面 / 列表切换使用强调色文字与下划线（偏移 7px）。筛选不会触发播放或重排共享队列，唱片架内筛选不跳动页面。
+「苍蓝回廊设置 → 乐境门厅与聆听室」管理桌面／手机／暗色背景与独立取景、浓度、压暗、漂移、微光、文字／强调色、唱片大小／素材／唱臂／封套、歌词字号／最大高度、曲库宽度／默认状态／最近入口、歌单、手记入口及文案。背景可从已有素材库选择或上传图片／GIF；歌曲真实封面、歌词／KRC 和逐曲手记仍在「全部前台文案与歌单 → 音乐歌单」管理。
 
-### Shared Turntable & Lyrics
-
-门厅、房间和迷你条是同一个 MusicManager 的视图，切换保留歌曲、时间、音量、模式及歌词 / 翻译偏好。当前配置首次展开歌词、翻译默认关闭；已有访客偏好优先。歌词跟随播放并可点击或用 Enter / Space 跳转，抽屉折叠后 inert 且 aria-hidden。
-
-原生素材与配置来源：
-
-| 材料 | 仓库路径与职责 |
-| --- | --- |
-| 窗光与花卉 | `public/assets/images/music-room/windowlight-scene.webp`：原生摄影风栅格图，AI 生成；花瓶与蓝花在左缘，中央与右侧留白。来源见 [WINDOWLIGHT_ASSET.md](WINDOWLIGHT_ASSET.md)。 |
-| 黑胶 | `public/assets/images/music-room/vinyl.webp`：透明实物材质，门厅、房间与露盘唱片架复用。 |
-| 金属唱臂 | `public/assets/images/music-room/tonearm.webp`：透明素材，仅房间显示。 |
-| 歌曲封面与封套 | `src/data/azure-content.json` 的 `playlist[].cover`，对应 `public/assets/images/music-covers/` 中现有 PNG / SVG；中心封面、大封套和唱片架均用真实当前曲数据。 |
-
-`src/data/music-room.json` 经 `src/lib/music-room-settings.mjs` 归一化，CMS 字段由 `public/admin/config.yml` 维护。下表是当前配置与源码约束，不是新增默认值：
-
-| 配置 | 当前值 / 映射 |
-| --- | --- |
-| `accent` | 前言 primary → `--room-accent`；只接受六位十六进制，失效时沿用源码中的同一浅蓝回退。 |
-| `appearance.backgroundImage` / `mobileBackgroundImage` | 均使用上述窗光图；桌面取景（50%,50%）、手机（0%,50%），zoom 均（1）。手机留空回退桌面图；取景限制为（0–100%），zoom 为（1–3）。 |
-| `appearance.darkBackgroundImage` | 当前留空，可配置专图；不虚构暗色素材。 |
-| `backgroundOpacity` / `darkBackgroundOpacity` | （90 / 18）→ `--room-scene-opacity` / `--room-dark-scene-opacity`，百分比限制（0–100）。 |
-| `recordSize` | （440px）→ `--room-record-size`，归一化范围（300–520px），实际显示仍受响应式公式约束。 |
-| `lyricFontSize` / `translationFontSize` | （24px / 16px）→ `--room-lyric-size` / `--room-translation-size`，范围（18–32px / 12–22px）。 |
-| `lyricHeight` | （380px）→ `--room-lyric-height`，含上方页签；内容区高度为 `max(220px,calc(var(--room-lyric-height,380px) - 3.5rem))`，歌词/手记共用，配置范围（280–520px）。 |
-| 展示开关 | `showBackground`、`showSleeve`、`showFocus`、`sleeveLibrary` 当前均开启；`player` 管理唱片/唱臂素材取景、旋转、歌词初始偏好与迷你条开关。 |
-| `miniMode` / `defaultView` | 当前为 `auto` / `covers`；CMS 可选 `always` / `list`。 |
-| 文字与分类 | `labels`、标题、说明、搜索/空状态、分类及手记入口均可配置；每首手记继续在该歌曲的 `note` 编辑。 |
-
-播放时只有中心封面按（10s linear infinite）旋转，暂停停止。门厅与房间保留唱片 FLIP 位移，当前（600ms）、限幅（450–750ms），缓动 `cubic-bezier(.22,.68,.18,1)`；唱臂从转场克隆中移除。显式返回可恢复门厅滚动位置，普通导航与历史恢复交给站点路由。
-
-**The Reduced Motion Rule.** 减少动态偏好关闭唱片封面旋转、音乐表面 CSS 过渡、平滑滚动及唱片架抬升；同时跳过 FLIP 位移。关闭配置或唱片在屏外时也跳过位移，不影响播放与返回滚动意图。
-
-### Library & Fixed Mini Player
-
-列表使用（44px）封面、曲名、歌手、细底线与右侧播放状态；当前或 hover 使用强调色（7%）透明混色。唱片视图去除行底板，统一圆形黑胶与封面窗口；hover / 当前唱片抬升（3px），当前曲名为强调色。点击当前歌切换播放，点击其他歌切曲。
-
-**The Single Control Band Rule.** 主播放区保留一组完整控制与进度；当前 `auto` 策略只在主控制行底边越过顶部导航边界（88px）后显示迷你条，而非主控件尚在屏幕下方时提前出现。配置 `always` 是显式例外，`showMini` 可完全关闭。隐藏时同步 hidden、inert 与 aria-hidden；若焦点在即将隐藏的迷你条内，移回主播放按钮。
-
-### Focus Listening
-
-专注时隐藏实际共享导航顶行、共享页脚、回顶按钮及阅读进度条，同时隐藏房间标题、唱片架和迷你条；共享导航同步 inert。主内容顶距变为（1.5rem），播放区以 `calc(100svh - 3rem)` 最小高度居中，退出入口固定在右上。再次点击或 Esc 退出，恢复进入前滚动位置及导航交互，播放状态不变；Esc 同时将焦点放回专注按钮。
+旧顶部照片、分页、迷你播放器及旧专注选项保留为兼容数据，在常规后台隐藏；不作为新版可见组件记录。保存配置沿用 GitHub main → Cloudflare Pages 发布流程，无需清理音乐缓存；此处仅说明流程。历史窗光素材与旧配置保留，辅助备份及预览不进入正式素材或部署。
 
 ## Do's and Don'ts
 
-### Do:
-
-- **Do** 把本规范限定在音乐表面，保留博客主题、字体偏好、共享 MusicManager 与门厅入口。
-- **Do** 用配置强调色统一播放、歌词和选择状态，保留明暗纸面与文字映射。
-- **Do** 用原生窗光花卉图、真实黑胶和歌曲原有封套建立空间，展示标题保持文楷常规字重（400）。
-- **Do** 在手机纵向排列播放器，并保留横向滚动唱片架、单组主控制和安全区适配。
-- **Do** 保留参考手记标记、SVG 控制、ARIA / inert 状态、键盘行为与减少动态偏好。
-- **Do** 在专注退出时恢复滚动与共享导航交互，在主控制离开顶部后才按 auto 策略显示迷你条。
-
-### Don't:
-
-- **Don't** 在聆听室背景重新引入人物壁纸或人物挂件；歌曲原有封面中的人物不受此限制。
-- **Don't** 为门厅、房间或迷你条另建音频引擎，或让视觉过渡重置播放与访客偏好。
-- **Don't** 恢复旧照片横幅、三列盒装播放器、三张情境封面卡片或入场即重复显示迷你条的默认处方。
-- **Don't** 把桌面网格压缩到手机、让隐藏面板保留焦点交互，或用焦点模式遮罩代替隐藏实际共享界面。
-- **Don't** 把示例分类、歌曲封面内容、侧栏预览色阶或全站页脚装饰固化为音乐房间的通用令牌。
+- **Do** 保持夜海连续背景、真实唱片／唱臂、浅紫文字与单组底部控制的关系。
+- **Do** 使用原有歌曲封面、歌词、翻译和手记；保留原队列、隐藏状态及访客偏好。
+- **Do** 同时考虑宽屏让位、窄屏覆盖、手机纵向与短屏高度，保持歌词和曲库内部滚动。
+- **Do** 用 CMS 管理真实背景与展示参数，并尊重减少动态及背景暂停条件。
+- **Don't** 将旧窗光花卉、纸面长页、横向唱片架、分页或迷你条写回新版房间规范。
+- **Don't** 将房间深色覆盖扩展到门厅或博客其他页面，也不以概念图示意曲目替换真实内容。
+- **Don't** 用截图中的旧返回文字／进度布局覆盖当前源码，或从概念批准、截图和配置流程推断部署成功或评审通过。
