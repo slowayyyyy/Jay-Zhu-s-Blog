@@ -2,6 +2,12 @@
 
 最后更新：2026-10-26
 
+## 2026-10-26 后台说说多图预览同步
+
+- 说说正文改用 `moment-markdown` 控件，复用 Decap 原 Markdown 编辑器，只替换右侧预览。非图片部分继续由原渲染器显示，保存的 Markdown 与现有内容不变，文章预览不受影响。
+- `admin-moment-preview.js` 从 Markdown 图片节点读取原始位置，保留其他文本原文，再调用前台 `groupMomentImages()` 与同一份 `moment-gallery.css`。两端共用分组、列数、方形缩略图与居中图注；使用 CMS `getAsset()` 解析新上传图片。
+- 在 Decap 内存测试后台实测两图、四图和九图即时更新，Markdown/富文本切换后网格与图注保持正确，未发布测试内容。截图与验证位于 `/Users/jayzhu/.codex/project-storage/canglan-blog/previews/admin-moment-grid-20261026/`。
+
 ## 2026-10-26 HEIC 粘贴与说说多图
 
 - HEIC/HEIF 在上传前懒加载浏览器转换器，生成真正 JPEG；失败会中止上传并提示导出 JPEG，不再插入无法解码的原文件。普通 JPEG/PNG/GIF 不加载转换器，格式后缀优先匹配实际 MIME。

@@ -17,6 +17,8 @@ import { createTagService } from './admin-tags-service.js';
 import { setupTagsWidget } from './admin-tags-widget.js';
 import { setupTyporaShortcuts } from './admin-typora-shortcuts.js';
 import { prepareWebImage } from '../lib/web-image.mjs';
+import { setupMomentPreview } from './admin-moment-preview.js';
+import momentGalleryStyles from '../styles/moment-gallery.css?raw';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -140,6 +142,7 @@ export function setupAdminCms() {
 	window.CMS.registerRemarkPlugin(remarkTyporaInline);
 	window.CMS.registerRemarkPlugin(remarkTyporaToc);
 	window.CMS.registerRemarkPlugin(remarkImagePresentation);
+	setupMomentPreview({CMS:window.CMS,h:window.h,styles:momentGalleryStyles});
 	registerAdminCodeBlock(window.CMS);
 	window.CMS.registerPreviewStyle(katexStylesUrl);
 	window.CMS.registerPreviewStyle(

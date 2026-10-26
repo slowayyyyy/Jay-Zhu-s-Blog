@@ -108,7 +108,7 @@ const parseDirective = (token) => {
 	return null;
 };
 
-const parseImagePresentation = (rawAlt = '') => {
+export const parseImagePresentation = (rawAlt = '') => {
 	const source = typeof rawAlt === 'string' ? rawAlt : '';
 	const parts = source.split('|').map((part) => part.trim());
 	if (parts.length === 1) {
