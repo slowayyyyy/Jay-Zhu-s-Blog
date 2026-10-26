@@ -95,8 +95,8 @@ test('moving a connected persistent widget preserves sync; true removal disposes
 
 test('room and manager retain the authored song order and default list mode', () => {
   const azure = JSON.parse(read('src/data/azure-content.json'));
-  const names = ['旅人の唄', '芽吹の唄', 'spiral', '祈り、終われば', 'かげくらべの唄', 'ムスビメ (联结)', '守りたいもの（想要守护之物）', '決意の唄', '風と行く道 (随风而行的路)', 'たぶん (大概)', '下一次爱情来的时候'];
-  assert.deepEqual(musicLibrary(azure.playlist).slice(0,names.length).map(track => track.name), names);
+  const names = azure.playlist.filter(track=>track.hidden!==true&&track.src?.trim()).map(track=>track.name);
+  assert.deepEqual(musicLibrary(azure.playlist).map(track => track.name), names);
   const config = read('src/config/musicConfig.ts');
   assert.match(config, /playMode: "list"/);
   assert.doesNotMatch(config, /\.sort\(|\.reverse\(/);

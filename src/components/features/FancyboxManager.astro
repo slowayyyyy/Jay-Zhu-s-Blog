@@ -6,7 +6,7 @@ import "@/styles/fancybox-custom.css";
 
 <script>
   let Fancybox: any;
-  const IMG_SELECTOR = ".custom-md img, #post-cover img, .moment-images img, .dynamic-content img";
+  const IMG_SELECTOR = ".custom-md img, #post-cover img, .moment-images img, .dynamic-content img:not([data-fancybox])";
   const LINK_SELECTOR = ".moment-images a[data-fancybox], [data-fancybox]:not(.moment-images a)";
   const svgBlobUrlCache = new Map<string, string>();
 
@@ -163,7 +163,7 @@ import "@/styles/fancybox-custom.css";
 
     Fancybox.bind(LINK_SELECTOR, {
       ...commonOptions,
-      source: (el: any) => el.getAttribute("data-src") || el.getAttribute("href"),
+      source: (el: any) => el.getAttribute("data-src") || el.getAttribute("href") || el.getAttribute("src"),
     });
   }
 

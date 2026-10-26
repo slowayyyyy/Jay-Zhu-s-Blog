@@ -5,6 +5,7 @@ import { profileConfig } from "@/config";
 import azureContent from "@/data/azure-content.json";
 import MainGridLayout from "@/layouts/MainGridLayout.astro";
 import { url } from "@/utils/url-utils";
+import "@/styles/moment-gallery.css";
 
 const entries = (await getCollection("dynamic")).sort(
 	(a, b) => Number(b.data.pinned) - Number(a.data.pinned) || b.data.published.getTime() - a.data.published.getTime(),

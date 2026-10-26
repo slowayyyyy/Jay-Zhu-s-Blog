@@ -360,6 +360,22 @@
 			"src": "/assets/images/music-covers/15-mj-apanay-time-machine-original.png",
 			"usage": "站长提供的完整原图，供以后重新取景",
 			"note": "不依赖剪贴板临时目录；前台使用独立内圆取景版。"
+		},
+		{
+			"id": "moment-20261026051439-IMG-4415-60ec8806",
+			"name": "杭州 · 简单布置",
+			"kind": "图片",
+			"src": "/uploads/20261026051439-IMG-4415-60ec8806.jpg",
+			"usage": "2026-10-26 杭州说说配图；HEIC 原文件保留",
+			"note": "由站长原 HEIC 转为通用 JPEG，保留完整画面与方向。"
+		},
+		{
+			"id": "moment-20261026051455-IMG-4416-36493072",
+			"name": "杭州 · 窗外风景",
+			"kind": "图片",
+			"src": "/uploads/20261026051455-IMG-4416-36493072.jpg",
+			"usage": "2026-10-26 杭州说说配图；HEIC 原文件保留",
+			"note": "由站长原 HEIC 转为通用 JPEG，保留完整画面与方向。"
 		}
 	]
 }

@@ -187,7 +187,10 @@ collections:
           required: false,
         }
       - { label: 地点, name: location, widget: string, required: false }
-      - { label: 内容, name: body, widget: markdown }
+      - label: 内容
+        name: body
+        widget: markdown
+        hint: 可连续粘贴或插入多张图片，选填每张图片的说明。前台自动紧凑排图：单图保留比例，2 张并排，4 张两行，其余多图按三列排列；点击查看完整原图并切换。HEIC/HEIF 粘贴时自动转为 JPEG。图片之间插入文字可分成不同图片组。
 
   - name: tag_settings
     label: 标签管理

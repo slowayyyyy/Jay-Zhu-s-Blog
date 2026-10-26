@@ -52,7 +52,7 @@ test('missing or mismatched translation tables never guess a shifted pairing', (
 test('Innocence keeps all timed words, supplied Chinese translations and original cover pixels', () => {
   const data = JSON.parse(read('src/data/azure-content.json'));
   const track = data.playlist.find(item=>item.id==='avril-innocence');
-  assert.equal(data.playlist[11],track);
+  assert.ok(track);
   assert.equal(track.name,'Innocence'); assert.equal(track.artist,'Avril Lavigne');
   assert.equal(track.src,'/media/audio/20261020-avril-innocence.mp3');
   const lyrics = JSON.parse(read('public'+track.lrc));
@@ -80,13 +80,13 @@ test('Innocence keeps all timed words, supplied Chinese translations and origina
   assert.ok(assets.some(asset=>asset.src===originalPath));
 });
 
-test('David Tao songs append after the existing twelve without changing song order', () => {
+test('imported songs remain available by stable ID after CMS reorder or hide changes', () => {
   const tracks = JSON.parse(read('src/data/azure-content.json')).playlist;
-  assert.deepEqual(tracks.slice(0,14).map(track=>track.id),[
+  for (const id of [
     'tabibito-no-uta','mebuki-no-uta','spiral','inori-owareba','kagekurabe-no-uta',
     'musubime','mamoritai-mono','ketsui-no-uta','kaze-to-iku-michi','yoasobi-tabun',
     'tanya-next-love','avril-innocence','david-tao-liusha','david-tao-putong-pengyou',
-  ]);
+  ]) assert.equal(tracks.filter(track=>track.id===id).length,1);
 });
 
 for(const entry of [

@@ -16,6 +16,7 @@ import { setupR2AudioWidget } from './admin-r2-audio.js';
 import { createTagService } from './admin-tags-service.js';
 import { setupTagsWidget } from './admin-tags-widget.js';
 import { setupTyporaShortcuts } from './admin-typora-shortcuts.js';
+import { prepareWebImage } from '../lib/web-image.mjs';
 
 const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '[::1]']);
 const DEFAULT_GITHUB_REPO = 'slowayyyyy/Jay-Zhu-s-Blog';
@@ -37,7 +38,7 @@ const IMAGE_EXTENSION_BY_TYPE = new Map([
 	['image/tiff', 'tiff'],
 	['image/x-icon', 'ico'],
 ]);
-const IMAGE_FILE_EXTENSION_PATTERN = /\.(avif|bmp|gif|ico|jpe?g|png|svg|tiff?|webp)$/iu;
+const IMAGE_FILE_EXTENSION_PATTERN = /\.(avif|bmp|gif|hei[cf]|ico|jpe?g|png|svg|tiff?|webp)$/iu;
 const IMAGE_TYPE_BY_EXTENSION = new Map([
 	['avif', 'image/avif'],
 	['bmp', 'image/bmp'],
@@ -187,6 +188,9 @@ export function setupAdminCms() {
 	let reloadTimer;
 	let idleTimer;
 	const replayedPasteEvents = new WeakSet();
+	const uploadPreviewFiles = new Map();
+	const observedPreviewFrames = new WeakSet();
+	const observedPreviewDocuments = new WeakSet();
 	const isLocalPreview = LOCAL_HOSTS.has(window.location.hostname);
 	const syncChannel =
 		'BroadcastChannel' in window ? new BroadcastChannel('jay-content-sync') : null;
@@ -195,13 +199,13 @@ export function setupAdminCms() {
 	);
 	const previewObserver = new MutationObserver((mutations) => {
 		for (const mutation of mutations) {
-			if (mutation.type === 'attributes' && mutation.target instanceof HTMLImageElement) {
+			if (mutation.type === 'attributes' && mutation.target.tagName === 'IMG') {
 				rewritePreviewImage(mutation.target);
 				continue;
 			}
 
 			for (const node of mutation.addedNodes) {
-				if (!(node instanceof HTMLElement)) continue;
+				if (node.nodeType !== 1) continue;
 				hydratePreviewImages(node);
 				localizeImageCaptionFields(node);
 			}
@@ -272,6 +276,8 @@ export function setupAdminCms() {
 	};
 
 	const getImageExtension = (file) => {
+		const typeExtension = IMAGE_EXTENSION_BY_TYPE.get(file.type?.toLowerCase());
+		if (typeExtension) return typeExtension;
 		const extensionFromName = file.name?.match(/\.([a-z0-9]+)$/iu)?.[1]?.toLowerCase();
 		if (extensionFromName && /^[a-z0-9]{2,5}$/u.test(extensionFromName)) {
 			return extensionFromName === 'jpeg' ? 'jpg' : extensionFromName;
@@ -325,6 +331,7 @@ export function setupAdminCms() {
 
 	const prepareClipboardImage = async (file, index = 0) => {
 		if (!file || file.size === 0) throw new Error('empty_clipboard_image');
+		file = await prepareWebImage(file);
 
 		const type = file.type.toLowerCase();
 		const shouldKeepOriginal =
@@ -403,7 +410,11 @@ export function setupAdminCms() {
 			await githubUploadRequest(`/api/github/${apiPath}`, githubToken, payload);
 		}
 
-		return `/uploads/${filename}`;
+		const publicUrl = `/uploads/${filename}`;
+		// Preview the uploaded bytes immediately, without waiting for a deployment.
+		uploadPreviewFiles.set(publicUrl, file);
+		if (uploadPreviewFiles.size > 12) uploadPreviewFiles.delete(uploadPreviewFiles.keys().next().value);
+		return publicUrl;
 	};
 
 	const fileFromDataUrl = async (source, name = 'pasted-image') => {
@@ -890,7 +901,9 @@ export function setupAdminCms() {
 							? '这次粘贴只包含本地临时图片路径，浏览器无法读取。请先截图复制，或用后台“选择图片”上传原图。'
 							: error?.message === 'empty_clipboard_image'
 								? '剪贴板里的图片数据为空，请重新截图或重新复制后再粘贴。'
-								: `粘贴图片上传失败：${error?.message || '未知错误'}。请重新登录后台后再试。`;
+								: error?.message === 'heic_conversion_failed'
+									? '这张 HEIC 照片未能转换为网页图片，尚未上传。请重试，或在“预览”中导出为 JPEG 后插入；原照片不会被修改。'
+									: `粘贴图片上传失败：${error?.message || '未知错误'}。请重新登录后台后再试。`;
 			showStatus(message, 'error', 9000);
 		}
 	};
@@ -948,22 +961,25 @@ export function setupAdminCms() {
 			const headers = { Accept: 'application/vnd.github.raw' };
 			if (githubToken) headers.Authorization = `token ${githubToken}`;
 
-			const response = await fetch(apiUrl, {
+			const localFile = uploadPreviewFiles.get(currentKey);
+			const response = localFile ? null : await fetch(apiUrl, {
 				headers,
 				cache: 'no-store',
 			});
 
-			if (!response.ok) {
+			if (response && !response.ok) {
 				throw new Error(`preview fetch failed: ${response.status}`);
 			}
 
-			const responseBlob = await response.blob();
+			const responseBlob = localFile || await response.blob();
 			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
-			const blob = responseBlob.type.startsWith('image/')
+			let blob = responseBlob.type.startsWith('image/')
 				? responseBlob
 				: new Blob([await responseBlob.arrayBuffer()], {
 						type: inferUploadImageType(sourceKey),
 					});
+			blob = await prepareWebImage(new File([blob], sourceKey.split('/').at(-1), {type: blob.type}));
+			if (image.dataset.jayCmsPreviewKey !== currentKey) return;
 
 			const lastObjectUrl = image.dataset.jayCmsObjectUrl;
 			if (lastObjectUrl) {
@@ -1002,7 +1018,7 @@ export function setupAdminCms() {
 	};
 
 	const hydratePreviewImages = (root = document) => {
-		if (root instanceof HTMLImageElement) {
+		if (root.tagName === 'IMG') {
 			rewritePreviewImage(root);
 			return;
 		}
@@ -1011,6 +1027,23 @@ export function setupAdminCms() {
 		root.querySelectorAll('img[src]').forEach((image) => {
 			rewritePreviewImage(image);
 		});
+		const frames = root.tagName === 'IFRAME' ? [root] : [...root.querySelectorAll('iframe')];
+		for (const frame of frames) {
+			const observe = () => {
+				try {
+					const doc = frame.contentDocument;
+					if (!doc?.body || observedPreviewDocuments.has(doc)) return;
+					observedPreviewDocuments.add(doc);
+					previewObserver.observe(doc.body, {childList:true,subtree:true,attributes:true,attributeFilter:['src']});
+					hydratePreviewImages(doc);
+				} catch { /* Cross-origin embeds are not CMS previews. */ }
+			};
+			if (!observedPreviewFrames.has(frame)) {
+				observedPreviewFrames.add(frame);
+				frame.addEventListener('load', observe);
+			}
+			observe();
+		}
 	};
 
 	const handleNetworkFailure = (reason) => {

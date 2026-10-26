@@ -104,6 +104,9 @@ importers:
       glob:
         specifier: ^11.1.0
         version: 11.1.0
+      heic-to:
+        specifier: 1.6.6
+        version: 1.6.6
       hastscript:
         specifier: ^9.0.1
         version: 9.0.1
@@ -5976,6 +5979,9 @@ packages:
 
   zwitch@2.0.4:
     resolution: {integrity: sha512-bXE4cR/kVZhKZX/RjPEflHaKVhUVl85noU3v6b8apfQEc1x4A+zBxjZ4lN8LqGd6WZ3dl98pY4o717VFmoPp+A==}
+
+  heic-to@1.6.6:
+    resolution: {integrity: sha512-PYpOtPFEzgPxIoGF4LQ+oBD8o/tMvcFDNynrNzK1fLXfE6mTe2W+AHOvBKc5MwnVak4/Pnb51g9CJAtWL5YGWA==}
 
 snapshots:
 
@@ -12859,3 +12865,5 @@ snapshots:
   zod@4.4.3: {}
 
   zwitch@2.0.4: {}
+
+  heic-to@1.6.6: {}

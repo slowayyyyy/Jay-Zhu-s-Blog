@@ -72,6 +72,7 @@ test("changed CMS title and short quotes reach the banner, with an empty-pool fa
 
 test("music configuration excludes empty sources without disturbing track/cover/lyrics/translation pairing", () => {
 	const content = structuredClone(data);
+	content.playlist.forEach(track=>delete track.hidden);
 	content.playlist[0].src = "";
 	const tracks = config("src/config/musicConfig.ts", content).musicPlayerConfig
 		.local.playlist;
@@ -90,6 +91,7 @@ test("music configuration excludes empty sources without disturbing track/cover/
 
 test("hiding songs filters every public selection and playback queue with matching indices, and restores without data loss", () => {
 	const content = structuredClone(data);
+	content.playlist.forEach(track=>delete track.hidden);
 	const original = structuredClone(content);
 	content.playlist[0].hidden = true;
 	content.playlist[3].hidden = true;
