@@ -306,6 +306,12 @@ const managerConfigStr = JSON.stringify({
     // ── Track loading ────────────────────────────────────────
     function loadTrack(index, autoPlay) {
         if (!Number.isInteger(index) || index < 0 || index >= state.playlist.length) return;
+        // Keep the actual listening path across playback modes. History navigation
+        // already positions its cursor, so replaying that path adds no entries.
+        if (shuffleHistory[shuffleCursor] !== index) {
+            shuffleBag = shuffleBag.filter(function (value) { return value !== index; });
+            rememberTrack(index);
+        }
         state.currentIndex = index;
         state.error = null;
         var track = state.playlist[index];
@@ -362,10 +368,15 @@ const managerConfigStr = JSON.stringify({
         }
     }
 
-    function resetShuffle() {
-        shuffleHistory = state.playlist.length ? [state.currentIndex] : [];
-        shuffleCursor = shuffleHistory.length - 1;
+    function resetShuffle(preserveHistory) {
+        if (!preserveHistory || shuffleHistory[shuffleCursor] !== state.currentIndex) {
+            shuffleHistory = state.playlist.length ? [state.currentIndex] : [];
+            shuffleCursor = shuffleHistory.length - 1;
+        }
         fillShuffleBag(true);
+        // A retained forward path is replayed before drawing fresh songs.
+        var forward = shuffleHistory.slice(shuffleCursor + 1);
+        shuffleBag = shuffleBag.filter(function (index) { return forward.indexOf(index) === -1; });
     }
 
     function rememberTrack(index) {
@@ -426,7 +437,6 @@ const managerConfigStr = JSON.stringify({
             } else {
                 if (!shuffleBag.length) fillShuffleBag(false);
                 nextIndex = shuffleBag.shift();
-                rememberTrack(nextIndex);
             }
         } else {
             nextIndex = (state.currentIndex + 1) % state.playlist.length;
@@ -438,8 +448,20 @@ const managerConfigStr = JSON.stringify({
         if (!state.playlist.length) return;
         var prevIndex;
         if (state.playMode === 2) {
-            if (shuffleCursor > 0) shuffleCursor--;
-            prevIndex = shuffleHistory[shuffleCursor] ?? state.currentIndex;
+            if (shuffleCursor > 0) {
+                prevIndex = shuffleHistory[--shuffleCursor];
+            } else if (state.playlist.length > 1) {
+                // At the beginning of history, extend the shuffled path backward
+                // instead of restarting the current song. Next retraces it.
+                shuffleBag = shuffleBag.filter(function (index) { return index !== state.currentIndex; });
+                if (!shuffleBag.length) fillShuffleBag(true);
+                prevIndex = shuffleBag.shift();
+                shuffleHistory.unshift(prevIndex);
+                if (shuffleHistory.length > maxHistory) shuffleHistory.pop();
+                shuffleCursor = 0;
+            } else {
+                prevIndex = state.currentIndex;
+            }
         } else {
             prevIndex = (state.currentIndex - 1 + state.playlist.length) % state.playlist.length;
         }
@@ -449,7 +471,7 @@ const managerConfigStr = JSON.stringify({
     function setPlayMode(mode) {
         if (mode === state.playMode) return;
         state.playMode = mode;
-        if (mode === 2) resetShuffle();
+        if (mode === 2) resetShuffle(true);
         emit('fm:mode', { playMode: mode });
     }
 
@@ -488,10 +510,6 @@ const managerConfigStr = JSON.stringify({
         if (index === state.currentIndex && !audio.paused) {
             togglePlay();
         } else {
-            if (state.playMode === 2 && index !== state.currentIndex) {
-                shuffleBag = shuffleBag.filter(function (value) { return value !== index; });
-                rememberTrack(index);
-            }
             loadTrack(index, true);
         }
     }

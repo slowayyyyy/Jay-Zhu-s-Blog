@@ -92,11 +92,72 @@ test("previous follows history; next retraces without consuming unplayed songs",
 	await flush();
 });
 
-test("previous at first entry restarts it without inventing a random predecessor", async () => {
+test("previous at first entry picks a different song; Next retraces and preserves round coverage", async () => {
 	const p = await player();
 	const first = p.index();
 	p.manager.playPrev();
-	assert.equal(p.index(), first);
+	const previous = p.index();
+	assert.notEqual(previous, first);
+	p.manager.playNext(); assert.equal(p.index(), first);
+	const heard = [previous, first];
+	for (let i = 0; i < 7; i++) { p.manager.playNext(); heard.push(p.index()); }
+	assert.equal(new Set(heard).size, 9);
+	await flush();
+});
+
+test("switching to shuffle retains real listening history from list and repeat-one modes", async () => {
+	const p = await player(9, { mode: "list" });
+	p.manager.playNext(); p.manager.playNext(); assert.equal(p.index(), 2);
+	p.manager.cyclePlayMode();
+	p.listeners.ended(); assert.equal(p.index(), 2);
+	p.manager.cyclePlayMode();
+	p.manager.playPrev(); assert.equal(p.index(), 1);
+	p.manager.playPrev(); assert.equal(p.index(), 0);
+	p.manager.playNext(); assert.equal(p.index(), 1);
+	p.manager.playNext(); assert.equal(p.index(), 2);
+	await flush();
+});
+
+test("shuffle previous also switches immediately after changing mode before any Next", async () => {
+	const p = await player(9, { mode: "list" });
+	p.manager.cyclePlayMode(); p.manager.cyclePlayMode();
+	p.manager.playPrev(); assert.notEqual(p.index(), 0);
+	p.manager.playNext(); assert.equal(p.index(), 0);
+	await flush();
+});
+
+test("manual selection in list mode is included in history after switching to shuffle", async () => {
+	const p = await player(9, { mode: "list" });
+	p.manager.playTrackByIndex(6);
+	p.manager.cyclePlayMode(); p.manager.cyclePlayMode();
+	p.manager.playPrev(); assert.equal(p.index(), 0);
+	p.manager.playNext(); assert.equal(p.index(), 6);
+	await flush();
+});
+
+test("mode changes preserve a rewound history cursor and its forward path", async () => {
+	const p = await player();
+	p.manager.playNext(); const second = p.index();
+	p.manager.playNext(); const third = p.index();
+	p.manager.playPrev(); assert.equal(p.index(), second);
+	for (let i = 0; i < 3; i++) p.manager.cyclePlayMode();
+	p.manager.playNext(); assert.equal(p.index(), third);
+	await flush();
+});
+
+test("repeated Previous never sticks on a song and a bounded backward path is reversible", async () => {
+	for (const count of [2, 3, 9]) {
+		const p = await player(count);
+		const path = [p.index()];
+		for (let i = 0; i < 220; i++) {
+			p.manager.playPrev();
+			assert.notEqual(p.index(), path.at(-1));
+			path.push(p.index());
+		}
+		for (let i = 219; i >= 21; i--) {
+			p.manager.playNext(); assert.equal(p.index(), path[i]);
+		}
+	}
 	await flush();
 });
 
@@ -154,7 +215,10 @@ test("zero, one and two-track playlists have safe controls", async () => {
 	assert.equal(empty.manager.getState().track, null);
 	assert.equal(empty.audio.paused, true);
 	const single = await player(1);
-	for (let i = 0; i < 10; i++) { single.manager.playNext(); assert.equal(single.index(), 0); }
+	for (let i = 0; i < 10; i++) {
+		single.manager.playNext(); assert.equal(single.index(), 0);
+		single.manager.playPrev(); assert.equal(single.index(), 0);
+	}
 	const pair = await player(2);
 	let prev = pair.index();
 	for (let i = 0; i < 20; i++) { pair.manager.playNext(); assert.notEqual(pair.index(), prev); prev = pair.index(); }
