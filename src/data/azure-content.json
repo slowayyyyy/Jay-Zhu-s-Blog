@@ -672,6 +672,15 @@
         "别让它从你身边溜走"
       ],
       "id": "avril-innocence"
+    },
+    {
+      "name": "没语季节",
+      "artist": "黄霄雲",
+      "src": "/media/audio/20261027-huangxiaoyun-meiyujijie.mp3",
+      "cover": "/assets/images/music-covers/16-huangxiaoyun-meiyujijie.svg",
+      "lrc": "/lyrics/huangxiaoyun-meiyujijie.json",
+      "translations": [],
+      "id": "huangxiaoyun-meiyujijie"
     }
   ],
   "visuals": {

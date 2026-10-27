@@ -33,6 +33,10 @@ function parseMeta(text) {
 function isCreditLine(text) {
 	return /\s[-—]\s.+$/.test(text)
 		|| /^(?:词|曲|编曲|作词|作曲|演唱|歌手)\s*[:：]/.test(text)
+		// Some releases combine Chinese and English roles (词Lyricist：...).
+		// Match explicit credit roles, not arbitrary lines containing a colon.
+		|| /^(?:作词|作曲|词|曲|编曲|制作人|键盘|吉他|鼓|贝斯|弦乐|和声编写|和声|配唱|监制|录音师|人声编辑|混音|后期母带处理制作人|母带|特别鸣谢|封面摄影|封面设计|音乐发行|音乐项目总监|音乐营销总监|音乐营销|出品人)(?:\s*[A-Za-z][A-Za-z\s.&/()-]*)?\s*[:：]/.test(text)
+		|| /^(?:OP|SP)\s*[:：]/i.test(text)
 		|| /^(?:Lyrics by|Composed by|Written by|Produced by|Arranged by)\s*[:：]/i.test(text)
 		|| /^(?:Gt|Guitar|Bass|Dr|Drums|Piano|Keyboard|Strings?)\.?\s*[:：]/i.test(text);
 }

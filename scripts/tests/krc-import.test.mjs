@@ -18,12 +18,12 @@ const rows = [
   '[2000,500]<0,500,0> ',
   '[2500,500]<0,500,0>Again',
 ];
-function convert(language) {
+function convert(language, sourceRows = rows) {
   const directory = mkdtempSync(join(tmpdir(), 'canglan-krc-test-'));
   try {
     const metadata = ['[ti:Song]', '[ar:Artist]', '[offset:100]'];
     if (language !== undefined) metadata.push('[language:' + Buffer.from(JSON.stringify(language)).toString('base64') + ']');
-    const compressed = deflateSync(Buffer.from([...metadata,...rows].join('\n')));
+    const compressed = deflateSync(Buffer.from([...metadata,...sourceRows].join('\n')));
     for (let i=0;i<compressed.length;i++) compressed[i] ^= key[i % key.length];
     const input = join(directory,'input.krc'), output = join(directory,'output.json');
     writeFileSync(input,Buffer.concat([Buffer.from('krc1'),compressed]));
@@ -47,6 +47,13 @@ test('missing or mismatched translation tables never guess a shifted pairing', (
     assert.equal(result.lines.length,2);
     assert.ok(result.lines.every(line=>!Object.hasOwn(line,'translation')));
   }
+});
+
+test('bilingual production and distribution credits are not sung lines; real colon lyrics remain', () => {
+  const credits=['词Lyricist：作者','制作人Music Producer：制作人','后期母带处理制作人Mastering Producer：制作人','音乐项目总监 Project Director：监制','封面摄影Cover Photo by：摄影师','音乐营销 Marketing：团队','OP：出版方','SP: Publisher'];
+  const result=convert(undefined,[...credits,'词不达意：也想说给你听','瞧闷雨 躲阴天'].map((text,i)=>`[${i*1000},1000]<0,1000,0>${text}`));
+  assert.deepEqual(result.lines.map(line=>line.text),['词不达意：也想说给你听','瞧闷雨 躲阴天']);
+  assert.deepEqual(result.lines.map(line=>line.time),[8.1,9.1]);
 });
 
 test('Innocence keeps all timed words, supplied Chinese translations and original cover pixels', () => {

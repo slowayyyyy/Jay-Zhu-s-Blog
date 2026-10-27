@@ -2,6 +2,15 @@
 
 最后更新：2026-10-27
 
+## 2026-10-27 新增黄霄雲《没语季节》
+
+- 使用本机 `/Applications/音乐转换器.app/Contents/Resources/music-converter-cli`，指定同目录 `ffmpeg`、`-format mp3 -output-dir /Users/jayzhu/Music/音乐转换输出`，从酷狗下载目录的 `黄霄雲 - 没语季节_SQ.kgm` 导出同名 MP3（8056071 字节、约 269.57 秒）；完整解码通过，不把 KGM 当 MP3 改名。
+- 歌曲 ID `huangxiaoyun-meiyujijie`，音频 `/media/audio/20261027-huangxiaoyun-meiyujijie.mp3`。此前 15 首的顺序、隐藏与全部字段保持不变，末尾追加第 16 首；当前公开 10 首。
+- 对应 KRC 转为 `/lyrics/huangxiaoyun-meiyujijie.json`，32 行唱词、339 个逐字时间；中文歌曲不编造额外翻译。转换器补充中英混排署名、发行/版权署名过滤，原始行对应与时间不变，回归确保不会误删带冒号的实际唱词。
+- 用户原截图完整保存为 `/assets/images/music-covers/16-huangxiaoyun-meiyujijie-original.png`，内圆封面为同目录 `16-huangxiaoyun-meiyujijie.svg`（原 PNG 字节嵌入、圆形遮罩）；两项均加入后台素材库。
+- KGM/KRC 原文件备份：`/Users/jayzhu/.codex/project-storage/canglan-blog/backups/add-huangxiaoyun-meiyujijie-20261027/`；验证日志、上传核验与截图：`/Users/jayzhu/.codex/project-storage/canglan-blog/previews/add-huangxiaoyun-meiyujijie-20261027/`。
+- GitHub CLI 沿用已授权 OAuth；本机系统代理为 `127.0.0.1:1082`，终端 Git/HTTP 命令需显式使用该代理，未修改系统或全局配置、未关闭 TLS 检查。禁止将 token 写入参数、日志或文件。
+
 ## 2026-10-27 随机模式“上一首”修复
 
 - 根因：进入随机模式时 `resetShuffle()` 清掉此前切歌记录；历史游标为 0 时 `playPrev()` 又选择当前歌曲，导致点击只重播。

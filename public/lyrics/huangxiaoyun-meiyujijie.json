@@ -1,0 +1,1926 @@
+{
+  "format": "karaoke-v1",
+  "title": "没语季节",
+  "artist": "黄霄雲",
+  "lines": [
+    {
+      "time": 18.375,
+      "end": 23.165,
+      "text": "瞧闷雨 躲阴天",
+      "words": [
+        {
+          "text": "瞧",
+          "start": 18.375,
+          "duration": 0.371
+        },
+        {
+          "text": "闷",
+          "start": 18.746,
+          "duration": 0.498
+        },
+        {
+          "text": "雨",
+          "start": 19.244,
+          "duration": 0.534
+        },
+        {
+          "text": " ",
+          "start": 19.778,
+          "duration": 0.534
+        },
+        {
+          "text": "躲",
+          "start": 20.313,
+          "duration": 0.387
+        },
+        {
+          "text": "阴",
+          "start": 20.7,
+          "duration": 0.49
+        },
+        {
+          "text": "天",
+          "start": 21.19,
+          "duration": 1.975
+        }
+      ]
+    },
+    {
+      "time": 25.36,
+      "end": 30.772,
+      "text": "听心底 哑音乐",
+      "words": [
+        {
+          "text": "听",
+          "start": 25.36,
+          "duration": 0.342
+        },
+        {
+          "text": "心",
+          "start": 25.702,
+          "duration": 0.445
+        },
+        {
+          "text": "底",
+          "start": 26.147,
+          "duration": 0.956
+        },
+        {
+          "text": " ",
+          "start": 27.103,
+          "duration": 0
+        },
+        {
+          "text": "哑",
+          "start": 27.103,
+          "duration": 0.404
+        },
+        {
+          "text": "音",
+          "start": 27.507,
+          "duration": 0.476
+        },
+        {
+          "text": "乐",
+          "start": 27.983,
+          "duration": 2.789
+        }
+      ]
+    },
+    {
+      "time": 31.471,
+      "end": 37.698,
+      "text": "多少星月 换多少无人节",
+      "words": [
+        {
+          "text": "多",
+          "start": 31.471,
+          "duration": 0.344
+        },
+        {
+          "text": "少",
+          "start": 31.815,
+          "duration": 0.464
+        },
+        {
+          "text": "星",
+          "start": 32.279,
+          "duration": 0.461
+        },
+        {
+          "text": "月",
+          "start": 32.74,
+          "duration": 1.19
+        },
+        {
+          "text": " ",
+          "start": 33.93,
+          "duration": 0
+        },
+        {
+          "text": "换",
+          "start": 35.116,
+          "duration": 0.345
+        },
+        {
+          "text": "多",
+          "start": 35.461,
+          "duration": 0.304
+        },
+        {
+          "text": "少",
+          "start": 35.765,
+          "duration": 0.428
+        },
+        {
+          "text": "无",
+          "start": 36.193,
+          "duration": 0.381
+        },
+        {
+          "text": "人",
+          "start": 36.574,
+          "duration": 0.361
+        },
+        {
+          "text": "节",
+          "start": 36.935,
+          "duration": 0.763
+        }
+      ]
+    },
+    {
+      "time": 38.856,
+      "end": 44.157,
+      "text": "当有人没有赴约",
+      "words": [
+        {
+          "text": "当",
+          "start": 38.856,
+          "duration": 0.351
+        },
+        {
+          "text": "有",
+          "start": 39.207,
+          "duration": 0.37
+        },
+        {
+          "text": "人",
+          "start": 39.577,
+          "duration": 0.46
+        },
+        {
+          "text": "没",
+          "start": 40.037,
+          "duration": 1.089
+        },
+        {
+          "text": "有",
+          "start": 41.126,
+          "duration": 0.283
+        },
+        {
+          "text": "赴",
+          "start": 41.409,
+          "duration": 0.468
+        },
+        {
+          "text": "约",
+          "start": 41.877,
+          "duration": 2.28
+        }
+      ]
+    },
+    {
+      "time": 46.148,
+      "end": 52.654,
+      "text": "梦很野 苦在熬夜",
+      "words": [
+        {
+          "text": "梦",
+          "start": 46.148,
+          "duration": 0.39
+        },
+        {
+          "text": "很",
+          "start": 46.538,
+          "duration": 0.431
+        },
+        {
+          "text": "野",
+          "start": 46.969,
+          "duration": 0.931
+        },
+        {
+          "text": " ",
+          "start": 47.9,
+          "duration": 0
+        },
+        {
+          "text": "苦",
+          "start": 47.9,
+          "duration": 0.375
+        },
+        {
+          "text": "在",
+          "start": 48.275,
+          "duration": 0.414
+        },
+        {
+          "text": "熬",
+          "start": 48.689,
+          "duration": 1.813
+        },
+        {
+          "text": "夜",
+          "start": 50.502,
+          "duration": 2.152
+        }
+      ]
+    },
+    {
+      "time": 53.055,
+      "end": 57.244,
+      "text": "但风还搂着明天",
+      "words": [
+        {
+          "text": "但",
+          "start": 53.055,
+          "duration": 0.374
+        },
+        {
+          "text": "风",
+          "start": 53.429,
+          "duration": 0.399
+        },
+        {
+          "text": "还",
+          "start": 53.828,
+          "duration": 0.434
+        },
+        {
+          "text": "搂",
+          "start": 54.262,
+          "duration": 0.442
+        },
+        {
+          "text": "着",
+          "start": 54.704,
+          "duration": 0.485
+        },
+        {
+          "text": "明",
+          "start": 55.189,
+          "duration": 0.403
+        },
+        {
+          "text": "天",
+          "start": 55.592,
+          "duration": 1.652
+        }
+      ]
+    },
+    {
+      "time": 57.422,
+      "end": 65.77,
+      "text": "哪怕一辈子等一眼 求后来别凋谢",
+      "words": [
+        {
+          "text": "哪",
+          "start": 57.422,
+          "duration": 0.19
+        },
+        {
+          "text": "怕",
+          "start": 57.612,
+          "duration": 0.993
+        },
+        {
+          "text": "一",
+          "start": 58.605,
+          "duration": 0.239
+        },
+        {
+          "text": "辈",
+          "start": 58.844,
+          "duration": 0.305
+        },
+        {
+          "text": "子",
+          "start": 59.149,
+          "duration": 0.457
+        },
+        {
+          "text": "等",
+          "start": 59.606,
+          "duration": 0.411
+        },
+        {
+          "text": "一",
+          "start": 60.017,
+          "duration": 0.476
+        },
+        {
+          "text": "眼",
+          "start": 60.493,
+          "duration": 1.78
+        },
+        {
+          "text": " ",
+          "start": 62.273,
+          "duration": 0
+        },
+        {
+          "text": "求",
+          "start": 62.949,
+          "duration": 0.188
+        },
+        {
+          "text": "后",
+          "start": 63.137,
+          "duration": 0.352
+        },
+        {
+          "text": "来",
+          "start": 63.489,
+          "duration": 0.406
+        },
+        {
+          "text": "别",
+          "start": 63.895,
+          "duration": 0.45
+        },
+        {
+          "text": "凋",
+          "start": 64.345,
+          "duration": 0.451
+        },
+        {
+          "text": "谢",
+          "start": 64.796,
+          "duration": 0.974
+        }
+      ]
+    },
+    {
+      "time": 66.635,
+      "end": 72.515,
+      "text": "害整个梅雨失窃",
+      "words": [
+        {
+          "text": "害",
+          "start": 66.635,
+          "duration": 0.354
+        },
+        {
+          "text": "整",
+          "start": 66.989,
+          "duration": 0.352
+        },
+        {
+          "text": "个",
+          "start": 67.341,
+          "duration": 0.486
+        },
+        {
+          "text": "梅",
+          "start": 67.827,
+          "duration": 0.938
+        },
+        {
+          "text": "雨",
+          "start": 68.765,
+          "duration": 0.35
+        },
+        {
+          "text": "失",
+          "start": 69.115,
+          "duration": 0.497
+        },
+        {
+          "text": "窃",
+          "start": 69.612,
+          "duration": 2.903
+        }
+      ]
+    },
+    {
+      "time": 73.604,
+      "end": 79.478,
+      "text": "告诉我没语季节 为何不理世界",
+      "words": [
+        {
+          "text": "告",
+          "start": 73.604,
+          "duration": 0.327
+        },
+        {
+          "text": "诉",
+          "start": 73.931,
+          "duration": 0.407
+        },
+        {
+          "text": "我",
+          "start": 74.338,
+          "duration": 0.464
+        },
+        {
+          "text": "没",
+          "start": 74.802,
+          "duration": 0.444
+        },
+        {
+          "text": "语",
+          "start": 75.246,
+          "duration": 0.445
+        },
+        {
+          "text": "季",
+          "start": 75.691,
+          "duration": 0.378
+        },
+        {
+          "text": "节",
+          "start": 76.069,
+          "duration": 0.876
+        },
+        {
+          "text": " ",
+          "start": 76.945,
+          "duration": 0
+        },
+        {
+          "text": "为",
+          "start": 76.945,
+          "duration": 0.194
+        },
+        {
+          "text": "何",
+          "start": 77.139,
+          "duration": 0.362
+        },
+        {
+          "text": "不",
+          "start": 77.501,
+          "duration": 0.373
+        },
+        {
+          "text": "理",
+          "start": 77.874,
+          "duration": 0.382
+        },
+        {
+          "text": "世",
+          "start": 78.256,
+          "duration": 0.434
+        },
+        {
+          "text": "界",
+          "start": 78.69,
+          "duration": 0.788
+        }
+      ]
+    },
+    {
+      "time": 80.428,
+      "end": 87.21,
+      "text": "爱轻的像几片雪 重的像从前",
+      "words": [
+        {
+          "text": "爱",
+          "start": 80.428,
+          "duration": 0.389
+        },
+        {
+          "text": "轻",
+          "start": 80.817,
+          "duration": 0.38
+        },
+        {
+          "text": "的",
+          "start": 81.197,
+          "duration": 0.525
+        },
+        {
+          "text": "像",
+          "start": 81.722,
+          "duration": 0.472
+        },
+        {
+          "text": "几",
+          "start": 82.194,
+          "duration": 0.408
+        },
+        {
+          "text": "片",
+          "start": 82.602,
+          "duration": 0.429
+        },
+        {
+          "text": "雪",
+          "start": 83.031,
+          "duration": 0.447
+        },
+        {
+          "text": " ",
+          "start": 83.478,
+          "duration": 0
+        },
+        {
+          "text": "重",
+          "start": 83.478,
+          "duration": 0.286
+        },
+        {
+          "text": "的",
+          "start": 83.764,
+          "duration": 0.211
+        },
+        {
+          "text": "像",
+          "start": 83.975,
+          "duration": 0.388
+        },
+        {
+          "text": "从",
+          "start": 84.363,
+          "duration": 0.376
+        },
+        {
+          "text": "前",
+          "start": 84.739,
+          "duration": 2.471
+        }
+      ]
+    },
+    {
+      "time": 87.389,
+      "end": 94.4,
+      "text": "快忘了没语季节 背着光告别",
+      "words": [
+        {
+          "text": "快",
+          "start": 87.389,
+          "duration": 0.374
+        },
+        {
+          "text": "忘",
+          "start": 87.763,
+          "duration": 0.432
+        },
+        {
+          "text": "了",
+          "start": 88.195,
+          "duration": 0.448
+        },
+        {
+          "text": "没",
+          "start": 88.643,
+          "duration": 0.46
+        },
+        {
+          "text": "语",
+          "start": 89.103,
+          "duration": 0.407
+        },
+        {
+          "text": "季",
+          "start": 89.51,
+          "duration": 0.448
+        },
+        {
+          "text": "节",
+          "start": 89.958,
+          "duration": 0.628
+        },
+        {
+          "text": " ",
+          "start": 90.586,
+          "duration": 0
+        },
+        {
+          "text": "背",
+          "start": 90.72,
+          "duration": 0.214
+        },
+        {
+          "text": "着",
+          "start": 90.934,
+          "duration": 0.352
+        },
+        {
+          "text": "光",
+          "start": 91.286,
+          "duration": 0.353
+        },
+        {
+          "text": "告",
+          "start": 91.639,
+          "duration": 0.484
+        },
+        {
+          "text": "别",
+          "start": 92.123,
+          "duration": 2.277
+        }
+      ]
+    },
+    {
+      "time": 94.852,
+      "end": 99.519,
+      "text": "孤独 荡着 秋千",
+      "words": [
+        {
+          "text": "孤",
+          "start": 94.852,
+          "duration": 0.575
+        },
+        {
+          "text": "独",
+          "start": 95.427,
+          "duration": 0.709
+        },
+        {
+          "text": " ",
+          "start": 96.136,
+          "duration": 0
+        },
+        {
+          "text": "荡",
+          "start": 96.136,
+          "duration": 0.68
+        },
+        {
+          "text": "着",
+          "start": 96.816,
+          "duration": 0.882
+        },
+        {
+          "text": " ",
+          "start": 97.698,
+          "duration": 0
+        },
+        {
+          "text": "秋",
+          "start": 97.698,
+          "duration": 0.439
+        },
+        {
+          "text": "千",
+          "start": 98.137,
+          "duration": 1.382
+        }
+      ]
+    },
+    {
+      "time": 129.395,
+      "end": 136.406,
+      "text": "来帮我 剪下昼夜吧",
+      "words": [
+        {
+          "text": "来",
+          "start": 129.395,
+          "duration": 0.362
+        },
+        {
+          "text": "帮",
+          "start": 129.757,
+          "duration": 0.469
+        },
+        {
+          "text": "我",
+          "start": 130.226,
+          "duration": 0.65
+        },
+        {
+          "text": " ",
+          "start": 130.876,
+          "duration": 0
+        },
+        {
+          "text": "剪",
+          "start": 131.186,
+          "duration": 0.36
+        },
+        {
+          "text": "下",
+          "start": 131.546,
+          "duration": 0.432
+        },
+        {
+          "text": "昼",
+          "start": 131.978,
+          "duration": 1.867
+        },
+        {
+          "text": "夜",
+          "start": 133.845,
+          "duration": 1.975
+        },
+        {
+          "text": "吧",
+          "start": 135.82,
+          "duration": 0.586
+        }
+      ]
+    },
+    {
+      "time": 136.612,
+      "end": 140.521,
+      "text": "等没等到都无解",
+      "words": [
+        {
+          "text": "等",
+          "start": 136.612,
+          "duration": 0.267
+        },
+        {
+          "text": "没",
+          "start": 136.879,
+          "duration": 0.353
+        },
+        {
+          "text": "等",
+          "start": 137.232,
+          "duration": 0.345
+        },
+        {
+          "text": "到",
+          "start": 137.577,
+          "duration": 0.518
+        },
+        {
+          "text": "都",
+          "start": 138.095,
+          "duration": 0.486
+        },
+        {
+          "text": "无",
+          "start": 138.581,
+          "duration": 0.384
+        },
+        {
+          "text": "解",
+          "start": 138.965,
+          "duration": 1.556
+        }
+      ]
+    },
+    {
+      "time": 140.766,
+      "end": 149.221,
+      "text": "思念一张脸两三年 四处飞舞的流年",
+      "words": [
+        {
+          "text": "思",
+          "start": 140.766,
+          "duration": 0.311
+        },
+        {
+          "text": "念",
+          "start": 141.077,
+          "duration": 0.742
+        },
+        {
+          "text": "一",
+          "start": 141.819,
+          "duration": 0.294
+        },
+        {
+          "text": "张",
+          "start": 142.113,
+          "duration": 0.395
+        },
+        {
+          "text": "脸",
+          "start": 142.508,
+          "duration": 0.402
+        },
+        {
+          "text": "两",
+          "start": 142.91,
+          "duration": 0.382
+        },
+        {
+          "text": "三",
+          "start": 143.292,
+          "duration": 0.45
+        },
+        {
+          "text": "年",
+          "start": 143.742,
+          "duration": 1.711
+        },
+        {
+          "text": " ",
+          "start": 145.453,
+          "duration": 0
+        },
+        {
+          "text": "四",
+          "start": 145.877,
+          "duration": 0.198
+        },
+        {
+          "text": "处",
+          "start": 146.075,
+          "duration": 0.278
+        },
+        {
+          "text": "飞",
+          "start": 146.353,
+          "duration": 0.376
+        },
+        {
+          "text": "舞",
+          "start": 146.729,
+          "duration": 0.435
+        },
+        {
+          "text": "的",
+          "start": 147.164,
+          "duration": 0.432
+        },
+        {
+          "text": "流",
+          "start": 147.596,
+          "duration": 0.458
+        },
+        {
+          "text": "年",
+          "start": 148.054,
+          "duration": 1.167
+        }
+      ]
+    },
+    {
+      "time": 149.713,
+      "end": 156.104,
+      "text": "都怪雨总爱耻笑昨天",
+      "words": [
+        {
+          "text": "都",
+          "start": 149.713,
+          "duration": 0.192
+        },
+        {
+          "text": "怪",
+          "start": 149.905,
+          "duration": 0.328
+        },
+        {
+          "text": "雨",
+          "start": 150.233,
+          "duration": 0.45
+        },
+        {
+          "text": "总",
+          "start": 150.683,
+          "duration": 0.547
+        },
+        {
+          "text": "爱",
+          "start": 151.23,
+          "duration": 0.36
+        },
+        {
+          "text": "耻",
+          "start": 151.59,
+          "duration": 0.434
+        },
+        {
+          "text": "笑",
+          "start": 152.024,
+          "duration": 0.396
+        },
+        {
+          "text": "昨",
+          "start": 152.42,
+          "duration": 0.449
+        },
+        {
+          "text": "天",
+          "start": 152.869,
+          "duration": 3.235
+        }
+      ]
+    },
+    {
+      "time": 156.752,
+      "end": 163.491,
+      "text": "抱住我没语季节 话贴在耳朵边",
+      "words": [
+        {
+          "text": "抱",
+          "start": 156.752,
+          "duration": 0.416
+        },
+        {
+          "text": "住",
+          "start": 157.168,
+          "duration": 0.445
+        },
+        {
+          "text": "我",
+          "start": 157.613,
+          "duration": 0.428
+        },
+        {
+          "text": "没",
+          "start": 158.041,
+          "duration": 0.418
+        },
+        {
+          "text": "语",
+          "start": 158.459,
+          "duration": 0.47
+        },
+        {
+          "text": "季",
+          "start": 158.929,
+          "duration": 0.42
+        },
+        {
+          "text": "节",
+          "start": 159.349,
+          "duration": 0.832
+        },
+        {
+          "text": " ",
+          "start": 160.181,
+          "duration": 0
+        },
+        {
+          "text": "话",
+          "start": 160.181,
+          "duration": 0.175
+        },
+        {
+          "text": "贴",
+          "start": 160.356,
+          "duration": 0.338
+        },
+        {
+          "text": "在",
+          "start": 160.694,
+          "duration": 0.408
+        },
+        {
+          "text": "耳",
+          "start": 161.102,
+          "duration": 0.392
+        },
+        {
+          "text": "朵",
+          "start": 161.494,
+          "duration": 0.477
+        },
+        {
+          "text": "边",
+          "start": 161.971,
+          "duration": 1.52
+        }
+      ]
+    },
+    {
+      "time": 163.731,
+      "end": 170.395,
+      "text": "爱近的像掌心线 远的像光年",
+      "words": [
+        {
+          "text": "爱",
+          "start": 163.731,
+          "duration": 0.387
+        },
+        {
+          "text": "近",
+          "start": 164.118,
+          "duration": 0.43
+        },
+        {
+          "text": "的",
+          "start": 164.548,
+          "duration": 0.434
+        },
+        {
+          "text": "像",
+          "start": 164.982,
+          "duration": 0.464
+        },
+        {
+          "text": "掌",
+          "start": 165.446,
+          "duration": 0.417
+        },
+        {
+          "text": "心",
+          "start": 165.863,
+          "duration": 0.487
+        },
+        {
+          "text": "线",
+          "start": 166.35,
+          "duration": 0.427
+        },
+        {
+          "text": " ",
+          "start": 166.777,
+          "duration": 0
+        },
+        {
+          "text": "远",
+          "start": 166.777,
+          "duration": 0.218
+        },
+        {
+          "text": "的",
+          "start": 166.995,
+          "duration": 0.264
+        },
+        {
+          "text": "像",
+          "start": 167.259,
+          "duration": 0.504
+        },
+        {
+          "text": "光",
+          "start": 167.763,
+          "duration": 0.463
+        },
+        {
+          "text": "年",
+          "start": 168.226,
+          "duration": 2.169
+        }
+      ]
+    },
+    {
+      "time": 170.733,
+      "end": 177.738,
+      "text": "因为在没语季节 人会听不到哽咽",
+      "words": [
+        {
+          "text": "因",
+          "start": 170.733,
+          "duration": 0.354
+        },
+        {
+          "text": "为",
+          "start": 171.087,
+          "duration": 0.408
+        },
+        {
+          "text": "在",
+          "start": 171.495,
+          "duration": 0.46
+        },
+        {
+          "text": "没",
+          "start": 171.955,
+          "duration": 0.459
+        },
+        {
+          "text": "语",
+          "start": 172.414,
+          "duration": 0.398
+        },
+        {
+          "text": "季",
+          "start": 172.812,
+          "duration": 0.458
+        },
+        {
+          "text": "节",
+          "start": 173.27,
+          "duration": 0.474
+        },
+        {
+          "text": " ",
+          "start": 173.744,
+          "duration": 0
+        },
+        {
+          "text": "人",
+          "start": 173.744,
+          "duration": 0.218
+        },
+        {
+          "text": "会",
+          "start": 173.962,
+          "duration": 0.23
+        },
+        {
+          "text": "听",
+          "start": 174.192,
+          "duration": 0.419
+        },
+        {
+          "text": "不",
+          "start": 174.611,
+          "duration": 0.362
+        },
+        {
+          "text": "到",
+          "start": 174.973,
+          "duration": 0.388
+        },
+        {
+          "text": "哽",
+          "start": 175.361,
+          "duration": 0.488
+        },
+        {
+          "text": "咽",
+          "start": 175.849,
+          "duration": 1.889
+        }
+      ]
+    },
+    {
+      "time": 178.081,
+      "end": 183.622,
+      "text": "轻轻吼 慢慢的喊 骂日月",
+      "words": [
+        {
+          "text": "轻",
+          "start": 178.081,
+          "duration": 0.408
+        },
+        {
+          "text": "轻",
+          "start": 178.489,
+          "duration": 0.215
+        },
+        {
+          "text": "吼",
+          "start": 178.704,
+          "duration": 0.714
+        },
+        {
+          "text": " ",
+          "start": 179.418,
+          "duration": 0
+        },
+        {
+          "text": "慢",
+          "start": 179.418,
+          "duration": 0.308
+        },
+        {
+          "text": "慢",
+          "start": 179.726,
+          "duration": 0.186
+        },
+        {
+          "text": "的",
+          "start": 179.912,
+          "duration": 0.204
+        },
+        {
+          "text": "喊",
+          "start": 180.116,
+          "duration": 0.613
+        },
+        {
+          "text": " ",
+          "start": 180.729,
+          "duration": 0
+        },
+        {
+          "text": "骂",
+          "start": 180.729,
+          "duration": 0.247
+        },
+        {
+          "text": "日",
+          "start": 180.976,
+          "duration": 0.391
+        },
+        {
+          "text": "月",
+          "start": 181.367,
+          "duration": 2.255
+        }
+      ]
+    },
+    {
+      "time": 184.57,
+      "end": 188.153,
+      "text": "某天 被记忆瞪着的人",
+      "words": [
+        {
+          "text": "某",
+          "start": 184.57,
+          "duration": 0.292
+        },
+        {
+          "text": "天",
+          "start": 184.862,
+          "duration": 0.983
+        },
+        {
+          "text": " ",
+          "start": 185.845,
+          "duration": 0
+        },
+        {
+          "text": "被",
+          "start": 185.845,
+          "duration": 0.188
+        },
+        {
+          "text": "记",
+          "start": 186.033,
+          "duration": 0.228
+        },
+        {
+          "text": "忆",
+          "start": 186.261,
+          "duration": 0.213
+        },
+        {
+          "text": "瞪",
+          "start": 186.474,
+          "duration": 0.283
+        },
+        {
+          "text": "着",
+          "start": 186.757,
+          "duration": 0.432
+        },
+        {
+          "text": "的",
+          "start": 187.189,
+          "duration": 0.408
+        },
+        {
+          "text": "人",
+          "start": 187.597,
+          "duration": 0.556
+        }
+      ]
+    },
+    {
+      "time": 188.368,
+      "end": 191.545,
+      "text": "哪天 被别人闷着的心",
+      "words": [
+        {
+          "text": "哪",
+          "start": 188.368,
+          "duration": 0.212
+        },
+        {
+          "text": "天",
+          "start": 188.58,
+          "duration": 0.674
+        },
+        {
+          "text": " ",
+          "start": 189.254,
+          "duration": 0
+        },
+        {
+          "text": "被",
+          "start": 189.254,
+          "duration": 0.198
+        },
+        {
+          "text": "别",
+          "start": 189.452,
+          "duration": 0.202
+        },
+        {
+          "text": "人",
+          "start": 189.654,
+          "duration": 0.207
+        },
+        {
+          "text": "闷",
+          "start": 189.861,
+          "duration": 0.302
+        },
+        {
+          "text": "着",
+          "start": 190.163,
+          "duration": 0.416
+        },
+        {
+          "text": "的",
+          "start": 190.579,
+          "duration": 0.474
+        },
+        {
+          "text": "心",
+          "start": 191.053,
+          "duration": 0.492
+        }
+      ]
+    },
+    {
+      "time": 191.545,
+      "end": 194.361,
+      "text": "真的 被寂寞摁着",
+      "words": [
+        {
+          "text": "真",
+          "start": 191.545,
+          "duration": 0.406
+        },
+        {
+          "text": "的",
+          "start": 191.951,
+          "duration": 0.652
+        },
+        {
+          "text": " ",
+          "start": 192.603,
+          "duration": 0
+        },
+        {
+          "text": "被",
+          "start": 192.603,
+          "duration": 0.267
+        },
+        {
+          "text": "寂",
+          "start": 192.87,
+          "duration": 0.189
+        },
+        {
+          "text": "寞",
+          "start": 193.059,
+          "duration": 0.225
+        },
+        {
+          "text": "摁",
+          "start": 193.284,
+          "duration": 0.407
+        },
+        {
+          "text": "着",
+          "start": 193.691,
+          "duration": 0.67
+        }
+      ]
+    },
+    {
+      "time": 194.59,
+      "end": 198.23,
+      "text": "人再也分不出假的真的",
+      "words": [
+        {
+          "text": "人",
+          "start": 194.59,
+          "duration": 0.172
+        },
+        {
+          "text": "再",
+          "start": 194.762,
+          "duration": 0.163
+        },
+        {
+          "text": "也",
+          "start": 194.925,
+          "duration": 0.184
+        },
+        {
+          "text": "分",
+          "start": 195.109,
+          "duration": 0.788
+        },
+        {
+          "text": "不",
+          "start": 195.897,
+          "duration": 0.751
+        },
+        {
+          "text": "出",
+          "start": 196.648,
+          "duration": 0.195
+        },
+        {
+          "text": "假",
+          "start": 196.843,
+          "duration": 0.279
+        },
+        {
+          "text": "的",
+          "start": 197.122,
+          "duration": 0.137
+        },
+        {
+          "text": "真",
+          "start": 197.259,
+          "duration": 0.341
+        },
+        {
+          "text": "的",
+          "start": 197.6,
+          "duration": 0.63
+        }
+      ]
+    },
+    {
+      "time": 198.23,
+      "end": 201.336,
+      "text": "雷无声 云里也藏针",
+      "words": [
+        {
+          "text": "雷",
+          "start": 198.23,
+          "duration": 0.234
+        },
+        {
+          "text": "无",
+          "start": 198.464,
+          "duration": 0.423
+        },
+        {
+          "text": "声",
+          "start": 198.887,
+          "duration": 0.734
+        },
+        {
+          "text": " ",
+          "start": 199.621,
+          "duration": 0
+        },
+        {
+          "text": "云",
+          "start": 199.621,
+          "duration": 0.186
+        },
+        {
+          "text": "里",
+          "start": 199.807,
+          "duration": 0.19
+        },
+        {
+          "text": "也",
+          "start": 199.997,
+          "duration": 0.23
+        },
+        {
+          "text": "藏",
+          "start": 200.227,
+          "duration": 0.396
+        },
+        {
+          "text": "针",
+          "start": 200.623,
+          "duration": 0.713
+        }
+      ]
+    },
+    {
+      "time": 201.54,
+      "end": 207.557,
+      "text": "最初爱笑的 最后可全都哭成",
+      "words": [
+        {
+          "text": "最",
+          "start": 201.54,
+          "duration": 0.172
+        },
+        {
+          "text": "初",
+          "start": 201.712,
+          "duration": 0.18
+        },
+        {
+          "text": "爱",
+          "start": 201.892,
+          "duration": 0.176
+        },
+        {
+          "text": "笑",
+          "start": 202.068,
+          "duration": 0.829
+        },
+        {
+          "text": "的",
+          "start": 202.897,
+          "duration": 0.638
+        },
+        {
+          "text": " ",
+          "start": 203.535,
+          "duration": 0
+        },
+        {
+          "text": "最",
+          "start": 203.535,
+          "duration": 0.204
+        },
+        {
+          "text": "后",
+          "start": 203.739,
+          "duration": 0.357
+        },
+        {
+          "text": "可",
+          "start": 204.096,
+          "duration": 0.44
+        },
+        {
+          "text": "全",
+          "start": 204.536,
+          "duration": 0.364
+        },
+        {
+          "text": "都",
+          "start": 204.9,
+          "duration": 0.486
+        },
+        {
+          "text": "哭",
+          "start": 205.386,
+          "duration": 1.055
+        },
+        {
+          "text": "成",
+          "start": 206.441,
+          "duration": 1.116
+        }
+      ]
+    },
+    {
+      "time": 207.813,
+      "end": 211.543,
+      "text": "没话讲的脸",
+      "words": [
+        {
+          "text": "没",
+          "start": 207.813,
+          "duration": 0.238
+        },
+        {
+          "text": "话",
+          "start": 208.051,
+          "duration": 0.185
+        },
+        {
+          "text": "讲",
+          "start": 208.236,
+          "duration": 0.298
+        },
+        {
+          "text": "的",
+          "start": 208.534,
+          "duration": 0.447
+        },
+        {
+          "text": "脸",
+          "start": 208.981,
+          "duration": 2.562
+        }
+      ]
+    },
+    {
+      "time": 212.368,
+      "end": 218.454,
+      "text": "抱住我没语季节 话贴在耳朵边",
+      "words": [
+        {
+          "text": "抱",
+          "start": 212.368,
+          "duration": 0.428
+        },
+        {
+          "text": "住",
+          "start": 212.796,
+          "duration": 0.456
+        },
+        {
+          "text": "我",
+          "start": 213.252,
+          "duration": 0.492
+        },
+        {
+          "text": "没",
+          "start": 213.744,
+          "duration": 0.398
+        },
+        {
+          "text": "语",
+          "start": 214.142,
+          "duration": 0.454
+        },
+        {
+          "text": "季",
+          "start": 214.596,
+          "duration": 0.443
+        },
+        {
+          "text": "节",
+          "start": 215.039,
+          "duration": 0.762
+        },
+        {
+          "text": " ",
+          "start": 215.801,
+          "duration": 0
+        },
+        {
+          "text": "话",
+          "start": 215.801,
+          "duration": 0.188
+        },
+        {
+          "text": "贴",
+          "start": 215.989,
+          "duration": 0.334
+        },
+        {
+          "text": "在",
+          "start": 216.323,
+          "duration": 0.399
+        },
+        {
+          "text": "耳",
+          "start": 216.722,
+          "duration": 0.426
+        },
+        {
+          "text": "朵",
+          "start": 217.148,
+          "duration": 0.444
+        },
+        {
+          "text": "边",
+          "start": 217.592,
+          "duration": 0.862
+        }
+      ]
+    },
+    {
+      "time": 219.371,
+      "end": 226.14,
+      "text": "爱近的像掌心线 远的像光年",
+      "words": [
+        {
+          "text": "爱",
+          "start": 219.371,
+          "duration": 0.373
+        },
+        {
+          "text": "近",
+          "start": 219.744,
+          "duration": 0.441
+        },
+        {
+          "text": "的",
+          "start": 220.185,
+          "duration": 0.428
+        },
+        {
+          "text": "像",
+          "start": 220.613,
+          "duration": 0.444
+        },
+        {
+          "text": "掌",
+          "start": 221.057,
+          "duration": 0.413
+        },
+        {
+          "text": "心",
+          "start": 221.47,
+          "duration": 0.48
+        },
+        {
+          "text": "线",
+          "start": 221.95,
+          "duration": 0.43
+        },
+        {
+          "text": " ",
+          "start": 222.38,
+          "duration": 0
+        },
+        {
+          "text": "远",
+          "start": 222.38,
+          "duration": 0.212
+        },
+        {
+          "text": "的",
+          "start": 222.592,
+          "duration": 0.22
+        },
+        {
+          "text": "像",
+          "start": 222.812,
+          "duration": 0.643
+        },
+        {
+          "text": "光",
+          "start": 223.455,
+          "duration": 0.286
+        },
+        {
+          "text": "年",
+          "start": 223.741,
+          "duration": 2.399
+        }
+      ]
+    },
+    {
+      "time": 226.396,
+      "end": 233.037,
+      "text": "因为在没语季节 人听不到哽咽",
+      "words": [
+        {
+          "text": "因",
+          "start": 226.396,
+          "duration": 0.366
+        },
+        {
+          "text": "为",
+          "start": 226.762,
+          "duration": 0.38
+        },
+        {
+          "text": "在",
+          "start": 227.142,
+          "duration": 0.43
+        },
+        {
+          "text": "没",
+          "start": 227.572,
+          "duration": 0.467
+        },
+        {
+          "text": "语",
+          "start": 228.039,
+          "duration": 0.414
+        },
+        {
+          "text": "季",
+          "start": 228.453,
+          "duration": 0.472
+        },
+        {
+          "text": "节",
+          "start": 228.925,
+          "duration": 0.466
+        },
+        {
+          "text": " ",
+          "start": 229.391,
+          "duration": 0
+        },
+        {
+          "text": "人",
+          "start": 229.391,
+          "duration": 0.206
+        },
+        {
+          "text": "听",
+          "start": 229.597,
+          "duration": 0.198
+        },
+        {
+          "text": "不",
+          "start": 229.795,
+          "duration": 0.453
+        },
+        {
+          "text": "到",
+          "start": 230.248,
+          "duration": 0.382
+        },
+        {
+          "text": "哽",
+          "start": 230.63,
+          "duration": 0.4
+        },
+        {
+          "text": "咽",
+          "start": 231.03,
+          "duration": 2.007
+        }
+      ]
+    },
+    {
+      "time": 233.751,
+      "end": 238.969,
+      "text": "轻轻吼 慢慢喊 回见",
+      "words": [
+        {
+          "text": "轻",
+          "start": 233.751,
+          "duration": 0.365
+        },
+        {
+          "text": "轻",
+          "start": 234.116,
+          "duration": 0.254
+        },
+        {
+          "text": "吼",
+          "start": 234.37,
+          "duration": 0.654
+        },
+        {
+          "text": " ",
+          "start": 235.024,
+          "duration": 0
+        },
+        {
+          "text": "慢",
+          "start": 235.024,
+          "duration": 0.376
+        },
+        {
+          "text": "慢",
+          "start": 235.4,
+          "duration": 0.276
+        },
+        {
+          "text": "喊",
+          "start": 235.676,
+          "duration": 0.977
+        },
+        {
+          "text": " ",
+          "start": 236.653,
+          "duration": 0
+        },
+        {
+          "text": "回",
+          "start": 236.653,
+          "duration": 0.596
+        },
+        {
+          "text": "见",
+          "start": 237.249,
+          "duration": 1.72
+        }
+      ]
+    },
+    {
+      "time": 241,
+      "end": 247.65,
+      "text": "抿着嘴 安静的 走人间",
+      "words": [
+        {
+          "text": "抿",
+          "start": 241,
+          "duration": 0.22
+        },
+        {
+          "text": "着",
+          "start": 241.22,
+          "duration": 0.267
+        },
+        {
+          "text": "嘴",
+          "start": 241.487,
+          "duration": 0.8
+        },
+        {
+          "text": " ",
+          "start": 242.287,
+          "duration": 0
+        },
+        {
+          "text": "安",
+          "start": 242.999,
+          "duration": 0.244
+        },
+        {
+          "text": "静",
+          "start": 243.243,
+          "duration": 0.352
+        },
+        {
+          "text": "的",
+          "start": 243.595,
+          "duration": 0.775
+        },
+        {
+          "text": " ",
+          "start": 244.37,
+          "duration": 0
+        },
+        {
+          "text": "走",
+          "start": 246.395,
+          "duration": 0.34
+        },
+        {
+          "text": "人",
+          "start": 246.735,
+          "duration": 0.256
+        },
+        {
+          "text": "间",
+          "start": 246.991,
+          "duration": 0.659
+        }
+      ]
+    }
+  ]
+}

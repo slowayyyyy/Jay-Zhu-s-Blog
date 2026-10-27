@@ -3,6 +3,22 @@
 	"description": "这里统一索引当前博客使用和保留的洛琪希图片、动图。新增素材后，可在图库与相册、壁纸、时间问候或其他对应模块中选择；替换前请先查看“当前用途”，避免误改多个页面共同使用的素材。",
 	"assets": [
 		{
+			"id": "music-meiyujijie-cover",
+			"name": "没语季节 · 圆盘封面",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/16-huangxiaoyun-meiyujijie.svg",
+			"usage": "没语季节的播放器与曲库封面",
+			"note": "用户截图的原始像素，通过 SVG 圆形遮罩取出内圈封面，不重绘、不混入外圈蓝色背景。"
+		},
+		{
+			"id": "music-meiyujijie-original",
+			"name": "没语季节 · 用户原始圆盘截图",
+			"kind": "图片",
+			"src": "/assets/images/music-covers/16-huangxiaoyun-meiyujijie-original.png",
+			"usage": "保留原始素材，供以后重新取景调用",
+			"note": "用户提供的 608×486 原图，未做像素修改。"
+		},
+		{
 			"id": "music-room-jellyfish-night",
 			"name": "聆听室 · 夜海水母",
 			"kind": "图片",
